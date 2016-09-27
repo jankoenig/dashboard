@@ -1,6 +1,7 @@
 {
   "globalDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
+    "classnames": "registry:dt/classnames#0.0.0+20160316155526",
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "react": "registry:dt/react#0.14.0+20160829191040",
     "react-addons-create-fragment": "registry:dt/react-addons-create-fragment#0.14.0+20160709044614",
@@ -13,7 +14,6 @@
     "react-addons-update": "registry:dt/react-addons-update#0.14.0+20160316155526",
     "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
     "react-global": "registry:dt/react-global#0.14.0+20160316155526",
-    "react-mdl": "registry:dt/react-mdl#0.0.0+20160830142027",
     "react-router": "registry:dt/react-router#2.0.0+20160920184447",
     "react-router/history": "registry:dt/react-router/history#2.0.0+20160830150755"
   }

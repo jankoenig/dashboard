@@ -39,6 +39,7 @@ import tsify from 'tsify';
 import tslint from 'gulp-tslint';
 import mocha from 'gulp-mocha';
 import ts from 'gulp-typescript';
+import historyApiFallback from 'connect-history-api-fallback';
 
 let tsProject = ts.createProject('./tsconfig.json');
 
@@ -75,7 +76,7 @@ gulp.task('test', ['tsc'], function() {
     }));
 });
 
-gulp.task('build', () => {
+gulp.task('build', function() {
     return browserify({
         basedir: '.',
         debug: true,
@@ -85,6 +86,14 @@ gulp.task('build', () => {
     })
     .plugin(tsify)
     .bundle()
+    .on('error', function(err){
+      // print the error (can replace with gulp-util)
+      console.log(err);
+      console.log(err.message);
+      // end this stream
+      this.emit('end');
+      //process.exit(1);
+    })
     .pipe(source('bst-dashboard.js'))
     .pipe(gulp.dest('.tmp/scripts'))
     .pipe(gulp.dest('dist/scripts'));
@@ -204,11 +213,12 @@ gulp.task('app:html', () => {
 });
 
 // Clean output directory
-gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
+gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git', 'src/**/*.js', 'src/**/*.js.map'], {dot: true}));
 
 // Watch files for changes & reload
-gulp.task('serve', ['app:scripts', 'styles'], () => {
+gulp.task('serve', ['build', 'app:scripts', 'styles'], () => {
   browserSync({
+    open: false, //do not auto open a browser
     notify: false,
     // Customize the Browsersync console logging prefix
     logPrefix: 'WSK',
@@ -218,7 +228,9 @@ gulp.task('serve', ['app:scripts', 'styles'], () => {
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
-    server: ['.tmp', 'app']
+    server: ['.tmp', 'app'],
+    //this allows browsersync to run in single page app mode
+    middleware: [ historyApiFallback() ]
   });
 
   gulp.watch(['src/**/*.ts', 'src/**/*.tsx'], ['build', reload]);
@@ -240,7 +252,9 @@ gulp.task('serve:dist', ['default'], () =>
     //       will present a certificate warning in the browser.
     // https: true,
     server: 'dist',
-    port: 3001
+    port: 3001,
+    //this allows browsersync to run in single page app mode
+    middleware: [ historyApiFallback() ]
   })
 );
 

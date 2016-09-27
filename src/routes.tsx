@@ -1,18 +1,23 @@
 import * as React from 'react';
-import * as Router from 'react-router';
-import { Route, IndexRoute } from 'react-router';
+import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
+import { createHistory } from 'history';
 
-import AppFrame from './views/AppFrame';
-import NotFoundView from './views/NotFoundView';
+import Dashboard from './frames/Dashboard';
 import HomeView from './views/HomeView';
+import NotFoundView from './views/NotFoundView';
 import AboutView from './views/AboutView';
 
+const history = useRouterHistory(createHistory)({
+});
+
 var routeMap = (
-    <Route path="/" component={AppFrame}>
-        <IndexRoute component={HomeView}/>
-        <Route path="/about" component={AboutView}/>
-        <Route path="*" component={NotFoundView} />
-    </Route>
+    <Router history={history}>
+      <Route path="/" component={Dashboard}>
+          <IndexRoute component={HomeView}/>
+          <Route path="/about" component={AboutView}/>
+          <Route path="*" component={NotFoundView} />
+      </Route>
+    </Router>
 );
 
 export default routeMap;
