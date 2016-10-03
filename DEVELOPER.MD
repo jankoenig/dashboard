@@ -38,6 +38,13 @@ $ typings install dt~react-mdl --global --save
 ### React
 
 - [React](https://facebook.github.io/react/docs/getting-started.html)
+- [Login-Flow](https://github.com/mxstbr/login-flow)
+- [Parse Dashboard](https://github.com/ParsePlatform/parse-dashboard)
+
+### Redux
+
+- [todomvc-redux-react-typescript](https://github.com/jaysoo/todomvc-redux-react-typescript)
+- [typescript-react-redux-starter](https://github.com/rangle/typescript-react-redux-starter)
 
 ### Developing
 
