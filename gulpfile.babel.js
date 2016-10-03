@@ -58,7 +58,7 @@ gulp.task('lint', function() {
 //Transpiles the typescript to javascript
 gulp.task('tsc', function() {
    return gulp.src(['src/**/*.ts'])
-   .pipe(ts(tsProject))
+   .pipe(tsProject())
    .pipe(gulp.dest('src'));
 });
 
@@ -67,7 +67,7 @@ gulp.task('test', ['tsc'], function() {
     //find test code - note use of 'base'
     return gulp.src('./test/**/*.ts', { base: '.' })
     /*transpile*/
-    .pipe(ts(tsProject))
+    .pipe(tsProject())
     /*flush to disk*/
     .pipe(gulp.dest('.'))
     /*execute tests*/
@@ -88,7 +88,7 @@ gulp.task('build', function() {
     .bundle()
     .on('error', function(err){
       // print the error (can replace with gulp-util)
-      console.log(err);
+      //console.log(err);
       console.log(err.message);
       // end this stream
       this.emit('end');
@@ -213,7 +213,7 @@ gulp.task('app:html', () => {
 });
 
 // Clean output directory
-gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git', 'src/**/*.js', 'src/**/*.js.map'], {dot: true}));
+gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git', 'src/**/*.js', 'src/**/*.js.map', 'test/**/*.js', 'test/**/*.js.map'], {dot: true}));
 
 // Watch files for changes & reload
 gulp.task('serve', ['build', 'app:scripts', 'styles'], () => {
