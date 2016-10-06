@@ -1,7 +1,10 @@
+var path = require('path');
+
 module.exports = {
-  entry: './src/index.tsx',
+  entry: "./src/index.tsx",
   output: {
-    filename: './.tmp/scripts/bst-dashboard.js'
+    path: path.resolve(__dirname, 'dist'),
+    filename: "scripts/dashboard.js",
   },
   // Enable sourcemaps for debugging webpack's output.
   devtool: "source-map",
