@@ -1,5 +1,5 @@
 ﻿
-import * as React from 'react';
+import * as React from "react";
 
 export default class AboutView extends React.Component<any, any> {
     constructor(props: any) {

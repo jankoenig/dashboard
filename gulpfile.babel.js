@@ -55,32 +55,11 @@ gulp.task('lint', function() {
       .pipe(tslint.report())
 });
 
-//Transpiles the typescript to javascript
-gulp.task('tsc', function() {
-   return gulp.src(['src/**/*.ts'])
-   .pipe(tsProject())
-   .pipe(gulp.dest('src'));
-});
-
-//Test typescript source
-gulp.task('test', ['tsc'], function() {
-    //find test code - note use of 'base'
-    return gulp.src('./test/**/*.ts', { base: '.' })
-    /*transpile*/
-    .pipe(tsProject())
-    /*flush to disk*/
-    .pipe(gulp.dest('.'))
-    /*execute tests*/
-    .pipe(mocha({
-        reporter: 'progress'
-    }));
-});
-
 gulp.task('build', function() {
     return browserify({
         basedir: '.',
         debug: true,
-        entries: ['src/client.tsx'],
+        entries: ['src/index.tsx'],
         cache: {},
         packageCache: {}
     })
@@ -212,9 +191,6 @@ gulp.task('app:html', () => {
     .pipe(gulp.dest('dist'));
 });
 
-// Clean output directory
-gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git', 'src/**/*.js', 'src/**/*.js.map', 'test/**/*.js', 'test/**/*.js.map'], {dot: true}));
-
 // Watch files for changes & reload
 gulp.task('serve', ['build', 'app:scripts', 'styles'], () => {
   browserSync({
@@ -259,7 +235,7 @@ gulp.task('serve:dist', ['default'], () =>
 );
 
 // Build production files, the default task
-gulp.task('default', ['clean'], cb =>
+gulp.task('default', cb =>
   runSequence(
     'styles',
     ['app:lint', 'app:html','build', 'app:scripts', 'app:images', 'copy'],
