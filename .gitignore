@@ -2,16 +2,14 @@ node_modules/
 .idea/
 dist/
 .tmp/
-
+coverage/
 
 # Do not track the generated javascript and map files from typescript
 src/**/*.js
 src/**/*.map
-test/**/*.js
-test/**/*.map
+src/**/*/*.d.ts
 
 **/.DS_Store
-
 typings/globals/
 typings/modules/
 
