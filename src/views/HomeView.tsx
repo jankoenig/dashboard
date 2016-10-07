@@ -1,10 +1,9 @@
 ﻿
-import * as React from 'react';
-import { Link } from 'react-router';
-import  Hello  from '../components/Hello';
+import * as React from "react";
+import { Link } from "react-router";
+import  Hello  from "../components/Hello";
 
-
-var HomeView = React.createClass({
+let HomeView = React.createClass({
     getInitialState: function() {
         return { loaded: false };
     },
@@ -14,7 +13,7 @@ var HomeView = React.createClass({
     },
 
     render: function() {
-        var loading = this.state.loaded ? "" : " (loading...)";
+        let loading = this.state.loaded ? "" : " (loading...)";
         return <div>
             <h2>HomeView {loading}</h2>
             <Hello name="world" />

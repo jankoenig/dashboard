@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as classNames from 'classnames';
+import * as React from "react";
+import * as classNames from "classnames";
 
 export default class Navigation extends React.Component<any, any> {
   constructor(props: any) {
@@ -7,7 +7,7 @@ export default class Navigation extends React.Component<any, any> {
   }
 
   classes() {
-    return classNames('mdl-navigation mdl-color--blue-grey-800');
+    return classNames("mdl-navigation mdl-color--blue-grey-800");
   }
 
   render() {

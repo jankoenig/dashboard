@@ -12,7 +12,10 @@ export default class AboutView extends React.Component<any, any> {
     }
 
     render() {
-        var loading = this.state.loaded ? "" : " (loading...)";
-        return  <p>about </p>;
+        let loading = this.state.loaded ? "" : " (loading...)";
+        return  <div>
+                  <h2>About</h2>
+                  <p>{ loading }</p>
+                </div>;
     }
 }

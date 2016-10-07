@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as classNames from 'classnames';
+import * as React from "react";
+import * as classNames from "classnames";
 
 export interface DrawerProps {
     title: string;
@@ -11,7 +11,7 @@ export default class Drawer extends React.Component<DrawerProps, any> {
     }
 
     classes() {
-      return classNames('mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50')
+      return classNames("mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50");
     }
 
     render() {

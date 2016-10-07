@@ -1,8 +1,7 @@
 
-import * as React from 'react';
-import { Link } from 'react-router';
+import * as React from "react";
 
-var LoginView = React.createClass({
+let LoginView = React.createClass({
     getInitialState: function() {
         return { loaded: false };
     },
