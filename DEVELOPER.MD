@@ -1,14 +1,14 @@
-n
+
 ## Getting Started
 
-Install typescript, typings, and gulp
-```bash
-$ npm install -g typescript typings gulp
-```
 Install dependencies
 ```bash
 $ npm install
 ```
+
+## IDE
+
+I recommend Atom
 
 ## Resources
 
@@ -54,3 +54,7 @@ $ typings install dt~react-mdl --global --save
 
 - [Mocha](http://mochajs.org/)
 - [Chai](http://chaijs.com/api/)
+
+## Found Issues
+
+Typings and the React/Redux ecosystem is in a bad state right now.  The biggest problem is redux has official typings __however__ they are not compatible with the dt typings for react-redux.  Instead you have to use the dt redux for everything to work.   See https://github.com/DefinitelyTyped/DefinitelyTyped/issues/9611   

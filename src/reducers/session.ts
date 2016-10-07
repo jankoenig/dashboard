@@ -1,23 +1,19 @@
-import { token } from "../auth";
-import { fromJS } from "immutable";
+
 import { User } from "../models/user";
 
-const INITIAL_STATE = fromJS({
-  token: token(),
-  user: {},
-  hasError: false,
-  isLoading: false,
-});
-
-export type SessionState = {
+export type Session = {
   token: string,
   user?: User,
   hasError: boolean,
   isLoading: boolean
 }
 
-function sessionReducer() {
+const INITIAL_STATE: Session = {
+  token: "myToken",
+  hasError: false,
+  isLoading: false
+};
+
+export function session() {
   return INITIAL_STATE;
 }
-
-export default sessionReducer;

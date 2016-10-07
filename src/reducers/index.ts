@@ -1,8 +1,15 @@
 import { combineReducers } from "redux";
-import session from "./session";
+import { Session, session } from "./session";
 
-const rootReducer = combineReducers({
-  session
+export namespace Store {
+  export type All = {
+    session: Session,
+    error: string,
+  }
+}
+
+const rootReducer = combineReducers<Store.All>({
+  session,
 });
 
 export default rootReducer;

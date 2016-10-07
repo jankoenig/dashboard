@@ -31,7 +31,6 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
   console.log("your token: ");
   console.log(token);
 
-
   console.log("nextState ");
   console.log(nextState);
 

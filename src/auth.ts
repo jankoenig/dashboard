@@ -1,17 +1,8 @@
-/**
- * Authentication lib
- * @type {Object}
- */
-export function token(): string | undefined {
-  console.log('checking token');
-  console.log(localStorage);
-  return localStorage.getItem('token');
-}
 
-export function login(username: string, password: string, callback:(sucess: boolean) => void) {
+export function login(username: string, password: string, callback: (sucess: boolean) => void) {
 
   if (username === password) {
-    localStorage.setItem('token', 'aaabbbccc');
+    localStorage.setItem("token", "aaabbbccc");
     callback(true);
   } else {
     callback(false);
