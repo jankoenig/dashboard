@@ -1,14 +1,57 @@
 
 ## Getting Started
 
-Install dependencies
+Install, you know the drill.
 ```bash
 $ npm install
 ```
 
+## Commands
+
+A complete list of all the scripts are found in the `package.json` file.
+
+To run tests:
+```bash
+$ npm test
+```
+
+To run code coverage:
+```bash
+$ npm run coverage
+```
+
+To run the example app:
+```bash
+$ npm start
+```
+
+To clean the generated files:
+```bash
+$ npm run clean
+```
+
 ## IDE
 
-I recommend Atom
+I recommend the [Atom](https://atom.io/) text editor.  It is free and with the community plugins you will get pretty close to the functionality of a full fledged IDE like WebStorm.
+
+### Atom Recommended Packages
+
+For TypeScript
+
+- atom-typescript
+- linter-tslint
+
+For React
+
+- react
+
+In General
+
+- terminal-plus
+- auto-update-packages
+- atom-beautify
+- editorconfig
+- file-type-icons
 
 ## Resources
 
