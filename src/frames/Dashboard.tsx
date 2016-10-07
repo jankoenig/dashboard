@@ -5,6 +5,7 @@ import Navigation from "../components/Navigation";
 import NavLink from "../components/NavLink";
 import Header from "../components/Header";
 import Layout from "../components/Layout";
+import Content from "../components/Content";
 
 export default class AppFrame extends React.Component<any, any> {
     render() {
@@ -17,9 +18,9 @@ export default class AppFrame extends React.Component<any, any> {
                       <NavLink path="/about" name="About" icon="info"/>
                     </Navigation>
                   </Drawer>
-                  <main className="mdl-layout__content mdl-color--grey-100">
+                  <Content>
                     { this.props.children }
-                  </main>
+                  </Content>
               </Layout>;
     }
 }
