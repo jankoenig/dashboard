@@ -12,7 +12,7 @@
     "test": "mocha src/**/*.test.js",
     "precoverage": "npm run pretest",
     "coverage": "istanbul cover --include-all-sources --root src/ -x \"**/*.test.js\" _mocha src/**/*.test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
-    "coveralls": "npm run coverage && coveralls < coverage/lcov-ts.info",
+    "coveralls": "npm run coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov-ts.info",
     "build": "webpack",
     "start": "node scripts/server.js"
   },
@@ -20,6 +20,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.14",
     "del": "^2.2.2",
     "istanbul": "^0.4.5",
     "mocha": "^3.0.2",
