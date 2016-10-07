@@ -10,10 +10,10 @@ import rootReducer from "./reducers";
 
 // Import our pages
 import Dashboard from "./frames/Dashboard";
-import HomeView from "./views/HomeView";
-import NotFoundView from "./views/NotFoundView";
-import AboutView from "./views/AboutView";
-import LoginView from "./views/LoginView";
+import HomeView from "./pages/HomeView";
+import NotFoundView from "./pages/NotFoundView";
+import AboutView from "./pages/AboutView";
+import LoginView from "./pages/LoginView";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
