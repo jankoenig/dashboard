@@ -55,7 +55,7 @@ In General
 
 ### Helpful Atom Commands
 
-- Properly indent files - control - alt (option) - l 
+- Properly indent files - control - alt (option) - l
 
 ## Resources
 
@@ -71,6 +71,10 @@ In General
 - [TypeScript](https://www.typescriptlang.org/docs/tutorial.html)
 - [Microsoft TypeScript Coding Guideline](https://github.com/Microsoft/TypeScript/wiki/Coding-guidelines)
 - [Interface Walkthrough](https://blogs.msdn.microsoft.com/typescript/2013/01/24/walkthrough-interfaces/)
+- [TypeScript, React and Redux](http://www.mattgreer.org/articles/typescript-react-and-redux/)
+- [React and Redux with TypeScript](http://jaysoo.ca/2015/09/26/typed-react-and-redux/)
+- [Typesafe Redux in TypeScript](http://michaellawrie.com/typesafe-redux-in-typescript)
+- [TypeScript and Async Redux Actions](https://rjzaworski.com/2016/09/typescript-redux-async-actions)
 
 ### Typings
 
@@ -86,6 +90,7 @@ $ typings install dt~react-mdl --global --save
 
 - [React](https://facebook.github.io/react/docs/getting-started.html)
 - [Login-Flow](https://github.com/mxstbr/login-flow)
+  - Great example of a login workflow with React
 - [Parse Dashboard](https://github.com/ParsePlatform/parse-dashboard)
 
 ### Redux
@@ -105,3 +110,20 @@ $ typings install dt~react-mdl --global --save
 ## Found Issues
 
 Typings and the React/Redux ecosystem is in a bad state right now.  The biggest problem is redux has official typings __however__ they are not compatible with the dt typings for react-redux.  Instead you have to use the dt redux for everything to work.   See https://github.com/DefinitelyTyped/DefinitelyTyped/issues/9611   
+
+## Work in Progress
+
+### CSS modules
+
+CSS Modules allow you to keep the style close to the views.  Some features of TypeScript 2.0 allow this to be possible.
+
+- [SO - Use CSS Modules in React Components With TypeScript](http://stackoverflow.com/questions/35014132/use-css-modules-in-react-components-with-typescript-built-by-webpack)
+- [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo)
+- [css-modules/webpack-demo question](https://github.com/css-modules/css-modules/issues/61)
+- [typed-css-modules](https://github.com/Quramy/typed-css-modules)
+- [typed-css-modules Issue 2 - Webpack Loader](https://github.com/Quramy/typed-css-modules/issues/2)
+- [typings-for-css-modules-loader](https://github.com/Jimdo/typings-for-css-modules-loader)
+- [TypeScript 2.0 - Wildcard Character in Module Names](https://www.typescriptlang.org/docs/release-notes/typescript-2.0.html#wildcard-character-in-module-names)
+- [TypeScript 2.0 - Shorthand Ambient Module Declarations](https://www.typescriptlang.org/docs/release-notes/typescript-2.0.html#shorthand-ambient-module-declarations)
+- [Related TypeScript Issue 6615](https://github.com/Microsoft/TypeScript/issues/6615)
+- [Related TypeScript Issue 2709](https://github.com/Microsoft/TypeScript/issues/2709)

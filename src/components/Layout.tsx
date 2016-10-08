@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as classNames from "classnames";
+import * as styles from "./Layout.css";
 
 export interface LayoutProps {
     drawer?: boolean;
@@ -10,6 +11,8 @@ export interface LayoutProps {
 export default class Layout extends React.Component<LayoutProps, any> {
 
     classes() {
+      console.log("styles");
+      console.log(styles);
         return classNames("mdl-layout mdl-js-layout", {
             "mdl-layout--fixed-drawer": this.props.drawer,
             "mdl-layout--fixed-header": this.props.header
