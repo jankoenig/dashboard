@@ -12,7 +12,7 @@ export default class Navigation extends React.Component<any, any> {
 
   render() {
     return <nav className={ this.classes() }>
-    { this.props.children }
-    </nav>;
+             { this.props.children }
+           </nav>;
   }
 }

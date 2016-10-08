@@ -1,5 +1,5 @@
-
 import * as React from "react";
+
 import Drawer from "../components/Drawer";
 import Navigation from "../components/Navigation";
 import NavLink from "../components/NavLink";
@@ -9,7 +9,7 @@ import Content from "../components/Content";
 
 export default class AppFrame extends React.Component<any, any> {
     render() {
-        return <Layout>
+        return <Layout drawer={ true }>
                   <Header title="Title" />
                   <Drawer title="You Know">
                     <Navigation>

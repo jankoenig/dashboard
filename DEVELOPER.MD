@@ -53,6 +53,10 @@ In General
 - editorconfig
 - file-type-icons
 
+### Helpful Atom Commands
+
+- Properly indent files - control - alt (option) - l 
+
 ## Resources
 
 - [TypeScript: React & Webpack](https://www.typescriptlang.org/docs/handbook/react-&-webpack.html)
