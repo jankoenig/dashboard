@@ -20,10 +20,6 @@
             "check-open-brace",
             "check-whitespace"
         ],
-        "quotemark": [
-            true,
-            "double"
-        ],
         "semicolon": [
             true,
             "always"

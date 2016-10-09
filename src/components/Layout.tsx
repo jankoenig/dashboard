@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as classNames from "classnames";
-import * as styles from "./Layout.css";
+import styles from "./Layout.css";
 
 export interface LayoutProps {
     drawer?: boolean;
