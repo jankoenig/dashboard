@@ -32,9 +32,11 @@ $ npm run clean
 
 ## IDE
 
-I recommend the [Atom](https://atom.io/) text editor.  It is free and with the community plugins you will get pretty close to the functionality of a full fledged IDE like WebStorm.
+The two recommended IDEs are either [Atom](https://atom.io/) or [VSCode](https://code.visualstudio.com/download).  Both are free and with community plugins you will get pretty close to the functionality of a full fledged IDE like WebStorm.
 
-### Atom Recommended Packages
+### Atom 
+
+#### Atom Recommended Packages
 
 For TypeScript
 
@@ -53,9 +55,18 @@ In General
 - editorconfig
 - file-type-icons
 
-### Helpful Atom Commands
+#### Helpful Commands
 
-- Properly indent files - control - alt (option) - l
+- Properly indent files --> control & alt (option) * l
+
+### VSCode
+
+Visual Studio Code already comes with all the necessary plugins for TypeScript.
+
+#### Helpful Commands 
+
+- Toggle the integrated terminal --> control & ` 
+- Format Code (that is in focus) --> alt & shift & f
 
 ## Resources
 
