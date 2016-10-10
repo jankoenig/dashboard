@@ -105,7 +105,11 @@ $ typings install dt~react-mdl --global --save
 ### Writing Tests
 
 - [Mocha](http://mochajs.org/)
+  - Testing Framework
 - [Chai](http://chaijs.com/api/)
+  - BDD Framework, provides the `expect`
+
+- [Typescript Mocha Webpack Demo](https://github.com/vintem/TypescriptMochaWebpackDemo)
 
 ## Found Issues
 
