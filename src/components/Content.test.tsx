@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
 import { expect } from "chai";
+
 import Content from "./Content";
 
 describe("Content", () => {
