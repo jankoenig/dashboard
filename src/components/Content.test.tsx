@@ -6,12 +6,12 @@ import Content from "./Content";
 describe("Content", () => {
     let renderer: React.ShallowRenderer;
 
-    beforeEach(() => {
+    beforeEach(function () {
         renderer = TestUtils.createRenderer();
         renderer.render(<Content />);
     });
 
-    it("should render correctly", () => {
+    it("should render correctly", function () {
         const result = renderer.getRenderOutput();
         expect(result.type).to.equal("main");
     });
