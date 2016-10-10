@@ -6,7 +6,7 @@ import Content from "../components/Content";
 export default class Login extends React.Component<any, any> {
     render() {
         return (
-            <Layout center={true}>
+            <Layout>
                 <Content>
                     {this.props.children}
                 </Content>

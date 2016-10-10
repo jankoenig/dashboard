@@ -4,7 +4,7 @@ import { expect } from "chai";
 import Layout from "./Layout";
 import Drawer from "./Drawer";
 
-describe("Layout", () => {
+describe("Layout", function() {
     let renderer: React.ShallowRenderer;
 
     beforeEach(() => {
@@ -43,10 +43,7 @@ describe("Layout", () => {
         beforeEach(() => {
             renderer = TestUtils.createRenderer();
             renderer.render(
-                <Layout drawer={true}>
-                    <h2>Header</h2>
-                    <Drawer title="Drawer"/>
-                </Layout>
+                <Layout drawer={true} />
             );
         });
 

@@ -4,7 +4,6 @@ import * as classNames from "classnames";
 export interface LayoutProps {
     drawer?: boolean;
     header?: boolean;
-    center?: boolean;
 };
 
 export default class Layout extends React.Component<LayoutProps, any> {

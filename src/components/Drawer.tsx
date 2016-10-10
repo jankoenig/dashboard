@@ -6,19 +6,16 @@ export interface DrawerProps {
 }
 
 export default class Drawer extends React.Component<DrawerProps, any> {
-    constructor(props: DrawerProps) {
-        super(props);
-    }
 
     classes() {
-      return classNames("mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50");
+        return classNames("mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50");
     }
 
     render() {
-        return <div className={ this.classes() }>
-
-        { this.props.title ? <header className="mdl-layout-title">{ this.props.title }</header> : null  }
-        { this.props.children }
-      </div>;
+        return (
+            <div className={this.classes()}>
+                {this.props.title ? <header className="mdl-layout-title">{this.props.title}</header> : null}
+                {this.props.children}
+            </div>);
     }
 }
