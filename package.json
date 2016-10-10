@@ -1,6 +1,6 @@
 {
   "name": "dashboard",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "bespoken dashboard",
   "repository": "https://github.com/bespoken/bespoken-dashboard",
   "main": "./dist/bundle.js",
