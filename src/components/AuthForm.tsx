@@ -7,7 +7,8 @@ export interface AuthFormProps {
 export default class AuthForm extends React.Component<AuthFormProps, any> {
 
     render() {
-        return <div className="mdl-card__supporting-text">
+        return (
+          <div className="mdl-card__supporting-text">
             <form action="#">
                 <div className="mdl-textfield mdl-js-textfield">
                     <input className="mdl-textfield__input" type="text" id="email" />
@@ -28,6 +29,6 @@ export default class AuthForm extends React.Component<AuthFormProps, any> {
             <div className="mdl-card__actions mdl-card--border">
                 <button className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Log in</button>
             </div>
-        </div>;
+        </div>);
     }
 }
