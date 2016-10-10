@@ -35,7 +35,7 @@ describe("Layout", function() {
         it("should render the children", function() {
           const result = renderer.getRenderOutput();
           expect(result.type).to.equal("div");
-          // TODO: Write this test.
+          expect(React.Children.toArray(result.props.children).length).to.equal(2);
         });
     });
 
