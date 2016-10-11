@@ -11,6 +11,7 @@ import rootReducer from "./reducers";
 // Import our pages
 import Dashboard from "./frames/Dashboard";
 import HomeView from "./pages/HomeView";
+import CounterPage from "./pages/CounterPage";
 import NotFoundView from "./pages/NotFoundView";
 import AboutView from "./pages/AboutView";
 
@@ -76,6 +77,7 @@ ReactDOM.render(
             <Route path="/" component={Dashboard} onEnter={checkAuth}>
                 <IndexRoute component={HomeView}/>
                 <Route path="about" component={AboutView}/>
+                <Route path="counter" component={CounterPage}/>
                 <Route path="*" component={NotFoundView} />
             </Route>
         </Router>
