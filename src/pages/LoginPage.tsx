@@ -1,34 +1,46 @@
-
+﻿
 import * as React from "react";
-// import { connect } from "react-redux";
+import { connect } from "react-redux";
 
+import { changeForm } from "../actions/authForm";
 import Card from "../components/Card";
 import { Grid, Cell } from "../components/Grid";
 import AuthForm from "../components/AuthForm";
 
-
-interface LoginPageProps extends React.Props<any> {
+interface Props extends React.Props<any> {
     email: string;
     password: string;
-    error?: string;
-    loginUser: () => void;
-}
-/*
+    changeForm: (field: string, value: string) => void;
+};
+
 function mapStateToProps(state: any) {
     return {
-        email: state.session.email,
-        password: state.session.password,
-        error: state.sesison.error
+        email: state.form.email,
+        password: state.form.password
     };
 }
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        loginUser: (): void => dispatch(login())
+        changeForm: (field: string, value: string): void => dispatch(changeForm(field, value))
     };
-} */
+}
 
-export default class LoginPage extends React.Component<LoginPageProps, any> {
+class LoginPage extends React.Component<Props, any> {
+
+    handleFormChanged(event: React.FormEvent) {
+        // Need to cast in order to get to value and name 
+        // See http://stackoverflow.com/a/39214607/1349766
+        let target = event.target as HTMLSelectElement;
+        this.props.changeForm(target.id, target.value);
+    }
+
+    handleFormSubmit(event: React.FormEvent) {
+        event.preventDefault();
+        console.log("form submit");
+        console.log(this.props.email);
+        console.log(this.props.password);
+    }
 
     render() {
         return (
@@ -37,9 +49,11 @@ export default class LoginPage extends React.Component<LoginPageProps, any> {
                 <Cell col={4} align={"middle"}>
                     <Card>
                         <AuthForm
-                            onSubmit={ this.props.loginUser }
-                            email={this.props.email}
-                            error={this.props.error} />
+                            email={ this.props.email }
+                            password= { this.props.password }
+                            onSubmit= { this.handleFormSubmit.bind(this) }
+                            onChange= { this.handleFormChanged.bind(this) }
+                            />
                     </Card>
                 </Cell>
                 <Cell col={4} />
@@ -48,7 +62,7 @@ export default class LoginPage extends React.Component<LoginPageProps, any> {
     }
 };
 
-/*export default connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(LoginPage); */
+)(LoginPage);
