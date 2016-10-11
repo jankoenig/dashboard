@@ -2,6 +2,7 @@
   "globalDependencies": {
     "chai": "registry:dt/chai#3.4.0+20160601211834",
     "classnames": "registry:dt/classnames#0.0.0+20160316155526",
+    "enzyme": "registry:dt/enzyme#2.4.1+20161004164857",
     "mocha": "registry:dt/mocha#2.2.5+20160720003353",
     "react": "registry:dt/react#0.14.0+20160927082313",
     "react-addons-create-fragment": "registry:dt/react-addons-create-fragment#0.14.0+20160709044614",

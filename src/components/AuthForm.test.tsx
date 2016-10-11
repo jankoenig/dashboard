@@ -30,8 +30,8 @@ describe("AuthForm", () => {
                 let childElement: React.ReactElement<any> = child as React.ReactElement<any>;
 
                 if (childElement.type === "form") {
-                    // The 'form' child should have three children
-                    expect(childElement.props.children.length).to.equal(3);
+                    // The 'form' child should have four children instead of three
+                    expect(childElement.props.children.length).to.equal(4);
                 }
             }
         });
