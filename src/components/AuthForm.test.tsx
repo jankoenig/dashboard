@@ -9,7 +9,7 @@ describe("AuthForm", () => {
 
     beforeEach(function () {
         renderer = TestUtils.createRenderer();
-        renderer.render(<AuthForm />);
+        renderer.render(<AuthForm onSubmit={ function() { } } />);
     });
 
     it("should render correctly", function () {
@@ -20,7 +20,7 @@ describe("AuthForm", () => {
     describe("with signup", function () {
         beforeEach(function () {
             renderer = TestUtils.createRenderer();
-            renderer.render(<AuthForm signup={true} />);
+            renderer.render(<AuthForm onSubmit={ function() { } } />);
         });
         it("should include the verify password input", function () {
             const result = renderer.getRenderOutput();

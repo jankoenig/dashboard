@@ -1,13 +1,12 @@
 ﻿
 import * as React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router";
 
 import { increment, decrement } from '../actions/counter';
 import Hello from "../components/Hello";
 import Counter from "../components/Counter";
 
-interface ICounterPageProps extends React.Props<any> {
+interface CounterPageProps extends React.Props<any> {
     counter: number;
     increaseCounter: () => void;
     decreaseCounter: () => void;
@@ -28,14 +27,13 @@ function mapDispatchToProps(dispatch: any) {
     };
 }
 
-class HomeView extends React.Component<ICounterPageProps, any> {
+class HomeView extends React.Component<CounterPageProps, any> {
 
     render() {
         return (
             <div>
                 <h2>Home</h2>
                 <Hello name="world" />
-                <div><Link to="/about">About</Link></div>
                 <Counter
                     counter={this.props.counter}
                     increment={this.props.increaseCounter}

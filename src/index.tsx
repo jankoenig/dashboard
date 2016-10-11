@@ -15,7 +15,8 @@ import NotFoundView from "./pages/NotFoundView";
 import AboutView from "./pages/AboutView";
 
 import Login from "./frames/Login";
-import LoginPage from "./pages/LoginPage";
+// import LoginPage from "./pages/LoginPage";
+import LoginView from "./pages/LoginView";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
@@ -70,7 +71,7 @@ ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/login" component={Login}>
-                <IndexRoute component={LoginPage} />
+                <IndexRoute component={LoginView} />
             </Route>
             <Route path="/" component={Dashboard} onEnter={checkAuth}>
                 <IndexRoute component={HomeView}/>

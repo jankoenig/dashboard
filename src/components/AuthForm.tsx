@@ -1,49 +1,34 @@
 import * as React from "react";
 
-import { login } from "../actions/session";
 import { FormState, form } from "../reducers/form";
 
 export interface AuthFormProps {
-    signup?: boolean;
+    email?: string;
+    password?: string;
+    error?: string;
+    onChange?: (event: React.FormEvent) => any;
+    onSubmit: (event: React.FormEvent) => void;
 }
 
 export default class AuthForm extends React.Component<AuthFormProps, FormState> {
 
-    constructor(props: any) {
-        console.log("constructing AuthForm");
+    constructor(props: AuthFormProps) {
         super(props);
-    }
-
-    handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        console.log("onSubmit");
-        console.log(e);
-        login();
-        // this.props.dispatch(login({email: "hi", password: "pass"}));
     }
 
     render() {
         return (
             <div className="mdl-card__supporting-text">
-                <form onSubmit={e => this.handleSubmit(e)}>
+                <form id="auth" onSubmit={this.props.onSubmit}>
                     <div className="mdl-textfield mdl-js-textfield">
-                        <input className="mdl-textfield__input" type="text" id="email" />
-                        <label className="mdl-textfield__label" for="email">username</label>
+                        <input className="mdl-textfield__input" type="text" id="email" value={ this.props.email } onChange={ this.props.onChange } />
+                        <label className="mdl-textfield__label" for="email">email</label>
                     </div>
                     <div className="mdl-textfield mdl-js-textfield">
-                        <input className="mdl-textfield__input" type="password" id="password" />
+                        <input className="mdl-textfield__input" type="password" id="password" value={ this.props.password } onChange={ this.props.onChange } />
                         <label className="mdl-textfield__label" for="password">password</label>
                     </div>
-                    {this.props.signup ? (
-                        <div className="mdl-textfield mdl-js-textfield">
-                            <input className="mdl-textfield__input" type="password" id="verifyPassword" />
-                            <label className="mdl-textfield__label" for="password">verify password</label>
-                        </div>
-                    ) : null
-                    }
-                    <div className="mdl-card__actions">
-                        <button className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Log in</button>
-                    </div>
+                    <input type="submit" value="Submit"/>
                 </form>
             </div>);
     }
