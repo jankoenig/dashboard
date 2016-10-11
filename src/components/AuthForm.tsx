@@ -19,7 +19,7 @@ export default class AuthForm extends React.Component<AuthFormProps, FormState> 
     render() {
         return (
             <div className="mdl-card__supporting-text">
-                <form id="auth" onSubmit={this.props.onSubmit}>
+                <form id="auth">
                     <div className="mdl-textfield mdl-js-textfield">
                         <input className="mdl-textfield__input" type="text" id="email" value={ this.props.email } onChange={ this.props.onChange } />
                         <label className="mdl-textfield__label" for="email">email</label>
@@ -28,8 +28,11 @@ export default class AuthForm extends React.Component<AuthFormProps, FormState> 
                         <input className="mdl-textfield__input" type="password" id="password" value={ this.props.password } onChange={ this.props.onChange } />
                         <label className="mdl-textfield__label" for="password">password</label>
                     </div>
-                    <input type="submit" value="Submit"/>
                 </form>
+                <div className="mdl-card__actions mdl-card--border">
+                    {/* I could not get the <form onSubmit> to work, had to use onClick */}
+                    <button className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" onClick={ this.props.onSubmit }>Log in</button>
+                </div>
             </div>);
     }
 }

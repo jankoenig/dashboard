@@ -6,8 +6,8 @@ export type FormState = {
 }
 
 const INITIAL_STATE: FormState = {
-    email: "initial email",
-    password: "initial password"
+    email: "",
+    password: ""
 };
 
 export function form(state: FormState = INITIAL_STATE, action: any = { type: ''}) {

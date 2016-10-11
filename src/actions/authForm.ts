@@ -8,3 +8,8 @@ export function changeForm(formState: FormState) {
         password: formState.password
     };
 }
+
+export function login(formState: FormState) {
+    console.log("login");
+    console.log(formState);
+}
