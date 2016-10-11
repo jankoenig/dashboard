@@ -1,15 +1,15 @@
 import {CHANGE_FORM} from "../constants";
-import { FormState } from "../reducers/form";
 
-export function changeForm(formState: FormState) {
+export function changeForm(field: string, value: string) {
     return {
         type: CHANGE_FORM,
-        email: formState.email,
-        password: formState.password
+        field: field,
+        value: value
     };
 }
 
-export function login(formState: FormState) {
+export function login(email: string, password: string) {
     console.log("login");
-    console.log(formState);
+    console.log(email);
+    console.log(password);
 }

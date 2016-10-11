@@ -6,12 +6,11 @@ import { changeForm } from "../actions/authForm";
 import Card from "../components/Card";
 import { Grid, Cell } from "../components/Grid";
 import AuthForm from "../components/AuthForm";
-import { FormState } from "../reducers/form"; // Not sure if I like this pattern yet
 
 interface Props extends React.Props<any> {
     email: string;
     password: string;
-    changeForm: (state: FormState) => void;
+    changeForm: (field: string, value: string) => void;
 };
 
 function mapStateToProps(state: any) {
@@ -23,7 +22,7 @@ function mapStateToProps(state: any) {
 
 function mapDispatchToProps(dispatch: any) {
     return {
-        changeForm: (formState: FormState): void => dispatch(changeForm(formState))
+        changeForm: (field: string, value: string): void => dispatch(changeForm(field, value))
     };
 }
 
@@ -33,8 +32,7 @@ class HomeView extends React.Component<Props, any> {
         // Need to cast in order to get to value and name 
         // See http://stackoverflow.com/a/39214607/1349766
         let target = event.target as HTMLSelectElement;
-        let formState: FormState = { [target.id]: target.value };
-        this.props.changeForm(formState);
+        this.props.changeForm(target.id, target.value);
     }
 
     handleFormSubmit(event: React.FormEvent) {

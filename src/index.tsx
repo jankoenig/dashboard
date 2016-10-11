@@ -26,10 +26,10 @@ const store = createStoreWithMiddleware(rootReducer);
 console.log("store");
 console.log(store);
 
-store.subscribe(() => {
+/* store.subscribe(() => {
     console.log("subscribe listener");
     console.log(store.getState());
-});
+}); */
 
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
     let { token } = store.getState().session;
