@@ -1,5 +1,6 @@
 import { SENDING_REQUEST, SET_AUTH } from "../constants";
 import { browserHistory } from 'react-router';
+import { login } from "../services/auth";
 
 export function sendingRequest(sending: boolean) {
   return {
@@ -22,13 +23,13 @@ export function loginAsync(email: string, password: string) {
     console.log(dispatch);
     dispatch(sendingRequest(true));
 
-    setTimeout(() => {
-      if (email === password) {
-        dispatch(setAuthToken("token"));
-        browserHistory.push("/");
-      } else {
-        dispatch(setAuthToken());
-      }
-    }, 1000);
+    login(email, password, (success) => {
+
+        dispatch(sendingRequest(false));
+
+        if (success) {
+          browserHistory.push("/");
+        }
+    });
   };
 }

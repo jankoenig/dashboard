@@ -86,6 +86,7 @@ Visual Studio Code already comes with all the necessary plugins for TypeScript.
 - [React and Redux with TypeScript](http://jaysoo.ca/2015/09/26/typed-react-and-redux/)
 - [Typesafe Redux in TypeScript](http://michaellawrie.com/typesafe-redux-in-typescript)
 - [TypeScript and Async Redux Actions](https://rjzaworski.com/2016/09/typescript-redux-async-actions)
+- [React TypeScript Samples](https://github.com/Lemoncode/react-typescript-samples)
 
 ### Typings
 

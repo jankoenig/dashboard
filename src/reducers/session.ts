@@ -15,9 +15,9 @@ const INITIAL_STATE: SessionState = {
 };
 
 export function session(state: SessionState = INITIAL_STATE, action: any = { type: ''}) {
-  console.log("session reducer");
-  console.log(action);
-  console.log(state);
+  // console.log("session reducer");
+  // console.log(action);
+  // console.log(state);
 
   switch (action.type) {
     case SET_AUTH:

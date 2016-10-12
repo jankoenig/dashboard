@@ -18,6 +18,8 @@ import AboutView from "./pages/AboutView";
 import Login from "./frames/Login";
 import LoginPage from "./pages/LoginPage";
 
+import { loggedIn } from "./services/auth";
+
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
@@ -36,8 +38,8 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
 
     console.log("checking auth");
     console.log(store.getState());
-    console.log("your token: ");
-    console.log(token);
+    console.log("loggedIn() ?");
+    console.log(loggedIn());
     console.log("nextState ");
     console.log(nextState);
 
@@ -48,7 +50,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
     // that way we can apply specific logic
     // to display/render the path we want to
     if (nextState.location.pathname !== "/") {
-        if (token) {
+        if (loggedIn()) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
@@ -57,7 +59,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
         }
     } else {
         // If the user is already logged in, forward them to the homepage
-        if (!token) {
+        if (!loggedIn()) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
