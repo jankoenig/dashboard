@@ -2,8 +2,8 @@ import { CHANGE_FORM } from "../constants";
 import * as objectAssign from "object-assign";
 
 export type FormState = {
-    email?: string;
-    password?: string;
+    readonly email?: string;
+    readonly password?: string;
 }
 
 const INITIAL_STATE: FormState = {
@@ -12,9 +12,9 @@ const INITIAL_STATE: FormState = {
 };
 
 export function form(state: FormState = INITIAL_STATE, action: any = { type: ''}) {
-    console.log("form reducer");
-    console.log(action);
-    console.log(state);
+    // console.log("form reducer");
+    // console.log(action);
+    // console.log(state);
     switch (action.type) {
 
         case CHANGE_FORM:
