@@ -12,11 +12,8 @@ const INITIAL_STATE: FormState = {
 };
 
 export function form(state: FormState = INITIAL_STATE, action: any = { type: ''}) {
-    // console.log("form reducer");
-    // console.log(action);
-    // console.log(state);
-    switch (action.type) {
 
+    switch (action.type) {
         case CHANGE_FORM:
             let newFormState: FormState = objectAssign({}, state, {[action.field]: action.value});
             return newFormState;

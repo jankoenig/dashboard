@@ -1,4 +1,5 @@
 import * as React from "react";
+import { connect } from "react-redux";
 
 import Drawer from "../components/Drawer";
 import Navigation from "../components/Navigation";
@@ -6,8 +7,28 @@ import NavLink from "../components/NavLink";
 import Header from "../components/Header";
 import Layout from "../components/Layout";
 import Content from "../components/Content";
+import UserControl from "../components/UserControl";
 
-export default class AppFrame extends React.Component<any, any> {
+import { Store } from "../reducers";
+import User from "../models/user";
+
+interface DashboardProps {
+  user?: User;
+}
+
+function mapStateToProps(state: Store.All) {
+  return {
+    user: state.session.user
+  };
+}
+
+function mapDispatchToProps(dispatch: any) {
+  return {
+
+  };
+}
+
+class Dashboard extends React.Component<any, any> {
     render() {
         return <Layout drawer={ true }>
                   <Header title="Title" />
@@ -17,6 +38,7 @@ export default class AppFrame extends React.Component<any, any> {
                       <NavLink path="/logs" name="Logs" icon="subject"/>
                       <NavLink path="/about" name="About" icon="info"/>
                     </Navigation>
+                    <UserControl />
                   </Drawer>
                   <Content>
                     { this.props.children }
@@ -24,3 +46,8 @@ export default class AppFrame extends React.Component<any, any> {
               </Layout>;
     }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Dashboard);

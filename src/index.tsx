@@ -2,7 +2,8 @@
 // Import third-party libraries
 
 import * as ReactDOM from "react-dom";
-import { Route, IndexRoute, Router, browserHistory, EnterHook, RouterState, RedirectFunction } from "react-router";
+import { Route, IndexRoute, Router, useRouterHistory, EnterHook, RouterState, RedirectFunction } from "react-router";
+import { createHistory } from "history";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
@@ -14,11 +15,10 @@ import HomeView from "./pages/HomeView";
 import CounterPage from "./pages/CounterPage";
 import NotFoundView from "./pages/NotFoundView";
 import AboutView from "./pages/AboutView";
-
 import Login from "./frames/Login";
 import LoginPage from "./pages/LoginPage";
 
-import { loggedIn } from "./services/auth";
+import auth  from "./services/auth";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
@@ -33,13 +33,17 @@ console.log(store);
     console.log(store.getState());
 }); */
 
+// Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
+const browserHistory = useRouterHistory(createHistory)({
+    basename: '/dashboard'
+});
+
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
-    let { token } = store.getState().session;
 
     console.log("checking auth");
     console.log(store.getState());
     console.log("loggedIn() ?");
-    console.log(loggedIn());
+    console.log(auth.loggedIn());
     console.log("nextState ");
     console.log(nextState);
 
@@ -50,7 +54,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
     // that way we can apply specific logic
     // to display/render the path we want to
     if (nextState.location.pathname !== "/") {
-        if (loggedIn()) {
+        if (auth.loggedIn()) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
@@ -59,7 +63,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
         }
     } else {
         // If the user is already logged in, forward them to the homepage
-        if (!loggedIn()) {
+        if (!auth.loggedIn()) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {

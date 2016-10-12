@@ -1,9 +1,8 @@
-import { SET_AUTH } from "../constants";
-import { User } from "../models/user";
+import { SET_AUTH, SET_USER } from "../constants";
+import User  from "../models/user";
 import * as objectAssign from "object-assign";
 
 export type SessionState = {
-  token?: string,
   user?: User,
   hasError: boolean,
   isLoading: boolean
@@ -11,20 +10,21 @@ export type SessionState = {
 
 const INITIAL_STATE: SessionState = {
   hasError: false,
-  isLoading: false
+  isLoading: false,
 };
 
 export function session(state: SessionState = INITIAL_STATE, action: any = { type: ''}) {
-  // console.log("session reducer");
-  // console.log(action);
-  // console.log(state);
-
+  console.log("session reducer");
+  console.log(state);
+  console.log(action);
   switch (action.type) {
+    case SET_USER:
+      let userSessionState: SessionState = objectAssign({}, state, {user: action.user});
+      console.log(userSessionState);
+      return userSessionState;
     case SET_AUTH:
       let newSessionState: SessionState = objectAssign({}, state, action);
-      console.log(newSessionState);
       return newSessionState;
-
     default:
       return state;
   }

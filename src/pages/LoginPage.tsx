@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
-import { loginAsync } from "../actions/session";
+import { login } from "../actions/session";
 import Card from "../components/Card";
 import { Grid, Cell } from "../components/Grid";
 import AuthForm from "../components/AuthForm";
@@ -27,7 +27,7 @@ function mapStateToProps(state: any) {
 function mapDispatchToProps(dispatch: any) {
     return {
         changeForm: (field: string, value: string): void => dispatch(changeForm(field, value)),
-        login: (email: string, password: string) => { return dispatch(loginAsync(email, password)); }
+        login: (email: string, password: string) => { return dispatch(login(email, password)); }
     };
 }
 

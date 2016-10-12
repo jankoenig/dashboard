@@ -3,7 +3,7 @@ export interface UserProperties {
   email: string;
 }
 
-export class User implements UserProperties {
+class User implements UserProperties {
 
   email: string;
 
@@ -12,3 +12,5 @@ export class User implements UserProperties {
   }
 
 }
+
+export default User;

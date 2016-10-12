@@ -1,6 +1,7 @@
-import { SENDING_REQUEST, SET_AUTH } from "../constants";
+import { SENDING_REQUEST, SET_AUTH, SET_USER } from "../constants";
 import { browserHistory } from 'react-router';
-import { login } from "../services/auth";
+import User from "../models/user";
+import auth from "../services/auth";
 
 export function sendingRequest(sending: boolean) {
   return {
@@ -16,20 +17,33 @@ export function setAuthToken(token?: string) {
   };
 }
 
-export function loginAsync(email: string, password: string) {
-  console.log("loginAsync outside");
+export function setUser(email: string) {
+  return {
+    type: SET_USER,
+    user: new User({email: email})
+  };
+}
+
+export function login(email: string, password: string) {
+
   return function (dispatch: Redux.Dispatch<any>) {
-    console.log("loginAsync");
-    console.log(dispatch);
+
     dispatch(sendingRequest(true));
 
-    login(email, password, (success) => {
+    auth.login(email, password, (success) => {
 
         dispatch(sendingRequest(false));
+        dispatch(setUser(email));
 
         if (success) {
           browserHistory.push("/");
         }
     });
   };
+}
+
+export function logout() {
+  console.log("log out");
+  auth.logout();
+  browserHistory.push("/login");
 }

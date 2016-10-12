@@ -11,10 +11,10 @@ var server = new WebpackDevServer(webpack(config), { // Start a server
   inline: false,
   historyApiFallback: true,
   quiet: true // Without logging
-}).listen(4000, 'localhost', function (err, result) {
+}).listen(5000, 'localhost', function (err, result) {
   if (err) {
     console.log(err);
   }
 
-  console.log('Listening at localhost:4000');
+  console.log('Listening at localhost:5000');
 });
