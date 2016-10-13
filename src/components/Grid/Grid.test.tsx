@@ -1,6 +1,6 @@
+import { expect } from "chai";
 import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
-import { expect } from "chai";
 
 import Grid from "./Grid";
 
