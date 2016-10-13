@@ -27,8 +27,12 @@ function mapStateToProps(state: Store.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        changeForm: (field: string, value: string): any => dispatch(changeForm(field, value)),
-        login: (email: string, password: string) => { return dispatch(login(email, password)); }
+        changeForm: function(field: string, value: string) {
+            dispatch(changeForm(field, value));
+        } ,
+        login: function(email: string, password: string) {
+            return dispatch(login(email, password));
+        }
     };
 }
 
