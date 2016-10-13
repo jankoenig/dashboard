@@ -18,10 +18,10 @@ export function setAuthToken(token?: string) {
   };
 }
 
-export function setUser(email: string) {
+export function setUser(user: User) {
   return {
     type: SET_USER,
-    user: new User({ email: email })
+    user: user
   };
 }
 
@@ -34,7 +34,7 @@ export function login(email: string, password: string) {
     auth.login(email, password, (success) => {
 
       dispatch(sendingRequest(false));
-      dispatch(setUser(email));
+      dispatch(setUser(auth.user()));
 
       if (success) {
         dispatch(push("/"));

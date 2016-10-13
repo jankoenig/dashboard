@@ -1,14 +1,18 @@
 
 export interface UserProperties {
   email: string;
+  token: string;
 }
 
 class User implements UserProperties {
 
-  email: string;
+  readonly email: string;
 
-  constructor(props?: UserProperties) {
+  readonly token: string;
+
+  constructor(props: UserProperties) {
     this.email = props.email;
+    this.token = props.token;
   }
 
 }
