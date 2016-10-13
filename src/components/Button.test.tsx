@@ -12,7 +12,7 @@ import Button from "./Button";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("Button Component", () => {
+describe("Button Component", function() {
   it("should create a button with a default type and classes", () => {
     const wrapper = shallow(<Button>OK</Button>);
     const button = wrapper.find("button");
@@ -31,14 +31,14 @@ describe("Button Component", () => {
     expect(button.hasClass("mdl-button")).to.equal(true);
   });
 
-  it("should create a submit button", () => {
+  it("should create a submit button", function() {
     const wrapper = shallow(<Button type="submit">Submit</Button>);
     const button = wrapper.find("button");
 
     expect(button.prop("type")).to.equal("submit");
   });
 
-  it("should respond to click events", () => {
+  it("should respond to click events", function() {
     const onButtonClick = sinon.spy();
 
     const wrapper = shallow(<Button onClick={onButtonClick} />);
