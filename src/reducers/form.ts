@@ -4,6 +4,7 @@ import * as objectAssign from "object-assign";
 export type FormState = {
     readonly email?: string;
     readonly password?: string;
+    readonly error?: string;
 }
 
 const INITIAL_STATE: FormState = {

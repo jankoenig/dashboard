@@ -7,8 +7,9 @@ import { login } from "../actions/session";
 import Card from "../components/Card";
 import { Grid, Cell } from "../components/Grid";
 import AuthForm from "../components/AuthForm";
+import { Store } from "../reducers";
 
-interface Props {
+interface LoginPageProps {
     email: string;
     password: string;
     error: string;
@@ -16,7 +17,7 @@ interface Props {
     login: (email: string, password: string) => (dispatch: Redux.Dispatch<any>) => void;
 };
 
-function mapStateToProps(state: any) {
+function mapStateToProps(state: Store.All) {
     return {
         email: state.form.email,
         password: state.form.password,
@@ -24,14 +25,14 @@ function mapStateToProps(state: any) {
     };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        changeForm: (field: string, value: string): void => dispatch(changeForm(field, value)),
+        changeForm: (field: string, value: string): any => dispatch(changeForm(field, value)),
         login: (email: string, password: string) => { return dispatch(login(email, password)); }
     };
 }
 
-class LoginPage extends React.Component<Props, any> {
+class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormChanged(event: React.FormEvent) {
         // Need to cast in order to get to id and value 
@@ -53,9 +54,9 @@ class LoginPage extends React.Component<Props, any> {
                     <Card>
                         <AuthForm
                             email={ this.props.email }
-                            password= { this.props.password }
-                            onSubmit= { this.handleFormSubmit.bind(this) }
-                            onChange= { this.handleFormChanged.bind(this) }
+                            password={ this.props.password }
+                            onSubmit={ this.handleFormSubmit.bind(this) }
+                            onChange={ this.handleFormChanged.bind(this) }
                             />
                     </Card>
                 </Cell>

@@ -20,7 +20,7 @@ export function setAuthToken(token?: string) {
 export function setUser(email: string) {
   return {
     type: SET_USER,
-    user: new User({email: email})
+    user: new User({ email: email })
   };
 }
 
@@ -32,18 +32,20 @@ export function login(email: string, password: string) {
 
     auth.login(email, password, (success) => {
 
-        dispatch(sendingRequest(false));
-        dispatch(setUser(email));
+      dispatch(sendingRequest(false));
+      dispatch(setUser(email));
 
-        if (success) {
-          dispatch(push("/"));
-        }
+      if (success) {
+        dispatch(push("/"));
+      }
     });
   };
 }
 
 export function logout() {
-  console.log("log out");
-  auth.logout();
-  // browserHistory.push("/login");
+  return function (dispatch: Redux.Dispatch<any>) {
+    console.log("log out");
+    auth.logout();
+    dispatch(push("/"));
+  };
 }
