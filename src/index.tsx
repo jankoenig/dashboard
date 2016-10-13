@@ -81,7 +81,7 @@ ReactDOM.render(
                 <IndexRoute component={LoginPage} />
             </Route>
             <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                <IndexRoute component={HomeView}/>
+                <IndexRoute component={HomeView} />
                 <Route path="about" component={AboutView}/>
                 <Route path="counter" component={CounterPage}/>
                 <Route path="*" component={NotFoundView} />

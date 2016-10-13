@@ -17,7 +17,7 @@ import User from "../models/user";
 interface DashboardProps {
   user?: User;
   login: () => void;
-  // logout: () => (dispatch: Redux.Dispatch<any>) => void;
+  logout: () => (dispatch: Redux.Dispatch<any>) => void;
 }
 
 function mapStateToProps(state: Store.All) {
@@ -30,6 +30,9 @@ function mapDispatchToProps(dispatch: any) {
   return {
     login: function() {
       dispatch(push("/login"));
+    },
+    logout: function() {
+      return dispatch(logout());
     }
   };
 }
@@ -53,7 +56,7 @@ class Dashboard extends React.Component<any, any> {
           <NavLink path="/logs" name="Logs" icon="subject" />
           <NavLink path="/about" name="About" icon="info" />
         </Navigation>
-        <UserControl login={ this.props.login } logout={this.handleLogout} user={this.props.user} />
+        <UserControl login={ this.props.login } logout={ this.props.logout } user={ this.props.user } />
       </Drawer>
       <Content>
         {this.props.children}

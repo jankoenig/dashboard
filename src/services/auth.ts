@@ -17,7 +17,10 @@ namespace auth {
     }
 
     export function logout() {
-        localStorage.setItem("token", undefined);
+        console.log("setting token to undefined");
+        localStorage.removeItem("token");
+        console.log(this.token());
+        console.log(this.loggedIn());
     }
 
     export function loggedIn() {

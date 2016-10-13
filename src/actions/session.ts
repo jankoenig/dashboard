@@ -46,6 +46,6 @@ export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
     console.log("log out");
     auth.logout();
-    dispatch(push("/"));
+    dispatch(push("/login"));
   };
 }
