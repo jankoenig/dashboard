@@ -20,3 +20,5 @@
 /// <reference path="globals/react/index.d.ts" />
 /// <reference path="globals/redux-thunk/index.d.ts" />
 /// <reference path="globals/redux/index.d.ts" />
+/// <reference path="globals/sinon-chai/index.d.ts" />
+/// <reference path="globals/sinon/index.d.ts" />

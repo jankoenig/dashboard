@@ -1,7 +1,7 @@
-import * as React from 'react';
-import * as classNames from 'classnames';
+import * as classNames from "classnames";
+import * as React from "react";
 
-interface ButtonProps extends React.Props<any> {
+interface ButtonProps {
   onClick?: () => void;
   type?: string;
   className?: string;
@@ -9,25 +9,24 @@ interface ButtonProps extends React.Props<any> {
   testid?: string;
 };
 
+class Button extends React.Component<ButtonProps, any> {
+  classes() {
+    return classNames("mdl-button", "mdl-js-button", this.props.className);
+  }
 
-export default function Button({
-  onClick = null,
-  type = 'button',
-  className = '',
-  id = '',
-  testid = '',
-  children = null
-}: ButtonProps) {
-  const buttonClasses = classNames('mdl-button', 'mdl-js-button', className);
-
-  return (
+  render() {
+    return (
     <button
-      data-testid={ testid }
-      id={ id }
-      type={ type }
-      className={ buttonClasses }
-      onClick={ onClick }>
-      { children }
+      data-testid={ this.props.testid }
+      id={ this.props.id }
+      type={ this.props.type }
+      className={ this.classes() }
+      onClick={ this.props.onClick }
+    >
+      { this.props.children }
     </button>
-  );
+    );
+  }
 }
+
+export default Button;

@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import Layout from "../components/Layout";
 import Content from "../components/Content";
+import Layout from "../components/Layout";
 
 export default class Login extends React.Component<any, any> {
     render() {

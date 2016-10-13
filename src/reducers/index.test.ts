@@ -1,7 +1,7 @@
-
-import { createStore } from "redux";
-import rootReducer from "./index";
 import { expect } from "chai";
+import { createStore } from "redux";
+
+import rootReducer from "./index";
 
 describe("Reducer ", function() {
   it("exists", () => {

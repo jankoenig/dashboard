@@ -1,9 +1,8 @@
-import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
+import { combineReducers } from "redux";
 
-import { SessionState, session } from "./session";
-import { AuthFormState, authForm } from "./authForm";
-
+import { authForm, AuthFormState } from "./authForm";
+import { session, SessionState } from "./session";
 
 export namespace Store {
   export type All = {

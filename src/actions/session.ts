@@ -1,5 +1,6 @@
-import { SENDING_REQUEST, SET_AUTH, SET_USER } from "../constants";
 import { push } from "react-router-redux";
+
+import { SENDING_REQUEST, SET_AUTH, SET_USER } from "../constants";
 import User from "../models/user";
 import auth from "../services/auth";
 

@@ -2,17 +2,16 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 
+import { logout } from "../actions/session";
+import Content from "../components/Content";
 import Drawer from "../components/Drawer";
-import Navigation from "../components/Navigation";
-import NavLink from "../components/NavLink";
 import Header from "../components/Header";
 import Layout from "../components/Layout";
-import Content from "../components/Content";
+import Navigation from "../components/Navigation";
+import NavLink from "../components/NavLink";
 import UserControl from "../components/UserControl";
-
-import { logout } from "../actions/session";
-import { Store } from "../reducers";
 import User from "../models/user";
+import { Store } from "../reducers";
 
 interface DashboardProps {
   user?: User;

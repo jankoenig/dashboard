@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
 import { login } from "../actions/session";
-import Card from "../components/Card";
-import { Grid, Cell } from "../components/Grid";
 import AuthForm from "../components/AuthForm";
+import Card from "../components/Card";
+import { Cell, Grid } from "../components/Grid";
 import { Store } from "../reducers";
 
 interface LoginPageProps {

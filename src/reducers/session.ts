@@ -13,7 +13,7 @@ const INITIAL_STATE: SessionState = {
   isLoading: false,
 };
 
-export function session(state: SessionState = INITIAL_STATE, action: any = { type: ''}) {
+export function session(state: SessionState = INITIAL_STATE, action: any = { type: ""}) {
 
   switch (action.type) {
     case SET_USER:
