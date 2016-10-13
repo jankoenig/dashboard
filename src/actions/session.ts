@@ -44,7 +44,6 @@ export function login(email: string, password: string) {
 
 export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
-    console.log("log out");
     auth.logout();
     dispatch(push("/login"));
   };
