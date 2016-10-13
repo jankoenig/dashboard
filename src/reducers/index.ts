@@ -1,8 +1,9 @@
 import { combineReducers } from "redux";
+import { routerReducer } from "react-router-redux";
+
 import { SessionState, session } from "./session";
 import { FormState, form } from "./form";
-import counter from "./counter";
-import { routerReducer } from "react-router-redux";
+
 
 export namespace Store {
   export type All = {
@@ -16,7 +17,6 @@ export namespace Store {
 const rootReducer = combineReducers<Store.All>({
   session,
   form,
-  counter,
   routing: routerReducer
 });
 

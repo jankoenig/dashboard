@@ -13,7 +13,6 @@ import rootReducer from "./reducers";
 // Import our pages
 import Dashboard from "./frames/Dashboard";
 import HomeView from "./pages/HomeView";
-import CounterPage from "./pages/CounterPage";
 import NotFoundView from "./pages/NotFoundView";
 import AboutView from "./pages/AboutView";
 import Login from "./frames/Login";
@@ -32,16 +31,6 @@ const historyMiddleware = routerMiddleware(browserHistory);
 const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
 const history = syncHistoryWithStore(browserHistory, store);
-// For debugging
-history.listen(location => console.log(location));
-
-console.log("store");
-console.log(store);
-
-/* store.subscribe(() => {
-    console.log("subscribe listener");
-    console.log(store.getState());
-}); */
 
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
 
@@ -83,7 +72,6 @@ ReactDOM.render(
             <Route path="/" component={Dashboard} onEnter={checkAuth}>
                 <IndexRoute component={HomeView} />
                 <Route path="about" component={AboutView}/>
-                <Route path="counter" component={CounterPage}/>
                 <Route path="*" component={NotFoundView} />
             </Route>
         </Router>

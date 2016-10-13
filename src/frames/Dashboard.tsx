@@ -28,10 +28,10 @@ function mapStateToProps(state: Store.All) {
 
 function mapDispatchToProps(dispatch: any) {
   return {
-    login: function() {
+    login: function () {
       dispatch(push("/login"));
     },
-    logout: function() {
+    logout: function () {
       return dispatch(logout());
     }
   };
@@ -56,7 +56,10 @@ class Dashboard extends React.Component<any, any> {
           <NavLink path="/logs" name="Logs" icon="subject" />
           <NavLink path="/about" name="About" icon="info" />
         </Navigation>
-        <UserControl login={ this.props.login } logout={ this.props.logout } user={ this.props.user } />
+        <UserControl
+          login={this.props.login}
+          logout={this.props.logout}
+          user={this.props.user} />
       </Drawer>
       <Content>
         {this.props.children}
