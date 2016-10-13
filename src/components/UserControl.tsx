@@ -14,6 +14,18 @@ export default class UserControl extends React.Component<UserProps, any> {
     super(props);
   }
 
+  emailStyle() {
+    return {
+      padding: "10px"
+    };
+  }
+
+  buttonStyle() {
+    return {
+      float: "right"
+    };
+  }
+
   render() {
 
     let callback = this.props.user ? this.props.logout : this.props.login;
@@ -21,8 +33,8 @@ export default class UserControl extends React.Component<UserProps, any> {
 
     return (
       <header>
-        { this.props.user ? (<p>Hello {this.props.user.email} </p>) : undefined }
-        <Button className="mdl-color-text--blue-grey-400" onClick={ callback }> {buttonText }</Button>
+        { this.props.user ? (<p style={ this.emailStyle() }>Hello {this.props.user.email}! </p>) : undefined }
+        <Button style={ this.buttonStyle() } className="mdl-color-text--blue-grey-400" onClick={ callback }> {buttonText }</Button>
       </header>
     );
   }

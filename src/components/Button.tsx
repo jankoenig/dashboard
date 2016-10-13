@@ -7,6 +7,7 @@ interface ButtonProps {
   className?: string;
   id?: string;
   testid?: string;
+  style?: React.CSSProperties;
 };
 
 class Button extends React.Component<ButtonProps, any> {
@@ -22,6 +23,7 @@ class Button extends React.Component<ButtonProps, any> {
       type={ this.props.type }
       className={ this.classes() }
       onClick={ this.props.onClick }
+      style={ this.props.style }
     >
       { this.props.children }
     </button>
