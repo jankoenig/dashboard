@@ -1,5 +1,5 @@
 import { SENDING_REQUEST, SET_AUTH, SET_USER } from "../constants";
-import { browserHistory } from 'react-router';
+import { push } from "react-router-redux";
 import User from "../models/user";
 import auth from "../services/auth";
 
@@ -36,7 +36,7 @@ export function login(email: string, password: string) {
         dispatch(setUser(email));
 
         if (success) {
-          browserHistory.push("/");
+          dispatch(push("/"));
         }
     });
   };
@@ -45,5 +45,5 @@ export function login(email: string, password: string) {
 export function logout() {
   console.log("log out");
   auth.logout();
-  browserHistory.push("/login");
+  // browserHistory.push("/login");
 }

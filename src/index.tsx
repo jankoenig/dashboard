@@ -3,6 +3,7 @@
 
 import * as ReactDOM from "react-dom";
 import { Route, IndexRoute, Router, useRouterHistory, EnterHook, RouterState, RedirectFunction } from "react-router";
+import { syncHistoryWithStore, routerMiddleware } from "react-router-redux";
 import { createHistory } from "history";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
@@ -22,8 +23,17 @@ import auth  from "./services/auth";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+// Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
+// And http://stackoverflow.com/a/38123375/1349766 
+const browserHistory = useRouterHistory(createHistory)({
+    basename: '/dashboard'
+});
+const historyMiddleware = routerMiddleware(browserHistory);
+const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
+const history = syncHistoryWithStore(browserHistory, store);
+// For debugging
+history.listen(location => console.log(location));
 
 console.log("store");
 console.log(store);
@@ -33,19 +43,10 @@ console.log(store);
     console.log(store.getState());
 }); */
 
-// Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
-const browserHistory = useRouterHistory(createHistory)({
-    basename: '/dashboard'
-});
-
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
 
-    console.log("checking auth");
-    console.log(store.getState());
     console.log("loggedIn() ?");
     console.log(auth.loggedIn());
-    console.log("nextState ");
-    console.log(nextState);
 
     console.log("nextState.location.state " + nextState.location.state);
     console.log("nextState.location.pathname " + nextState.location.pathname);
@@ -75,7 +76,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
 
 ReactDOM.render(
     <Provider store={store}>
-        <Router history={browserHistory}>
+        <Router history={history}>
             <Route path="/login" component={Login}>
                 <IndexRoute component={LoginPage} />
             </Route>
