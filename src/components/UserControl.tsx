@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import Button from "../components/Button";
-import User from "../models/User";
+import User from "../models/user";
 
 interface UserProps {
   user?: User;
