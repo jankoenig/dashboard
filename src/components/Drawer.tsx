@@ -2,7 +2,7 @@ import * as classNames from "classnames";
 import * as React from "react";
 
 export interface DrawerProps {
-    title: string;
+    title?: string;
 }
 
 export default class Drawer extends React.Component<DrawerProps, any> {

@@ -17,7 +17,6 @@ import NotFoundView from "./pages/NotFoundView";
 import AboutView from "./pages/AboutView";
 import Login from "./frames/Login";
 import LoginPage from "./pages/LoginPage";
-
 import auth  from "./services/auth";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
@@ -25,8 +24,9 @@ import auth  from "./services/auth";
 // Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
 // And http://stackoverflow.com/a/38123375/1349766 
 const browserHistory = useRouterHistory(createHistory)({
-    basename: '/dashboard'
+    basename: "/dashboard"
 });
+// Create the history middleware which is needed for routing
 const historyMiddleware = routerMiddleware(browserHistory);
 const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
 const store = createStoreWithMiddleware(rootReducer);

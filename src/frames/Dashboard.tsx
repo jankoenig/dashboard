@@ -48,17 +48,17 @@ class Dashboard extends React.Component<any, any> {
 
   render() {
     return (<Layout drawer={true}>
-      <Header title="Title" />
-      <Drawer title="You Know">
+      <Header />
+      <Drawer >
+        <UserControl
+          login={this.props.login}
+          logout={this.props.logout}
+          user={this.props.user} />
         <Navigation>
           <NavLink path="/" name="Home" icon="home" />
           <NavLink path="/logs" name="Logs" icon="subject" />
           <NavLink path="/about" name="About" icon="info" />
         </Navigation>
-        <UserControl
-          login={this.props.login}
-          logout={this.props.logout}
-          user={this.props.user} />
       </Drawer>
       <Content>
         {this.props.children}

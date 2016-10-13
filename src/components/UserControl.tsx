@@ -4,9 +4,9 @@ import Button from "../components/Button";
 import User from "../models/User";
 
 interface UserProps {
-    user?: User;
-    login: () => void;
-    logout: () => void;
+  user?: User;
+  login: () => void;
+  logout: () => void;
 }
 
 export default class UserControl extends React.Component<UserProps, any> {
@@ -15,17 +15,15 @@ export default class UserControl extends React.Component<UserProps, any> {
   }
 
   render() {
+
+    let callback = this.props.user ? this.props.logout : this.props.login;
+    let buttonText = this.props.user ? "Logout" : "Login";
+
     return (
-        <div>
-        {this.props.user ? (
-          <div>
-            <p>Hi { this.props.user.email } </p>
-            <Button onClick={ this.props.logout }> Logout </Button>
-          </div>
-        ) : (
-          <Button onClick={ this.props.login }> Login </Button>
-        )}
-        </div>
+      <header>
+        { this.props.user ? (<p>Hello {this.props.user.email} </p>) : undefined }
+        <Button className="mdl-color-text--blue-grey-400" onClick={ callback }> {buttonText }</Button>
+      </header>
     );
   }
 }
