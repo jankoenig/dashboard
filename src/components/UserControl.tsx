@@ -10,9 +10,6 @@ interface UserProps {
 }
 
 export default class UserControl extends React.Component<UserProps, any> {
-  constructor(props: any) {
-    super(props);
-  }
 
   emailStyle() {
     return {

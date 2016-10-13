@@ -1,28 +1,24 @@
-
-// Import third-party libraries
-
-import * as ReactDOM from "react-dom";
-import { Route, IndexRoute, Router, useRouterHistory, EnterHook, RouterState, RedirectFunction } from "react-router";
-import { syncHistoryWithStore, routerMiddleware } from "react-router-redux";
 import { createHistory } from "history";
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
+import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import rootReducer from "./reducers";
+import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
+import { routerMiddleware, syncHistoryWithStore } from "react-router-redux";
+import { applyMiddleware, createStore,  } from "redux";
+import thunk from "redux-thunk";
 
-// Import our pages
 import Dashboard from "./frames/Dashboard";
-import HomeView from "./pages/HomeView";
-import NotFoundView from "./pages/NotFoundView";
-import AboutView from "./pages/AboutView";
 import Login from "./frames/Login";
+import AboutPage from "./pages/AboutPage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import rootReducer from "./reducers";
 import auth  from "./services/auth";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
 // Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
-// And http://stackoverflow.com/a/38123375/1349766 
+// And http://stackoverflow.com/a/38123375/1349766
 const browserHistory = useRouterHistory(createHistory)({
     basename: "/dashboard"
 });
@@ -70,9 +66,9 @@ ReactDOM.render(
                 <IndexRoute component={LoginPage} />
             </Route>
             <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                <IndexRoute component={HomeView} />
-                <Route path="about" component={AboutView}/>
-                <Route path="*" component={NotFoundView} />
+                <IndexRoute component={HomePage} />
+                <Route path="about" component={AboutPage}/>
+                <Route path="*" component={NotFoundPage} />
             </Route>
         </Router>
     </Provider>,

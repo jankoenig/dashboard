@@ -8,12 +8,16 @@ export interface NavLinkProps {
 }
 
 export default class NavLink extends React.Component<NavLinkProps, any> {
-  constructor(props: NavLinkProps) {
-    super(props);
+
+  style() {
+    return {
+      marginRight: "32px"
+    };
   }
+
   render() {
     return (
-      <Link to={ this.props.path } className="mdl-navigation__link"><i className="mdl-color-text--blue-grey-400 material-icons" role="presentation">{ this.props.icon }</i>{ this.props.name }</Link>
+      <Link to={ this.props.path } className="mdl-navigation__link"><i style={ this.style() } className="mdl-color-text--blue-grey-400 material-icons" role="presentation">{ this.props.icon }</i>{ this.props.name }</Link>
     );
   }
 }
