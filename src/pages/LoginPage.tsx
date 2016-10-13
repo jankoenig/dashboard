@@ -19,9 +19,9 @@ interface LoginPageProps {
 
 function mapStateToProps(state: Store.All) {
     return {
-        email: state.form.email,
-        password: state.form.password,
-        error: state.form.error
+        email: state.authForm.email,
+        password: state.authForm.password,
+        error: state.authForm.error
     };
 }
 

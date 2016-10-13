@@ -2,13 +2,13 @@ import { combineReducers } from "redux";
 import { routerReducer } from "react-router-redux";
 
 import { SessionState, session } from "./session";
-import { FormState, form } from "./form";
+import { AuthFormState, authForm } from "./authForm";
 
 
 export namespace Store {
   export type All = {
     session: SessionState,
-    form: FormState,
+    authForm: AuthFormState,
     error: string,
     routing: any
   }
@@ -16,7 +16,7 @@ export namespace Store {
 
 const rootReducer = combineReducers<Store.All>({
   session,
-  form,
+  authForm,
   routing: routerReducer
 });
 

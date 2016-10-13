@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import { FormState, form } from "../reducers/form";
-
 export interface AuthFormProps {
     email?: string;
     password?: string;
@@ -10,7 +8,7 @@ export interface AuthFormProps {
     onSubmit: (event: React.FormEvent) => void;
 }
 
-export default class AuthForm extends React.Component<AuthFormProps, FormState> {
+export default class AuthForm extends React.Component<AuthFormProps, any> {
 
     constructor(props: AuthFormProps) {
         super(props);
