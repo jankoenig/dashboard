@@ -31,13 +31,17 @@ export function login(email: string, password: string) {
 
     dispatch(sendingRequest(true));
 
-    auth.login(email, password, (success) => {
+    auth.login(email, password, (success, error) => {
 
       dispatch(sendingRequest(false));
       dispatch(setUser(auth.user()));
 
       if (success) {
+        // clear the fields
         dispatch(push("/"));
+      } else {
+        // clear the password
+        // set the error
       }
     });
   };
@@ -45,7 +49,10 @@ export function login(email: string, password: string) {
 
 export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
-    auth.logout();
-    dispatch(push("/login"));
+    auth.logout(function(success) {
+      if (success) {
+        dispatch(push("/login"));
+      }
+    });
   };
 }
