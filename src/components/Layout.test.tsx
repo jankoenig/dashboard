@@ -1,9 +1,9 @@
+import { expect } from "chai";
 import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
-import { expect } from "chai";
 
-import Layout from "./Layout";
 import Drawer from "./Drawer";
+import Layout from "./Layout";
 
 describe("Layout", function() {
     let renderer: React.ShallowRenderer;

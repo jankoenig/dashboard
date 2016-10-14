@@ -1,8 +1,8 @@
-import * as React from "react";
 import * as classNames from "classnames";
+import * as React from "react";
 
 export interface DrawerProps {
-    title: string;
+    title?: string;
 }
 
 export default class Drawer extends React.Component<DrawerProps, any> {
@@ -13,9 +13,9 @@ export default class Drawer extends React.Component<DrawerProps, any> {
 
     render() {
         return (
-            <div className={this.classes()}>
-                {this.props.title ? <header className="mdl-layout-title">{this.props.title}</header> : null}
-                {this.props.children}
+            <div className={ this.classes() }>
+                { this.props.title ? <header className="mdl-layout-title">{this.props.title}</header> : undefined }
+                { this.props.children }
             </div>);
     }
 }

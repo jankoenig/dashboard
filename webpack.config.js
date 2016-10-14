@@ -1,10 +1,11 @@
-var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var path = require("path");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var webpack = require("webpack");
 
 module.exports = {
   entry: "./src/index.tsx",
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, "dist"),
     filename: "scripts/dashboard.js",
   },
   // Enable sourcemaps for debugging webpack's output.
@@ -24,7 +25,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'typings-for-css-modules?modules'
+        loader: "typings-for-css-modules?modules"
       }
     ],
 
@@ -38,11 +39,12 @@ module.exports = {
   },
 
   postcss: [
-    require('autoprefixer-core')
+    require("autoprefixer-core")
   ],
 
   plugins: [
-    new ExtractTextPlugin('style.css', { allChunks: true })
+    new ExtractTextPlugin("style.css", { allChunks: true })// ,
+    // Not ready for this yet // new webpack.optimize.UglifyJsPlugin()
   ],
 
   // When importing a module whose path matches one of the following, just

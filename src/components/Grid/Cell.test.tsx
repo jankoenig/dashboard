@@ -2,19 +2,19 @@ import { expect } from "chai";
 import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
 
-import Grid from "./Grid";
+import Cell from "./Cell";
 
-describe("Grid", function() {
+describe("Cell", function() {
   let renderer: React.ShallowRenderer;
 
   beforeEach(() => {
       renderer = TestUtils.createRenderer();
-      renderer.render(<Grid />);
+      renderer.render(<Cell />);
   });
 
   it("should render correctly", function() {
     const result = renderer.getRenderOutput();
     expect(result.type).to.equal("div");
-    expect(result.props.className).to.contain("md-grid");
+    expect(result.props.className).to.contain("md-cell");
   });
 });

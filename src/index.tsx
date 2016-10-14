@@ -1,39 +1,37 @@
-
-// Import third-party libraries
-
+import { createHistory } from "history";
 import * as ReactDOM from "react-dom";
-import { Route, IndexRoute, Router, browserHistory, EnterHook, RouterState, RedirectFunction } from "react-router";
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
 import { Provider } from "react-redux";
-import rootReducer from "./reducers";
+import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
+import { routerMiddleware, syncHistoryWithStore } from "react-router-redux";
+import { applyMiddleware, createStore,  } from "redux";
+import thunk from "redux-thunk";
 
-// Import our pages
 import Dashboard from "./frames/Dashboard";
-import HomeView from "./pages/HomeView";
-import NotFoundView from "./pages/NotFoundView";
-import AboutView from "./pages/AboutView";
-
 import Login from "./frames/Login";
+import AboutPage from "./pages/AboutPage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import NotFoundPage from "./pages/NotFoundPage";
+import rootReducer from "./reducers";
+import auth  from "./services/auth";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
+// Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
+// And http://stackoverflow.com/a/38123375/1349766
+const browserHistory = useRouterHistory(createHistory)({
+    basename: "/dashboard"
+});
+// Create the history middleware which is needed for routing
+const historyMiddleware = routerMiddleware(browserHistory);
+const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
-
-console.log("store");
-console.log(store);
+const history = syncHistoryWithStore(browserHistory, store);
 
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
-    let { token } = store.getState().session;
 
-    console.log("checking auth");
-    console.log(store.getState());
-    console.log("your token: ");
-    console.log(token);
-    console.log("nextState ");
-    console.log(nextState);
+    console.log("loggedIn() ?");
+    console.log(auth.loggedIn());
 
     console.log("nextState.location.state " + nextState.location.state);
     console.log("nextState.location.pathname " + nextState.location.pathname);
@@ -42,7 +40,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
     // that way we can apply specific logic
     // to display/render the path we want to
     if (nextState.location.pathname !== "/") {
-        if (token) {
+        if (auth.loggedIn()) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
@@ -51,7 +49,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
         }
     } else {
         // If the user is already logged in, forward them to the homepage
-        if (!token) {
+        if (!auth.loggedIn()) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
@@ -63,14 +61,14 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
 
 ReactDOM.render(
     <Provider store={store}>
-        <Router history={browserHistory}>
+        <Router history={history}>
             <Route path="/login" component={Login}>
                 <IndexRoute component={LoginPage} />
             </Route>
             <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                <IndexRoute component={HomeView}/>
-                <Route path="about" component={AboutView}/>
-                <Route path="*" component={NotFoundView} />
+                <IndexRoute component={HomePage} />
+                <Route path="about" component={AboutPage}/>
+                <Route path="*" component={NotFoundPage} />
             </Route>
         </Router>
     </Provider>,

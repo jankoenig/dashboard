@@ -1,3 +1,18 @@
+# Imports
+
+Split the imports into two groups, third-party dependencies at the top followed by first-party.
+
+```typescript
+import * as React from "react";
+import { connect } from "react-redux";
+
+import { changeForm } from "../actions/authForm";
+import { login } from "../actions/session";
+import AuthForm from "../components/AuthForm";
+import Card from "../components/Card";
+import { Cell, Grid } from "../components/Grid";
+import { Store } from "../reducers";
+```
 
 # Testing 
 
@@ -5,7 +20,7 @@ The tests for each file lives beside the file however with the extension `.test.
 
 To test a React Component, use the following pattern:
 
-```
+```typescript
 import * as React from "react";
 import * as TestUtils from "react-addons-test-utils";
 import { expect } from "chai";
@@ -31,7 +46,7 @@ describe("MyComponent", () => {
 
 The files within `./src/components` directory represent reusable UI components built with React.
 
-```
+```typescript
 import * as React from "react";
 import * as classNames from "classnames";
 

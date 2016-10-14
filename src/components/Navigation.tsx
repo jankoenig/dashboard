@@ -1,5 +1,5 @@
-import * as React from "react";
 import * as classNames from "classnames";
+import * as React from "react";
 
 export default class Navigation extends React.Component<any, any> {
   constructor(props: any) {

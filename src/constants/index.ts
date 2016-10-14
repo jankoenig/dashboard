@@ -8,9 +8,10 @@
  */
 export const CHANGE_FORM = "CHANGE_FORM";
 export const SET_AUTH = "SET_AUTH";
+export const SET_USER = "SET_USER";
 export const SENDING_REQUEST = "SENDING_REQUEST";
 
-export const LOGIN_USER_PENDING = "App/LOGIN_USER_PENDING";
-export const LOGIN_USER_SUCCESS = "App/LOGIN_USER_SUCCESS";
-export const LOGIN_USER_ERROR = "App/LOGIN_USER_ERROR";
-export const LOGOUT_USER = "App/LOGOUT_USER";
+export const LOGIN_USER_PENDING = "bst/LOGIN_USER_PENDING";
+export const LOGIN_USER_SUCCESS = "bst/LOGIN_USER_SUCCESS";
+export const LOGIN_USER_ERROR = "bst/LOGIN_USER_ERROR";
+export const LOGOUT_USER = "bst/LOGOUT_USER";
