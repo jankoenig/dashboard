@@ -6,4 +6,4 @@ Future home of the bespoken.tools dashboard
 
 ## Resources
 
-- Developer? Start [here](./docs/DEVELOPER.MD)
+- Developer? Start [here](./docs/developer.md)
