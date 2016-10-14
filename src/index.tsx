@@ -43,9 +43,15 @@ let firebaseConfig = {
 Firebase.initializeApp(firebaseConfig);
 
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
+    console.log("checkAuth");
 
-    console.log("loggedIn() ?");
-    console.log(auth.loggedIn());
+    // TODO: make this type safe
+    const state: any = store.getState().session;
+    console.log("user?");
+    console.log(state.user);
+    console.log("store");
+    console.log(store);
+    console.log(store.getState());
 
     console.log("nextState.location.state " + nextState.location.state);
     console.log("nextState.location.pathname " + nextState.location.pathname);
@@ -54,19 +60,21 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
     // that way we can apply specific logic
     // to display/render the path we want to
     if (nextState.location.pathname !== "/") {
-        if (auth.loggedIn()) {
+        if (state.user) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
+                console.log("sending to login");
                 replace("/login");
             }
         }
     } else {
         // If the user is already logged in, forward them to the homepage
-        if (!auth.loggedIn()) {
+        if (!state.user) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
+                console.log("sending to login: 2");
                 replace("/login");
             }
         }
