@@ -1,3 +1,4 @@
+import * as Firebase from "firebase";
 import { createHistory } from "history";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -13,7 +14,6 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import rootReducer from "./reducers";
-import auth  from "./services/auth";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
@@ -24,35 +24,47 @@ const browserHistory = useRouterHistory(createHistory)({
 });
 // Create the history middleware which is needed for routing
 const historyMiddleware = routerMiddleware(browserHistory);
+// We now create the store, connecting it with thunk middleware and the history middleware we just built
 const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
+// Finally, our store which is created from our reducers
 const store = createStoreWithMiddleware(rootReducer);
+// And our history
 const history = syncHistoryWithStore(browserHistory, store);
+
+// Bootstrap Firebase
+let firebaseConfig = {
+    apiKey: "AIzaSyB1b8t0rbf_x2ZEhJel0pm6mQ4POZLgz-k", // It is ok for this to be public - MMM
+    authDomain: "bespoken-tools.firebaseapp.com",
+    databaseURL: "https://bespoken-tools.firebaseio.com",
+    storageBucket: "bespoken-tools.appspot.com",
+    messagingSenderId: "629657216103"
+};
+Firebase.initializeApp(firebaseConfig);
 
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
 
-    console.log("loggedIn() ?");
-    console.log(auth.loggedIn());
-
-    console.log("nextState.location.state " + nextState.location.state);
-    console.log("nextState.location.pathname " + nextState.location.pathname);
+    // TODO: make this type safe
+    const session: any = store.getState().session;
 
     // check if the path isn"t dashboard
     // that way we can apply specific logic
     // to display/render the path we want to
     if (nextState.location.pathname !== "/") {
-        if (auth.loggedIn()) {
+        if (session.user) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
+                console.log("sending to login");
                 replace("/login");
             }
         }
     } else {
         // If the user is already logged in, forward them to the homepage
-        if (!auth.loggedIn()) {
+        if (!session.user) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
+                console.log("sending to login: 2");
                 replace("/login");
             }
         }

@@ -1,20 +1,26 @@
+import * as Firebase from "firebase";
+
 
 export interface UserProperties {
   email: string;
-  token: string;
+  displayName?: string;
 }
 
-class User implements UserProperties {
+export default class User implements UserProperties {
 
   readonly email: string;
 
-  readonly token: string;
+  readonly displayName?: string;
 
   constructor(props: UserProperties) {
     this.email = props.email;
-    this.token = props.token;
+    this.displayName = props.displayName;
   }
-
 }
 
-export default User;
+export class FirebaseUser extends User {
+
+  constructor(user: Firebase.User) {
+    super({email: user.email, displayName: user.displayName});
+  }
+}

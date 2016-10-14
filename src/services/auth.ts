@@ -1,3 +1,6 @@
+import * as Firebase from "firebase";
+
+import { FirebaseUser } from "../models/user";
 import User from "../models/user";
 
 /**
@@ -6,30 +9,22 @@ import User from "../models/user";
 namespace auth {
 
     export function login(email: string, password: string, callback: (success: boolean, error?: string) => void): void {
-        // Really simple auth right now, the string equals the password then you are set
-        setTimeout(function () {
-            if (email === password) {
-
-                let user = new User({email: email, token: "dkfjakdlkjfkdjakslkdj"});
-                localStorage.setItem("user", JSON.stringify(user));
-
-                callback(true);
-            } else {
-                callback(false);
-            }
-        }, 750);
+        Firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+            console.log("Error logging In: " + error.message);
+            callback(false, error.message);
+        }).then(function(user: Firebase.User) {
+            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
+            callback(true);
+        });
     }
 
-    export function logout(): void {
-        localStorage.removeItem("user");
-    }
-
-    export function loggedIn(): boolean {
-        return !!localStorage.getItem("user");
-    }
-
-    export function token(): string | undefined {
-        return this.user() ? this.user().token : undefined;
+    export function logout(callback: (success: boolean, error?: string) => void): void {
+        Firebase.auth().signOut().catch(function(error) {
+            callback(false, error.message);
+        }).then(function() {
+            localStorage.removeItem("user");
+            callback(true);
+        });
     }
 
     export function user(): User | undefined {
