@@ -45,29 +45,9 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
 
     // TODO: make this type safe
     const session: any = store.getState().session;
-
-    // check if the path isn"t dashboard
-    // that way we can apply specific logic
-    // to display/render the path we want to
-    if (nextState.location.pathname !== "/") {
-        if (session.user) {
-            if (nextState.location.state && nextState.location.pathname) {
-                replace(nextState.location.pathname);
-            } else {
-                console.log("sending to login");
-                replace("/login");
-            }
-        }
-    } else {
-        // If the user is already logged in, forward them to the homepage
-        if (!session.user) {
-            if (nextState.location.state && nextState.location.pathname) {
-                replace(nextState.location.pathname);
-            } else {
-                console.log("sending to login: 2");
-                replace("/login");
-            }
-        }
+    if (!session.user) {
+        console.log("sending to login");
+        replace("/login");
     }
 };
 
