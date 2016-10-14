@@ -14,7 +14,6 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import rootReducer from "./reducers";
-import auth  from "./services/auth";
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
@@ -43,24 +42,15 @@ let firebaseConfig = {
 Firebase.initializeApp(firebaseConfig);
 
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
-    console.log("checkAuth");
 
     // TODO: make this type safe
-    const state: any = store.getState().session;
-    console.log("user?");
-    console.log(state.user);
-    console.log("store");
-    console.log(store);
-    console.log(store.getState());
-
-    console.log("nextState.location.state " + nextState.location.state);
-    console.log("nextState.location.pathname " + nextState.location.pathname);
+    const session: any = store.getState().session;
 
     // check if the path isn"t dashboard
     // that way we can apply specific logic
     // to display/render the path we want to
     if (nextState.location.pathname !== "/") {
-        if (state.user) {
+        if (session.user) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
@@ -70,7 +60,7 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
         }
     } else {
         // If the user is already logged in, forward them to the homepage
-        if (!state.user) {
+        if (!session.user) {
             if (nextState.location.state && nextState.location.pathname) {
                 replace(nextState.location.pathname);
             } else {
