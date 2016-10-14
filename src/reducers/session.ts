@@ -20,6 +20,7 @@ const INITIAL_STATE: SessionState = {
 export function session(state: SessionState = INITIAL_STATE, action: any = { type: ""}) {
   console.log("session reducer");
   console.log(state);
+  console.log(action);
   switch (action.type) {
     case SET_USER:
       let userSessionState: SessionState = objectAssign({}, state, {user: action.user});
