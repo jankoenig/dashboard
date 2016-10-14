@@ -38,6 +38,26 @@ export function login(email: string, password: string) {
   };
 }
 
+export function loginWithGithub() {
+  return function (dispatch: Redux.Dispatch<any>) {
+
+    dispatch(sendingRequest(true));
+
+    auth.loginWithGithub(function(success, error) {
+
+      dispatch(sendingRequest(false));
+      dispatch(setUser(auth.user()));
+
+      if (success) {
+        dispatch(push("/"));
+      } else {
+        // clear the password
+        // set the error
+      }
+    });
+  };
+}
+
 export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
     auth.logout(function(success) {
