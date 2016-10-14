@@ -34,7 +34,7 @@ $ npm run clean
 
 The two recommended IDEs are either [Atom](https://atom.io/) or [VSCode](https://code.visualstudio.com/download).  Both are free and with community plugins you will get pretty close to the functionality of a full fledged IDE like WebStorm.
 
-### Atom 
+### Atom
 
 #### Atom Recommended Packages
 
@@ -63,9 +63,9 @@ In General
 
 Visual Studio Code already comes with all the necessary plugins for TypeScript.
 
-#### Helpful Commands 
+#### Helpful Commands
 
-- Toggle the integrated terminal --> control & ` 
+- Toggle the integrated terminal --> control & `
 - Format Code (that is in focus) --> alt & shift & f
 
 ## Resources
@@ -124,9 +124,6 @@ $ typings install dt~react-mdl --global --save
 - [TypeScript Mocha Webpack Demo](https://github.com/vintem/TypescriptMochaWebpackDemo)
 - [TypeScript Testing Examples](https://github.com/remojansen/TypeScriptTestingExamples)
 
-## Found Issues
-
-Typings and the React/Redux ecosystem is in a bad state right now.  The biggest problem is redux has official typings __however__ they are not compatible with the dt typings for react-redux.  Instead you have to use the dt redux for everything to work.   See https://github.com/DefinitelyTyped/DefinitelyTyped/issues/9611   
 
 ## Work in Progress
 
