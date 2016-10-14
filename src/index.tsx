@@ -25,8 +25,11 @@ const browserHistory = useRouterHistory(createHistory)({
 });
 // Create the history middleware which is needed for routing
 const historyMiddleware = routerMiddleware(browserHistory);
+// We now create the store, connecting it with thunk middleware and the history middleware we just built
 const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
+// Finally, our store which is created from our reducers
 const store = createStoreWithMiddleware(rootReducer);
+// And our history
 const history = syncHistoryWithStore(browserHistory, store);
 
 // Bootstrap Firebase
