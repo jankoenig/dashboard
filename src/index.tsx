@@ -1,3 +1,4 @@
+import * as Firebase from "firebase";
 import { createHistory } from "history";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -27,6 +28,16 @@ const historyMiddleware = routerMiddleware(browserHistory);
 const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
 const store = createStoreWithMiddleware(rootReducer);
 const history = syncHistoryWithStore(browserHistory, store);
+
+// Bootstrap Firebase
+let firebaseConfig = {
+    apiKey: "AIzaSyB1b8t0rbf_x2ZEhJel0pm6mQ4POZLgz-k", // It is ok for this to be public - MMM
+    authDomain: "bespoken-tools.firebaseapp.com",
+    databaseURL: "https://bespoken-tools.firebaseio.com",
+    storageBucket: "bespoken-tools.appspot.com",
+    messagingSenderId: "629657216103"
+};
+Firebase.initializeApp(firebaseConfig);
 
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
 
