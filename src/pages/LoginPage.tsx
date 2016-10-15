@@ -40,7 +40,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-class LoginPage extends React.Component<LoginPageProps, any> {
+export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormChanged(event: React.FormEvent) {
         // Need to cast in order to get to id and value
