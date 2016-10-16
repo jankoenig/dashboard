@@ -9,7 +9,7 @@ export interface NavLinkProps {
 
 export default class NavLink extends React.Component<NavLinkProps, any> {
 
-  style() {
+  iconStyle() {
     return {
       marginRight: "32px"
     };
@@ -17,7 +17,19 @@ export default class NavLink extends React.Component<NavLinkProps, any> {
 
   render() {
     return (
-      <Link to={ this.props.path } className="mdl-navigation__link"><i style={ this.style() } className="mdl-color-text--blue-grey-400 material-icons" role="presentation">{ this.props.icon }</i>{ this.props.name }</Link>
+      <Link
+        to={this.props.path}
+        className="mdl-navigation__link">
+        {this.props.icon ? (
+          <i
+            style={this.iconStyle()}
+            className="mdl-color-text--blue-grey-400 material-icons"
+            role="presentation">
+            {this.props.icon}
+          </i>
+        ) : undefined}
+        {this.props.name}
+      </Link>
     );
   }
 }
