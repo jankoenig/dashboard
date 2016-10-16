@@ -35,9 +35,11 @@ export default class UserControl extends React.Component<UserProps, any> {
             style={this.emailStyle()}>
             {this.props.user.email}
           </p>
-          ) : undefined}
+        ) : undefined}
         <Button
-          style={this.buttonStyle()} className="mdl-color-text--blue-grey-400" onClick={callback}>
+          style={this.buttonStyle()}
+          className="mdl-color-text--blue-grey-400"
+          onClick={callback}>
           {buttonText}
         </Button>
       </header>
