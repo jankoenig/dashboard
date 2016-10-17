@@ -7,6 +7,10 @@ For unit testing, we leverage the following libraries:
 - [Enzyme](http://airbnb.io/enzyme/) to assist with testing React components
 - [redux-mock-store](https://github.com/arnaudbenard/redux-mock-store) for mocking Redux
 
+# Tips
+
+With Mocha, if you ever just want to run one test, change `describe(` to `describe.only(`.
+
 # References
 
 - [Redux - Writing Tests](http://redux.js.org/docs/recipes/WritingTests.html)
