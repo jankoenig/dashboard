@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
-import { login } from "../actions/session";
+import { login, loginWithGithub } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -15,6 +15,7 @@ interface LoginPageProps {
     error: string;
     changeForm: (field: string, value: string) => void;
     login: (email: string, password: string) => (dispatch: Redux.Dispatch<any>) => void;
+    loginWithGithub: () => (dispatch: Redux.Dispatch<any>) => void;
 };
 
 function mapStateToProps(state: Store.All) {
@@ -32,14 +33,17 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         } ,
         login: function(email: string, password: string) {
             return dispatch(login(email, password));
+        },
+        loginWithGithub: function() {
+            return dispatch(loginWithGithub());
         }
     };
 }
 
-class LoginPage extends React.Component<LoginPageProps, any> {
+export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormChanged(event: React.FormEvent) {
-        // Need to cast in order to get to id and value 
+        // Need to cast in order to get to id and value
         // See http://stackoverflow.com/a/39214607/1349766
         let target = event.target as HTMLSelectElement;
         this.props.changeForm(target.id, target.value);
@@ -50,21 +54,27 @@ class LoginPage extends React.Component<LoginPageProps, any> {
         this.props.login(this.props.email, this.props.password);
     }
 
+    handleFormLoginWithGithub(event: React.FormEvent) {
+        event.preventDefault();
+        this.props.loginWithGithub();
+    }
+
     render() {
         return (
             <Grid>
-                <Cell col={4} hidePhone={true} hideTablet={true}/>
-                <Cell col={4} align={"middle"}>
+                <Cell col={4} tablet={2} hidePhone={true}/>
+                <Cell col={4} tablet={4} phone={4} align={"middle"}>
                     <Card>
                         <AuthForm
                             email={ this.props.email }
                             password={ this.props.password }
                             onSubmit={ this.handleFormSubmit.bind(this) }
                             onChange={ this.handleFormChanged.bind(this) }
+                            onLoginWithGithub= { this.handleFormLoginWithGithub.bind(this) }
                             />
                     </Card>
                 </Cell>
-                <Cell col={4} hidePhone={true} hideTablet={true}/>
+                <Cell col={4} tablet={2} hidePhone={true}/>
             </Grid>
         );
     }

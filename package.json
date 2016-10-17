@@ -7,11 +7,11 @@
   "scripts": {
     "postinstall": "typings install",
     "clean": "node scripts/clean.js",
-    "lint": "tslint src/**/*.{ts,tsx}",
+    "lint": "tslint 'src/**/*.{ts,tsx}'",
     "pretest": "tsc && npm run lint",
-    "test": "mocha src/**/*.test.js",
+    "test": "mocha 'src/**/*.test.js'",
     "precoverage": "npm run pretest",
-    "coverage": "istanbul cover --include-all-sources --root src/ -x \"**/*.test.js\" _mocha src/**/*.test.js -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
+    "coverage": "istanbul cover --include-all-sources --root src/ -x \"**/*.test.js\" _mocha \"src/**/*.test.js\" -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov-ts.info",
     "build": "webpack",
     "start": "node scripts/server.js"
@@ -31,6 +31,7 @@
     "mocha": "^3.0.2",
     "postcss-loader": "^0.13.0",
     "react-addons-test-utils": "^15.3.2",
+    "redux-mock-store": "^1.2.1",
     "remap-istanbul": "^0.6.4",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",

@@ -15,6 +15,6 @@ describe("Grid", function() {
   it("should render correctly", function() {
     const result = renderer.getRenderOutput();
     expect(result.type).to.equal("div");
-    expect(result.props.className).to.contain("md-grid");
+    expect(result.props.className).to.contain("mdl-grid");
   });
 });

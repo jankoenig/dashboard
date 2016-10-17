@@ -15,6 +15,6 @@ describe("Cell", function() {
   it("should render correctly", function() {
     const result = renderer.getRenderOutput();
     expect(result.type).to.equal("div");
-    expect(result.props.className).to.contain("md-cell");
+    expect(result.props.className).to.contain("mdl-cell");
   });
 });

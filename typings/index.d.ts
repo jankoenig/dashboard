@@ -18,6 +18,7 @@
 /// <reference path="globals/react-router/history/index.d.ts" />
 /// <reference path="globals/react-router/index.d.ts" />
 /// <reference path="globals/react/index.d.ts" />
+/// <reference path="globals/redux-mock-store/index.d.ts" />
 /// <reference path="globals/redux-thunk/index.d.ts" />
 /// <reference path="globals/redux/index.d.ts" />
 /// <reference path="globals/sinon-chai/index.d.ts" />
