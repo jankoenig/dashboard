@@ -1,16 +1,16 @@
 {
-  "name": "dashboard",
-  "description": "bespoken dashboard",
+  "name": "bespoken-dashboard",
+  "description": "The dashboard for https://bespoken.tools",
   "main": "./dist/scripts/dashboard.js",
   "authors": [
     "Michael Myers <mmm@xappmedia.com>"
   ],
   "license": "SEE LICENSE IN LICENSE",
-  "homepage": "https://github.com/bespoken/dashboard",
-  "private": true,
+  "homepage": "https://bespoken.tools",
+  "respository": "https://github.com/bespoken/dashboard",
+  "private": false,
   "ignore": [
     "**/.*",
-    "node_modules",
-    "bower_components"
+    "node_modules"
   ]
 }
