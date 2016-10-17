@@ -18,6 +18,11 @@ export interface CellProps {
 };
 
 /**
+ * Cell for a Grid
+ *
+ * A cell is what defines the columns within a grid.  For MDL, a grid has 12 columns on a desktop
+ *   screen, 8 on a tablet and 4 on a phone.
+ *
  * Based on react-mdl implementation https://github.com/tleunen/react-mdl/blob/master/src/Grid/Cell.js
  */
 export default class Cell extends React.Component<CellProps, any> {
