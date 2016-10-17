@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { Icon, ICON } from "./Icon";
+
 export interface AuthFormProps {
     email?: string;
     password?: string;
@@ -41,6 +43,7 @@ export default class AuthForm extends React.Component<AuthFormProps, any> {
                         <button
                             className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
                             onClick={this.props.onLoginWithGithub}>
+                            <Icon style={ {marginRight: "13px"} } width={ 20 } height={ 20 } icon={ ICON.GITHUB } />
                             Login with Github
                         </button>
                     </div>
