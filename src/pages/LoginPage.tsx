@@ -62,8 +62,8 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
     render() {
         return (
             <Grid>
-                <Cell col={4} hidePhone={true} hideTablet={true}/>
-                <Cell col={4} align={"middle"}>
+                <Cell col={4} tablet={2} hidePhone={true}/>
+                <Cell col={4} tablet={4} phone={4} align={"middle"}>
                     <Card>
                         <AuthForm
                             email={ this.props.email }
@@ -74,7 +74,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
                             />
                     </Card>
                 </Cell>
-                <Cell col={4} hidePhone={true} hideTablet={true}/>
+                <Cell col={4} tablet={2} hidePhone={true}/>
             </Grid>
         );
     }
