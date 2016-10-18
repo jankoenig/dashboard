@@ -1,10 +1,14 @@
-import Utils from "./Utils";
+import utils from "./Utils";
 import * as chai from "chai";
+import * as mockBrowser from "mock-browser";
 
 let expect = chai.expect;
 
 describe("Utils", function () {
+    let FakeBrowserModel = mockBrowser.mocks.MockBrowser;
+    let fakeBrowserInstance = new FakeBrowserModel();
+
     it("checks mobile correctly", function() {
-        expect(Utils.isMobileOrTablet()).to.be.false;
+        expect(utils.isMobileOrTablet(fakeBrowserInstance.getNavigator())).to.be.false;
     });
 });

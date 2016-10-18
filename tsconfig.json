@@ -8,8 +8,7 @@
   },
   "include": [
     "src/**/*",
-    "./typings/index.d.ts",
-    "./typings/lib.d.ts"
+    "./typings/index.d.ts"
   ],
   "exclude": [
     "node_modules",
