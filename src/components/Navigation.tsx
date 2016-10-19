@@ -7,7 +7,7 @@ export default class Navigation extends React.Component<any, any> {
   }
 
   classes() {
-    return classNames("mdl-navigation mdl-color--blue-grey-800");
+    return classNames(this.props.classNames, "mdl-navigation");
   }
 
   render() {

@@ -25,7 +25,6 @@ export default class UserControl extends React.Component<UserProps, any> {
           <li className="mdl-menu__item">{this.props.user.email }</li>
           <li className="mdl-menu__item">
             <Button
-              className="mdl-color-text--blue-grey-400"
               onClick={callback}>
               {buttonText}
             </Button>
