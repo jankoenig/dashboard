@@ -47,23 +47,26 @@ class Dashboard extends React.Component<any, any> {
   }
 
   render() {
-    return (<Layout drawer={true}>
-      <Header />
-      <Drawer >
-        <UserControl
-          login={this.props.login}
-          logout={this.props.logout}
-          user={this.props.user} />
-        <Navigation>
-          <NavLink path="/" name="Home" icon="home" />
-          <NavLink path="/logs" name="Logs" icon="subject" />
-          <NavLink path="/about" name="About" icon="info" />
-        </Navigation>
-      </Drawer>
-      <Content>
-        {this.props.children}
-      </Content>
-    </Layout>);
+    return (
+      <Layout drawer={true} header={true}>
+        <Header >
+          <UserControl
+            login={this.props.login}
+            logout={this.props.logout}
+            user={this.props.user} />
+        </Header>
+        <Drawer >
+          <Navigation>
+            <NavLink path="/" name="Home" icon="home" />
+            <NavLink path="/logs" name="Logs" icon="subject" />
+            <NavLink path="/about" name="About" icon="info" />
+          </Navigation>
+        </Drawer>
+        <Content>
+          {this.props.children}
+        </Content>
+      </Layout>
+    );
   }
 }
 
