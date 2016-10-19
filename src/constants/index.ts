@@ -18,12 +18,13 @@ export const LOGOUT_USER = "bst/LOGOUT_USER";
 
 export namespace CLASSES {
     export namespace COLOR {
+        export const BLUE_GREY_900 = "mdl-color--blue-grey-900";
         export const GREY_100 = "mdl-color--grey-100";
         export const GREY_900 = "mdl-color--grey-900";
-
     }
 
     export namespace TEXT {
         export const BLUE_GREY_50 = "mdl-color-text--blue-grey-50";
+        export const GREY_600 = "mdl-color-text--grey-600";
     }
 }
