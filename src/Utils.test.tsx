@@ -1,14 +1,21 @@
-import utils from "./Utils";
 import * as chai from "chai";
-import * as mockBrowser from "mock-browser";
+
+import utils from "./Utils";
 
 let expect = chai.expect;
 
 describe("Utils", function () {
-    let FakeBrowserModel = mockBrowser.mocks.MockBrowser;
-    let fakeBrowserInstance = new FakeBrowserModel();
+    it("checks mobile platform correctly", function() {
+        expect(utils.isMobileOrTabletImpl("iphone", "")).to.be.true;
+        expect(utils.isMobileOrTabletImpl("android", "")).to.be.true;
+        expect(utils.isMobileOrTabletImpl("", "android")).to.be.true;
+        expect(utils.isMobileOrTabletImpl("blackberry", "")).to.be.true;
+    });
 
-    it("checks mobile correctly", function() {
-        expect(utils.isMobileOrTablet(fakeBrowserInstance.getNavigator())).to.be.false;
+    it("checks desktop platform correctly", function() {
+        expect(utils.isMobileOrTabletImpl("chrome", "")).to.be.false;
+        expect(utils.isMobileOrTabletImpl("firefox", "")).to.be.false;
+        expect(utils.isMobileOrTabletImpl("", "safari")).to.be.false;
+        expect(utils.isMobileOrTabletImpl("", "")).to.be.false;
     });
 });

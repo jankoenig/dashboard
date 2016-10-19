@@ -15,7 +15,7 @@ namespace auth {
     }
 
     function loginWithProvider(provider: firebase.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
-        if (Utils.isMobileOrTablet(navigator)) {
+        if (Utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             Firebase.auth().signInWithRedirect(provider);
             Firebase.auth().getRedirectResult().then(function(result){
