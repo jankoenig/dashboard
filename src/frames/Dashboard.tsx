@@ -59,17 +59,17 @@ class Dashboard extends React.Component<any, any> {
   render() {
     return (
       <Layout drawer={true} header={true}>
-        <Header className={ this.headerClasses() } >
+        <Header className={this.headerClasses()} >
           <UserControl
             login={this.props.login}
             logout={this.props.logout}
             user={this.props.user} />
         </Header>
-        <Drawer className={ this.drawerClasses() } >
-          <Navigation className={ CLASSES.COLOR.BLUE_GREY_800 }>
-            <NavLink className={ CLASSES.TEXT.BLUE_GREY_400 } path="/" name="Home" icon="home" />
-            <NavLink className={ CLASSES.TEXT.BLUE_GREY_400 } path="/logs" name="Logs" icon="subject" />
-            <NavLink className={ CLASSES.TEXT.BLUE_GREY_400 } path="/about" name="About" icon="info" />
+        <Drawer className={this.drawerClasses()} >
+          <Navigation className={CLASSES.COLOR.BLUE_GREY_800}>
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/" name="Home" icon="home" />
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/logs" name="Logs" icon="subject" />
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/about" name="About" icon="info" />
           </Navigation>
         </Drawer>
         <Content>
