@@ -11,38 +11,27 @@ interface UserProps {
 
 export default class UserControl extends React.Component<UserProps, any> {
 
-  emailStyle() {
-    return {
-      padding: "10px"
-    };
-  }
-
-  buttonStyle() {
-    return {
-      float: "right"
-    };
-  }
-
   render() {
 
     let callback = this.props.user ? this.props.logout : this.props.login;
     let buttonText = this.props.user ? "Logout" : "Login";
 
     return (
-      <header>
-        {this.props.user ? (
-          <p
-            style={this.emailStyle()}>
-            {this.props.user.email}
-          </p>
-        ) : undefined}
-        <Button
-          style={this.buttonStyle()}
-          className="mdl-color-text--blue-grey-400"
-          onClick={callback}>
-          {buttonText}
-        </Button>
-      </header>
+      <div>
+        <button className="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
+          <i className="material-icons">more_vert</i>
+        </button>
+        <ul className="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" htmlFor="hdrbtn">
+          <li className="mdl-menu__item">{this.props.user.email }</li>
+          <li className="mdl-menu__item">
+            <Button
+              className="mdl-color-text--blue-grey-400"
+              onClick={callback}>
+              {buttonText}
+            </Button>
+          </li>
+        </ul>
+      </div>
     );
   }
 }
