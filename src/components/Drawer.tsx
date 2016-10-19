@@ -3,12 +3,13 @@ import * as React from "react";
 
 export interface DrawerProps {
     title?: string;
+    className?: string;
 }
 
 export default class Drawer extends React.Component<DrawerProps, any> {
 
     classes() {
-        return classNames("mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50");
+        return classNames(this.props.className, "mdl-layout__drawer");
     }
 
     render() {
