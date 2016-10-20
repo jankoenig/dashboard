@@ -1,7 +1,9 @@
 import * as React from "react";
 
-import Button from "../components/Button";
 import User from "../models/user";
+import Button from "./Button";
+import { Icon, ICON } from "./Icon";
+import { Menu, MenuItem } from "./Menu";
 
 interface UserProps {
   user?: User;
@@ -18,18 +20,30 @@ export default class UserControl extends React.Component<UserProps, any> {
 
     return (
       <div>
-        <button className="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
-          <i className="material-icons">more_vert</i>
-        </button>
-        <ul className="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" htmlFor="hdrbtn">
-          <li className="mdl-menu__item">{this.props.user.email }</li>
-          <li className="mdl-menu__item">
+        <Button id="userControl">
+          {this.props.user && this.props.user.photoUrl ? (
+            <img
+              style={{ borderRadius: "50%" } /** Border Radius provides the circle */}
+              width="32"
+              height="32"
+              src={this.props.user.photoUrl}
+              />
+          ) : (
+              <Icon
+                width={32}
+                height={32}
+                icon={ICON.DEFAULT_AVATAR}
+                />
+            )}
+        </Button>
+        <Menu align="right" valign="bottom" ripple={true} target="userControl" >
+          <MenuItem>
             <Button
               onClick={callback}>
               {buttonText}
             </Button>
-          </li>
-        </ul>
+          </MenuItem>
+        </Menu>
       </div>
     );
   }
