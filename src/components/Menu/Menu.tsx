@@ -1,4 +1,10 @@
 import * as classNames from "classnames";
+// tslint:disable:no-unused-variable
+// Needed only for testing.  It isn't a problem when the files are
+// bundled but testing as modules the translated JS files
+// assume React is global
+import * as React from "react";
+// tslint:enable:no-unused-variable
 
 import MDLComponent from "../MDLComponent";
 
