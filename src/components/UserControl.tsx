@@ -1,7 +1,9 @@
 import * as React from "react";
 
-import Button from "../components/Button";
 import User from "../models/user";
+import Button from "./Button";
+import { Icon, ICON } from "./Icon";
+import { Menu, MenuItem } from "./Menu";
 
 interface UserProps {
   user?: User;
@@ -11,38 +13,38 @@ interface UserProps {
 
 export default class UserControl extends React.Component<UserProps, any> {
 
-  emailStyle() {
-    return {
-      padding: "10px"
-    };
-  }
-
-  buttonStyle() {
-    return {
-      float: "right"
-    };
-  }
-
   render() {
 
     let callback = this.props.user ? this.props.logout : this.props.login;
     let buttonText = this.props.user ? "Logout" : "Login";
 
     return (
-      <header>
-        {this.props.user ? (
-          <p
-            style={this.emailStyle()}>
-            {this.props.user.email}
-          </p>
-        ) : undefined}
-        <Button
-          style={this.buttonStyle()}
-          className="mdl-color-text--blue-grey-400"
-          onClick={callback}>
-          {buttonText}
+      <div>
+        <Button id="userControl">
+          {this.props.user && this.props.user.photoUrl ? (
+            <img
+              style={{ borderRadius: "50%" } /** Border Radius provides the circle */}
+              width="32"
+              height="32"
+              src={this.props.user.photoUrl}
+              />
+          ) : (
+              <Icon
+                width={32}
+                height={32}
+                icon={ICON.DEFAULT_AVATAR}
+                />
+            )}
         </Button>
-      </header>
+        <Menu align="right" valign="bottom" ripple={true} target="userControl" >
+          <MenuItem>
+            <Button
+              onClick={callback}>
+              {buttonText}
+            </Button>
+          </MenuItem>
+        </Menu>
+      </div>
     );
   }
 }

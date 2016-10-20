@@ -9,3 +9,18 @@ Firebase does not return a currentUser immediately after initialization.  This c
 There appears to be solutions to make Firebase work better with Redux (for example (redux-react-firebase)[https://github.com/tiberiuc/redux-react-firebase]) however this makes the entire app tightly coupled to Firebase which is not a preference.
 
 For now, the user will be stored in localStorage so it can be accessed quickly.  In the future, we might want to look at just integrating directly with firebase-app or firebase-auth.
+
+## The /src/components/Icon Directory
+
+If you are using the Github desktop client, it pulls in the platform [gitignore](https://github.com/github/gitignore/blob/master/Global/macOS.gitignore#L6), as a global gitignore file. It __should__ still allow files and folders that have `Icon` in the name but it isn't.
+
+If you think you are having problems with this, check it with the following command:
+
+```bash
+$ git check-ignore -v path/to/suspected/ignored/file
+```
+
+To force add the file, type:
+```bash
+$ git add --forece path/to/gitignored/file
+```

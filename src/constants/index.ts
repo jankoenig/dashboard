@@ -15,3 +15,18 @@ export const LOGIN_USER_PENDING = "bst/LOGIN_USER_PENDING";
 export const LOGIN_USER_SUCCESS = "bst/LOGIN_USER_SUCCESS";
 export const LOGIN_USER_ERROR = "bst/LOGIN_USER_ERROR";
 export const LOGOUT_USER = "bst/LOGOUT_USER";
+
+export namespace CLASSES {
+    export namespace COLOR {
+        export const BLUE_GREY_800 = "mdl-color--blue-grey-800";
+        export const BLUE_GREY_900 = "mdl-color--blue-grey-900";
+        export const GREY_100 = "mdl-color--grey-100";
+        export const GREY_900 = "mdl-color--grey-900";
+    }
+
+    export namespace TEXT {
+        export const BLUE_GREY_50 = "mdl-color-text--blue-grey-50";
+        export const BLUE_GREY_400 = "mdl-color-text--blue-grey-400";
+        export const GREY_600 = "mdl-color-text--grey-600";
+    }
+}
