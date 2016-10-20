@@ -20,6 +20,6 @@ describe("MenuItem", function() {
     it("renders correctly", function() {
        const wrapper = shallow(<MenuItem >Menu Item Title</MenuItem>);
        expect(wrapper.find("li")).to.have.length(1);
-       console.log(wrapper.find("li").text());
+       expect(wrapper.find("li").text()).to.equal("Menu Item Title");
     });
 });
