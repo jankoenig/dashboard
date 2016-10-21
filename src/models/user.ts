@@ -1,5 +1,3 @@
-import * as Firebase from "firebase";
-
 
 export interface UserProperties {
   readonly email: string;
@@ -21,6 +19,8 @@ export default class User implements UserProperties {
     this.photoUrl = props.photoUrl;
   }
 }
+
+import * as Firebase from "firebase";
 
 export class FirebaseUser extends User {
 

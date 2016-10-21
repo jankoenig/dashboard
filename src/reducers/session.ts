@@ -22,7 +22,6 @@ export function session(state: SessionState = INITIAL_STATE, action: any = { typ
   switch (action.type) {
     case SET_USER:
       let userSessionState: SessionState = objectAssign({}, state, {user: action.user});
-      console.log(userSessionState);
       return userSessionState;
     default:
       return state;
