@@ -4,7 +4,6 @@ export interface SkillProperties {
     readonly displayName: string;
 }
 
-
 export default class Skill {
 
     readonly id: string;
