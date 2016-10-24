@@ -24,14 +24,14 @@ export namespace log {
         return queryString;
     }
 
-    export function getLogs(query: log.Query, callback: (logs: Log[], error?: string) => void, startTime?: Date): void {
+    export function getLogs(query: log.Query, startTime?: Date): Promise<Log[]> {
 
         let baseUrl = "http://logless-server-049ff85c.4a0ac639.svc.dockerapp.io:3000/v1";
         let url = baseUrl + "/query?" + log.queryBuilder(query);
 
-        fetch(url).then(function(response) {
+        return fetch(url).then(function (response) {
             return response.json();
-        }).then(function(json) {
+        }).then(function (json) {
             let data: any[] = json.data;
             let logs: Log[] = [];
 
@@ -40,7 +40,7 @@ export namespace log {
                 logs.push(log);
             }
 
-            callback(logs);
+            return logs;
         });
     }
 

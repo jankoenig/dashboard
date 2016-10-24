@@ -1,41 +1,31 @@
 import { expect } from "chai";
 
-import { setLogs } from "../actions/log";
-import Log from "../models/log";
+import { fetchLogsRequest, setLogs } from "../actions/log";
+import { mockLogs } from "../utils/test";
 import { logReducer } from "./log";
 
-describe("Log Reducer", function() {
+describe("Log Reducer", function () {
 
-    function mockLogs(length: number) {
+    describe("fetch logs request action", function() {
+        it("sets is loading to true", function() {
+            let state = {
+                isLoading: false
+            };
 
-        let logs: Log[] = [];
+            let newState = logReducer(state, fetchLogsRequest());
 
-        for (let i = 0; i < length; i++) {
-            // create a new dummy log
-            let log = new Log({
-                payload: "payload",
-                log_type: "INFO",
-                timestamp: new Date(),
-                source: "source",
-                transaction_id: "" + i,
-                tags: [],
-                id: "" + i
-            });
+            expect(newState.isLoading).to.be.true;
+        });
+    });
 
-            logs.push(log);
-        }
-        return logs;
-    }
-
-    describe("set logs action", function() {
-        it("sets the logs", function() {
+    describe("set logs action", function () {
+        it("sets the logs", function () {
 
             let state = {
                 isLoading: true
             };
 
             let action = setLogs(mockLogs(4));
-
             let newState = logReducer(state, action);
 
             expect(newState.logs).to.exist;
@@ -44,14 +34,14 @@ describe("Log Reducer", function() {
             expect(newState.isLoading).to.equal(state.isLoading);
         });
     });
-    describe("unknown action", function() {
-        it("passes the state through", function() {
+    describe("unknown action", function () {
+        it("passes the state through", function () {
 
             let state = {
                 isLoading: false
             };
 
-            let newState = logReducer(state, {type: ""});
+            let newState = logReducer(state, { type: "" });
 
             expect(newState.isLoading).to.equal(state.isLoading);
             expect(newState.logs).to.be.undefined;

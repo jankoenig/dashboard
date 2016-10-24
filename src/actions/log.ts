@@ -1,4 +1,4 @@
-import { SET_LOGS } from "../constants";
+import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 import log from "../services/log";
 
@@ -14,17 +14,29 @@ export function setLogs(logs: Log[]): SetLogsAction {
     };
 }
 
+export type FetchLogsRequestAction = {
+    type: FETCH_LOGS_REQUEST
+}
+
+export function fetchLogsRequest() {
+    return {
+        type: FETCH_LOGS_REQUEST
+    };
+}
+
 export function getLogs(source: string) {
     return function (dispatch: Redux.Dispatch<any>) {
+
+        dispatch(fetchLogsRequest());
 
         let startTime: Date = new Date();
         startTime.setDate(startTime.getDate() - 10);
 
         let query: log.Query = {
-            source: "happy_xapp",
+            source: source,
             startTime: startTime
         };
-        log.getLogs(query, function (logs) {
+        return log.getLogs(query).then(function (logs) {
             dispatch(setLogs(logs));
         });
     };
