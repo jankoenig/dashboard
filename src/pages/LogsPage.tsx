@@ -74,7 +74,7 @@ export class LogsPage extends React.Component<LogsPageProps, any> {
     }
 
     componentWillMount() {
-        this.props.getLogs(this.props.params);
+        this.props.getLogs(this.props.params.source);
     }
 
     render() {

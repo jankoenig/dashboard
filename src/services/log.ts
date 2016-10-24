@@ -10,7 +10,7 @@ export namespace log {
         endTime?: Date;
     }
 
-    export function queryBuilder(query: log.Query) {
+    export function queryBuilder(query: Query) {
         let queryString: string = "";
 
         queryString += "source=" + query.source;
@@ -24,7 +24,7 @@ export namespace log {
         return queryString;
     }
 
-    export function getLogs(query: log.Query, startTime?: Date): Promise<Log[]> {
+    export function getLogs(query: Query): Promise<Log[]> {
 
         let baseUrl = "http://logless-server-049ff85c.4a0ac639.svc.dockerapp.io:3000/v1";
         let url = baseUrl + "/query?" + log.queryBuilder(query);
