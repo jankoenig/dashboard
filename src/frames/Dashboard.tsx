@@ -40,14 +40,6 @@ function mapDispatchToProps(dispatch: any) {
 
 class Dashboard extends React.Component<any, any> {
 
-  handleLogout() {
-    console.log("logout");
-  }
-
-  handleLogin() {
-    console.log("login");
-  }
-
   drawerClasses() {
     return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
   }

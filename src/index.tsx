@@ -42,7 +42,7 @@ let firebaseConfig = {
 
 Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function(user: Firebase.User) {
-    console.log("auth state change");
+    console.log("onAuthStateChanged");
     console.log(user);
 });
 

@@ -18,8 +18,6 @@ const INITIAL_STATE: LogState = {
 type LogAction = SetLogsAction | { type: "" };
 
 export function logReducer(state: LogState = INITIAL_STATE, action: LogAction ) {
-    console.log("logReducer");
-    console.log(action);
     switch (action.type) {
         case SET_LOGS:
             let logState: LogState = objectAssign({}, state, { logs: action.logs });

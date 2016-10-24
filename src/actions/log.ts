@@ -15,19 +15,16 @@ export function setLogs(logs: Log[]): SetLogsAction {
 }
 
 export function getLogs(source: string) {
-
-    console.log("get logs " + source);
     return function (dispatch: Redux.Dispatch<any>) {
 
         let startTime: Date = new Date();
         startTime.setDate(startTime.getDate() - 10);
 
         let query: log.Query = {
-                source: "happy_xapp",
-                startTime: startTime
-            };
-        log.getLogs(query, function(logs) {
-            console.log(logs);
+            source: "happy_xapp",
+            startTime: startTime
+        };
+        log.getLogs(query, function (logs) {
             dispatch(setLogs(logs));
         });
     };
