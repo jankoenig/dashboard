@@ -7,11 +7,11 @@ import auth from "../services/auth";
 export function sendingRequest(sending: boolean) {
   return {
     type: SENDING_REQUEST,
-    sending
+    sending: sending
   };
 }
 
-export function setUser(user: User) {
+export function setUser(user: User | undefined) {
   return {
     type: SET_USER,
     user: user

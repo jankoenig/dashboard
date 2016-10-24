@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import * as fetchMock from "fetch-mock";
 
+import { mockLogs } from "../utils/test";
 import log from "./log";
 
 describe("log service", function () {
@@ -8,35 +9,7 @@ describe("log service", function () {
         // Mock fetch
         beforeEach(function () {
              fetchMock.get("*", {
-                "data": [
-                    {
-                        "payload": {
-                            "foo": "bar"
-                        },
-                        "log_type": "INFO",
-                        "source": "happy_xapp",
-                        "transaction_id": "tx-json",
-                        "timestamp": "2016-10-18T21:51:01.352Z",
-                        "tags": [
-                            "xxx",
-                            "yyy"
-                        ],
-                        "id": "58069945469d52612243ab0c"
-                    },
-                    {
-                        "payload": {
-                            "foo": "bar"
-                        },
-                        "log_type": "INFO",
-                        "source": "happy_xapp",
-                        "transaction_id": "tx - foo",
-                        "timestamp": "2016-10-18T21:47:53.269Z",
-                        "tags": [
-                            "tag1",
-                            "tag3"
-                        ],
-                        "id": "58069889469d52612243ab0b"
-                    }]
+                "data": mockLogs(2)
             });
         });
 
@@ -46,7 +19,7 @@ describe("log service", function () {
 
         it("retreives logs", function (done) {
             let startTime = new Date();
-            log.getLogs({ source: "happy_xapp", startTime: startTime }, function (logs) {
+            log.getLogs({ source: "happy_xapp", startTime: startTime }).then(function (logs) {
                 expect(logs).to.have.length(2);
                 done();
             });

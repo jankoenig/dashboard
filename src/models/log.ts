@@ -1,6 +1,6 @@
 export interface LogProperties {
     payload: string | any;
-    stack: string;
+    stack?: string;
     log_type: "INFO" | "ERROR";
     source: string;
     transaction_id: string;
