@@ -16,6 +16,11 @@ export const LOGIN_USER_SUCCESS = "bst/LOGIN_USER_SUCCESS";
 export const LOGIN_USER_ERROR = "bst/LOGIN_USER_ERROR";
 export const LOGOUT_USER = "bst/LOGOUT_USER";
 
+export type GET_LOGS = "bst/GET_LOGS";
+export const GET_LOGS: GET_LOGS = "bst/GET_LOGS";
+export type SET_LOGS = "bst/SET_LOGS";
+export const SET_LOGS: SET_LOGS = "bst/SET_LOGS";
+
 export namespace CLASSES {
     export namespace COLOR {
         export const BLUE_GREY_800 = "mdl-color--blue-grey-800";
