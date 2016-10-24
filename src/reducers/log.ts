@@ -17,11 +17,10 @@ const INITIAL_STATE: LogState = {
 
 type LogAction = SetLogsAction | { type: "" };
 
-export function logReducer(state: LogState = INITIAL_STATE, action: LogAction ) {
+export function logReducer(state: LogState = INITIAL_STATE, action: LogAction ): LogState {
     switch (action.type) {
         case SET_LOGS:
-            let logState: LogState = objectAssign({}, state, { logs: action.logs });
-            return logState;
+            return objectAssign({}, state, { logs: action.logs });
         default:
             return state;
     }
