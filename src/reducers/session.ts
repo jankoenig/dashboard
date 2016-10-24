@@ -4,7 +4,6 @@ import { SET_USER } from "../constants";
 import User  from "../models/user";
 import auth from "../services/auth";
 
-
 export type SessionState = {
   user?: User,
   hasError: boolean,
