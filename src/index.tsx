@@ -9,9 +9,9 @@ import thunk from "redux-thunk";
 
 import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
-import AboutPage from "./pages/AboutPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import LogsPage from "./pages/LogsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import rootReducer from "./reducers";
 
@@ -39,14 +39,23 @@ let firebaseConfig = {
     storageBucket: "bespoken-tools.appspot.com",
     messagingSenderId: "629657216103"
 };
-Firebase.initializeApp(firebaseConfig);
 
+Firebase.initializeApp(firebaseConfig);
+Firebase.auth().onAuthStateChanged(function(user: Firebase.User) {
+    console.log("auth state change");
+    console.log(user);
+});
+
+/**
+ * Checks if the user exists before entering routes that require a user.
+ *
+ * See below on the onEnter method.
+ */
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
 
     // TODO: make this type safe
     const session: any = store.getState().session;
     if (!session.user) {
-        console.log("sending to login");
         replace("/login");
     }
 };
@@ -58,8 +67,8 @@ ReactDOM.render(
                 <IndexRoute component={LoginPage} />
             </Route>
             <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                <IndexRoute component={HomePage} />
-                <Route path="about" component={AboutPage}/>
+                <IndexRoute component={ HomePage } />
+                <Route path="/skills/:source/logs" component={LogsPage}/>
                 <Route path="*" component={NotFoundPage} />
             </Route>
         </Router>
