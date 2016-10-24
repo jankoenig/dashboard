@@ -1,6 +1,6 @@
 {
   "name": "bespoken-dashboard",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "The dashboard for https://bespoken.tools",
   "repository": "https://github.com/bespoken/dashboard",
   "main": "./dist/scripts/dashboard.js",
@@ -16,7 +16,7 @@
     "start": "node scripts/server.js",
     "preversion": "webpack && git add . && git commit -m 'dist-builds'",
     "postversion": "git push && git push --tags",
-    "build":"webpack"
+    "build": "webpack"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
