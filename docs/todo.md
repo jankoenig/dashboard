@@ -1,5 +1,0 @@
-- [ ] Figure out casing on file names
-- [ ] CSS Modules (or not?)
-- [ ] 99% Coverage
-- [ ] Run unit tests in the browser
-- [ ] Figure out why `npm run lint` returns better results on travis-ci
