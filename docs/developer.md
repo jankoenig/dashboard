@@ -15,58 +15,25 @@ To run tests:
 $ npm test
 ```
 
+To run the harness:
+```bash
+$ npm start
+```
+
 To run code coverage:
 ```bash
 $ npm run coverage
 ```
 
-To run the example app:
+To then open the report generated in `/coverage/`:
 ```bash
-$ npm start
+open coverage/ts-report/index.html
 ```
 
 To clean the generated files:
 ```bash
 $ npm run clean
 ```
-
-## IDE
-
-The two recommended IDEs are either [Atom](https://atom.io/) or [VSCode](https://code.visualstudio.com/download).  Both are free and with community plugins you will get pretty close to the functionality of a full fledged IDE like WebStorm.
-
-### Atom
-
-#### Atom Recommended Packages
-
-For TypeScript
-
-- atom-typescript
-- linter-tslint
-
-For React
-
-- react
-
-In General
-
-- terminal-plus
-- auto-update-packages
-- atom-beautify
-- editorconfig
-- file-type-icons
-
-#### Helpful Commands
-
-- Properly indent files --> control & alt (option) * l
-
-### VSCode
-
-Visual Studio Code already comes with all the necessary plugins for TypeScript.
-
-#### Helpful Commands
-
-- Toggle the integrated terminal --> control & `
-- Format Code (that is in focus) --> alt & shift & f
 
 ## Resources
 
