@@ -31,6 +31,13 @@ and the following script tags before the closing `</body>` tag:
 <script src="/bower/directory/bespoken-dashboard/scripts/dashboard.js"></script>
 ```
 
+Most importantly, place the dashbaord container tag somewhere within your `<body />`.
+
+```html
+<!-- This is where the dashboard will be injected -->
+<div id="dashboard"></div>
+```
+
 ## Resources
 
 - Working on the project? Go [here](./docs/developer.md)
