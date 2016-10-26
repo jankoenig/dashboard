@@ -1,5 +1,6 @@
-import  User  from "./user";
 import { expect } from "chai";
+
+import  User  from "./user";
 
 describe("User", function() {
   describe("constructor", function() {

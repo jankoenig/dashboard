@@ -1,6 +1,6 @@
 import * as chai from "chai";
 
-import utils from "./Utils";
+import utils from "./index";
 
 let expect = chai.expect;
 

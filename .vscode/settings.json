@@ -9,5 +9,6 @@
     },
     "files.autoSave": "onFocusChange",
     "files.trimTrailingWhitespace": true,
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "npm-intellisense.scanDevDependencies": true
 }
