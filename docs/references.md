@@ -1,4 +1,9 @@
+## Examples for TypeScript, React, Redux
 
+- [React TypeScript Samples](https://github.com/Lemoncode/react-typescript-samples)
+- [TO DO MVC - React and TypeScript](http://todomvc.com/examples/typescript-react/#/)
+- [todomvc-redux-react-typescript](https://github.com/jaysoo/todomvc-redux-react-typescript)
+- [typescript-react-redux-starter](https://github.com/rangle/typescript-react-redux-starter)
 
 ## Typescript
 
@@ -9,7 +14,6 @@
 - [React and Redux with TypeScript](http://jaysoo.ca/2015/09/26/typed-react-and-redux/)
 - [Typesafe Redux in TypeScript](http://michaellawrie.com/typesafe-redux-in-typescript)
 - [TypeScript and Async Redux Actions](https://rjzaworski.com/2016/09/typescript-redux-async-actions)
-- [React TypeScript Samples](https://github.com/Lemoncode/react-typescript-samples)
 - [TypeScript: React & Webpack](https://www.typescriptlang.org/docs/handbook/react-&-webpack.html)
 
 ## Typings
@@ -22,19 +26,19 @@ To add new definitions:
 $ typings install dt~react-mdl --global --save
 ```
 
+- [Typings](https://github.com/typings/typings)
+- [DefinitelyTyped](http://definitelytyped.org/)
+
 ## React
 
 - [React](https://facebook.github.io/react/docs/getting-started.html)
-- [Login-Flow](https://github.com/mxstbr/login-flow)
-  - Great example of a login workflow with React
-- [Parse Dashboard](https://github.com/ParsePlatform/parse-dashboard)
 - [Working with React and TypeScript](http://blog.wolksoftware.com/working-with-react-and-typescript)
-- [TO DO MVC - React and TypeScript](http://todomvc.com/examples/typescript-react/#/)
+- [[EXAMPLE] Login-Flow](https://github.com/mxstbr/login-flow)
+- [[EXAMPLE] Parse Dashboard](https://github.com/ParsePlatform/parse-dashboard)
 
 ## Redux
 
-- [todomvc-redux-react-typescript](https://github.com/jaysoo/todomvc-redux-react-typescript)
-- [typescript-react-redux-starter](https://github.com/rangle/typescript-react-redux-starter)
+- [Redux](http://redux.js.org/)
 
 ## Work in Progress
 
