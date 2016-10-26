@@ -3,9 +3,7 @@ import { createHistory } from "history";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
-import { routerMiddleware, syncHistoryWithStore } from "react-router-redux";
-import { applyMiddleware, createStore,  } from "redux";
-import thunk from "redux-thunk";
+import { syncHistoryWithStore } from "react-router-redux";
 
 import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
@@ -15,6 +13,8 @@ import LogsPage from "./pages/LogsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import rootReducer from "./reducers";
 
+import configureStore from "./store";
+
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
 // Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
@@ -22,12 +22,8 @@ import rootReducer from "./reducers";
 const browserHistory = useRouterHistory(createHistory)({
     basename: "/dashboard"
 });
-// Create the history middleware which is needed for routing
-const historyMiddleware = routerMiddleware(browserHistory);
-// We now create the store, connecting it with thunk middleware and the history middleware we just built
-const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
-// Finally, our store which is created from our reducers
-const store = createStoreWithMiddleware(rootReducer);
+// Configure the store
+const store = configureStore(browserHistory, rootReducer);
 // And our history
 const history = syncHistoryWithStore(browserHistory, store);
 
