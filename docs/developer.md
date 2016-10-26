@@ -8,7 +8,7 @@ Install, you know the drill.
 $ npm install
 ```
 
-You will need a good IDE for developing in TypeScript, we highly recommend [Visual Studio Code](https://code.visualstudio.com/download).  Read more [here][./docs/ide.md]
+You will need a good IDE for developing in TypeScript, we highly recommend [Visual Studio Code](https://code.visualstudio.com/download).  Read more [here](./ide.md)
 
 ## Commands
 
@@ -51,6 +51,6 @@ The things you Google all the time
 
 ## Continue Reading
 
-- [Our Technology Stack](./docs/our-technology-stack.md)
-- [Additonal Reading](./docs/references.md)
-- [Patterns](./docs/patterns.md)
+- [Our Technology Stack](./our-technology-stack.md)
+- [Additonal Reading](./references.md)
+- [Patterns](./patterns.md)
