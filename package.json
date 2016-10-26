@@ -1,6 +1,6 @@
 {
   "name": "bespoken-dashboard",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "description": "The dashboard for https://bespoken.tools",
   "repository": "https://github.com/bespoken/dashboard",
   "main": "./dist/scripts/dashboard.js",
@@ -13,10 +13,10 @@
     "precoverage": "npm run pretest",
     "coverage": "istanbul cover --include-all-sources --root src/ -x \"**/*.test.js\" _mocha \"src/**/*.test.js\" -- -R spec && remap-istanbul -i ./coverage/coverage.json -o ./coverage/ts-report -t html && ./node_modules/.bin/remap-istanbul -i coverage/coverage.json -t lcovonly > coverage/lcov-ts.info",
     "coveralls": "npm run coverage && ./node_modules/coveralls/bin/coveralls.js < coverage/lcov-ts.info",
-    "build": "webpack",
     "start": "node scripts/server.js",
-    "preversion": "npm run build",
-    "postversion": "git push && git push --tags"
+    "preversion": "webpack && git add . && git commit -m 'dist-builds'",
+    "postversion": "git push && git push --tags",
+    "build": "webpack"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
