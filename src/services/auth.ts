@@ -2,7 +2,7 @@ import * as Firebase from "firebase";
 
 import { FirebaseUser } from "../models/user";
 import User from "../models/user";
-import Utils from "../Utils";
+import utils from "../utils";
 
 /**
  * Auth Service
@@ -15,7 +15,7 @@ namespace auth {
     }
 
     function loginWithProvider(provider: firebase.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
-        if (Utils.isMobileOrTablet()) {
+        if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             Firebase.auth().signInWithRedirect(provider);
             Firebase.auth().getRedirectResult().then(function(result){
