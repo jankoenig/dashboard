@@ -14,31 +14,56 @@ import { Cell, Grid } from "../components/Grid";
 import { Store } from "../reducers";
 ```
 
-# Testing 
+# Testing
 
 The tests for each file lives beside the file however with the extension `.test.ts` or `.test.tsx`.
 
-To test a React Component, use the following pattern:
+To test a React Component (.tsx), use the following pattern:
 
 ```typescript
-import * as React from "react";
-import * as TestUtils from "react-addons-test-utils";
+import * as chai from "chai";
+import { shallow } from "enzyme";
+// tslint:disable:no-unused-variable
+import * as React from "react"; // Needed for enzyme, unused for some reason.
+// tslint:enable:no-unused-variable
+
+import Navigation from "./Navigation";
+
+let expect = chai.expect;
+
+describe("Navigation", function() {
+    it("renders correctly", function() {
+        const wrapper = shallow(<Navigation name="name" path="/" />);
+        expect(wrapper.find("nav")).to.have.length(1);
+    });
+});
+```
+
+To test a normal TypeScript file (.ts), use the following pattern:
+
+```typescript
 import { expect } from "chai";
 
-import MyComponent from "./MyComponent";
+import  User  from "./user";
 
-describe("MyComponent", () => {
-    let renderer: React.ShallowRenderer;
-
-    beforeEach(function () {
-        renderer = TestUtils.createRenderer();
-        renderer.render(<MyComponent />);
+describe("User", function() {
+  describe("constructor", function() {
+    it("should set the email and token", function() {
+      let user = new User({email : "my@email.com"});
+      expect(user.email).to.eq("my@email.com");
     });
-
-    it("should render correctly", function () {
-        const result = renderer.getRenderOutput();
-        expect(result.type).to.equal("div");
-    });
+  });
+  it("can serialize", function() {
+    let user = new User({email: "my@email.com"});
+    let json = JSON.stringify(user);
+    expect(json).to.eq("{\"email\":\"my@email.com\"}");
+  });
+  it ("can deserialize", function() {
+    let user = new User({email: "my@email.com"});
+    let json = JSON.stringify(user);
+    let deserializedUser = new User(JSON.parse(json));
+    expect(deserializedUser.email).to.equal(user.email);
+  });
 });
 ```
 

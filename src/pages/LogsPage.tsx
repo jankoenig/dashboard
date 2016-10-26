@@ -6,7 +6,7 @@ import JSONTree from "react-json-tree";
 import { getLogs } from "../actions/log";
 import { Cell, Grid } from "../components/Grid";
 import Log from "../models/log";
-import { Store } from "../reducers";
+import { State } from "../reducers";
 
 interface LogsPageProps {
     logs: Log[];
@@ -14,7 +14,7 @@ interface LogsPageProps {
     params: any;
 }
 
-function mapStateToProps(state: Store.All) {
+function mapStateToProps(state: State.All) {
     return {
         logs: state.logs.logs
     };

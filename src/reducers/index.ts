@@ -5,7 +5,7 @@ import { authForm, AuthFormState } from "./authForm";
 import { logReducer, LogState } from "./log";
 import { session, SessionState } from "./session";
 
-export namespace Store {
+export namespace State {
   export type All = {
     session: SessionState,
     authForm: AuthFormState,
@@ -15,7 +15,7 @@ export namespace Store {
   }
 }
 
-const rootReducer = combineReducers<Store.All>({
+const rootReducer = combineReducers<State.All>({
   session,
   authForm,
   logs: logReducer,

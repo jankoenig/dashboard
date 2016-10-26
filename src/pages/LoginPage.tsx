@@ -7,7 +7,7 @@ import { login, loginWithGithub } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
-import { Store } from "../reducers";
+import { State } from "../reducers";
 
 interface LoginPageProps {
     email: string;
@@ -18,7 +18,7 @@ interface LoginPageProps {
     loginWithGithub: () => (dispatch: Redux.Dispatch<any>) => void;
 };
 
-function mapStateToProps(state: Store.All) {
+function mapStateToProps(state: State.All) {
     return {
         email: state.authForm.email,
         password: state.authForm.password,

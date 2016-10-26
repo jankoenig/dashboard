@@ -13,7 +13,7 @@ import NavLink from "../components/NavLink";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import User from "../models/user";
-import { Store } from "../reducers";
+import { State } from "../reducers";
 
 interface DashboardProps {
   user?: User;
@@ -21,7 +21,7 @@ interface DashboardProps {
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
 }
 
-function mapStateToProps(state: Store.All) {
+function mapStateToProps(state: State.All) {
   return {
     user: state.session.user
   };
