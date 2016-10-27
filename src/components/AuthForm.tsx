@@ -23,11 +23,11 @@ export default class AuthForm extends React.Component<AuthFormProps, any> {
                 <form id="auth">
                     <div className="mdl-textfield mdl-js-textfield">
                         <input className="mdl-textfield__input" type="text" id="email" value={this.props.email} onChange={this.props.onChange} />
-                        <label className="mdl-textfield__label" for="email">email</label>
+                        <label className="mdl-textfield__label" htmlFor="email">email</label>
                     </div>
                     <div className="mdl-textfield mdl-js-textfield">
                         <input className="mdl-textfield__input" type="password" id="password" value={this.props.password} onChange={this.props.onChange} />
-                        <label className="mdl-textfield__label" for="password">password</label>
+                        <label className="mdl-textfield__label" htmlFor="password">password</label>
                     </div>
                 </form>
                 <div className="mdl-card__actions mdl-card--border">
