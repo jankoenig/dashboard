@@ -12,7 +12,7 @@ export default class Source implements SourceProperties {
 
     readonly id: string;
     readonly name: string;
-    readonly profile: SourceProfile;
+    readonly profile?: SourceProfile;
 
     constructor(props: SourceProperties) {
         this.id = props.id ? props.id : uuid.v4();
