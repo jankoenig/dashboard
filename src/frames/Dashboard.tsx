@@ -5,11 +5,8 @@ import { push } from "react-router-redux";
 
 import { logout } from "../actions/session";
 import Content from "../components/Content";
-import Drawer from "../components/Drawer";
 import Header from "../components/Header";
 import Layout from "../components/Layout";
-import Navigation from "../components/Navigation";
-import NavLink from "../components/NavLink";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import User from "../models/user";
