@@ -5,6 +5,11 @@ import utils from "./index";
 let expect = chai.expect;
 
 describe("Utils", function () {
+    it("throws an error on node.js", function() {
+        // navigator is not defined on node.js
+        expect(utils.isMobileOrTablet).to.throw(ReferenceError);
+    });
+
     it("checks mobile platform correctly", function() {
         expect(utils.isMobileOrTabletImpl("iphone", "")).to.be.true;
         expect(utils.isMobileOrTabletImpl("android", "")).to.be.true;
