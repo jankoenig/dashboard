@@ -22,9 +22,21 @@ export interface RedirectStrategy {
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void;
 }
 
-class DefaultRedirectStrategy implements RedirectStrategy {
+export class ToPathStrategy implements RedirectStrategy {
+  toPath: string;
+
+  public constructor(toPath: string) {
+    this.toPath = toPath;
+  }
+
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
-    dispatch(replace("/"));
+    dispatch(replace(this.toPath));
+  }
+}
+
+class DefaultRedirectStrategy extends ToPathStrategy {
+  constructor() {
+    super("/");
   }
 };
 

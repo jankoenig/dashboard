@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
-import { login, loginWithGithub } from "../actions/session";
+import { login, loginWithGithub, ToPathStrategy } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -13,9 +13,10 @@ interface LoginPageProps {
     email: string;
     password: string;
     error: string;
+    redirect?: string;
     changeForm: (field: string, value: string) => void;
-    login: (email: string, password: string) => (dispatch: Redux.Dispatch<any>) => void;
-    loginWithGithub: () => (dispatch: Redux.Dispatch<any>) => void;
+    login: (email: string, password: string, redirect?: string) => (dispatch: Redux.Dispatch<any>) => void;
+    loginWithGithub: (redirect?: string) => (dispatch: Redux.Dispatch<any>) => void;
 };
 
 function mapStateToProps(state: State.All) {
@@ -31,11 +32,13 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         changeForm: function(field: string, value: string) {
             dispatch(changeForm(field, value));
         } ,
-        login: function(email: string, password: string) {
-            return dispatch(login(email, password));
+        login: function(email: string, password: string, origin?: string) {
+            let strat: ToPathStrategy = (origin) ? new ToPathStrategy(origin) : undefined;
+            return dispatch(login(email, password, strat));
         },
-        loginWithGithub: function() {
-            return dispatch(loginWithGithub());
+        loginWithGithub: function(origin?: string) {
+            let strat: ToPathStrategy = (origin) ? new ToPathStrategy(origin) : undefined;
+            return dispatch(loginWithGithub(strat));
         }
     };
 }
@@ -51,12 +54,12 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormSubmit(event: React.FormEvent) {
         event.preventDefault();
-        this.props.login(this.props.email, this.props.password);
+        this.props.login(this.props.email, this.props.password, this.props.redirect);
     }
 
     handleFormLoginWithGithub(event: React.FormEvent) {
         event.preventDefault();
-        this.props.loginWithGithub();
+        this.props.loginWithGithub(this.props.redirect);
     }
 
     render() {
