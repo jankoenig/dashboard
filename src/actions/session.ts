@@ -1,4 +1,4 @@
-import { replace } from "react-router-redux";
+import { goBack, push, replace } from "react-router-redux";
 
 import { SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
@@ -20,6 +20,12 @@ export function setUser(user: User | undefined) {
 
 export interface RedirectStrategy {
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void;
+}
+
+export class BackStrategy implements RedirectStrategy {
+  loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
+    dispatch(goBack());
+  }
 }
 
 export class ToPathStrategy implements RedirectStrategy {
@@ -72,7 +78,7 @@ export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
     auth.logout(function (success) {
       if (success) {
-        dispatch(replace("/login"));
+        dispatch(push("/login"));
       }
     });
   };

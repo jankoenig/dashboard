@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
-import { login, loginWithGithub, ToPathStrategy } from "../actions/session";
+import { BackStrategy, login, loginWithGithub, RedirectStrategy } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -13,10 +13,10 @@ interface LoginPageProps {
     email: string;
     password: string;
     error: string;
-    redirect?: string;
+    goBack?: boolean;
     changeForm: (field: string, value: string) => void;
-    login: (email: string, password: string, redirect?: string) => (dispatch: Redux.Dispatch<any>) => void;
-    loginWithGithub: (redirect?: string) => (dispatch: Redux.Dispatch<any>) => void;
+    login: (email: string, password: string, redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
+    loginWithGithub: (redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
 };
 
 function mapStateToProps(state: State.All) {
@@ -32,13 +32,11 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         changeForm: function(field: string, value: string) {
             dispatch(changeForm(field, value));
         } ,
-        login: function(email: string, password: string, origin?: string) {
-            let strat: ToPathStrategy = (origin) ? new ToPathStrategy(origin) : undefined;
-            return dispatch(login(email, password, strat));
+        login: function(email: string, password: string, redirectStrat: RedirectStrategy) {
+            return dispatch(login(email, password, redirectStrat));
         },
-        loginWithGithub: function(origin?: string) {
-            let strat: ToPathStrategy = (origin) ? new ToPathStrategy(origin) : undefined;
-            return dispatch(loginWithGithub(strat));
+        loginWithGithub: function(redirectStrat: RedirectStrategy) {
+            return dispatch(loginWithGithub(redirectStrat));
         }
     };
 }
@@ -54,12 +52,16 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormSubmit(event: React.FormEvent) {
         event.preventDefault();
-        this.props.login(this.props.email, this.props.password, this.props.redirect);
+        this.props.login(this.props.email, this.props.password, this.getRedirectStrategy());
     }
 
     handleFormLoginWithGithub(event: React.FormEvent) {
         event.preventDefault();
-        this.props.loginWithGithub(this.props.redirect);
+        this.props.loginWithGithub(this.getRedirectStrategy());
+    }
+
+    getRedirectStrategy(): RedirectStrategy {
+        return (this.props.goBack) ? new BackStrategy() : undefined;
     }
 
     render() {
