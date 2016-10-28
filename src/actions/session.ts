@@ -1,4 +1,4 @@
-import { push } from "react-router-redux";
+import { replace } from "react-router-redux";
 
 import { SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
@@ -24,7 +24,7 @@ export interface RedirectStrategy {
 
 class DefaultRedirectStrategy implements RedirectStrategy {
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
-    dispatch(push("/"));
+    dispatch(replace("/"));
   }
 };
 
@@ -60,7 +60,7 @@ export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
     auth.logout(function (success) {
       if (success) {
-        dispatch(push("/login"));
+        dispatch(replace("/login"));
       }
     });
   };
