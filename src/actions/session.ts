@@ -18,42 +18,19 @@ export function setUser(user: User | undefined) {
   };
 }
 
+
 export function login(email: string, password: string) {
   return function (dispatch: Redux.Dispatch<any>) {
-
-    dispatch(sendingRequest(true));
-
-    auth.login(email, password, (success, error) => {
-
-      dispatch(sendingRequest(false));
-      dispatch(setUser(auth.user()));
-
-      if (success) {
-        dispatch(push("/"));
-      } else {
-        // clear the password
-        // set the error
-      }
+    loginMethod(dispatch, function(callback) {
+      auth.login(email, password, callback);
     });
   };
 }
 
 export function loginWithGithub() {
   return function (dispatch: Redux.Dispatch<any>) {
-
-    dispatch(sendingRequest(true));
-
-    auth.loginWithGithub(function(success, error) {
-
-      dispatch(sendingRequest(false));
-      dispatch(setUser(auth.user()));
-
-      if (success) {
-        dispatch(push("/"));
-      } else {
-        // clear the password
-        // set the error
-      }
+    loginMethod(dispatch, function(callback) {
+      auth.loginWithGithub(callback);
     });
   };
 }
@@ -66,4 +43,19 @@ export function logout() {
       }
     });
   };
+}
+
+function loginMethod(dispatch: Redux.Dispatch<any>, login: (callback: (success: boolean, error?: string) => void) => void) {
+  dispatch(sendingRequest(true));
+  login(function(success, error) {
+      dispatch(sendingRequest(false));
+      dispatch(setUser(auth.user()));
+
+      if (success) {
+        dispatch(push("/"));
+      } else {
+        // clear the password
+        // set the error
+      }
+  });
 }
