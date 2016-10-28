@@ -18,19 +18,39 @@ export function setUser(user: User | undefined) {
   };
 }
 
+export interface RedirectStrategy {
+  loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void;
+}
 
-export function login(email: string, password: string) {
+class DefaultRedirectStrategy implements RedirectStrategy {
+    loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
+        dispatch(push("/"));
+    }
+};
+
+function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: RedirectStrategy = new DefaultRedirectStrategy(), loginStrat: (callback: (success: boolean, error?: string) => void) => void) {
+  dispatch(sendingRequest(true));
+  loginStrat(function(success, error) {
+      dispatch(sendingRequest(false));
+      dispatch(setUser(auth.user()));
+
+      if (success) {
+        redirectStrat.loginSuccess(dispatch, auth.user());
+      }
+  });
+
+export function login(email: string, password: string, redirectStrat?: RedirectStrategy) {
   return function (dispatch: Redux.Dispatch<any>) {
-    loginMethod(dispatch, function(callback) {
-      auth.login(email, password, callback);
+    loginMethod(dispatch, redirectStrat, function(internalCallback) {
+      auth.login(email, password, internalCallback);
     });
   };
 }
 
-export function loginWithGithub() {
+export function loginWithGithub(redirectStrat?: RedirectStrategy) {
   return function (dispatch: Redux.Dispatch<any>) {
-    loginMethod(dispatch, function(callback) {
-      auth.loginWithGithub(callback);
+    loginMethod(dispatch, redirectStrat, function(internalCallback) {
+      auth.loginWithGithub(internalCallback);
     });
   };
 }
@@ -43,19 +63,4 @@ export function logout() {
       }
     });
   };
-}
-
-function loginMethod(dispatch: Redux.Dispatch<any>, login: (callback: (success: boolean, error?: string) => void) => void) {
-  dispatch(sendingRequest(true));
-  login(function(success, error) {
-      dispatch(sendingRequest(false));
-      dispatch(setUser(auth.user()));
-
-      if (success) {
-        dispatch(push("/"));
-      } else {
-        // clear the password
-        // set the error
-      }
-  });
 }
