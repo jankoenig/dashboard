@@ -11,7 +11,7 @@ const mockStore = configureMockStore(middlewares);
 
 let expect = chai.expect;
 
-describe("Session Actions", function () {
+describe("Session actions", function () {
     it("sets the user", function() {
         let user = new User({ email: "email"});
         let initialState = {};

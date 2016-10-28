@@ -3,7 +3,7 @@ import Log from "../models/log";
 import log from "../services/log";
 
 export type SetLogsAction = {
-    type: SET_LOGS
+    type: SET_LOGS,
     logs: Log[]
 }
 
