@@ -11,7 +11,7 @@ import { State } from "../reducers";
 interface LogsPageProps {
     logs: Log[];
     getLogs: (source: string) => (dispatch: Redux.Dispatch<any>) => void;
-    params: any;
+    params?: any;
 }
 
 function mapStateToProps(state: State.All) {
@@ -74,17 +74,21 @@ export class LogsPage extends React.Component<LogsPageProps, any> {
     }
 
     componentWillMount() {
-        this.props.getLogs(this.props.params.source);
+        if (this.props.params) {
+            this.props.getLogs(this.props.params.source);
+        }
     }
 
     render() {
         return (
             <div>
+                { this.props.params ? (
                 <Grid>
                     <Cell col={12}>
                         <h3>{this.props.params.source}</h3>
                     </Cell>
                 </Grid>
+                ) : undefined }
                 <Grid>
                     <Cell col={12}>
                         { this.props.logs ? (
