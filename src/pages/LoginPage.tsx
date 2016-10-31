@@ -3,11 +3,21 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
-import { BackStrategy, login, loginWithGithub, RedirectStrategy, ToPathStrategy } from "../actions/session";
+import { login, loginWithGithub, RedirectStrategy, ToPathStrategy } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
 import { State } from "../reducers";
+
+/**
+ * Configuration objects to pass in to the router when pushing or replacing this page on the router.
+ */
+export interface LoginConfig {
+    /**
+     * The next path to go to once logged in.
+     */
+    nextPathName?: string;
+}
 
 interface LoginPageProps {
     email: string;
@@ -16,6 +26,7 @@ interface LoginPageProps {
     changeForm: (field: string, value: string) => void;
     login: (email: string, password: string, redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
+    location?: RoutingData.Location<LoginConfig>;
 };
 
 function mapStateToProps(state: State.All) {
@@ -60,7 +71,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
     }
 
     getRedirectStrategy(): RedirectStrategy {
-        if (!this.props.location.state || !this.props.location.state.nextPathName) {
+        if (!this.props.location || !this.props.location.state || !this.props.location.state.nextPathName) {
             return undefined;
         } else {
             return new ToPathStrategy(this.props.location.state.nextPathName);

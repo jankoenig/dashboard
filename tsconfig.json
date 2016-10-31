@@ -9,7 +9,8 @@
   "include": [
     "src/**/*",
     "./typings/index.d.ts",
-    "./typings/react-json-tree.d.ts"
+    "./typings/react-json-tree.d.ts",
+    "./typings/routing-data.d.ts"
   ],
   "exclude": [
     "node_modules",
