@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
-import { BackStrategy, login, loginWithGithub, RedirectStrategy } from "../actions/session";
+import { BackStrategy, login, loginWithGithub, RedirectStrategy, ToPathStrategy } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -13,7 +13,11 @@ interface LoginPageProps {
     email: string;
     password: string;
     error: string;
-    goBack?: boolean;
+    /**
+     * The redirect URL to send to after successful login. You can also input "back" to indicate that the
+     * login page should return to the page that sent it.
+     */
+    redirect?: string;
     changeForm: (field: string, value: string) => void;
     login: (email: string, password: string, redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
@@ -61,7 +65,13 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
     }
 
     getRedirectStrategy(): RedirectStrategy {
-        return (this.props.goBack) ? new BackStrategy() : undefined;
+        if (!this.props.redirect) {
+            return undefined;
+        } else if (this.props.redirect === "back") {
+            return new BackStrategy();
+        } else {
+            return new ToPathStrategy(this.props.redirect);
+        }
     }
 
     render() {
