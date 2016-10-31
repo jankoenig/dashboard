@@ -10,6 +10,7 @@ import Login from "./frames/Login";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/LogsPage";
+import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import rootReducer from "./reducers";
 
@@ -56,15 +57,21 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
     }
 };
 
+let checkSources: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
+    // TODO: If they don't have any sources redirect them to the new page
+    replace("/skills/new");
+};
+
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
             <Route path="/login" component={Login}>
                 <IndexRoute component={LoginPage} />
             </Route>
-            <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                <IndexRoute component={ HomePage } />
-                <Route path="/skills/:source/logs" component={LogsPage}/>
+            <Route path="/" component={Dashboard} onEnter={ checkAuth }>
+                <IndexRoute component={ HomePage } onEnter={ checkSources }/>
+                <Route path="/skills/new" component=  { NewSourcePage } />
+                <Route path="/skills/:source/logs" component={ LogsPage }/>
                 <Route path="*" component={NotFoundPage} />
             </Route>
         </Router>

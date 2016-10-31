@@ -22,6 +22,12 @@ export const FETCH_LOGS_REQUEST: FETCH_LOGS_REQUEST = "bst/FETCH_LOGS_REQUEST";
 export type SET_LOGS = "bst/SET_LOGS";
 export const SET_LOGS: SET_LOGS = "bst/SET_LOGS";
 
+export type SET_SOURCES = "bst/SET_SOURCES";
+export const SET_SOURCES: SET_SOURCES = "bst/SET_SOURCES";
+
+export type FETCH_SOURCES_REQUEST = "bst/FETCH_SOURCES_REQUEST"
+export const FETCH_SOURCES_REQUEST: FETCH_SOURCES_REQUEST = "bst/FETCH_SOURCES_REQUEST";
+
 export namespace CLASSES {
     export namespace COLOR {
         export const BLUE_GREY_800 = "mdl-color--blue-grey-800";
