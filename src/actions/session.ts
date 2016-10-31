@@ -22,7 +22,7 @@ export interface SuccessCallback {
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void;
 }
 
-export class BackStrategy implements SuccessCallback {
+export class BackCallback implements SuccessCallback {
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
     dispatch(goBack());
   }
