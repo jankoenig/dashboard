@@ -13,11 +13,6 @@ interface LoginPageProps {
     email: string;
     password: string;
     error: string;
-    /**
-     * The redirect URL to send to after successful login. You can also input "back" to indicate that the
-     * login page should return to the page that sent it.
-     */
-    redirect?: string;
     changeForm: (field: string, value: string) => void;
     login: (email: string, password: string, redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: RedirectStrategy) => (dispatch: Redux.Dispatch<any>) => void;
@@ -65,12 +60,10 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
     }
 
     getRedirectStrategy(): RedirectStrategy {
-        if (!this.props.redirect) {
+        if (!this.props.location.state || !this.props.location.state.nextPathName) {
             return undefined;
-        } else if (this.props.redirect === "back") {
-            return new BackStrategy();
         } else {
-            return new ToPathStrategy(this.props.redirect);
+            return new ToPathStrategy(this.props.location.state.nextPathName);
         }
     }
 
