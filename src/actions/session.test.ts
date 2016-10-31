@@ -83,37 +83,15 @@ describe("Session.ts", function () {
         });
 
         it ("Tests the login flow works properly on a successful github login with a default login strategy.", function() {
-            let initialState = {};
-            let store = mockStore(initialState);
-
-            let loginMethod = session.loginWithGithub();
-            loginMethod(store.dispatch);
-
-            expect(store.getActions().length).to.greaterThan(0);
-
-            // TODO: Right now these are assuming that the "setUserAction" and the "redirectAction" are the last two
-            // actions being dispatched, but really what's important is that "setUser" is before the "redirect". This can be
-            // generic.
-            let setUserAction: any = store.getActions()[store.getActions().length - 2];
-            let redirectAction: any = store.getActions()[store.getActions().length - 1];
-
-            verifyUserAction(setUserAction);
-            verifyReplaceAction(redirectAction, "/");
+            verifySuccessLogin("/", (store: any) => {
+                session.loginWithGithub()(store.dispatch);
+            });
         });
 
         it ("Tests the login flow works properly on successful github login with overridden login strategy.", function() {
-            let initialState = {};
-            let store = mockStore(initialState);
-
-            session.loginWithGithub(new session.ToPathCallback("/NextPath"))(store.dispatch);
-
-            expect(store.getActions().length).to.greaterThan(0);
-
-            let setUserAction: any = store.getActions()[store.getActions().length - 2];
-            let redirectAction: any = store.getActions()[store.getActions().length - 1];
-
-            verifyUserAction(setUserAction);
-            verifyReplaceAction(redirectAction, "/NextPath");
+            verifySuccessLogin("/NextPath", (store: any) => {
+                session.loginWithGithub(new session.ToPathCallback("/NextPath"))(store.dispatch);
+            });
         });
     });
 
@@ -138,38 +116,35 @@ describe("Session.ts", function () {
         });
 
         it ("Tests the login flow works properly on a successful username and password login with a default login strategy.", function() {
-            let initialState = {};
-            let store = mockStore(initialState);
-
-            session.login("testuser", "secretPassword")(store.dispatch);
-
-            expect(store.getActions().length).to.greaterThan(0);
-
-            // TODO: Right now these are assuming that the "setUserAction" and the "redirectAction" are the last two
-            // actions being dispatched, but really what's important is that "setUser" is before the "redirect". This can be
-            // generic.
-            let setUserAction: any = store.getActions()[store.getActions().length - 2];
-            let redirectAction: any = store.getActions()[store.getActions().length - 1];
-
-            verifyUserAction(setUserAction);
-            verifyReplaceAction(redirectAction, "/");
+            verifySuccessLogin("/", (store: any) => {
+                session.login("testuser", "secretPassword")(store.dispatch);
+            });
         });
 
         it ("Tests the login flow works properly on successful username and password login with overridden login strategy.", function() {
-            let initialState = {};
-            let store = mockStore(initialState);
-
-            session.login("testuser", "secretPassword", new session.ToPathCallback("/NextPath"))(store.dispatch);
-
-            expect(store.getActions().length).to.greaterThan(0);
-
-            let setUserAction: any = store.getActions()[store.getActions().length - 2];
-            let redirectAction: any = store.getActions()[store.getActions().length - 1];
-
-            verifyUserAction(setUserAction);
-            verifyReplaceAction(redirectAction, "/NextPath");
+            verifySuccessLogin("/NextPath", (store: any) => {
+                session.login("testuser", "secretPassword", new session.ToPathCallback("/NextPath"))(store.dispatch);
+            });
         });
     });
+
+    function verifySuccessLogin(redirectPath: string, loginAction: (store: any) => void) {
+        let initialState = {};
+        let store = mockStore(initialState);
+
+        loginAction(store);
+
+        expect(store.getActions().length).to.greaterThan(0);
+
+        // TODO: Right now these are assuming that the "setUserAction" and the "redirectAction" are the last two
+        // actions being dispatched, but really what's important is that "setUser" is before the "redirect". This can be
+        // generic.
+        let setUserAction: any = store.getActions()[store.getActions().length - 2];
+        let redirectAction: any = store.getActions()[store.getActions().length - 1];
+
+        verifyUserAction(setUserAction);
+        verifyReplaceAction(redirectAction, redirectPath);
+    }
 
     function verifyUserAction(action: any) {
         expect(action.type).to.equal(SET_USER);
