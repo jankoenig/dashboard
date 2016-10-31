@@ -18,17 +18,17 @@ export function setUser(user: User | undefined) {
   };
 }
 
-export interface RedirectStrategy {
+export interface SuccessCallback {
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void;
 }
 
-export class BackStrategy implements RedirectStrategy {
+export class BackStrategy implements SuccessCallback {
   loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
     dispatch(goBack());
   }
 }
 
-export class ToPathStrategy implements RedirectStrategy {
+export class ToPathCallback implements SuccessCallback {
   toPath: string;
 
   public constructor(toPath: string) {
@@ -40,13 +40,13 @@ export class ToPathStrategy implements RedirectStrategy {
   }
 }
 
-class DefaultRedirectStrategy extends ToPathStrategy {
+class DefaultRedirectCallback extends ToPathCallback {
   constructor() {
     super("/");
   }
 };
 
-function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: RedirectStrategy = new DefaultRedirectStrategy(), loginStrat: (callback: (success: boolean, error?: string) => void) => void) {
+function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallback = new DefaultRedirectCallback(), loginStrat: (callback: (success: boolean, error?: string) => void) => void) {
   dispatch(sendingRequest(true));
   loginStrat(function (success, error) {
     dispatch(sendingRequest(false));
@@ -58,7 +58,7 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: RedirectStrat
   });
 }
 
-export function login(email: string, password: string, redirectStrat?: RedirectStrategy) {
+export function login(email: string, password: string, redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
       auth.login(email, password, internalCallback);
@@ -66,7 +66,7 @@ export function login(email: string, password: string, redirectStrat?: RedirectS
   };
 }
 
-export function loginWithGithub(redirectStrat?: RedirectStrategy) {
+export function loginWithGithub(redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
       auth.loginWithGithub(internalCallback);
