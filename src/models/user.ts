@@ -24,7 +24,7 @@ import * as Firebase from "firebase";
 
 export class FirebaseUser extends User {
 
-  constructor(user: Firebase.User) {
+  constructor(user: Firebase.UserInfo) {
     super({email: user.email, displayName: user.displayName, photoUrl: user.photoURL});
   }
 }
