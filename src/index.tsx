@@ -49,11 +49,12 @@ Firebase.auth().onAuthStateChanged(function(user: Firebase.User) {
  * See below on the onEnter method.
  */
 let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
-
-    // TODO: make this type safe
     const session: any = store.getState().session;
     if (!session.user) {
-        replace("/login");
+        replace({
+            pathname: "/login",
+            state: { nextPathName: nextState.location.pathname }
+        });
     }
 };
 

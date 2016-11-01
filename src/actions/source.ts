@@ -1,6 +1,6 @@
 
 
-import { CREATE_SOURCE_REQUEST, SET_CURRENT_SOURCE, SET_SOURCES } from "../constants";
+import { /*CREATE_SOURCE_REQUEST,*/ SET_CURRENT_SOURCE, SET_SOURCES } from "../constants";
 import Source from "../models/source";
 
 export type SetSourcesAction = {
