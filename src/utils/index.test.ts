@@ -28,6 +28,9 @@ describe("Utils", function () {
         it("a string in camelCase", function() {
             expect(utils.stringToCamelCase("camelCase")).to.equal("camelCase");
         });
+        it("a one word string", function() {
+            expect(utils.stringToCamelCase("camel")).to.equal("camel");
+        });
         it("a two word string", function() {
             expect(utils.stringToCamelCase("Camel case")).to.equal("camelCase");
         });
