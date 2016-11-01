@@ -1,22 +1,22 @@
 import * as uuid from "uuid";
 
-import SourceProfile from "./source-profile";
+import SourceProfile, { SourceProfileUnspecified } from "./source-profile";
 
 export interface SourceProperties {
-    id?: string;
+    secretKey?: string;
     name: string;
     profile?: SourceProfile;
 }
 
 export default class Source implements SourceProperties {
 
-    readonly id: string;
+    readonly secretKey: string;
     readonly name: string;
     readonly profile?: SourceProfile;
 
     constructor(props: SourceProperties) {
-        this.id = props.id ? props.id : uuid.v4();
+        this.secretKey = props.secretKey ? props.secretKey : uuid.v4();
         this.name = props.name;
-        this.profile = props.profile;
+        this.profile = props.profile ? props.profile : SourceProfileUnspecified ;
     }
 }

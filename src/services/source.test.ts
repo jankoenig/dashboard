@@ -1,12 +1,6 @@
-// import { expect } from "chai";
-
-import Source from "../models/source";
-import source from "./source";
 
 describe("Source Service", function() {
     it("creates a new Source", function() {
-        let src = new Source({id: "id", name: "name"});
-
-        source.createSource(src);
+        // TODO: Not sure how to test this since it is just a wrapper around Firebase
     });
 });

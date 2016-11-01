@@ -1,27 +1,36 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
+import { createSource } from "../actions/source";
 import { Cell, Grid } from "../components/Grid";
 import SourceForm from "../components/SourceForm";
 import Source from "../models/source";
 import { State } from "../reducers";
 
 interface NewSourceProps {
-    source?: Source;
+    createSource: (source: Source) => Redux.ThunkAction<any, any, any>;
 }
 
 function mapStateToProps(state: State.All) {
-
+    return {
+        // None right now
+    };
 }
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
-
+    return {
+        createSource: function(source: Source) {
+            return dispatch(createSource(source));
+        }
+    };
 }
 
-export class NewSourcePage extends React.Component<any, any> {
+export class NewSourcePage extends React.Component<NewSourceProps, any> {
 
     createSource(source: Source) {
-        console.log(source);
+       console.log("page.createSource(`source`)");
+       console.log(this.props);
+        this.props.createSource(source);
     }
 
     render() {
@@ -39,7 +48,7 @@ export class NewSourcePage extends React.Component<any, any> {
                 </Grid>
                 <Grid>
                     <Cell col={12}>
-                        <SourceForm createSource={this.createSource} />
+                        <SourceForm createSource={this.createSource.bind(this)} />
                     </Cell>
                 </Grid>
                 <Grid>

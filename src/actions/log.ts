@@ -1,6 +1,6 @@
 import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
-import log from "../services/log";
+import service from "../services/log";
 
 export type SetLogsAction = {
     type: SET_LOGS,
@@ -32,11 +32,11 @@ export function getLogs(source: string) {
         let startTime: Date = new Date();
         startTime.setDate(startTime.getDate() - 10);
 
-        let query: log.Query = {
+        let query: service.Query = {
             source: source,
             startTime: startTime
         };
-        return log.getLogs(query).then(function (logs) {
+        return service.getLogs(query).then(function (logs) {
             dispatch(setLogs(logs));
         });
     };

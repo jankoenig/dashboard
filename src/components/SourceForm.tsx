@@ -73,13 +73,13 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
                             autoComplete="off"
                             className="mdl-textfield__input"
                             type="text"
-                            id="sourceId"
-                            value={this.state.source.id}
+                            id="secretKey"
+                            value={this.state.source.secretKey}
                             onChange={this.onChange.bind(this)}
                             readOnly/>
                         <label
                             className="mdl-textfield__label"
-                            htmlFor="sourceId">
+                            htmlFor="secretKey">
                             Secret Key
                         </label>
                     </div>

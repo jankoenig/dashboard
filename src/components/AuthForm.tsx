@@ -21,13 +21,13 @@ export default class AuthForm extends React.Component<AuthFormProps, any> {
         return (
             <div className="mdl-card__supporting-text">
                 <form id="auth">
-                    <div className="mdl-textfield mdl-js-textfield">
+                    <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input className="mdl-textfield__input" type="text" id="email" value={this.props.email} onChange={this.props.onChange} />
-                        <label className="mdl-textfield__label" htmlFor="email">email</label>
+                        <label className="mdl-textfield__label" htmlFor="email">Email</label>
                     </div>
-                    <div className="mdl-textfield mdl-js-textfield">
+                    <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input className="mdl-textfield__input" type="password" id="password" value={this.props.password} onChange={this.props.onChange} />
-                        <label className="mdl-textfield__label" htmlFor="password">password</label>
+                        <label className="mdl-textfield__label" htmlFor="password">Password</label>
                     </div>
                 </form>
                 <div className="mdl-card__actions mdl-card--border">
