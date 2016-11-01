@@ -62,7 +62,7 @@ describe("Session.ts", function () {
         });
     });
 
-    describe("Login With Github", function() {
+    describe("Successful login With Github", function() {
 
         let loginGithubStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
@@ -95,7 +95,7 @@ describe("Session.ts", function () {
         });
     });
 
-    describe("login with username and password", function() {
+    describe("Successful login with username and password", function() {
 
         let loginStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
@@ -128,6 +128,87 @@ describe("Session.ts", function () {
         });
     });
 
+    describe("Unsuccessful login with Github", function() {
+        let loginStub: Sinon.SinonStub;
+        let setUserStub: Sinon.SinonStub;
+
+        before("Stubbing auth namespace.", function() {
+            loginStub = sinon.stub(auth, "login", (email: string, password: string, callback: (success: boolean, error?: string) => void) => {
+                callback(false, "Login error.");
+            });
+
+            setUserStub = sinon.stub(auth, "user", (): User => {
+                return undefined;
+            });
+        });
+
+        after(function() {
+            loginStub.restore();
+            setUserStub.restore();
+        });
+
+        it ("Tests the login flow works properly on an unsuccessful login attempt.", function() {
+            verifyUnsuccessfullLogin(() => {
+                session.loginWithGithub();
+            });
+        });
+    });
+
+    describe("Unsuccessful login with username and password", function() {
+        let loginStub: Sinon.SinonStub;
+        let setUserStub: Sinon.SinonStub;
+
+        before("Stubbing auth namespace.", function() {
+            loginStub = sinon.stub(auth, "login", (email: string, password: string, callback: (success: boolean, error?: string) => void) => {
+                callback(false, "Login error.");
+            });
+
+            setUserStub = sinon.stub(auth, "user", (): User => {
+                return undefined;
+            });
+        });
+
+        after(function() {
+            loginStub.restore();
+            setUserStub.restore();
+        });
+
+        it ("Tests the login flow works properly on an unsuccessful login attempt.", function() {
+            verifyUnsuccessfullLogin(() => {
+                session.login("testAccount@test.com", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
+            });
+        });
+    });
+
+    describe("Logout", function() {
+        let logoutStub: Sinon.SinonStub;
+
+        before("Stubbing auth logout.", function() {
+            logoutStub = sinon.stub(auth, "logout", (callback: (success: boolean, error?: string) => void) => {
+                callback(true);
+            });
+        });
+
+        after(function() {
+            logoutStub.restore();
+        });
+
+        it("Verifies a successful logout actions.", function() {
+            let initialState = {};
+            let store = mockStore(initialState);
+
+            store.dispatch(session.logout());
+
+            console.info(store.getActions());
+
+            expect(store.getActions().length).to.equal(1);
+
+            let finalAction: any = store.getActions()[store.getActions().length - 1];
+            expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
+            expect(finalAction.payload.args[0]).to.equal("/login");
+        });
+    });
+
     function verifySuccessLogin(redirectPath: string, loginAction: (store: any) => void) {
         let initialState = {};
         let store = mockStore(initialState);
@@ -144,6 +225,15 @@ describe("Session.ts", function () {
 
         verifyUserAction(setUserAction);
         verifyReplaceAction(redirectAction, redirectPath);
+    }
+
+    function verifyUnsuccessfullLogin(loginAction: (store: any) => void) {
+        let initialState = {};
+        let store = mockStore(initialState);
+
+        loginAction(store);
+
+        expect(store.getActions().length).to.equal(0);
     }
 
     function verifyUserAction(action: any) {
