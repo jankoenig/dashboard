@@ -96,11 +96,12 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                         `}</pre>
                     </Cell>
                 </Grid>
-                <Grid>
+                { /* TODO: We might want them to verify the install right then during integration
+                    <Grid>
                     <Cell col={12}>
                         <h4>Waiting for Logs</h4>
                     </Cell>
-                </Grid>
+                </Grid> */ }
             </div>
         );
     }
