@@ -23,4 +23,19 @@ describe("Utils", function () {
         expect(utils.isMobileOrTabletImpl("", "safari")).to.be.false;
         expect(utils.isMobileOrTabletImpl("", "")).to.be.false;
     });
+
+    describe("converts to camelCase", function() {
+        it("a string in camelCase", function() {
+            expect(utils.stringToCamelCase("camelCase")).to.equal("camelCase");
+        });
+        it("a two word string", function() {
+            expect(utils.stringToCamelCase("Camel case")).to.equal("camelCase");
+        });
+        it("a three word string", function() {
+            expect(utils.stringToCamelCase("camel Case case")).to.equal("camelCaseCase");
+        });
+        it("returns empty string for an empty string", function() {
+            expect(utils.stringToCamelCase("")).to.equal("");
+        });
+    });
 });
