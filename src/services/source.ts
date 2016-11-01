@@ -14,7 +14,7 @@ export namespace source {
         console.log(user);
         console.log(key);
 
-        return db.child("/users/" + user.uid + "/sources").set({ [key] : "owner"}).then(function() {
+        return db.child("/users/" + user.uid + "/sources/" + key).set("owner").then(function() {
             console.log("first success");
             return db.child("/sources/" + key).set(source);
         });
