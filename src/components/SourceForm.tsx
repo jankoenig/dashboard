@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import Source from "../models/source";
+import FormInput from "./FormInput";
 
 interface SourceFormProps {
     name?: string;
@@ -47,47 +48,27 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
         return (
             <div>
                 <form id="newSource">
-                    <div
-                        className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-                        style={this.textFieldStyleOverrides()}>
-                        <input
-                            autoComplete="off"
-                            className="mdl-textfield__input"
-                            type="text"
-                            id="sourceName"
-                            value={this.state.source.name}
-                            onChange={this.onChange.bind(this)} />
-                        <label
-                            className="mdl-textfield__label"
-                            htmlFor="sourceName">
-                            Name
-                        </label>
-                    </div>
-                    <div
-                        className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-                        style={this.textFieldStyleOverrides()}>
-                        <input
-                            style={{
-                                fontFamily: "monospace"
-                            }}
-                            autoComplete="off"
-                            className="mdl-textfield__input"
-                            type="text"
-                            id="secretKey"
-                            value={this.state.source.secretKey}
-                            onChange={this.onChange.bind(this)}
-                            readOnly/>
-                        <label
-                            className="mdl-textfield__label"
-                            htmlFor="secretKey">
-                            Secret Key
-                        </label>
-                    </div>
+                    <FormInput
+                        style={this.textFieldStyleOverrides()}
+                        type={"text"}
+                        value={this.state.source.name}
+                        onChange={this.onChange.bind(this)}
+                        label={"Name"}
+                        floatingLabel={true}
+                        autoComplete={"off"} />
+                    <FormInput style={this.textFieldStyleOverrides()}
+                        type="text"
+                        value={this.state.source.secretKey}
+                        onChange={this.onChange.bind(this)}
+                        label={"Secret Key"}
+                        floatingLabel={true}
+                        autoComplete={"off"}
+                        readOnly={true}/>
                 </form>
                 <button
-                        className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
-                        onClick={this.onClick.bind(this)}>
-                        Create Skill
+                    className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+                    onClick={this.onClick.bind(this)}>
+                    Create Skill
                 </button>
             </div>
         );

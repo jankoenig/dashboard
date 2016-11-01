@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import FormInput from "./FormInput";
 import { Icon, ICON } from "./Icon";
 
 export interface AuthFormProps {
@@ -21,14 +22,8 @@ export default class AuthForm extends React.Component<AuthFormProps, any> {
         return (
             <div className="mdl-card__supporting-text">
                 <form id="auth">
-                    <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input className="mdl-textfield__input" type="text" id="email" value={this.props.email} onChange={this.props.onChange} />
-                        <label className="mdl-textfield__label" htmlFor="email">Email</label>
-                    </div>
-                    <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input className="mdl-textfield__input" type="password" id="password" value={this.props.password} onChange={this.props.onChange} />
-                        <label className="mdl-textfield__label" htmlFor="password">Password</label>
-                    </div>
+                    <FormInput label={"Email"} type={"text"} floatingLabel={true} value={this.props.email} onChange={this.props.onChange}  />
+                    <FormInput label={"Password"} type={"password"} floatingLabel={true} value={this.props.password} onChange={this.props.onChange} />
                 </form>
                 <div className="mdl-card__actions mdl-card--border">
                     {/* I could not get the <form onSubmit> to work, had to use onClick */}
