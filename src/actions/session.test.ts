@@ -62,7 +62,7 @@ describe("Session.ts", function () {
         });
     });
 
-    describe("Login With Github", function() {
+    describe("Successful login With Github", function() {
 
         let loginGithubStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
@@ -128,6 +128,32 @@ describe("Session.ts", function () {
         });
     });
 
+    describe("Unsuccessful login with Github", function() {
+        let loginStub: Sinon.SinonStub;
+        let setUserStub: Sinon.SinonStub;
+
+        before("Stubbing auth namespace.", function() {
+            loginStub = sinon.stub(auth, "login", (email: string, password: string, callback: (success: boolean, error?: string) => void) => {
+                callback(false, "Login error.");
+            });
+
+            setUserStub = sinon.stub(auth, "user", (): User => {
+                return undefined;
+            });
+        });
+
+        after(function() {
+            loginStub.restore();
+            setUserStub.restore();
+        });
+
+        it ("Tests the login flow works properly on an unsuccessful login attempt.", function() {
+            verifyUnsuccessfullLogin(() => {
+                session.loginWithGithub();
+            });
+        });
+    });
+
     describe("Unsuccessful login with username and password", function() {
         let loginStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
@@ -149,7 +175,7 @@ describe("Session.ts", function () {
 
         it ("Tests the login flow works properly on an unsuccessful login attempt.", function() {
             verifyUnsuccessfullLogin(() => {
-                session.login("testAccount@test.com", "12345-the-kind-of-password-an-idiot-would-have-on-his-briefcase");
+                session.login("testAccount@test.com", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
             });
         });
     });
