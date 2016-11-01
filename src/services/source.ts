@@ -5,19 +5,24 @@ import Source from "../models/source";
 
 export namespace source {
 
-    export function createSource(source: Source): Firebase.Promise<any> {
-        console.log("service.createSource(`source`)");
+    export function createSource(source: Source): Firebase.Promise<void> {
+
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
         let key = db.child("/users/" + user.uid + "/sources").push().key;
 
-        console.log(user);
-        console.log(key);
-
         return db.child("/users/" + user.uid + "/sources/" + key).set("owner").then(function() {
-            console.log("first success");
+            console.log(source);
             return db.child("/sources/" + key).set(source);
         });
+    }
+
+    export function getSources(): Firebase.Promise<void> {
+
+        let user = Firebase.auth().currentUser;
+        let db = Firebase.database().ref();
+
+        return db.child("/users/" + user.uid + "/sources").once("value");
     }
 }
 

@@ -1,6 +1,12 @@
-import { CREATE_SOURCE_REQUEST, SET_CURRENT_SOURCE, SET_SOURCES } from "../constants";
+import {
+    CREATE_SOURCE_ERROR,
+    CREATE_SOURCE_REQUEST,
+    CREATE_SOURCE_SUCCESS,
+    SET_CURRENT_SOURCE,
+    SET_SOURCES
+} from "../constants";
 import Source from "../models/source";
-import service  from "../services/source";
+import service from "../services/source";
 
 export type SetSourcesAction = {
     type: SET_SOURCES,
@@ -36,18 +42,40 @@ export function createSourceRequest(): CreateSourceRequest {
     };
 }
 
+export type CreateSourceSuccess = {
+    type: CREATE_SOURCE_SUCCESS;
+    source: Source;
+}
+
+export function createSourceSuccess(source: Source): CreateSourceSuccess {
+    return {
+        type: CREATE_SOURCE_SUCCESS,
+        source: source
+    };
+}
+
+export type CreateSourceError = {
+    type: CREATE_SOURCE_ERROR,
+    error: Error
+}
+
+export function createSourceError(error: Error): CreateSourceError {
+    return {
+        type: CREATE_SOURCE_ERROR,
+        error: error
+    };
+}
+
 export function createSource(source: Source): Redux.ThunkAction<any, any, any> {
-        console.log("action.createSource");
-        return function (dispatch: Redux.Dispatch<any>) {
-            console.log("inside dispatch functio");
-            dispatch(createSourceRequest());
-            service.createSource(source).then(function(newSource) {
-                console.log("new source");
-                console.log(newSource);
-            }, function(error) {
-                console.log("error");
-                console.log(error);
-            });
-        };
+    return function (dispatch: Redux.Dispatch<any>) {
+        dispatch(createSourceRequest());
+        return service.createSource(source).then(function (newSource) {
+            console.log("new source callback");
+            console.log(newSource);
+            dispatch(createSourceSuccess(source));
+        }, function (error) {
+            dispatch(createSourceError(error));
+        });
+    };
 }
 

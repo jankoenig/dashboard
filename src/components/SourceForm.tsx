@@ -6,7 +6,8 @@ import FormInput from "./FormInput";
 interface SourceFormProps {
     name?: string;
     uuid?: string;
-    error?: string;
+    error?: Error;
+    creatingSource?: boolean;
     disable?: boolean;
     onChange?: (event: React.FormEvent) => any;
     createSource: (source: Source) => void;
@@ -55,7 +56,8 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
                         onChange={this.onChange.bind(this)}
                         label={"Name"}
                         floatingLabel={true}
-                        autoComplete={"off"} />
+                        autoComplete={"off"}
+                        readOnly={this.props.disable} />
                     <FormInput style={this.textFieldStyleOverrides()}
                         type="text"
                         value={this.state.source.secretKey}
@@ -63,13 +65,18 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
                         label={"Secret Key"}
                         floatingLabel={true}
                         autoComplete={"off"}
-                        readOnly={true}/>
+                        readOnly={true} />
                 </form>
-                <button
-                    className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
-                    onClick={this.onClick.bind(this)}>
-                    Create Skill
-                </button>
+                {!this.props.error ? (
+                    <p> {this.props.error } </p>
+                ) : undefined }
+                {!this.props.disable ? (
+                    <button
+                        className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+                        onClick={this.onClick.bind(this)}>
+                        Create Skill
+                    </button>
+                ) : undefined}
             </div>
         );
     }

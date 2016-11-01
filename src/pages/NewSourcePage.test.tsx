@@ -12,10 +12,17 @@ import { NewSourcePage } from "./NewSourcePage";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("New Source Page", function() {
-    it("should render subcomponents", function() {
+describe("New Source Page", function () {
+    it("should render subcomponents", function () {
         const createSource = sinon.spy();
-        const wrapper = shallow(<NewSourcePage createSource={ createSource } />);
+        const wrapper = shallow(
+            <NewSourcePage
+                createSource={createSource}
+                error={undefined}
+                newSource={undefined}
+                sourceRequest={false}
+                sources = {[]}/>
+        );
         expect(wrapper.find("SourceForm")).to.have.length(1);
     });
 });
