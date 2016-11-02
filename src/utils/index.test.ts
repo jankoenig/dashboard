@@ -41,4 +41,18 @@ describe("Utils", function () {
             expect(utils.stringToCamelCase("")).to.equal("");
         });
     });
+
+    describe("converts to a slug", function() {
+        it("a string with one word", function() {
+            expect(utils.stringToSlug("String")).to.equal("string");
+        });
+
+        it("a string with two words", function() {
+            expect(utils.stringToSlug("One Two")).to.equal("one-two");
+        });
+
+        it("a string with an invalid charactor", function() {
+            expect(utils.stringToSlug("groß word")).to.equal("gros-word");
+        });
+    });
 });
