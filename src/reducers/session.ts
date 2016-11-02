@@ -1,27 +1,27 @@
 import * as objectAssign from "object-assign";
 
+import { SetUser } from "../actions/session";
 import { SET_USER } from "../constants";
 import User  from "../models/user";
-import auth from "../services/auth";
 
 export type SessionState = {
-  user?: User,
-  hasError: boolean,
-  isLoading: boolean
+  readonly user?: User,
+  readonly hasError: boolean,
+  readonly isLoading: boolean
 }
 
 const INITIAL_STATE: SessionState = {
   hasError: false,
-  isLoading: false,
-  user: auth.user() // Not sure if I like this pattern, should the session reducer have direct access to auth.user()? Might be better to set this early on through a dispatch(setUser()) during bootstrap.
+  isLoading: false
 };
 
-export function session(state: SessionState = INITIAL_STATE, action: any = { type: ""}) {
+type SessionStateAction = SetUser | {type: ""}
+
+export function session(state: SessionState = INITIAL_STATE, action: SessionStateAction): SessionState {
 
   switch (action.type) {
     case SET_USER:
-      let userSessionState: SessionState = objectAssign({}, state, {user: action.user});
-      return userSessionState;
+      return objectAssign({}, state, {user: action.user});
     default:
       return state;
   }

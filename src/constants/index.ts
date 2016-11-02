@@ -9,7 +9,10 @@ export type CHANGE_FORM = "bst/CHANGE_FORM";
 export const CHANGE_FORM: CHANGE_FORM = "bst/CHANGE_FORM";
 
 export const SET_AUTH = "SET_AUTH";
-export const SET_USER = "SET_USER";
+
+export type SET_USER = "bst/SET_USER";
+export const SET_USER: SET_USER = "bst/SET_USER";
+
 export const SENDING_REQUEST = "SENDING_REQUEST";
 
 export const LOGIN_USER_PENDING = "bst/LOGIN_USER_PENDING";

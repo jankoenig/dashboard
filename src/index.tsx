@@ -5,8 +5,10 @@ import { Provider } from "react-redux";
 import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
 import { syncHistoryWithStore } from "react-router-redux";
 
+import { setUser } from "./actions/session";
 import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
+import { FirebaseUser } from "./models/user";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/LogsPage";
@@ -38,9 +40,15 @@ let firebaseConfig = {
     messagingSenderId: "629657216103"
 };
 
+// Timing the firebase initialize
+let firebaseInitializeTimer = new Date();
+
 Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
+    let firebaseInitializeTime = +new Date() - +firebaseInitializeTimer;
+    console.log("Firebase took " + firebaseInitializeTime  + "ms to inialize");
     // We need to wait for the user to be available before we can render the app
+    store.dispatch(setUser(new FirebaseUser(user)));
     render();
 });
 
