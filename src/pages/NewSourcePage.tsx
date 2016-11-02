@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router";
 
 import { createSource } from "../actions/source";
 import { Cell, Grid } from "../components/Grid";
@@ -52,7 +53,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
     }
 
     codeSecretKey(): string {
-        let secretKey: string = "";
+        let secretKey: string = "/* secret key */";
         if (this.props.newSource) {
             secretKey = this.props.newSource.secretKey;
         }
@@ -96,12 +97,13 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                         `}</pre>
                     </Cell>
                 </Grid>
-                { /* TODO: We might want them to verify the install right then during integration
-                    <Grid>
+                <Grid>
                     <Cell col={12}>
-                        <h4>Waiting for Logs</h4>
+                        {this.props.newSource ? (
+                            <h4><Link to={"/skills/" + this.props.newSource.slug + "/logs"}>Check for logs</Link></h4>
+                        ) : (undefined)}
                     </Cell>
-                </Grid> */ }
+                </Grid>
             </div>
         );
     }
