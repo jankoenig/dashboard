@@ -5,7 +5,6 @@ import {
     CREATE_SOURCE_ERROR,
     CREATE_SOURCE_REQUEST,
     CREATE_SOURCE_SUCCESS,
-    // SET_CURRENT_SOURCE,
      SET_SOURCES
 } from "../constants";
 import Source from "../models/Source";
@@ -29,9 +28,7 @@ const INITIAL_STATE: SourceState = {
 type SourceAction = CreateSourceError | CreateSourceRequest | CreateSourceSuccess | SetSourcesAction | { type: "" };
 
 export function source(state: SourceState = INITIAL_STATE, action: SourceAction): SourceState {
-    // console.log(action.type);
-    // console.log(action);
-    // console.log(state);
+
     switch (action.type) {
         case SET_SOURCES:
             console.log("setting sources");

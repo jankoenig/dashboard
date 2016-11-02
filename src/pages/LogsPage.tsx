@@ -112,13 +112,13 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     render() {
         // First we need to figure out what we display depending on if the logs are loading or if any exist
-        let logs: JSX.Element = (<p> Loading logs... </p>);
+        let logs: JSX.Element = (<p>Loading logs...</p>);
         // It is much cleaner to put the logic outside the JSX below
         if (this.props.logs) {
             if (this.props.logs.length > 0) {
                 logs = (<JSONTree data={this.props.logs} hideRoot={true} invertTheme={false} theme={this.getTheme()} />);
             } else {
-                logs = (<p> You don't have any logs yet.</p>);
+                logs = (<p>You don't have any logs yet.</p>);
             }
         }
 
