@@ -6,7 +6,6 @@ import Log from "../models/log";
 
 export type LogState = {
     logs?: Log[];
-    source?: string;
     error?: string;
     isLoading: boolean;
 }
@@ -17,7 +16,7 @@ const INITIAL_STATE: LogState = {
 
 type LogAction = FetchLogsRequestAction | SetLogsAction | { type: "" };
 
-export function logReducer(state: LogState = INITIAL_STATE, action: LogAction ): LogState {
+export function log(state: LogState = INITIAL_STATE, action: LogAction ): LogState {
     switch (action.type) {
         case FETCH_LOGS_REQUEST:
             return objectAssign({}, state, { isLoading: true });

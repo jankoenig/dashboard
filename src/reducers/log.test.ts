@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { fetchLogsRequest, setLogs } from "../actions/log";
 import { mockLogs } from "../utils/test";
-import { logReducer } from "./log";
+import { log } from "./log";
 
 describe("Log Reducer", function () {
     describe("fetch logs request action", function() {
@@ -11,7 +11,7 @@ describe("Log Reducer", function () {
                 isLoading: false
             };
 
-            let newState = logReducer(state, fetchLogsRequest());
+            let newState = log(state, fetchLogsRequest());
 
             expect(newState.isLoading).to.be.true;
         });
@@ -24,7 +24,7 @@ describe("Log Reducer", function () {
             };
 
             let action = setLogs(mockLogs(4));
-            let newState = logReducer(state, action);
+            let newState = log(state, action);
 
             expect(newState.logs).to.exist;
             expect(newState.logs).to.have.length(4);
@@ -39,7 +39,7 @@ describe("Log Reducer", function () {
                 isLoading: false
             };
 
-            let newState = logReducer(state, { type: "" });
+            let newState = log(state, { type: "" });
 
             expect(newState.isLoading).to.equal(state.isLoading);
             expect(newState.logs).to.be.undefined;

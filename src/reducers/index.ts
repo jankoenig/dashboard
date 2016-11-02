@@ -2,7 +2,7 @@ import { routerReducer } from "react-router-redux";
 import { combineReducers } from "redux";
 
 import { authForm, AuthFormState } from "./auth-form";
-import { logReducer, LogState } from "./log";
+import { log, LogState } from "./log";
 import { session, SessionState } from "./session";
 import { source, SourceState } from "./source";
 
@@ -11,7 +11,7 @@ export namespace State {
     session: SessionState,
     source: SourceState;
     authForm: AuthFormState,
-    logs: LogState,
+    log: LogState,
     error: string,
     routing: any
   }
@@ -21,7 +21,7 @@ const rootReducer = combineReducers<State.All>({
   session,
   source,
   authForm,
-  logs: logReducer,
+  log,
   routing: routerReducer
 });
 

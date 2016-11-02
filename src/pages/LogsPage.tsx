@@ -21,7 +21,7 @@ interface LogsPageState {
 
 function mapStateToProps(state: State.All) {
     return {
-        logs: state.logs.logs,
+        logs: state.log.logs,
         sources: state.source.sources
     };
 }
