@@ -7,12 +7,12 @@ import {
 import Source from "../models/source";
 import service from "../services/source";
 
-export type SetSourcesAction = {
+export type SetSources = {
     type: SET_SOURCES,
     sources: Source[]
 }
 
-export function setSources(sources: Source[]): SetSourcesAction {
+export function setSources(sources: Source[]): SetSources {
     return {
         type: SET_SOURCES,
         sources: sources
