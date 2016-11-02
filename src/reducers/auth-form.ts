@@ -1,5 +1,7 @@
-import { CHANGE_FORM } from "../constants";
 import * as objectAssign from "object-assign";
+
+import { ChangeFormAction } from "../actions/auth-form";
+import { CHANGE_FORM } from "../constants";
 
 export type AuthFormState = {
     readonly email?: string;
@@ -12,13 +14,14 @@ const INITIAL_STATE: AuthFormState = {
     password: ""
 };
 
-export function authForm(state: AuthFormState = INITIAL_STATE, action: any = { type: ""}) {
+type AuthFormAction = ChangeFormAction | { type: "" };
+
+export function authForm(state: AuthFormState = INITIAL_STATE, action: AuthFormAction): AuthFormState {
 
     switch (action.type) {
         case CHANGE_FORM:
-            let newFormState: AuthFormState = objectAssign({}, state, {[action.field]: action.value});
-            return newFormState;
+            return objectAssign({}, state, {[action.field]: action.value});
         default:
             return state;
     }
-} 
+}

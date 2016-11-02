@@ -1,7 +1,7 @@
 import { routerReducer } from "react-router-redux";
 import { combineReducers } from "redux";
 
-import { authForm, AuthFormState } from "./authForm";
+import { authForm, AuthFormState } from "./auth-form";
 import { logReducer, LogState } from "./log";
 import { session, SessionState } from "./session";
 import { source, SourceState } from "./source";

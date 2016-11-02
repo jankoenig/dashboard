@@ -5,7 +5,6 @@ import { mockLogs } from "../utils/test";
 import { logReducer } from "./log";
 
 describe("Log Reducer", function () {
-
     describe("fetch logs request action", function() {
         it("sets is loading to true", function() {
             let state = {
@@ -17,7 +16,6 @@ describe("Log Reducer", function () {
             expect(newState.isLoading).to.be.true;
         });
     });
-
     describe("set logs action", function () {
         it("sets the logs", function () {
 
