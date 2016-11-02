@@ -7,7 +7,7 @@ import {
     CREATE_SOURCE_SUCCESS,
      SET_SOURCES
 } from "../constants";
-import Source from "../models/Source";
+import Source from "../models/source";
 
 export type SourceState = {
     sources: Source[];
