@@ -9,6 +9,7 @@ describe("Source", function () {
             let source = new Source({ name: "source" });
             expect(source).to.exist;
             expect(source.name).to.equal("source");
+            expect(source.slug).to.equal("source");
             expect(source.secretKey).to.exist;
             expect(source.profile).to.exist;
         });

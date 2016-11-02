@@ -20,6 +20,23 @@ export function setSources(sources: Source[]): SetSourcesAction {
     };
 }
 
+export function getSources(): Redux.ThunkAction<any, any, any> {
+    return function (dispatch: Redux.Dispatch<any>) {
+        service.getSources().then(function(retVal) {
+            let keys = Object.keys(retVal.val());
+            let sources: Source[] = [];
+
+            for (let key of keys) {
+                service.getSource(key).then(function(data) {
+                    let newSource = new Source(data.val());
+                    sources.push(newSource);
+                    dispatch(setSources(sources));
+                });
+            }
+        });
+    };
+}
+
 export type SetCurrentSourceAction = {
     type: SET_CURRENT_SOURCE,
     source: Source

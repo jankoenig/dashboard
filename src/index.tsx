@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/LogsPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import SourcesListPage from "./pages/SourcesListPage";
 import rootReducer from "./reducers";
 
 import configureStore from "./store";
@@ -38,9 +39,9 @@ let firebaseConfig = {
 };
 
 Firebase.initializeApp(firebaseConfig);
-Firebase.auth().onAuthStateChanged(function(user: Firebase.User) {
-    console.log("onAuthStateChanged");
-    console.log(user);
+Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
+    // We need to wait for the user to be available before we can render the app
+    render();
 });
 
 /**
@@ -48,7 +49,7 @@ Firebase.auth().onAuthStateChanged(function(user: Firebase.User) {
  *
  * See below on the onEnter method.
  */
-let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
+let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
     const session: any = store.getState().session;
     if (!session.user) {
         replace({
@@ -58,24 +59,24 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
     }
 };
 
-let checkSources: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
-    // TODO: If they don't have any sources redirect them to the new page
-    replace("/skills/new");
+let render = function () {
+    ReactDOM.render(
+        <Provider store={store}>
+            <Router history={history}>
+                <Route path="/login" component={Login}>
+                    <IndexRoute component={LoginPage} />
+                </Route>
+                <Route path="/" component={Dashboard} onEnter={checkAuth}>
+                    <IndexRoute component={HomePage} />
+                    <Route path="/skills" component={SourcesListPage} />
+                    <Route path="/skills/new" component={NewSourcePage} />
+                    <Route path="/skills/:sourceSlug/logs" component={LogsPage} />
+                    <Route path="*" component={NotFoundPage} />
+                </Route>
+            </Router>
+        </Provider>,
+        document.getElementById("dashboard")
+    );
 };
 
-ReactDOM.render(
-    <Provider store={store}>
-        <Router history={history}>
-            <Route path="/login" component={Login}>
-                <IndexRoute component={LoginPage} />
-            </Route>
-            <Route path="/" component={Dashboard} onEnter={ checkAuth }>
-                <IndexRoute component={ HomePage } onEnter={ checkSources }/>
-                <Route path="/skills/new" component=  { NewSourcePage } />
-                <Route path="/skills/:source/logs" component={ LogsPage }/>
-                <Route path="*" component={NotFoundPage} />
-            </Route>
-        </Router>
-    </Provider>,
-    document.getElementById("dashboard")
-);
+

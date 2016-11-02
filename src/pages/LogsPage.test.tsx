@@ -19,7 +19,8 @@ describe("Logs Page", function() {
         let logs: Log[] = [];
         const wrapper = shallow(<LogsPage
                                 logs={logs}
-                                getLogs={getLogs}/>);
+                                getLogs={getLogs}
+                                sources={[]}/>);
 
         expect(wrapper.find("JSONTree")).to.have.length(1);
     });

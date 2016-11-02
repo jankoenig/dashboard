@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 
 import { logout } from "../actions/session";
+import { getSources } from "../actions/source";
 import Content from "../components/Content";
 import Header from "../components/Header";
 import Layout from "../components/Layout";
@@ -13,9 +14,10 @@ import User from "../models/user";
 import { State } from "../reducers";
 
 interface DashboardProps {
-  user?: User;
+  user: User;
   login: () => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
+  getSources: () => Redux.ThunkAction<any, any, any>;
 }
 
 function mapStateToProps(state: State.All) {
@@ -31,11 +33,14 @@ function mapDispatchToProps(dispatch: any) {
     },
     logout: function () {
       return dispatch(logout());
+    },
+    getSources: function () {
+      return dispatch(getSources());
     }
   };
 }
 
-class Dashboard extends React.Component<any, any> {
+class Dashboard extends React.Component<DashboardProps, any> {
 
   drawerClasses() {
     return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
@@ -43,6 +48,10 @@ class Dashboard extends React.Component<any, any> {
 
   headerClasses() {
     return classNames(CLASSES.COLOR.GREY_100, CLASSES.TEXT.GREY_600);
+  }
+
+  componentWillMount() {
+    this.props.getSources();
   }
 
   render() {

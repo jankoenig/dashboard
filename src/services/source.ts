@@ -12,17 +12,23 @@ export namespace source {
         let key = db.child("/users/" + user.uid + "/sources").push().key;
 
         return db.child("/users/" + user.uid + "/sources/" + key).set("owner").then(function() {
-            console.log(source);
             return db.child("/sources/" + key).set(source);
         });
     }
 
-    export function getSources(): Firebase.Promise<void> {
+    export function getSources(): Firebase.Promise<any> {
 
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
 
         return db.child("/users/" + user.uid + "/sources").once("value");
+    }
+
+    export function getSource(key: string): Firebase.Promise<any> {
+
+        let db = Firebase.database().ref();
+
+        return db.child("/sources/" + key).once("value");
     }
 }
 

@@ -9,7 +9,7 @@ export default class HomePage extends React.Component<any, any> {
             <div>
                 <Grid>
                     <Cell col={12}>
-                        <h2>Your Skills</h2>
+                        <h3>Your Skills</h3>
                     </Cell>
                 </Grid>
 
