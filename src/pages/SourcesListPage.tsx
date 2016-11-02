@@ -27,24 +27,21 @@ export class SourcesListPage extends React.Component<SourcesListPageProps, any> 
         // Construct the list
         let listItems: JSX.Element[] = [];
 
-        console.log(this.props.sources);
-
         for (let source of this.props.sources) {
-            console.log(source);
             listItems.push((
-                <li key={ source.name } className="mdl-list__item">
-                <Link to={"/skills/" + source.slug + "/logs"}>{ source.name }</Link>
+                <li key={source.name} className="mdl-list__item">
+                    <Link to={"/skills/" + source.slug + "/logs"}>{source.name}</Link>
                 </li>
-                ));
+            ));
         }
 
         return (
             <Grid>
-              <Cell col={12}>
-                <ul className="mdl-list">
-                    {listItems}
-                </ul>
-              </Cell>
+                <Cell col={12}>
+                    <ul className="mdl-list">
+                        {listItems}
+                    </ul>
+                </Cell>
             </Grid>
         );
     }
