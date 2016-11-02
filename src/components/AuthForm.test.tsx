@@ -18,14 +18,14 @@ describe("AuthForm", function () {
         const wrapper = shallow(<AuthForm onSubmit={onSubmit} />);
         // A form, two inputs and a button
         expect(wrapper.find("form")).to.have.length(1);
-        expect(wrapper.find("input")).to.have.length(2);
-        expect(wrapper.find("button")).to.have.length(1);
+        expect(wrapper.find("input")).to.have.length(3);
+        expect(wrapper.find("button")).to.have.length(2);
     });
     it("can be sumitted", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow(<AuthForm onSubmit={onSubmit} />);
 
-        wrapper.find("button").simulate("click");
+       wrapper.find("button").first().simulate("click");
         expect(onSubmit).to.have.been.called;
     });
     it("can be logged in with Github", function () {

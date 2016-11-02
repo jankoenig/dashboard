@@ -18,20 +18,29 @@ namespace auth {
         if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             Firebase.auth().signInWithRedirect(provider);
-            Firebase.auth().getRedirectResult().then(function(result){
+            Firebase.auth().getRedirectResult().then(function (result) {
                 authSuccessHandler(result, callback);
-            }).catch(function(error){
+            }).catch(function (error) {
                 authFailHandler(error, callback);
             });
 
         } else {
-            Firebase.auth().signInWithPopup(provider).then(function(result) {
+            Firebase.auth().signInWithPopup(provider).then(function (result) {
                 authSuccessHandler(result, callback);
                 // TODO: Potential error condition here that needs to be handled
-            }).catch(function(error) {
+            }).catch(function (error) {
                 authFailHandler(error, callback);
             });
         }
+    }
+    export function signUpWithEmail(email: string, password: string, callback: (success: boolean, error?: string) => void): void {
+        Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+            console.log("Error signing up: " + error.message);
+            callback(false, error.message);
+        }).then(function (user: Firebase.User) {
+            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
+            callback(true);
+        });
     }
 
     function authSuccessHandler(result: any, callback: (success: boolean, error?: string) => void) {
@@ -51,16 +60,16 @@ namespace auth {
         Firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
             console.log("Error logging In: " + error.message);
             callback(false, error.message);
-        }).then(function(user: Firebase.User) {
+        }).then(function (user: Firebase.User) {
             localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
             callback(true);
         });
     }
 
     export function logout(callback: (success: boolean, error?: string) => void): void {
-        Firebase.auth().signOut().catch(function(error) {
+        Firebase.auth().signOut().catch(function (error) {
             callback(false, error.message);
-        }).then(function() {
+        }).then(function () {
             localStorage.removeItem("user");
             callback(true);
         });

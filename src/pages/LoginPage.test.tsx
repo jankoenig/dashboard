@@ -17,14 +17,17 @@ describe("LoginPage", () => {
         const changeForm = sinon.spy();
         const login = sinon.spy();
         const loginWithGithub = sinon.spy();
+        const signUpWithEmail = sinon.spy();
         const wrapper = shallow(
             <LoginPage
                 email="email"
                 password="password"
+                confirmPassword= "confirmPassword"
                 error="error"
                 login={login}
                 changeForm={changeForm}
-                loginWithGithub={loginWithGithub} />
+                loginWithGithub={loginWithGithub}
+                signUpWithEmail ={signUpWithEmail}/>
         );
         // It contains the AuthForm
         expect(wrapper.find("AuthForm")).to.have.length(1);

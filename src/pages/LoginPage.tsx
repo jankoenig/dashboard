@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/authForm";
-import { login, loginWithGithub, SuccessCallback, ToPathCallback } from "../actions/session";
+import { login, loginWithGithub, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -22,10 +22,12 @@ export interface LoginConfig {
 interface LoginPageProps {
     email: string;
     password: string;
+    confirmPassword: string;
     error: string;
     changeForm: (field: string, value: string) => void;
     login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
+    signUpWithEmail: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     location?: RoutingData.Location<LoginConfig>;
 };
 
@@ -33,19 +35,23 @@ function mapStateToProps(state: State.All) {
     return {
         email: state.authForm.email,
         password: state.authForm.password,
+        confirmPassword: state.authForm.confirmPassword,
         error: state.authForm.error
     };
 }
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        changeForm: function(field: string, value: string) {
+        changeForm: function (field: string, value: string) {
             dispatch(changeForm(field, value));
-        } ,
-        login: function(email: string, password: string, redirectStrat: SuccessCallback) {
+        },
+        login: function (email: string, password: string, redirectStrat: SuccessCallback) {
             return dispatch(login(email, password, redirectStrat));
         },
-        loginWithGithub: function(redirectStrat: SuccessCallback) {
+        signUpWithEmail: function (email: string, password: string, redirectStrat: SuccessCallback) {
+            return dispatch(signUpWithEmail(email, password, redirectStrat));
+        },
+        loginWithGithub: function (redirectStrat: SuccessCallback) {
             return dispatch(loginWithGithub(redirectStrat));
         }
     };
@@ -70,6 +76,11 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
         this.props.loginWithGithub(this.getRedirectStrategy());
     }
 
+    handleFormSignUpWithEmail(event: React.FormEvent) {
+        event.preventDefault();
+        this.props.signUpWithEmail(this.props.email, this.props.password, this.getRedirectStrategy());
+    }
+
     getRedirectStrategy(): SuccessCallback {
         if (!this.props.location || !this.props.location.state || !this.props.location.state.nextPathName) {
             return undefined;
@@ -81,19 +92,22 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
     render() {
         return (
             <Grid>
-                <Cell col={4} tablet={2} hidePhone={true}/>
+                <Cell col={4} tablet={2} hidePhone={true} />
                 <Cell col={4} tablet={4} phone={4} align={"middle"}>
                     <Card>
                         <AuthForm
-                            email={ this.props.email }
-                            password={ this.props.password }
-                            onSubmit={ this.handleFormSubmit.bind(this) }
-                            onChange={ this.handleFormChanged.bind(this) }
-                            onLoginWithGithub= { this.handleFormLoginWithGithub.bind(this) }
+                            email={this.props.email}
+                            password={this.props.password}
+                            confirmPassword={this.props.confirmPassword}
+                            error={this.props.error}
+                            onSubmit={this.handleFormSubmit.bind(this)}
+                            onChange={this.handleFormChanged.bind(this)}
+                            onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
+                            onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}
                             />
                     </Card>
                 </Cell>
-                <Cell col={4} tablet={2} hidePhone={true}/>
+                <Cell col={4} tablet={2} hidePhone={true} />
             </Grid>
         );
     }
