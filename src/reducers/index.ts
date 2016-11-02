@@ -12,7 +12,6 @@ export namespace State {
     source: SourceState;
     authForm: AuthFormState,
     log: LogState,
-    error: string,
     routing: any
   }
 }
