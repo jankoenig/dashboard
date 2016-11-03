@@ -38,6 +38,9 @@ export class SourceListPage extends React.Component<SourceListPageProps, any> {
         return (
             <Grid>
                 <Cell col={12}>
+                    {listItems.length === 0 ? (
+                        <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>
+                    ) : undefined}
                     <ul className="mdl-list">
                         {listItems}
                     </ul>

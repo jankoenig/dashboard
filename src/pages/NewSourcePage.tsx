@@ -64,7 +64,8 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                 {this.props.sources.length === 0 ? (
                     <Grid>
                         <Cell col={12}>
-                            <h5> It looks like you don't have any skills setup yet, let's fix that real quick...</h5>
+                            <h5>Enter the name of your skill and then click Create Skill.</h5>
+                            <h5>Then, to start sending logs, follow the instructions on how to integrate the SDK into your skill.</h5>
                         </Cell>
                     </Grid>
                 ) : undefined}
