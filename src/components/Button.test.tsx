@@ -56,6 +56,5 @@ describe("Button Component", function() {
         let a = wrapper.find("a");
         expect(a.props().href).to.equal("https://bespoken.tools");
         expect(a.props().target).to.equal("_blank");
-
   });
 });
