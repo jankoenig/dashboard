@@ -30,7 +30,7 @@ export default class HomePage extends React.Component<any, any> {
                         </p>
                     </Cell>
                     <Cell col={12}>
-                        <Button><Link to={"/skills/new"}>Let's Get Started</Link></Button>
+                        <Button accent={true} raised={true}><Link style={{color: "white", textDecoration: "none"}} to={"/skills/new"}>Let's Get Started!</Link></Button>
                     </Cell>
                 </Grid>
             </div>

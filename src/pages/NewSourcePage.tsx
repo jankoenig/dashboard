@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router";
 
 import { createSource } from "../actions/source";
+import Button from "../components/Button";
 import { Cell, Grid } from "../components/Grid";
 import SourceForm from "../components/SourceForm";
 import Source from "../models/source";
@@ -100,7 +101,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                 <Grid>
                     <Cell col={12}>
                         {this.props.newSource ? (
-                            <h4><Link to={"/skills/" + this.props.newSource.slug + "/logs"}>Check for logs</Link></h4>
+                            <Button accent={true} raised={true}><Link style={{color: "white", textDecoration: "none"}} to={"/skills/" + this.props.newSource.slug + "/logs"}>Next: Check for Logs</Link></Button>
                         ) : (undefined)}
                     </Cell>
                 </Grid>
