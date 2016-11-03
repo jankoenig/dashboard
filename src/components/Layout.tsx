@@ -1,12 +1,13 @@
 import * as classNames from "classnames";
-import * as React from "react";
+
+import MDLComponent from "./MDLComponent";
 
 export interface LayoutProps {
     drawer?: boolean;
     header?: boolean;
 };
 
-export default class Layout extends React.Component<LayoutProps, any> {
+export default class Layout extends MDLComponent<LayoutProps, any> {
 
     classes() {
         return classNames("mdl-layout mdl-js-layout", {
