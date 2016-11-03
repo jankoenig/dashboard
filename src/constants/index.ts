@@ -8,7 +8,8 @@
 export type CHANGE_FORM = "bst/CHANGE_FORM";
 export const CHANGE_FORM: CHANGE_FORM = "bst/CHANGE_FORM";
 
-export const SET_AUTH = "SET_AUTH";
+export type AUTH_ERROR = "bst/AUTH_ERROR";
+export const AUTH_ERROR: AUTH_ERROR = "bst/AUTH_ERROR";
 
 export type SET_USER = "bst/SET_USER";
 export const SET_USER: SET_USER = "bst/SET_USER";

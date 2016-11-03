@@ -4,6 +4,8 @@ import { SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
 import auth from "../services/auth";
 
+import { changeErrorInForm } from "../actions/authForm";
+
 export function sendingRequest(sending: boolean) {
   return {
     type: SENDING_REQUEST,
@@ -60,6 +62,12 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
     if (success) {
       redirectStrat.loginSuccess(dispatch, auth.user());
     }
+    else {
+      if (error) {
+        console.log(error);
+        dispatch(changeErrorInForm(error));
+      }
+    }
   });
 }
 
@@ -78,7 +86,13 @@ export function loginWithGithub(redirectStrat?: SuccessCallback) {
     });
   };
 }
-
+export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) {
+  return function (dispatch: Redux.Dispatch<any>) {
+    loginMethod(dispatch, redirectStrat, function (internalCallback) {
+      auth.signUpWithEmail(email, password, confirmPassword, internalCallback);
+    });
+  };
+}
 export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
     auth.logout(function (success) {

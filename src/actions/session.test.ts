@@ -126,6 +126,64 @@ describe("Session.ts", function () {
             });
         });
     });
+    describe("Successful signUpWithEmail with username and password", function() {
+
+        let signUpWithEmail: Sinon.SinonStub;
+        let setUserStub: Sinon.SinonStub;
+
+        before("Stubbing auth namespace.", function() {
+            signUpWithEmail = sinon.stub(auth, "signUpWithEmail", (email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void) => {
+                callback(true, undefined);
+            });
+
+            setUserStub = sinon.stub(auth, "user", () => {
+                return new User({ email: "testEmail" });
+            });
+        });
+
+        after(function() {
+            signUpWithEmail.restore();
+            setUserStub.restore();
+        });
+
+        it ("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function() {
+            verifySuccessLogin("/", (store: any) => {
+                session.signUpWithEmail("testuser", "secretPassword", "secretPassword")(store.dispatch);
+            });
+        });
+
+        it ("Tests the signUpWithEmail flow works properly on successful username and password signUpWithEmail with overridden signUpWithEmail strategy.", function() {
+            verifySuccessLogin("/NextPath", (store: any) => {
+                session.signUpWithEmail("testuser", "secretPassword", "secretPassword", new session.ToPathCallback("/NextPath"))(store.dispatch);
+            });
+        });
+    });
+
+        describe("Unsuccessful signUpWithEmail with username and password", function() {
+        let signUpWithEmail: Sinon.SinonStub;
+        let setUserStub: Sinon.SinonStub;
+
+        before("Stubbing auth namespace.", function() {
+            signUpWithEmail = sinon.stub(auth, "signUpWithEmail", (email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void) => {
+                callback(false, "signUpWithEmail error.");
+            });
+
+            setUserStub = sinon.stub(auth, "user", (): User => {
+                return undefined;
+            });
+        });
+
+        after(function() {
+            signUpWithEmail.restore();
+            setUserStub.restore();
+        });
+
+        it ("Tests the login flow works properly on an unsuccessful signUpWithEmail attempt.", function() {
+            verifyUnsuccessfullLogin(() => {
+                session.signUpWithEmail("testAccount", "12345-", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
+            });
+        });
+    });
 
     describe("Unsuccessful login with Github", function() {
         let loginStub: Sinon.SinonStub;

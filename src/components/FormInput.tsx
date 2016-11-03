@@ -13,6 +13,7 @@ interface FormInputProps {
     style?: React.CSSProperties;
     readOnly?: boolean;
     autoComplete?: "off" | "on" ;
+    hidden?: boolean;
 }
 
 export default class FormInput extends MDLComponent<FormInputProps, any> {
@@ -27,7 +28,8 @@ export default class FormInput extends MDLComponent<FormInputProps, any> {
         return (
             <div
                 className={this.classes()}
-                style={this.props.style}>
+                style={this.props.style}
+                hidden={this.props.hidden}>
                 <input
                     autoComplete={this.props.autoComplete ? this.props.autoComplete : "off"}
                     className="mdl-textfield__input"
