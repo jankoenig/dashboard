@@ -37,9 +37,6 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 export class NewSourcePage extends React.Component<NewSourceProps, any> {
 
     createSource(source: Source) {
-        console.log("page.createSource(`source`)");
-        console.log(this.props);
-        console.log(source);
         this.props.createSource(source);
     }
 

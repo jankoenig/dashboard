@@ -26,7 +26,6 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
     }
 
     onRegister() {
-        console.log("register fires");
         this.setState({ isConfirmPasswordVisible: true });
     }
 
@@ -36,9 +35,9 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                 <form id="auth">
                     <FormInput label={"Email"} type={"text"} floatingLabel={true} value={this.props.email} onChange={this.props.onChange}  />
                     <FormInput label={"Password"} type={"password"} floatingLabel={true} value={this.props.password} onChange={this.props.onChange} />
-                    <FormInput label={"Confirm"} type={"password"} floatingLabel={true} value={this.props.confirmPassword} onChange={this.props.onChange} hidden={!this.state.isConfirmPasswordVisible} />
+                    <FormInput label={"Confirm Password"} type={"password"} floatingLabel={true} value={this.props.confirmPassword} onChange={this.props.onChange} hidden={!this.state.isConfirmPasswordVisible} />
                     <div className="mdl-label mdl-js-label">
-                        <label className="mdl-label" for="error">{this.props.error}</label>
+                        <label className="mdl-label" htmlFor="error">{this.props.error}</label>
                     </div>
                 </form>
                 <div className="mdl-card__actions mdl-card--border clearfix">

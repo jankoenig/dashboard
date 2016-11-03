@@ -46,6 +46,8 @@ class Button extends React.Component<ButtonProps, any> {
     // Clean off the unknown properties
     delete properties.accent;
     delete properties.raised;
+    delete properties.colored;
+    delete properties.ripple;
 
     return React.createElement(component, properties);
   }
