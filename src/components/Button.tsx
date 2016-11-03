@@ -43,11 +43,13 @@ class Button extends React.Component<ButtonProps, any> {
       target: "_blank"
     });
 
-    // Clean off the unknown properties
+    // Clean off properties that were used for setting classes
+    // They are not real and should not be passed on
     delete properties.accent;
     delete properties.raised;
     delete properties.colored;
     delete properties.ripple;
+    delete properties.primary;
 
     return React.createElement(component, properties);
   }
