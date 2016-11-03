@@ -46,9 +46,12 @@ let firebaseInitializeTimer = new Date();
 Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     let firebaseInitializeTime = +new Date() - +firebaseInitializeTimer;
-    console.log("Firebase took " + firebaseInitializeTime  + "ms to inialize");
+    console.log("Firebase took " + firebaseInitializeTime + "ms to inialize");
+    // If there is a user, set it
+    if (user) {
+        store.dispatch(setUser(new FirebaseUser(user)));
+    }
     // We need to wait for the user to be available before we can render the app
-    store.dispatch(setUser(new FirebaseUser(user)));
     render();
 });
 
