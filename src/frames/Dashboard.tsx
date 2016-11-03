@@ -6,8 +6,11 @@ import { push } from "react-router-redux";
 import { logout } from "../actions/session";
 import { getSources } from "../actions/source";
 import Content from "../components/Content";
+import Drawer from "../components/Drawer";
 import Header from "../components/Header";
 import Layout from "../components/Layout";
+import Navigation from "../components/Navigation";
+import NavLink from "../components/NavLink";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import User from "../models/user";
@@ -56,13 +59,20 @@ class Dashboard extends React.Component<DashboardProps, any> {
 
   render() {
     return (
-      <Layout header={true}>
+      <Layout drawer={true} header={true}>
         <Header className={this.headerClasses()} >
           <UserControl
             login={this.props.login}
             logout={this.props.logout}
             user={this.props.user} />
         </Header>
+        <Drawer className={this.drawerClasses()} >
+          <Navigation className={CLASSES.COLOR.BLUE_GREY_800}>
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/" name="Home" icon="home" />
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/skills/new" name="New Skill" icon="add" />
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/skills" name="My Skills" icon="subject" />
+          </Navigation>
+        </Drawer>
         <Content>
           {this.props.children}
         </Content>
