@@ -181,7 +181,7 @@ describe("Session.ts", function () {
 
         it ("Tests the login flow works properly on an unsuccessful signUpWithEmail attempt.", function() {
             verifyUnsuccessfullLogin(() => {
-                session.signUpWithEmail("testAccount@test.com", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
+                session.signUpWithEmail("testAccount", "12345-", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
             });
         });
     });
