@@ -21,12 +21,26 @@ describe("AuthForm", function () {
         expect(wrapper.find("input")).to.have.length(3);
         expect(wrapper.find("button")).to.have.length(2);
     });
-    it("can be sumitted", function () {
+    it("can be submitted", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow(<AuthForm onSubmit={onSubmit} />);
 
-       wrapper.find("button").first().simulate("click");
+        wrapper.find("button").first().simulate("click");
         expect(onSubmit).to.have.been.called;
+    });
+    it("can sign up", function () {
+        const onSignUpWithEmail = sinon.spy();
+        const onSubmit = sinon.spy();
+        const wrapper = shallow(<AuthForm onSubmit={onSubmit}
+                                email={"test@test.email"}
+                                password ={"passwaord"}
+                                confirmPassword ={"passwaord"}
+                                onSignUpWithEmail={onSignUpWithEmail}/>);
+
+        wrapper.find("button").at(1).simulate("click");
+        // wrapper.find("input").at(3).simulate("change", {confirmPassword: {value: "pass"}});
+        wrapper.find("button").at(1).simulate("click");
+        expect(onSignUpWithEmail).to.have.been.called;
     });
     it("can be logged in with Github", function () {
         const onSubmit = sinon.spy();

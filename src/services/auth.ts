@@ -33,14 +33,49 @@ namespace auth {
             });
         }
     }
-    export function signUpWithEmail(email: string, password: string, callback: (success: boolean, error?: string) => void): void {
-        Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
-            console.log("Error signing up: " + error.message);
-            callback(false, error.message);
-        }).then(function (user: Firebase.User) {
-            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
-            callback(true);
-        });
+
+    function validateEmail(email: string) {
+        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+    export function signUpWithEmail(email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void): void {
+
+        let localError: string;
+        console.log("signUpWithEmail fires");
+        if (password === confirmPassword) {
+            console.log("passwords match");
+            console.log(password);
+            console.log(confirmPassword);
+            if (password.length < 6) {
+                localError = "Password needs to be at least 6 characters";
+                callback(false, localError);
+            }
+            else {
+                if (validateEmail(email)) {
+                    console.log("firebase it");
+                    console.log(password);
+                    console.log(confirmPassword);
+                    Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
+                        console.log("Error signing up: " + error.message);
+                        callback(false, error.message);
+                    }).then(function (user: Firebase.User) {
+                        localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
+                        callback(true);
+                    });
+                }
+                else {
+                    localError = "Enter a valid email";
+                    callback(false, localError);
+                }
+            }
+        }
+        else {
+            localError = "Passwords do not match.";
+            console.log("passwords match");
+            console.log(password);
+            console.log(confirmPassword);
+            callback(false, localError);
+        }
     }
 
     function authSuccessHandler(result: any, callback: (success: boolean, error?: string) => void) {

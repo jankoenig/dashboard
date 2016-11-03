@@ -15,7 +15,6 @@ export interface AuthFormProps {
 
 export interface AuthFormState {
     isConfirmPasswordVisible?: boolean;
-    displayErrorMessage?: boolean;
 }
 
 export default class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
@@ -23,39 +22,12 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
 
     constructor(props: AuthFormProps) {
         super(props);
-        this.state = { isConfirmPasswordVisible: false, displayErrorMessage: false };
+        this.state = { isConfirmPasswordVisible: false};
     }
 
     onRegister() {
+        console.log("register fires");
         this.setState({ isConfirmPasswordVisible: true });
-    }
-
-    comparePass() {
-        if (this.props.password === this.props.confirmPassword) {
-            if (this.props.password.length < 6) {
-                this.props.error = "Password needs to be at least 6 characters";
-                this.setState({ displayErrorMessage: true });
-            }
-            else {
-                if (this.validateEmail(this.props.email)) {
-                    this.props.onSignUpWithEmail.bind(this)(event); // I had to ask this to interwebs http://stackoverflow.com/questions/40308828/react-doesnt-fire-function-in-component
-                }
-                else {
-                    this.props.error = "Enter a valid email";
-                    this.setState({ displayErrorMessage: true });
-                }
-            }
-        }
-        else {
-            this.props.error = "Passwords do not match.";
-            this.setState({ displayErrorMessage: true });
-        }
-        console.log(this.props.error);
-    }
-
-    validateEmail(email: string) {
-        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
     }
 
     render() {
@@ -94,7 +66,7 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                     {this.state.isConfirmPasswordVisible ? (
                         <button
                             className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-pull-right"
-                            onClick={this.comparePass.bind(this)}>
+                            onClick={this.props.onSignUpWithEmail}>
                             Submit
                     </button>) : undefined}
                 </div>

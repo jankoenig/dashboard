@@ -81,10 +81,10 @@ export function loginWithGithub(redirectStrat?: SuccessCallback) {
     });
   };
 }
-export function signUpWithEmail(email: string, password: string, redirectStrat?: SuccessCallback) {
+export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.signUpWithEmail(email, password, internalCallback);
+      auth.signUpWithEmail(email, password, confirmPassword, internalCallback);
     });
   };
 }

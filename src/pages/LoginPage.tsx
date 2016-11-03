@@ -27,7 +27,7 @@ interface LoginPageProps {
     changeForm: (field: string, value: string) => void;
     login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    signUpWithEmail: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
+    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     location?: RoutingData.Location<LoginConfig>;
 };
 
@@ -48,8 +48,8 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         login: function (email: string, password: string, redirectStrat: SuccessCallback) {
             return dispatch(login(email, password, redirectStrat));
         },
-        signUpWithEmail: function (email: string, password: string, redirectStrat: SuccessCallback) {
-            return dispatch(signUpWithEmail(email, password, redirectStrat));
+        signUpWithEmail: function (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) {
+            return dispatch(signUpWithEmail(email, password, confirmPassword, redirectStrat));
         },
         loginWithGithub: function (redirectStrat: SuccessCallback) {
             return dispatch(loginWithGithub(redirectStrat));
@@ -78,7 +78,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormSignUpWithEmail(event: React.FormEvent) {
         event.preventDefault();
-        this.props.signUpWithEmail(this.props.email, this.props.password, this.getRedirectStrategy());
+        this.props.signUpWithEmail(this.props.email, this.props.password, this.props.confirmPassword, this.getRedirectStrategy());
     }
 
     getRedirectStrategy(): SuccessCallback {
