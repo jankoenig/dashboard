@@ -6,6 +6,7 @@
  * Follow this format:
  * export const YOUR_ACTION_CONSTANT = "YOUR_ACTION_CONSTANT";
  */
+export const AUTH_ERROR = "AUTH_ERROR";
 export const CHANGE_FORM = "CHANGE_FORM";
 export const SET_AUTH = "SET_AUTH";
 export const SET_USER = "SET_USER";
