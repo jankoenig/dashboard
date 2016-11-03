@@ -36,7 +36,7 @@ export default class UserControl extends React.Component<UserProps, any> {
                 />
             )}
         </Button>
-        <Menu align="right" valign="bottom" ripple={true} target="userControl" >
+        <Menu align="left" valign="bottom" ripple={true} target="userControl" >
           <MenuItem>
             <Button
               onClick={callback}>

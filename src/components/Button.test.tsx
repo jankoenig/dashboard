@@ -48,4 +48,14 @@ describe("Button Component", function() {
     expect(onButtonClick).to.have.been.called;
     expect(onButtonClick).to.have.been.calledOnce;
   });
+  it("should return a link if an href is passed", function() {
+        const wrapper = shallow(<Button href="https://bespoken.tools">OK</Button>);
+
+        expect(wrapper.find("button")).to.have.length(0);
+        expect(wrapper.find("a")).to.have.length(1);
+        let a = wrapper.find("a");
+        expect(a.props().href).to.equal("https://bespoken.tools");
+        expect(a.props().target).to.equal("_blank");
+
+  });
 });
