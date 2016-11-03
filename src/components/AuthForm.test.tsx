@@ -42,6 +42,32 @@ describe("AuthForm", function () {
         wrapper.find("button").at(1).simulate("click");
         expect(onSignUpWithEmail).to.have.been.called;
     });
+     it("can not sign up wrong password", function () {
+        const onSignUpWithEmail = sinon.spy();
+        const onSubmit = sinon.spy();
+        const wrapper = shallow(<AuthForm onSubmit={onSubmit}
+                                email={"test@test.email"}
+                                password ={"passwaord"}
+                                confirmPassword ={"passrd"}
+                                onSignUpWithEmail={onSignUpWithEmail}/>);
+
+        wrapper.find("button").at(1).simulate("click");
+        wrapper.find("button").at(1).simulate("click");
+        expect(onSignUpWithEmail).to.have.been.called;
+    });
+     it("can not sign up wrong email", function () {
+        const onSignUpWithEmail = sinon.spy();
+        const onSubmit = sinon.spy();
+        const wrapper = shallow(<AuthForm onSubmit={onSubmit}
+                                email={"testl"}
+                                password ={"password"}
+                                confirmPassword ={"password"}
+                                onSignUpWithEmail={onSignUpWithEmail}/>);
+
+        wrapper.find("button").at(1).simulate("click");
+        wrapper.find("button").at(1).simulate("click");
+        expect(onSignUpWithEmail).to.have.been.called;
+    });
     it("can be logged in with Github", function () {
         const onSubmit = sinon.spy();
         const onLoginWithGithub = sinon.spy();
