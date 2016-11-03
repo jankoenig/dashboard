@@ -38,10 +38,6 @@ module.exports = {
     ]
   },
 
-  postcss: [
-    require("autoprefixer-core")
-  ],
-
   plugins: [
     new ExtractTextPlugin("style.css", { allChunks: true })// ,
     // Not ready for this yet // new webpack.optimize.UglifyJsPlugin()
