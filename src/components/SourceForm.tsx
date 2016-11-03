@@ -1,7 +1,9 @@
 import * as React from "react";
 
 import Source from "../models/source";
+import Button from "./Button";
 import FormInput from "./FormInput";
+
 
 interface SourceFormProps {
     name?: string;
@@ -71,11 +73,7 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
                     <p> {this.props.error } </p>
                 ) : undefined }
                 {!this.props.disable ? (
-                    <button
-                        className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
-                        onClick={this.onClick.bind(this)}>
-                        Create Skill
-                    </button>
+                    <Button colored={true} ripple={true} raised={true} onClick={this.onClick.bind(this)}>Create Skill</Button>
                 ) : undefined}
             </div>
         );
