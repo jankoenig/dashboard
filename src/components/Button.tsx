@@ -37,12 +37,15 @@ class Button extends React.Component<ButtonProps, any> {
   render() {
 
     let component = this.props.href !== undefined ? "a" : "button";
-
     let properties = objectAssign({}, this.props, {
       className: this.classes(),
       href: this.props.href,
       target: "_blank"
     });
+
+    // Clean off the unknown properties
+    delete properties.accent;
+    delete properties.raised;
 
     return React.createElement(component, properties);
   }
