@@ -33,7 +33,9 @@ export function source(state: SourceState = INITIAL_STATE, action: SourceAction)
         case CREATE_SOURCE_ERROR:
             return objectAssign({}, state, { error: action.error });
         case CREATE_SOURCE_SUCCESS:
-            return objectAssign({}, state, { newSource: action.source, sourceRequest: false });
+            let sources: Source[] = state.sources.slice();
+            sources.push(action.source);
+            return objectAssign({}, state, { sources: sources, newSource: action.source, sourceRequest: false });
         default:
             return state;
     }

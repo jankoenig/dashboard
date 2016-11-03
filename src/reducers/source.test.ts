@@ -43,6 +43,23 @@ describe("Source Reducer", function () {
             let newState = source(undefined, createSourceSuccess);
             expect(newState.sourceRequest).to.be.false;
             expect(newState.newSource).to.equal(newSource);
+            expect(newState.sources).to.have.length(1);
+            expect(newState.sources[0]).to.equal(newSource);
+        });
+        it("appends the new source to the existing", function() {
+            let newSource = new Source({name: "name"});
+            let existingSource = new Source({name: "existing"});
+            let createSourceSuccess = actions.createSourceSuccess(newSource);
+            let oldState = {
+                sources: [existingSource],
+                sourceRequest: true
+            };
+            let newState = source(oldState, createSourceSuccess);
+            expect(newState.sourceRequest).to.be.false;
+            expect(newState.newSource).to.equal(newSource);
+            expect(newState.sources).to.have.length(2);
+            expect(newState.sources).to.contain(newSource);
+            expect(newState.sources).to.contain(existingSource);
         });
     });
 });
