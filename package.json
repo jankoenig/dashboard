@@ -18,10 +18,23 @@
     "postversion": "git push && git push --tags",
     "build": "webpack"
   },
-  "author": "",
+  "contributors": [
+    {
+      "name": "Michael Myers",
+      "email": "michael@bespoken.tools"
+    },
+    {
+      "name": "Chris Dietz"
+    },
+    {
+      "name": "Umut Genlik"
+    },
+    {
+      "name": "Ling Hung"
+    }
+  ],
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
-    "autoprefixer-core": "^6.0.1",
     "browser-sync": "^2.17.5",
     "bs-fullscreen-message": "^1.1.0",
     "chai": "^3.5.0",
