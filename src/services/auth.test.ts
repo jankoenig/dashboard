@@ -1,10 +1,20 @@
 import auth from "./auth";
 
 
-describe("auth.ts", function () {
-    describe("Successful signUpWithEmail with username and password", function() {
-        it ("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function() {
+describe("Auth ts not mocked", function () {
+    describe("sign up bad email", function() {
+        it ("Test the sign up funct.", function() {
                auth.signUpWithEmail("testuser", "secretPassword", "secretPassword", (success: true, error: "") => void{});
+        });
+    });
+    describe("sign up short passes", function() {
+        it ("Test the sign up funct.", function() {
+               auth.signUpWithEmail("testuser@testuser.com", "secr", "secr", (success: true, error: "") => void{});
+        });
+    });
+    describe("sign up not matching passes", function() {
+        it ("Test the sign up funct.", function() {
+               auth.signUpWithEmail("testuser@testuser.com", "secradad", "secr", (success: true, error: "") => void{});
         });
     });
  });
