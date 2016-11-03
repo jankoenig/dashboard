@@ -2,7 +2,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { changeForm } from "../actions/authForm";
+import { changeForm } from "../actions/auth-form";
 import { login, loginWithGithub, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";

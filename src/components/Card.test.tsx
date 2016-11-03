@@ -1,19 +1,16 @@
-import { expect } from "chai";
-import * as React from "react";
-import * as TestUtils from "react-addons-test-utils";
+import * as chai from "chai";
+import { shallow } from "enzyme";
+// tslint:disable:no-unused-variable
+import * as React from "react"; // Needed for enzyme, unused for some reason.
+// tslint:enable:no-unused-variable
 
 import Card from "./Card";
 
-describe("Card", () => {
-    let renderer: React.ShallowRenderer;
+let expect = chai.expect;
 
-    beforeEach(function () {
-        renderer = TestUtils.createRenderer();
-        renderer.render(<Card />);
-    });
-
+describe("Card", function() {
     it("should render correctly", function () {
-        const result = renderer.getRenderOutput();
-        expect(result.type).to.equal("div");
+        const wrapper = shallow(<Card />);
+        expect(wrapper.type()).to.equal("div");
     });
 });

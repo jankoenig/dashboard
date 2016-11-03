@@ -1,4 +1,5 @@
 import * as classNames from "classnames";
+import * as objectAssign from "object-assign";
 import * as React from "react";
 
 interface ButtonProps {
@@ -14,6 +15,7 @@ interface ButtonProps {
   id?: string;
   testid?: string;
   style?: React.CSSProperties;
+  href?: string;
 };
 
 /**
@@ -33,18 +35,23 @@ class Button extends React.Component<ButtonProps, any> {
   }
 
   render() {
-    return (
-      <button
-        data-testid={this.props.testid}
-        id={this.props.id}
-        type={this.props.type}
-        className={this.classes()}
-        onClick={this.props.onClick}
-        style={this.props.style}
-        >
-        {this.props.children}
-      </button>
-    );
+
+    let component = this.props.href !== undefined ? "a" : "button";
+    let properties = objectAssign({}, this.props, {
+      className: this.classes(),
+      href: this.props.href,
+      target: "_blank"
+    });
+
+    // Clean off properties that were used for setting classes
+    // They are not real and should not be passed on
+    delete properties.accent;
+    delete properties.raised;
+    delete properties.colored;
+    delete properties.ripple;
+    delete properties.primary;
+
+    return React.createElement(component, properties);
   }
 }
 

@@ -4,7 +4,7 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 
 import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
-import { mockLogs } from "../utils/test";
+import { dummyLogs } from "../utils/test";
 import * as log from "./log";
 
 const middlewares = [thunk];
@@ -15,7 +15,7 @@ let expect = chai.expect;
 describe("Log Actions", function () {
     describe("getLogs", function () {
 
-        let mockPayload = mockLogs(6);
+        let mockPayload = dummyLogs(6);
 
         beforeEach(function () {
             fetchMock.get("*", {

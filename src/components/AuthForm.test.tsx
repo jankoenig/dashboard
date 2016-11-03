@@ -18,7 +18,7 @@ describe("AuthForm", function () {
         const wrapper = shallow(<AuthForm onSubmit={onSubmit} />);
         // A form, two inputs and a button
         expect(wrapper.find("form")).to.have.length(1);
-        expect(wrapper.find("input")).to.have.length(3);
+        expect(wrapper.find("FormInput")).to.have.length(3);
         expect(wrapper.find("button")).to.have.length(2);
     });
     it("can be submitted", function () {

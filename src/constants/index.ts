@@ -3,13 +3,17 @@
  * These are the variables that determine what our central data store (reducer.js)
  * changes in our state. When you add a new action, you have to add a new constant here
  *
- * Follow this format:
- * export const YOUR_ACTION_CONSTANT = "YOUR_ACTION_CONSTANT";
  */
-export const AUTH_ERROR = "AUTH_ERROR";
-export const CHANGE_FORM = "CHANGE_FORM";
-export const SET_AUTH = "SET_AUTH";
-export const SET_USER = "SET_USER";
+
+export type CHANGE_FORM = "bst/CHANGE_FORM";
+export const CHANGE_FORM: CHANGE_FORM = "bst/CHANGE_FORM";
+
+export type AUTH_ERROR = "bst/AUTH_ERROR";
+export const AUTH_ERROR: AUTH_ERROR = "bst/AUTH_ERROR";
+
+export type SET_USER = "bst/SET_USER";
+export const SET_USER: SET_USER = "bst/SET_USER";
+
 export const SENDING_REQUEST = "SENDING_REQUEST";
 
 export const LOGIN_USER_PENDING = "bst/LOGIN_USER_PENDING";
@@ -19,8 +23,27 @@ export const LOGOUT_USER = "bst/LOGOUT_USER";
 
 export type FETCH_LOGS_REQUEST = "bst/FETCH_LOGS_REQUEST";
 export const FETCH_LOGS_REQUEST: FETCH_LOGS_REQUEST = "bst/FETCH_LOGS_REQUEST";
+
 export type SET_LOGS = "bst/SET_LOGS";
 export const SET_LOGS: SET_LOGS = "bst/SET_LOGS";
+
+export type SET_SOURCES = "bst/SET_SOURCES";
+export const SET_SOURCES: SET_SOURCES = "bst/SET_SOURCES";
+
+export type CREATE_SOURCE_REQUEST = "bst/CREATE_SOURCE_REQUEST";
+export const CREATE_SOURCE_REQUEST: CREATE_SOURCE_REQUEST = "bst/CREATE_SOURCE_REQUEST";
+
+export type CREATE_SOURCE_SUCCESS = "bst/CREATE_SOURCE_SUCCESS";
+export const CREATE_SOURCE_SUCCESS: CREATE_SOURCE_SUCCESS = "bst/CREATE_SOURCE_SUCCESS";
+
+export type CREATE_SOURCE_ERROR = "bst/CREATE_SOURCE_ERROR";
+export const CREATE_SOURCE_ERROR: CREATE_SOURCE_ERROR = "bst/CREATE_SOURCE_ERROR";
+
+export type FETCH_SOURCES_REQUEST = "bst/FETCH_SOURCES_REQUEST"
+export const FETCH_SOURCES_REQUEST: FETCH_SOURCES_REQUEST = "bst/FETCH_SOURCES_REQUEST";
+
+export type FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SUCCESS"
+export const FETCH_SOURCES_SUCCESS: FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SUCCESS";
 
 export namespace CLASSES {
     export namespace COLOR {

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 
 import { logout } from "../actions/session";
+import { getSources } from "../actions/source";
 import Content from "../components/Content";
 import Drawer from "../components/Drawer";
 import Header from "../components/Header";
@@ -16,9 +17,10 @@ import User from "../models/user";
 import { State } from "../reducers";
 
 interface DashboardProps {
-  user?: User;
+  user: User;
   login: () => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
+  getSources: () => Redux.ThunkAction<any, any, any>;
 }
 
 function mapStateToProps(state: State.All) {
@@ -34,11 +36,14 @@ function mapDispatchToProps(dispatch: any) {
     },
     logout: function () {
       return dispatch(logout());
+    },
+    getSources: function () {
+      return dispatch(getSources());
     }
   };
 }
 
-class Dashboard extends React.Component<any, any> {
+class Dashboard extends React.Component<DashboardProps, any> {
 
   drawerClasses() {
     return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
@@ -46,6 +51,10 @@ class Dashboard extends React.Component<any, any> {
 
   headerClasses() {
     return classNames(CLASSES.COLOR.GREY_100, CLASSES.TEXT.GREY_600);
+  }
+
+  componentWillMount() {
+    this.props.getSources();
   }
 
   render() {
@@ -60,8 +69,8 @@ class Dashboard extends React.Component<any, any> {
         <Drawer className={this.drawerClasses()} >
           <Navigation className={CLASSES.COLOR.BLUE_GREY_800}>
             <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/" name="Home" icon="home" />
-            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/logs" name="Logs" icon="subject" />
-            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/about" name="About" icon="info" />
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/skills/new" name="New Skill" icon="add" />
+            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/skills" name="My Skills" icon="subject" />
           </Navigation>
         </Drawer>
         <Content>

@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import * as fetchMock from "fetch-mock";
 
-import { mockLogs } from "../utils/test";
+import { dummyLogs } from "../utils/test";
 import log from "./log";
 
 describe("log service", function () {
@@ -9,7 +9,7 @@ describe("log service", function () {
         // Mock fetch
         beforeEach(function () {
              fetchMock.get("*", {
-                "data": mockLogs(2)
+                "data": dummyLogs(2)
             });
         });
 

@@ -1,10 +1,9 @@
 import { goBack, push, replace } from "react-router-redux";
 
+import { changeErrorInForm } from "../actions/auth-form";
 import { SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
 import auth from "../services/auth";
-
-import { changeErrorInForm } from "../actions/authForm";
 
 export function sendingRequest(sending: boolean) {
   return {
@@ -13,7 +12,12 @@ export function sendingRequest(sending: boolean) {
   };
 }
 
-export function setUser(user: User | undefined) {
+export type SetUser = {
+  type: SET_USER,
+  user: User | undefined
+}
+
+export function setUser(user: User | undefined): SetUser {
   return {
     type: SET_USER,
     user: user
@@ -59,7 +63,6 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
     }
     else {
       if (error) {
-        console.log(error);
         dispatch(changeErrorInForm(error));
       }
     }

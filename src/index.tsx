@@ -5,12 +5,16 @@ import { Provider } from "react-redux";
 import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
 import { syncHistoryWithStore } from "react-router-redux";
 
+import { setUser } from "./actions/session";
 import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
+import { FirebaseUser } from "./models/user";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/LogsPage";
+import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import SourceListPage from "./pages/SourceListPage";
 import rootReducer from "./reducers";
 
 import configureStore from "./store";
@@ -36,10 +40,19 @@ let firebaseConfig = {
     messagingSenderId: "629657216103"
 };
 
+// Timing the firebase initialize
+let firebaseInitializeTimer = new Date();
+
 Firebase.initializeApp(firebaseConfig);
-Firebase.auth().onAuthStateChanged(function(user: Firebase.User) {
-    console.log("onAuthStateChanged");
-    console.log(user);
+Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
+    let firebaseInitializeTime = +new Date() - +firebaseInitializeTimer;
+    console.log("Firebase took " + firebaseInitializeTime + "ms to inialize");
+    // If there is a user, set it
+    if (user) {
+        store.dispatch(setUser(new FirebaseUser(user)));
+    }
+    // We need to wait for the user to be available before we can render the app
+    render();
 });
 
 /**
@@ -47,7 +60,7 @@ Firebase.auth().onAuthStateChanged(function(user: Firebase.User) {
  *
  * See below on the onEnter method.
  */
-let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFunction) {
+let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
     const session: any = store.getState().session;
     if (!session.user) {
         replace({
@@ -57,18 +70,24 @@ let checkAuth: EnterHook = function(nextState: RouterState, replace: RedirectFun
     }
 };
 
-ReactDOM.render(
-    <Provider store={store}>
-        <Router history={history}>
-            <Route path="/login" component={Login}>
-                <IndexRoute component={LoginPage} />
-            </Route>
-            <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                <IndexRoute component={ HomePage } />
-                <Route path="/skills/:source/logs" component={LogsPage}/>
-                <Route path="*" component={NotFoundPage} />
-            </Route>
-        </Router>
-    </Provider>,
-    document.getElementById("dashboard")
-);
+let render = function () {
+    ReactDOM.render(
+        <Provider store={store}>
+            <Router history={history}>
+                <Route path="/login" component={Login}>
+                    <IndexRoute component={LoginPage} />
+                </Route>
+                <Route path="/" component={Dashboard} onEnter={checkAuth}>
+                    <IndexRoute component={HomePage} />
+                    <Route path="/skills" component={SourceListPage} />
+                    <Route path="/skills/new" component={NewSourcePage} />
+                    <Route path="/skills/:sourceSlug/logs" component={LogsPage} />
+                    <Route path="*" component={NotFoundPage} />
+                </Route>
+            </Router>
+        </Provider>,
+        document.getElementById("dashboard")
+    );
+};
+
+

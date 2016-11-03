@@ -16,7 +16,7 @@ Place the following CSS dependencies within your `<head>` tag:
 
 ```html
 <!-- Dashboard Required Dependencies -->
-<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+<link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.grey-red.min.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 ```
 

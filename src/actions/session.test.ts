@@ -8,7 +8,6 @@ import User from "../models/user";
 import auth from "../services/auth";
 import * as session from "./session";
 
-
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 

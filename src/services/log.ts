@@ -26,7 +26,7 @@ export namespace log {
 
     export function getLogs(query: Query): Promise<Log[]> {
 
-        let baseUrl = "http://logless-server-049ff85c.4a0ac639.svc.dockerapp.io:3000/v1";
+        let baseUrl = "https://logless.bespoken.tools/v1";
         let url = baseUrl + "/query?" + log.queryBuilder(query);
 
         return fetch(url).then(function (response) {

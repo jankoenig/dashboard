@@ -1,20 +1,17 @@
-import { expect } from "chai";
-import * as React from "react";
-import * as TestUtils from "react-addons-test-utils";
+import * as chai from "chai";
+import { shallow } from "enzyme";
+// tslint:disable:no-unused-variable
+import * as React from "react"; // Needed for enzyme, unused for some reason.
+// tslint:enable:no-unused-variable
 
 import Cell from "./Cell";
 
+let expect = chai.expect;
+
 describe("Cell", function() {
-  let renderer: React.ShallowRenderer;
-
-  beforeEach(() => {
-      renderer = TestUtils.createRenderer();
-      renderer.render(<Cell />);
-  });
-
   it("should render correctly", function() {
-    const result = renderer.getRenderOutput();
-    expect(result.type).to.equal("div");
-    expect(result.props.className).to.contain("mdl-cell");
+    const wrapper = shallow(<Cell />);
+    expect(wrapper.type()).to.equal("div");
+    expect(wrapper.props().className).to.contain("mdl-cell");
   });
 });
