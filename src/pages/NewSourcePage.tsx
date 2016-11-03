@@ -86,7 +86,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                 <Grid>
                     <Cell col={12}>
                         <h4>Integrate the SDK</h4>
-                        <p>Install the depdency</p>
+                        <p>Install the dependency</p>
                         <pre style={this.codeStyle()}>{`$npm install bespoken-tools --save `}</pre>
                         <p>Import bst to your index.js</p>
                         <pre style={this.codeStyle()}>{`var bst = require('bespoken-tools');`}</pre>

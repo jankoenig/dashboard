@@ -6,7 +6,7 @@ import { Cell, Grid } from "../components/Grid";
 import Source from "../models/source";
 import { State } from "../reducers";
 
-interface SourcesListPageProps {
+interface SourceListPageProps {
     sources: Source[];
 }
 
@@ -21,7 +21,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-export class SourcesListPage extends React.Component<SourcesListPageProps, any> {
+export class SourceListPage extends React.Component<SourceListPageProps, any> {
     render() {
 
         // Construct the list
@@ -50,4 +50,4 @@ export class SourcesListPage extends React.Component<SourcesListPageProps, any> 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(SourcesListPage);
+)(SourceListPage);

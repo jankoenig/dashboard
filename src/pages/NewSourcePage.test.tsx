@@ -13,7 +13,7 @@ chai.use(sinonChai);
 let expect = chai.expect;
 
 describe("New Source Page", function () {
-    it("should render subcomponents", function () {
+    it("should render correctly", function () {
         const createSource = sinon.spy();
         const wrapper = shallow(
             <NewSourcePage

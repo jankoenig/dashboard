@@ -8,7 +8,7 @@ import * as sinonChai from "sinon-chai";
 
 import Log from "../models/log";
 import Source from "../models/source";
-import { mockLogs } from "../utils/test";
+import { dummyLogs } from "../utils/test";
 import { LogsPage } from "./LogsPage";
 
 // Setup chai with sinon-chai
@@ -55,7 +55,7 @@ describe("Logs Page", function () {
         describe("with logs", function () {
             it("should render correctly", function () {
                 const getLogs = sinon.spy();
-                let logs: Log[] = mockLogs(3);
+                let logs: Log[] = dummyLogs(3);
                 let source = new Source({ name: "name" });
                 let sources = [source];
                 let params = {

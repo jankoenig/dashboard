@@ -14,7 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/LogsPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
-import SourcesListPage from "./pages/SourcesListPage";
+import SourceListPage from "./pages/SourceListPage";
 import rootReducer from "./reducers";
 
 import configureStore from "./store";
@@ -79,7 +79,7 @@ let render = function () {
                 </Route>
                 <Route path="/" component={Dashboard} onEnter={checkAuth}>
                     <IndexRoute component={HomePage} />
-                    <Route path="/skills" component={SourcesListPage} />
+                    <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
                     <Route path="/skills/:sourceSlug/logs" component={LogsPage} />
                     <Route path="*" component={NotFoundPage} />
