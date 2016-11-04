@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import JSONTree from "react-json-tree";
 import { connect } from "react-redux";
@@ -17,6 +18,7 @@ interface LogsPageProps {
 
 interface LogsPageState {
     source: Source | undefined;
+    json: any;
 }
 
 function mapStateToProps(state: State.All) {
@@ -82,7 +84,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     constructor(props: LogsPageProps) {
         super(props);
         this.state = {
-            source: undefined
+            source: undefined,
+            json: undefined
         };
     }
 
@@ -92,7 +95,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             if (this.props.params.sourceSlug === source.slug) {
                 this.props.getLogs(source.secretKey);
                 this.setState({
-                    source: source
+                    source: source,
+                    json: this.state.json
                 });
             }
         }
@@ -110,16 +114,74 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         }
     }
 
+    getConsoleMessages(): JSX.Element[] {
+
+        let messages: JSX.Element[] = [];
+
+        if (this.props.logs) {
+            for (let log of this.props.logs) {
+                if (typeof log.payload === "string") {
+                    messages.push((<li key={log.id} id={log.id} onClick={this.onLogSelected.bind(this, log)}>{log.payload}</li>));
+                }
+            }
+        }
+
+        return messages;
+    }
+
+    getConversations(): JSX.Element[] {
+
+        let conversations: JSX.Element[] = [];
+
+        if (this.props.logs) {
+            for (let log of this.props.logs) {
+                if (log.tags.indexOf("request") > -1) {
+                    let intent: string;
+
+                    // console.log(moment(log.timestamp).fromNow());
+                    // console.log(moment(log.timestamp).format("MMM Do h:mm a"));
+
+                    if (log.payload.request.intent) {
+                        intent = log.payload.request.intent.name;
+                    } else {
+                        intent = log.payload.request.type;
+                    }
+
+                    conversations.push((<li key={log.id} id={log.id} onClick={this.onLogSelected.bind(this, log)}>REQUEST: {intent} { moment(log.timestamp).fromNow() } </li>));
+                }
+                if (log.tags.indexOf("response") > -1) {
+                    conversations.push((<li key={log.id} id={log.id} onClick={this.onLogSelected.bind(this, log)}>RESPONSE: {log.payload.response.outputSpeech.ssml} { moment(log.timestamp).fromNow() } </li>));
+                }
+            }
+        }
+
+        return conversations;
+    }
+
+    onLogSelected(log: Log, event: React.MouseEvent) {
+        this.updateJSONTree(log);
+    }
+
+    updateJSONTree(log: Log) {
+        this.setState({
+            source: this.state.source,
+            json: log.payload
+        });
+    };
+
+    shouldExpandNode(keyName: string, data: any, level: number) {
+        console.log(keyName);
+        return true;
+    }
+
     render() {
         // First we need to figure out what we display depending on if the logs are loading or if any exist
         let logs: JSX.Element = (<p>Loading logs...</p>);
         // It is much cleaner to put the logic outside the JSX below
-        if (this.props.logs) {
-            if (this.props.logs.length > 0) {
-                logs = (<JSONTree data={this.props.logs} hideRoot={true} invertTheme={false} theme={this.getTheme()} />);
-            } else {
-                logs = (<p>You don't have any logs yet.</p>);
-            }
+        if (this.state.json) {
+            logs = (<JSONTree data={this.state.json} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
+        } else {
+            logs = (<p>Select a conversation or message to inspect the payload</p>);
         }
 
         return (
@@ -132,7 +194,18 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                     </Grid>
                 ) : undefined}
                 <Grid>
-                    <Cell col={12}>
+                    <Cell col={6}>
+                        <h6>CONVERSATIONS</h6>
+                        <ul>
+                            {this.getConversations()}
+                        </ul>
+                        <h6>CONSOLE</h6>
+                        <ul>
+                            {this.getConsoleMessages()}
+                        </ul>
+                    </Cell>
+                    <Cell col={6}>
+                        <h6>PAYLOAD</h6>
                         {logs}
                     </Cell>
                 </Grid>
