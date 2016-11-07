@@ -11,7 +11,7 @@ export interface ErrorHandler {
     /**
      * The regex to set fo the form to check against.  An undefined means that any text will be accepted.
      */
-    regex?: RegExp;
+    regex: RegExp;
     /**
      * If the input doesn't match the input prodided, this method will be called to retrieve the error message to display to the user.
      *
@@ -19,7 +19,7 @@ export interface ErrorHandler {
      *      The input that the user has shown.
      *
      */
-    errorMessage?: (input: string) => string | undefined;
+    errorMessage: (input: string) => string | undefined;
 }
 
 interface FormInputProps {
@@ -56,7 +56,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
     onFormChange(event: React.FormEvent) {
         let errorMsg: string = undefined;
-        if (this.props.error !== undefined && this.props.error.errorMessage !== undefined) {
+        if (this.props.error !== undefined) {
             let target = event.target as HTMLSelectElement;
             errorMsg = this.props.error.errorMessage(target.value);
         }
@@ -68,7 +68,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
     render() {
         let pattern: string = undefined;
-        if (this.props.error !== undefined && this.props.error.regex !== undefined) {
+        if (this.props.error !== undefined) {
             pattern = this.props.error.regex.source;
         }
 
