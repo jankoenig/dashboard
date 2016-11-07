@@ -34,6 +34,10 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
+function validator(name: string): boolean {
+        return true;
+    }
+
 export class NewSourcePage extends React.Component<NewSourceProps, any> {
 
     createSource(source: Source) {
@@ -79,7 +83,8 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                         <SourceForm
                             createSource={this.createSource.bind(this)}
                             disable={this.props.newSource ? true : false}
-                            error={this.props.error} />
+                            error={this.props.error}
+                            nameRule={validator} />
                     </Cell>
                 </Grid>
                 <Grid>
@@ -107,6 +112,8 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
         );
     }
 };
+
+
 
 export default connect(
     mapStateToProps,
