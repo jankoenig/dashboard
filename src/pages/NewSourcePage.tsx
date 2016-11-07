@@ -81,6 +81,9 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                     <Cell col={12}>
                         <h4>New Skill Setup</h4>
                     </Cell>
+                    <Cell col={12}>
+                        <p>Currently all skills must be at least three characters in length and not contain any special characters.</p>
+                    </Cell>
                 </Grid>
                 <Grid>
                     <Cell col={12}>
