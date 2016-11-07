@@ -17,6 +17,14 @@ interface NewSourceProps {
     sources: Source[];
 }
 
+/**
+ * Validator function for the SourceForm.  Exported for direct testing.
+ */
+export function validator(name: string): boolean {
+    let nameRegex: RegExp = /^[a-zA-Z\d-][a-zA-Z\d- ]+[a-zA-Z\d-]$/;
+    return (name !== undefined) && nameRegex.test(name);
+}
+
 function mapStateToProps(state: State.All) {
     return {
         newSource: state.source.newSource,
@@ -33,10 +41,6 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         }
     };
 }
-
-function validator(name: string): boolean {
-        return true;
-    }
 
 export class NewSourcePage extends React.Component<NewSourceProps, any> {
 
