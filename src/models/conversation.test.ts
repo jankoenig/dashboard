@@ -100,7 +100,7 @@ let responsePayload: LogProperties = {
     id: "581cd1047a0db10022c081e8"
 };
 
-describe.only("Conversation", function () {
+describe("Conversation", function () {
     it("sets the properties", function () {
 
         let response = new Log(responsePayload);
