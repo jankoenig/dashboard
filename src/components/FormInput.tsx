@@ -55,17 +55,23 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
     }
 
     onFormChange(event: React.FormEvent) {
-        let target = event.target as HTMLSelectElement;
+        let errorMsg: string = undefined;
+        if (this.props.error !== undefined && this.props.error.errorMessage !== undefined) {
+            let target = event.target as HTMLSelectElement;
+            errorMsg = this.props.error.errorMessage(target.value);
+        }
         this.setState({
-            errorMsg: (this.props.error ? this.props.error.errorMessage(target.value) : undefined)
+            errorMsg: errorMsg
         });
         this.props.onChange(event);
     }
 
     render() {
-        if (this.props.error) {
-            console.info("Checking err " + this.props.error.regex.source);
+        let pattern: string = undefined;
+        if (this.props.error !== undefined && this.props.error.regex !== undefined) {
+            pattern = this.props.error.regex.source;
         }
+
         return (
             <div
                 className={this.classes()}
@@ -77,7 +83,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     type={this.props.type}
                     id={util.stringToCamelCase(this.props.label)}
                     value={this.props.value}
-                    pattern={this.props.error ? this.props.error.regex.source : undefined}
+                    pattern={pattern}
                     onChange={this.onFormChange.bind(this)}
                     readOnly={this.props.readOnly}/>
                 <label

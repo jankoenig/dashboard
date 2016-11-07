@@ -203,5 +203,28 @@ describe("FormInput", function () {
 
             expect(error.errorMessage).to.be.calledOnce;
         });
+
+        it ("Checks that FormInput renders an ErrorHandler that has undefined attributes.", function() {
+            const value = "value";
+            const error: Form.ErrorHandler = {
+            };
+
+            const onChange = sinon.spy();
+            const wrapper = shallow(
+                <Form.FormInput
+                    type={"text"}
+                    label={"Label"}
+                    value={value}
+                    onChange={onChange}
+                    readOnly={true}
+                    error={error}
+                    />
+            );
+
+            // Checks that it doesn't crash.
+            wrapper.find("input").simulate("change", {target: {value: "A"}});
+
+            expect(wrapper.type()).to.equal("div");
+        });
     });
 });
