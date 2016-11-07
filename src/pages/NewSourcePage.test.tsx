@@ -6,7 +6,7 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import { NewSourcePage, validator } from "./NewSourcePage";
+import { NewSourcePage, OurNameRule } from "./NewSourcePage";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -27,10 +27,12 @@ describe("New Source Page", function () {
     });
 
     describe("Tests that ensure the validator function only allows passwords within the rules.", function() {
+
+        let nameRule: OurNameRule;
         let invalidChars = "!@#$%^&*()_+={}[];:'\"<,>.?/|\\~`";
 
-        it ("Tests 'undefined' is handled.", function() {
-            expect(validator(undefined)).is.false;
+        before(function() {
+            nameRule = new OurNameRule;
         });
 
         it ("Tests the \"At leat 3 rule\"", function() {
@@ -69,5 +71,9 @@ describe("New Source Page", function () {
         it ("Tests that it allows whitepsace inside name.", function() {
             expect(validator("This should be a valid name")).to.be.true;
         });
+
+        function validator(input?: string): boolean {
+            return nameRule.regex.test(input);
+        }
     });
 });

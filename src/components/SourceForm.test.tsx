@@ -7,12 +7,16 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import Source from "../models/source";
-import SourceForm from "./SourceForm";
+import * as SourceForm from "./SourceForm";
 
 // Setup chai with sinon-chai
 chai.should();
 chai.use(sinonChai);
 let expect = chai.expect;
+
+interface TestNameRule extends SourceForm.NameRule {
+    errorMessage: Sinon.SinonSpy;
+}
 
 describe("SourceForm", function () {
 
@@ -20,12 +24,15 @@ describe("SourceForm", function () {
         let createSource = function(source: Source) {
             console.info("Creating source.");
         };
-        let validator = function(name?: string): boolean {
-            console.info("Validator " + name);
-            return true;
+        let validator: SourceForm.NameRule = {
+            regex: /\w/,
+            errorMessage: (input: string): string => {
+                console.info("Validator " + name);
+                return undefined;
+            }
         };
 
-        let wrapper = shallow(<SourceForm createSource={createSource}
+        let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
                             disable={false}
                             nameRule={validator}/>);
 
@@ -33,24 +40,32 @@ describe("SourceForm", function () {
     });
 
     describe("Validator", function() {
-        let positiveValidator: Sinon.SinonSpy;
-        let threeLengthValidator: Sinon.SinonSpy;
-        let noNumberValidator: Sinon.SinonSpy;
+        let positiveValidator: TestNameRule;
+        let threeLengthValidator: TestNameRule;
+        let noNumberValidator: TestNameRule;
         let createSource: Sinon.SinonSpy;
 
         beforeEach(function() {
-            positiveValidator = sinon.spy(function(name: string): boolean {
-                return true;
-            });
+            positiveValidator = {
+                regex: undefined,
+                errorMessage: sinon.spy(function(name: string): string {
+                    return "Hopefully you'll never see this since it'll always be positive.";
+                })
+            };
 
-            threeLengthValidator = sinon.spy(function(name: string): boolean {
-                return (name) && name.length >= 3;
-            });
+            threeLengthValidator = {
+                regex: /^\w{3}$/,
+                errorMessage: sinon.spy(function(name: string): string {
+                    return "The value " + name + " is less than three characters.";
+                })
+            };
 
-            noNumberValidator = sinon.spy(function(name: string): boolean {
-                console.info("TESTING " + name + " " + (/^[a-zA-Z]+$/.test(name)));
-                return /^[a-zA-Z]+$/.test(name);
-            });
+            noNumberValidator = {
+                regex: /^[a-zA-Z]+$/,
+                errorMessage: sinon.spy(function(name: string): string {
+                    return "The value " + name + " contains a number.";
+                })
+            };
 
             createSource = sinon.spy(function(source: Source) {
                 console.info("Creating source");
@@ -58,14 +73,14 @@ describe("SourceForm", function () {
         });
 
         afterEach(function() {
-            positiveValidator.reset();
-            threeLengthValidator.reset();
-            noNumberValidator.reset();
+            positiveValidator.errorMessage.reset();
+            threeLengthValidator.errorMessage.reset();
+            noNumberValidator.errorMessage.reset();
             createSource.reset();
         });
 
         it ("Checks that forms are empty at start.", function() {
-            let wrapper = shallow(<SourceForm createSource={createSource}
+            let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
                             disable={false}
                             nameRule={positiveValidator}/>);
 
@@ -79,46 +94,8 @@ describe("SourceForm", function () {
             expect(keyForm.props().value).to.equal("");
         });
 
-        it ("Checks that it uses the validator with false results.", function() {
-            let wrapper = shallow(<SourceForm createSource={createSource}
-                            disable={false}
-                            nameRule={threeLengthValidator}/>);
-
-            let formInputs = wrapper.find("FormInput");
-            let nameForm = formInputs.at(0);
-
-            nameForm.simulate("change", {target: {value: "A"}});
-
-            threeLengthValidator.should.have.been.calledOnce;
-            threeLengthValidator.should.been.calledWith("A");
-
-            expect(wrapper.state().name).to.equal("A");
-            expect(wrapper.state().source).to.be.undefined;
-        });
-
-        it ("Checks that it uses the validator with  true results.", function() {
-            let wrapper = shallow(<SourceForm createSource={createSource}
-                            disable={false}
-                            nameRule={threeLengthValidator}/>);
-
-            let formInputs = wrapper.find("FormInput");
-            let nameForm = formInputs.at(0);
-
-            nameForm.simulate("change", {target: {value: "A"}});
-            nameForm.simulate("change", {target: {value: "AB"}});
-            nameForm.simulate("change", {target: {value: "ABC"}});
-
-            threeLengthValidator.should.have.been.calledThrice;
-            threeLengthValidator.firstCall.should.have.been.calledWith("A");
-            threeLengthValidator.secondCall.should.have.been.calledWith("AB");
-            threeLengthValidator.thirdCall.should.have.been.calledWith("ABC");
-
-            expect(wrapper.state().name).to.equal("ABC");
-            expect(wrapper.state().source).to.not.be.undefined;
-        });
-
         it ("Checks that the source is nulled when validator goes from true to false.", function() {
-            let wrapper = shallow(<SourceForm createSource={createSource}
+            let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
                             disable={false}
                             nameRule={noNumberValidator}/>);
 

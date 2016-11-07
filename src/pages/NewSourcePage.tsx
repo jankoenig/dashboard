@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { createSource } from "../actions/source";
 import Button from "../components/Button";
 import { Cell, Grid } from "../components/Grid";
-import SourceForm from "../components/SourceForm";
+import { NameRule, SourceForm} from "../components/SourceForm";
 import Source from "../models/source";
 import { State } from "../reducers";
 
@@ -18,11 +18,13 @@ interface NewSourceProps {
 }
 
 /**
- * Validator function for the SourceForm.  Exported for direct testing.
+ * Validator class for the SourceForm.  Exported for direct testing.
  */
-export function validator(name: string): boolean {
-    let nameRegex: RegExp = /^[a-zA-Z\d-][a-zA-Z\d- ]+[a-zA-Z\d-]$/;
-    return (name !== undefined) && nameRegex.test(name);
+export class OurNameRule implements NameRule {
+    regex: RegExp = /^[a-zA-Z\d-][a-zA-Z\d- ]+[a-zA-Z\d-]$/;
+    errorMessage = (input: string): string => {
+        return "The name must have three letters and contain no special characters except hyphen.";
+    }
 }
 
 function mapStateToProps(state: State.All) {
@@ -91,7 +93,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                             createSource={this.createSource.bind(this)}
                             disable={this.props.newSource ? true : false}
                             error={this.props.error}
-                            nameRule={validator} />
+                            nameRule={new OurNameRule()} />
                     </Cell>
                 </Grid>
                 <Grid>
