@@ -85,8 +85,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     htmlFor={util.stringToCamelCase(this.props.label)}>
                     {this.props.label}
                 </label>
-                <span
-                    className="mdl-textfield__error">{this.state.errorMsg}</span>
+                <span className="mdl-textfield__error">{this.state.errorMsg}</span>
             </div>
         );
     }
