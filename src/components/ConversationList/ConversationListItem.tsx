@@ -72,6 +72,9 @@ export default class ConversationListItem extends React.Component<ConversationLi
                     </div>
                     <span>
                         {this.props.conversation.requestType}
+                        { this.props.conversation.intent ? (
+                            <span> - { this.props.conversation.intent } </span>
+                        ) : undefined }
                     </span>
                     <span style={this.subtitleStyle()}>
                         {moment(this.props.conversation.timestamp).fromNow()}
