@@ -1,9 +1,9 @@
-import * as moment from "moment";
 import * as React from "react";
 import JSONTree from "react-json-tree";
 import { connect } from "react-redux";
 
 import { getLogs } from "../actions/log";
+import { ConversationList } from "../components/ConversationList";
 import { Cell, Grid } from "../components/Grid";
 import Log from "../models/log";
 import Source from "../models/source";
@@ -18,7 +18,8 @@ interface LogsPageProps {
 
 interface LogsPageState {
     source: Source | undefined;
-    json: any;
+    request: Log | undefined;
+    response: Log | undefined;
 }
 
 function mapStateToProps(state: State.All) {
@@ -85,7 +86,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         super(props);
         this.state = {
             source: undefined,
-            json: undefined
+            request: undefined,
+            response: undefined
         };
     }
 
@@ -96,7 +98,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 this.props.getLogs(source.secretKey);
                 this.setState({
                     source: source,
-                    json: this.state.json
+                    request: this.state.request,
+                    response: this.state.response
                 });
             }
         }
@@ -121,7 +124,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         if (this.props.logs) {
             for (let log of this.props.logs) {
                 if (typeof log.payload === "string") {
-                    messages.push((<li key={log.id} id={log.id} onClick={this.onLogSelected.bind(this, log)}>{log.payload}</li>));
+                    messages.push((<li key={log.id} id={log.id}>{log.payload}</li>));
                 }
             }
         }
@@ -129,59 +132,37 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return messages;
     }
 
-    getConversations(): JSX.Element[] {
-
-        let conversations: JSX.Element[] = [];
-
-        if (this.props.logs) {
-            for (let log of this.props.logs) {
-                if (log.tags.indexOf("request") > -1) {
-                    let intent: string;
-
-                    // console.log(moment(log.timestamp).fromNow());
-                    // console.log(moment(log.timestamp).format("MMM Do h:mm a"));
-
-                    if (log.payload.request.intent) {
-                        intent = log.payload.request.intent.name;
-                    } else {
-                        intent = log.payload.request.type;
-                    }
-
-                    conversations.push((<li key={log.id} id={log.id} onClick={this.onLogSelected.bind(this, log)}>REQUEST: {intent} { moment(log.timestamp).fromNow() } </li>));
-                }
-                if (log.tags.indexOf("response") > -1) {
-                    conversations.push((<li key={log.id} id={log.id} onClick={this.onLogSelected.bind(this, log)}>RESPONSE: {log.payload.response.outputSpeech.ssml} { moment(log.timestamp).fromNow() } </li>));
-                }
-            }
-        }
-
-        return conversations;
-    }
-
-    onLogSelected(log: Log, event: React.MouseEvent) {
-        this.updateJSONTree(log);
-    }
-
-    updateJSONTree(log: Log) {
+    onConversationClicked(request: Log, response: Log, event: React.MouseEvent) {
         this.setState({
             source: this.state.source,
-            json: log.payload
+            request: request,
+            response: response
         });
-    };
+    }
 
-    shouldExpandNode(keyName: string, data: any, level: number) {
-        console.log(keyName);
+    shouldExpandNode(keyName: string[], data: any, level: number) {
+        // don't expand the really long nodes by default
+        if (keyName.indexOf("user") > -1 || keyName.indexOf("application") > -1) {
+            return false;
+        }
         return true;
     }
 
     render() {
         // First we need to figure out what we display depending on if the logs are loading or if any exist
-        let logs: JSX.Element = (<p>Loading logs...</p>);
+        let request: JSX.Element = (<p>Loading logs...</p>);
+        let response: JSX.Element = (<p>Loading logs...</p>);
         // It is much cleaner to put the logic outside the JSX below
-        if (this.state.json) {
-            logs = (<JSONTree data={this.state.json} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
+        if (this.state.request) {
+            request = (<JSONTree data={this.state.request.payload} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
         } else {
-            logs = (<p>Select a conversation or message to inspect the payload</p>);
+            request = (<p>Select a conversation or message to inspect the payload</p>);
+        }
+
+        if (this.state.response) {
+            response = (<JSONTree data={this.state.response.payload} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
+        } else {
+            response = (<p>Select a conversation or message to inspect the payload</p>);
         }
 
         return (
@@ -196,17 +177,24 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 <Grid>
                     <Cell col={6}>
                         <h6>CONVERSATIONS</h6>
-                        <ul>
-                            {this.getConversations()}
-                        </ul>
+                        <div style={{ maxHeight: "600px", overflowY: "scroll" }}>
+                            <ConversationList
+                                logs={this.props.logs}
+                                onClick={this.onConversationClicked.bind(this)} />
+                        </div>
+                        { /*
+                        Commenting out the console messages until we can style them better
                         <h6>CONSOLE</h6>
                         <ul>
                             {this.getConsoleMessages()}
                         </ul>
+                    */ }
                     </Cell>
                     <Cell col={6}>
-                        <h6>PAYLOAD</h6>
-                        {logs}
+                        <h6>REQUEST</h6>
+                        {request}
+                        <h6>RESPONSE</h6>
+                        {response}
                     </Cell>
                 </Grid>
             </div>

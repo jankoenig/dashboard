@@ -16,6 +16,10 @@ export default class Conversation implements ConversationProperties {
         this.response = props.response;
     }
 
+    get id(): string {
+        return this.request.id;
+    }
+
     get applicationId(): string {
         return this.request.payload.session.application.applicationId;
     }
