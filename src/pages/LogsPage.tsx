@@ -122,7 +122,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             this.setCurrentSourceFromSources(this.props.sources);
         }
     }
-
+    /* Comment out until we can style the console messages
     getConsoleMessages(): JSX.Element[] {
 
         let messages: JSX.Element[] = [];
@@ -136,7 +136,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         }
 
         return messages;
-    }
+    } */
 
     onConversationClicked(request: Log, response: Log, event: React.MouseEvent) {
         this.setState({
@@ -154,7 +154,18 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return true;
     }
 
+    getContentHeight() {
+        let mains = document.getElementsByClassName("mdl-layout__content");
+        if (mains.length > 0) {
+            let main: Element = mains.item(0);
+            return main.clientHeight;
+        }
+
+        return 200;
+    }
+
     render() {
+        this.getContentHeight();
         // First we need to figure out what we display depending on if the logs are loading or if any exist
         let request: JSX.Element = (<p>Loading logs...</p>);
         let response: JSX.Element = (<p>Loading logs...</p>);
@@ -177,7 +188,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 <Grid>
                     <Cell col={6}>
                         <h6>CONVERSATIONS</h6>
-                        <div style={{ maxHeight: "600px", overflowY: "scroll" }}>
+                        <div style={{ maxHeight: this.getContentHeight() - 90, overflowY: "scroll" }}>
                             <ConversationList
                                 logs={this.props.logs}
                                 onClick={this.onConversationClicked.bind(this)} />
@@ -190,7 +201,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                         </ul>
                     */ }
                     </Cell>
-                    <Cell col={6}>
+                    <Cell col={6} style={{ maxHeight: this.getContentHeight() - 25, overflowY: "scroll" }}>
                         <h6>REQUEST</h6>
                         {request}
                         <h6>RESPONSE</h6>
