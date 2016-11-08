@@ -3,6 +3,7 @@ import JSONTree from "react-json-tree";
 import { connect } from "react-redux";
 
 import { getLogs } from "../actions/log";
+import { setCurrentSource } from "../actions/source";
 import { ConversationList } from "../components/ConversationList";
 import { Cell, Grid } from "../components/Grid";
 import Log from "../models/log";
@@ -12,6 +13,7 @@ import { State } from "../reducers";
 interface LogsPageProps {
     logs: Log[];
     getLogs: (source: string) => (dispatch: Redux.Dispatch<any>) => void;
+    setCurrentSource: (source: Source) => void;
     params?: any;
     sources: Source[];
 }
@@ -31,6 +33,9 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
+        setCurrentSource: function (source: Source) {
+            dispatch(setCurrentSource(source));
+        },
         getLogs: function (source: string) {
             dispatch(getLogs(source));
         }
@@ -95,6 +100,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         // We are getting some props, lets first see if there are any sources, then we find the one with the matching slug
         for (let source of sources) {
             if (this.props.params.sourceSlug === source.slug) {
+                this.props.setCurrentSource(source);
                 this.props.getLogs(source.secretKey);
                 this.setState({
                     source: source,
@@ -167,13 +173,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
         return (
             <div>
-                {this.state.source ? (
-                    <Grid>
-                        <Cell col={12}>
-                            <h3>{this.state.source.name}</h3>
-                        </Cell>
-                    </Grid>
-                ) : undefined}
+
                 <Grid>
                     <Cell col={6}>
                         <h6>CONVERSATIONS</h6>

@@ -18,10 +18,12 @@ let expect = chai.expect;
 describe("Logs Page", function () {
     it("should render correctly", function () {
         const getLogs = sinon.spy();
+        const setCurrentSource = sinon.spy();
         const wrapper = shallow(
             <LogsPage
                 logs={undefined}
                 getLogs={getLogs}
+                setCurrentSource={setCurrentSource}
                 sources={[]} />
         );
 
@@ -33,6 +35,7 @@ describe("Logs Page", function () {
         describe("without logs", function () {
             it("should render correctly", function () {
                 const getLogs = sinon.spy();
+                const setCurrentSource = sinon.spy();
                 let logs: Log[] = [];
                 let source = new Source({ name: "name" });
                 let sources = [source];
@@ -43,6 +46,7 @@ describe("Logs Page", function () {
                     <LogsPage
                         logs={logs}
                         getLogs={getLogs}
+                        setCurrentSource={setCurrentSource}
                         sources={sources}
                         params={params} />
                 );
@@ -55,6 +59,7 @@ describe("Logs Page", function () {
         describe("with logs", function () {
             it("should render correctly", function () {
                 const getLogs = sinon.spy();
+                const setCurrentSource = sinon.spy();
                 let logs: Log[] = dummyLogs(3);
                 let source = new Source({ name: "name" });
                 let sources = [source];
@@ -65,6 +70,7 @@ describe("Logs Page", function () {
                     <LogsPage
                         logs={logs}
                         getLogs={getLogs}
+                        setCurrentSource={setCurrentSource}
                         sources={sources}
                         params={params} />
                 );

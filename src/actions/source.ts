@@ -2,10 +2,23 @@ import {
     CREATE_SOURCE_ERROR,
     CREATE_SOURCE_REQUEST,
     CREATE_SOURCE_SUCCESS,
+    SET_CURRENT_SOURCE,
     SET_SOURCES
 } from "../constants";
 import Source from "../models/source";
 import service from "../services/source";
+
+export type SetCurrentSource = {
+    type: SET_CURRENT_SOURCE,
+    source: Source
+}
+
+export function setCurrentSource(source: Source): SetCurrentSource {
+    return {
+        type: SET_CURRENT_SOURCE,
+        source: source
+    };
+}
 
 export type SetSources = {
     type: SET_SOURCES,
