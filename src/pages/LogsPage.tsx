@@ -164,17 +164,21 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return 200;
     }
 
-    render() {
-        this.getContentHeight();
-        // First we need to figure out what we display depending on if the logs are loading or if any exist
+
+    getRequest(): JSX.Element {
         let request: JSX.Element = (<p>Loading logs...</p>);
-        let response: JSX.Element = (<p>Loading logs...</p>);
-        // It is much cleaner to put the logic outside the JSX below
+
         if (this.state.request) {
             request = (<JSONTree data={this.state.request.payload} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
         } else {
             request = (<p>Select a conversation or message to inspect the payload</p>);
         }
+
+        return request;
+    }
+
+    getResponse(): JSX.Element {
+        let response: JSX.Element = (<p>Loading logs...</p>);
 
         if (this.state.response) {
             response = (<JSONTree data={this.state.response.payload} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
@@ -182,6 +186,10 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             response = (<p>Select a conversation or message to inspect the payload</p>);
         }
 
+        return response;
+    }
+
+    render() {
         return (
             <div>
 
@@ -203,9 +211,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                     </Cell>
                     <Cell col={6} style={{ maxHeight: this.getContentHeight() - 25, overflowY: "scroll" }}>
                         <h6>REQUEST</h6>
-                        {request}
+                        {this.getRequest()}
                         <h6>RESPONSE</h6>
-                        {response}
+                        {this.getResponse()}
                     </Cell>
                 </Grid>
             </div>
