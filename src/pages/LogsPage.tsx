@@ -173,7 +173,14 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         let request: JSX.Element = (<p>Loading logs...</p>);
 
         if (this.state.request) {
-            request = (<JSONTree data={this.state.request.payload} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
+            request = (
+                <JSONTree
+                    data={this.state.request.payload}
+                    hideRoot={true}
+                    invertTheme={false}
+                    theme={this.getTheme()}
+                    shouldExpandNode={this.shouldExpandNode} />
+            );
         } else {
             request = (<p>Select a conversation or message to inspect the payload</p>);
         }
@@ -185,7 +192,14 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         let response: JSX.Element = (<p>Loading logs...</p>);
 
         if (this.state.response) {
-            response = (<JSONTree data={this.state.response.payload} hideRoot={true} invertTheme={false} theme={this.getTheme()} shouldExpandNode={this.shouldExpandNode} />);
+            response = (
+                <JSONTree
+                    data={this.state.response.payload}
+                    hideRoot={true}
+                    invertTheme={false}
+                    theme={this.getTheme()}
+                    shouldExpandNode={this.shouldExpandNode} />
+            );
         } else {
             response = (<p>Select a conversation or message to inspect the payload</p>);
         }
