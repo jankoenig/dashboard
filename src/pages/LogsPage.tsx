@@ -97,7 +97,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     setCurrentSourceFromSources(sources: Source[]) {
-        // We are getting some props, lets first see if there are any sources, then we find the one with the matching slug
+        // We are getting some props,
+        // lets first see if there are any sources,
+        // then we find the one with the matching slug
         for (let source of sources) {
             if (this.props.params.sourceSlug === source.slug) {
                 this.props.setCurrentSource(source);
@@ -164,7 +166,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return 200;
     }
 
-
     getRequest(): JSX.Element {
         let request: JSX.Element = (<p>Loading logs...</p>);
 
@@ -191,32 +192,29 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     render() {
         return (
-            <div>
-
-                <Grid>
-                    <Cell col={6}>
-                        <h6>CONVERSATIONS</h6>
-                        <div style={{ maxHeight: this.getContentHeight() - 90, overflowY: "scroll" }}>
-                            <ConversationList
-                                logs={this.props.logs}
-                                onClick={this.onConversationClicked.bind(this)} />
-                        </div>
-                        { /*
+            <Grid>
+                <Cell col={6}>
+                    <h6>CONVERSATIONS</h6>
+                    <div style={{ maxHeight: this.getContentHeight() - 90, overflowY: "scroll" }}>
+                        <ConversationList
+                            logs={this.props.logs}
+                            onClick={this.onConversationClicked.bind(this)} />
+                    </div>
+                    { /*
                         Commenting out the console messages until we can style them better
                         <h6>CONSOLE</h6>
                         <ul>
                             {this.getConsoleMessages()}
                         </ul>
                     */ }
-                    </Cell>
-                    <Cell col={6} style={{ maxHeight: this.getContentHeight() - 25, overflowY: "scroll" }}>
-                        <h6>REQUEST</h6>
-                        {this.getRequest()}
-                        <h6>RESPONSE</h6>
-                        {this.getResponse()}
-                    </Cell>
-                </Grid>
-            </div>
+                </Cell>
+                <Cell col={6} style={{ maxHeight: this.getContentHeight() - 25, overflowY: "scroll" }}>
+                    <h6>REQUEST</h6>
+                    {this.getRequest()}
+                    <h6>RESPONSE</h6>
+                    {this.getResponse()}
+                </Cell>
+            </Grid>
         );
     }
 }
