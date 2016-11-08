@@ -62,6 +62,7 @@ export namespace Utils {
 
         return str;
     }
+
 }
 
 export default Utils;
