@@ -11,6 +11,7 @@ interface ConversationListProps {
 
 interface ConversationListState {
     readonly conversations: Conversation[];
+    readonly activeConversation?: Conversation;
 }
 
 export default class ConversationList extends React.Component<ConversationListProps, ConversationListState> {
@@ -47,7 +48,8 @@ export default class ConversationList extends React.Component<ConversationListPr
     constructor(props: ConversationListProps) {
         super(props);
         this.state = {
-            conversations: this.getConversations(this.props.logs)
+            conversations: this.getConversations(this.props.logs),
+            activeConversation: undefined
         };
     }
 
@@ -65,7 +67,19 @@ export default class ConversationList extends React.Component<ConversationListPr
     }
 
     onClick(conversation: Conversation, event: React.MouseEvent) {
+        this.setState({
+            conversations: this.state.conversations,
+            activeConversation: conversation
+        });
         this.props.onClick(conversation.request, conversation.response, event);
+    }
+
+    isConversationActive(conversation: Conversation) {
+        if (this.state.activeConversation) {
+            return this.state.activeConversation.id === conversation.id;
+        }
+
+        return false;
     }
 
     render() {
@@ -77,7 +91,8 @@ export default class ConversationList extends React.Component<ConversationListPr
                 <ConversationListItem
                     key={conversation.id}
                     conversation={conversation}
-                    onClick={this.onClick.bind(this)} />
+                    onClick={this.onClick.bind(this)}
+                    active={ this.isConversationActive(conversation) } />
             ));
         }
 

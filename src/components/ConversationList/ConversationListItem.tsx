@@ -8,6 +8,7 @@ import { Icon, ICON } from "../Icon";
 interface ConversationListItemProps {
     readonly conversation: Conversation;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
+    readonly active?: boolean;
 }
 
 export default class ConversationListItem extends React.Component<ConversationListItemProps, any> {
@@ -17,7 +18,7 @@ export default class ConversationListItem extends React.Component<ConversationLi
             padding: "10px",
             margin: "10px",
             cursor: "hande",
-            backgroundColor: "#E0E0E0",
+            backgroundColor: (this.props.active ? "#90A4AE" : "#E0E0E0"),
             borderRadius: "10px",
             position: "relative",
             height: "72px",
