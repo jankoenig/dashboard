@@ -13,14 +13,24 @@ export function dummyLogs(length: number): Log[] {
     let logs: Log[] = [];
 
     for (let i = 0; i < length; i++) {
+
+        let tag: string = "response";
+        let transaction_id: string = "" + (i - 1);
+
+        // if 0 or even
+        if (i === 0 || !(i & 1)) {
+            tag = "request";
+            transaction_id = "" + i;
+        }
+
         // create a new dummy log
         let log = new Log({
             payload: "payload",
             log_type: "INFO",
             timestamp: new Date(),
             source: "source",
-            transaction_id: "" + i,
-            tags: [],
+            transaction_id: transaction_id,
+            tags: [tag],
             id: "" + i
         });
 

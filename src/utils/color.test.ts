@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import Color from "./color";
 
-describe.only("Color", function() {
+describe("Color", function() {
     describe("HEX2RGB", function() {
         it("converts white", function() {
             let rgb = Color.HEX2RGB("#ffffff");

@@ -157,12 +157,15 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     getContentHeight() {
-        let mains = document.getElementsByClassName("mdl-layout__content");
-        if (mains.length > 0) {
-            let main: Element = mains.item(0);
-            return main.clientHeight;
+        if (document.getElementsByClassName !== undefined) {
+            let mains = document.getElementsByClassName("mdl-layout__content");
+            if (mains.length > 0) {
+                let main: Element = mains.item(0);
+                return main.clientHeight;
+            }
         }
-
+        // Return default height, this is when the page isn't fully rendered
+        //  or when we are unit testing
         return 200;
     }
 
