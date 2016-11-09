@@ -11,9 +11,17 @@ export namespace source {
         let db = Firebase.database().ref();
         let key = source.slug;
 
-        return db.child("/users/" + user.uid + "/sources/" + key).set("owner").then(function() {
-            return db.child("/sources/" + key).set(source);
-        });
+         return db.child("sources").child(key).once("value", function(snapshot) {
+             // The child exists, do not add anything.
+             console.info("Contains value? " + (snapshot !== null || snapshot !== undefined || (snapshot.val() !== null) || (snapshot.val() !== undefined)));
+             console.info("snapshot " + snapshot);
+         }, function() {
+            // Error callback.  The child doesn't exist, so now we can add it.
+            console.info("Adding child.");
+            return db.child("users").child(user.uid).child("sources").child(key).set("owner").then(function() {
+                return db.child("sources").child(key).set(source);
+            });
+         });
     }
 
     export function getSources(): Firebase.Promise<any> {
