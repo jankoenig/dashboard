@@ -11,10 +11,10 @@ export namespace source {
         let db = Firebase.database().ref();
         let key = source.slug;
 
-         return db.child("sources").child(key).once("value", function(snapshot) {
-             // The child exists, do not add anything.
-             console.info("Contains value? " + (snapshot !== null || snapshot !== undefined || (snapshot.val() !== null) || (snapshot.val() !== undefined)));
-             console.info("snapshot " + snapshot);
+        return db.child("sources").child(key).once("value").then(function(snapshot) {
+            // The child exists, return a default promise that returns true.
+            console.info("RETURNING " + snapshot.val());
+            return snapshot.val();
          }, function() {
             // Error callback.  The child doesn't exist, so now we can add it.
             console.info("Adding child.");
