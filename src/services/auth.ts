@@ -1,5 +1,5 @@
 import * as Firebase from "firebase";
-import * as ReactGA from 'react-ga';
+import * as ReactGA from "react-ga";
 
 import { FirebaseUser } from "../models/user";
 import User from "../models/user";
