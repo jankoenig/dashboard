@@ -48,7 +48,7 @@ export class ToPathCallback implements SuccessCallback {
 
 class DefaultRedirectCallback extends ToPathCallback {
   constructor() {
-    super("/");
+    super("/#welcome"); // The hash is used to track logins
   }
 };
 
