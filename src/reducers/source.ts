@@ -1,15 +1,17 @@
 import * as objectAssign from "object-assign";
 
-import { CreateSourceError, CreateSourceRequest, CreateSourceSuccess, SetSources } from "../actions/source";
+import { CreateSourceError, CreateSourceRequest, CreateSourceSuccess, SetCurrentSource, SetSources } from "../actions/source";
 import {
     CREATE_SOURCE_ERROR,
     CREATE_SOURCE_REQUEST,
     CREATE_SOURCE_SUCCESS,
+    SET_CURRENT_SOURCE,
     SET_SOURCES
 } from "../constants";
 import Source from "../models/source";
 
 export type SourceState = {
+    readonly currentSource?: Source;
     readonly sources: Source[];
     readonly newSource?: Source;
     readonly error?: Error;
@@ -21,11 +23,13 @@ const INITIAL_STATE: SourceState = {
     sourceRequest: false
 };
 
-type SourceAction = CreateSourceError | CreateSourceRequest | CreateSourceSuccess | SetSources | { type: "" };
+type SourceAction = CreateSourceError | CreateSourceRequest | CreateSourceSuccess | SetCurrentSource | SetSources | { type: "" };
 
 export function source(state: SourceState = INITIAL_STATE, action: SourceAction): SourceState {
 
     switch (action.type) {
+        case SET_CURRENT_SOURCE:
+            return objectAssign({}, state, { currentSource: action.source });
         case SET_SOURCES:
             return objectAssign({}, state, { sources: action.sources });
         case CREATE_SOURCE_REQUEST:

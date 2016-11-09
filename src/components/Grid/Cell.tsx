@@ -15,6 +15,7 @@ export interface CellProps {
     hideDesktop?: boolean;
     hidePhone?: boolean;
     hideTablet?: boolean;
+    style?: React.CSSProperties;
 };
 
 /**
@@ -48,7 +49,7 @@ export default class Cell extends React.Component<CellProps, any> {
 
     render() {
         return (
-            <div className={this.classes()}>
+            <div className={this.classes()} style={this.props.style}>
                 {this.props.children}
             </div>
         );
