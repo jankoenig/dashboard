@@ -109,6 +109,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                     request: this.state.request,
                     response: this.state.response
                 });
+
+                // Found a match, jump out of the loop
+                break;
             }
         }
     }
