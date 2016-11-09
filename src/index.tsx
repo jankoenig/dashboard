@@ -1,6 +1,7 @@
 import * as Firebase from "firebase";
 import { createHistory } from "history";
 import * as ReactDOM from "react-dom";
+import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
 import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
 import { syncHistoryWithStore } from "react-router-redux";
@@ -18,6 +19,9 @@ import SourceListPage from "./pages/SourceListPage";
 import rootReducer from "./reducers";
 
 import configureStore from "./store";
+
+// Initialize Google Analytics
+ReactGA.initialize("UA-40630247-7");
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
@@ -70,10 +74,14 @@ let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFu
     }
 };
 
+let onUpdate = function() {
+    ReactGA.pageview(window.location.pathname);
+};
+
 let render = function () {
     ReactDOM.render(
         <Provider store={store}>
-            <Router history={history}>
+            <Router history={history} onUpdate={onUpdate}>
                 <Route path="/login" component={Login}>
                     <IndexRoute component={LoginPage} />
                 </Route>
