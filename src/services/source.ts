@@ -26,9 +26,9 @@ export namespace source {
                 // Basically, if we've somehow gone 10 iterations because we're really popular and we keep getting collisions, then lengthen it.
                 ++appendLength;
             }
-            console.info("Trying again. " + count);
+
             key = baseKey + "-" + Utils.randomString(appendLength);
-            return sourcesPath.child(key).once("value").then(this);
+            return sourcesPath.child(key).once("value").then(keepTryingFunction);
         };
 
         return sourcesPath.child(key).once("value")
