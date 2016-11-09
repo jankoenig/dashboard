@@ -12,6 +12,14 @@ describe("Source Reducer", function () {
         expect(newState.error).to.be.undefined;
         expect(newState.sourceRequest).to.be.false;
     });
+    describe("SetCurrentSource", function() {
+        it("sets the current source", function() {
+            let newSource = new Source({name: "name"});
+            let setCurrentSourceAction = actions.setCurrentSource(newSource);
+            let newState = source(undefined, setCurrentSourceAction);
+            expect(newState.currentSource).to.equal(newSource);
+        });
+    });
     describe("SetSources", function () {
         it("sets the sources", function () {
             let newSource = new Source({ name: "name" });

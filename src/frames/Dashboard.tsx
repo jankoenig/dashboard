@@ -13,11 +13,13 @@ import Navigation from "../components/Navigation";
 import NavLink from "../components/NavLink";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
+import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
 
 interface DashboardProps {
   user: User;
+  currentSource: Source;
   login: () => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
@@ -25,7 +27,8 @@ interface DashboardProps {
 
 function mapStateToProps(state: State.All) {
   return {
-    user: state.session.user
+    user: state.session.user,
+    currentSource: state.source.currentSource
   };
 }
 
@@ -60,7 +63,9 @@ class Dashboard extends React.Component<DashboardProps, any> {
   render() {
     return (
       <Layout drawer={true} header={true}>
-        <Header className={this.headerClasses()} >
+        <Header
+          className={this.headerClasses()}
+          title={this.props.currentSource ? this.props.currentSource.name : undefined} >
           <UserControl
             login={this.props.login}
             logout={this.props.logout}

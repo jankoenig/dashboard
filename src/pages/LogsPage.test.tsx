@@ -18,21 +18,23 @@ let expect = chai.expect;
 describe("Logs Page", function () {
     it("should render correctly", function () {
         const getLogs = sinon.spy();
+        const setCurrentSource = sinon.spy();
         const wrapper = shallow(
             <LogsPage
                 logs={undefined}
                 getLogs={getLogs}
+                setCurrentSource={setCurrentSource}
                 sources={[]} />
         );
 
-        expect(wrapper.type()).to.equal("div");
-        let p = wrapper.find("p");
-        expect(p.text()).to.eql("Loading logs...");
+        expect(wrapper.find("Grid")).to.have.length(1);
+        expect(wrapper.find("ConversationList")).to.have.length(1);
     });
     describe("with sources", function () {
         describe("without logs", function () {
             it("should render correctly", function () {
                 const getLogs = sinon.spy();
+                const setCurrentSource = sinon.spy();
                 let logs: Log[] = [];
                 let source = new Source({ name: "name" });
                 let sources = [source];
@@ -43,19 +45,19 @@ describe("Logs Page", function () {
                     <LogsPage
                         logs={logs}
                         getLogs={getLogs}
+                        setCurrentSource={setCurrentSource}
                         sources={sources}
                         params={params} />
                 );
 
-                expect(wrapper.find("p")).to.have.length(1);
-                let p = wrapper.find("p");
-                expect(p.text()).to.eql("You don't have any logs yet.");
+                expect(wrapper.find("JSONTree")).to.have.length(0);
             });
         });
         describe("with logs", function () {
             it("should render correctly", function () {
                 const getLogs = sinon.spy();
-                let logs: Log[] = dummyLogs(3);
+                const setCurrentSource = sinon.spy();
+                let logs: Log[] = dummyLogs(4);
                 let source = new Source({ name: "name" });
                 let sources = [source];
                 let params = {
@@ -65,13 +67,13 @@ describe("Logs Page", function () {
                     <LogsPage
                         logs={logs}
                         getLogs={getLogs}
+                        setCurrentSource={setCurrentSource}
                         sources={sources}
                         params={params} />
                 );
 
-                expect(wrapper.find("JSONTree")).to.have.length(1);
-                let h3 = wrapper.find("h3");
-                expect(h3.text()).to.eql("name");
+                expect(wrapper.find("JSONTree")).to.have.length(0);
+
             });
         });
     });
