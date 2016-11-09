@@ -27,6 +27,9 @@ export const FETCH_LOGS_REQUEST: FETCH_LOGS_REQUEST = "bst/FETCH_LOGS_REQUEST";
 export type SET_LOGS = "bst/SET_LOGS";
 export const SET_LOGS: SET_LOGS = "bst/SET_LOGS";
 
+export type SET_CURRENT_SOURCE = "bst/SET_CURRENT_SOURCE";
+export const SET_CURRENT_SOURCE: SET_CURRENT_SOURCE = "bst/SET_CURRENT_SOURCE";
+
 export type SET_SOURCES = "bst/SET_SOURCES";
 export const SET_SOURCES: SET_SOURCES = "bst/SET_SOURCES";
 
