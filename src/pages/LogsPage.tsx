@@ -225,7 +225,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                         </ul>
                     */ }
                 </Cell>
-                <Cell col={6} style={{ maxHeight: this.getContentHeight() - 25, overflowY: "scroll" }}>
+                <Cell col={6} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
                     <h6>REQUEST</h6>
                     {this.getRequest()}
                     <h6>RESPONSE</h6>

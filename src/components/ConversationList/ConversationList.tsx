@@ -101,7 +101,6 @@ export default class ConversationList extends React.Component<ConversationListPr
                 {conversations.length > 0 ? (
                     <ul style={this.style()}>
                         {conversations}
-
                     </ul>
                 ) : (
                         <p> No available data </p>

@@ -47,34 +47,34 @@ export default class ConversationListItem extends React.Component<ConversationLi
         };
     }
 
-    render() {
-
+    getUserFillColor() {
         let userId: string = this.props.conversation.userId;
         let lastFive = userId.substr(userId.length - 5);
         let decimalValue = parseInt(lastFive, 36);
         let avatarFill = decimalValue.toString(16);
         // add the octothorpe and trim it to 6
-        avatarFill = "#" + avatarFill.substr(avatarFill.length - 6);
-        let avatarBackground = Color.complementaryColor(avatarFill);
+        return "#" + avatarFill.substr(avatarFill.length - 6);
+    }
 
+    render() {
         return (
             <li key={this.props.conversation.id}
                 style={this.listItemStyle()}
                 onClick={this.props.onClick.bind(this, this.props.conversation)}>
                 <span style={this.primaryContentStyle()}>
-                    <div style={{ backgroundColor: avatarBackground, borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
+                    <div style={{ backgroundColor: Color.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
                         <Icon
-                            style={{ fill: avatarFill, marginTop: "4px" }}
+                            style={{ fill: this.getUserFillColor(), marginTop: "4px" }}
                             width={30}
                             height={30}
                             icon={ICON.DEFAULT_USER}
                             />
                     </div>
                     <span>
-                        {this.props.conversation.requestType}
-                        { this.props.conversation.intent ? (
-                            <span> - { this.props.conversation.intent } </span>
-                        ) : undefined }
+                        {this.props.conversation.requestType}npm
+                        {this.props.conversation.intent ? (
+                            <span> - {this.props.conversation.intent} </span>
+                        ) : undefined}
                     </span>
                     <span style={this.subtitleStyle()}>
                         {moment(this.props.conversation.timestamp).fromNow()}
