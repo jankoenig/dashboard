@@ -2,7 +2,7 @@ import Utils from "../utils/index";
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
 
-import Source from "../models/source";
+import { Source, SourceProperties, } from "../models/source";
 
 export namespace source {
 
@@ -10,9 +10,15 @@ export namespace source {
 
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
+        let sourcesPath = db.child("sources");
+
+        // Add the current user as the owner of the source.
+        let sourceProps: SourceProperties = source.copyFromSource();
+        sourceProps.members[user.uid] = "owner";
+        source = new Source(sourceProps);
+
         let baseKey = source.slug;
         let key = baseKey;
-        let sourcesPath = db.child("sources");
 
         let count = 0;
         let appendLength = 5;
@@ -35,9 +41,7 @@ export namespace source {
         .then(keepTryingFunction)
         .catch(function() {
             // Error callback.  The child doesn't exist, so now we can add it.
-            return db.child("users").child(user.uid).child("sources").child(key).set("owner").then(function() {
-                return sourcesPath.child(key).set(source);
-            });
+            return sourcesPath.child(key).set(source);
          });
     }
 
