@@ -71,7 +71,7 @@ export default class ConversationListItem extends React.Component<ConversationLi
                             />
                     </div>
                     <span>
-                        {this.props.conversation.requestType}npm
+                        {this.props.conversation.requestType}
                         {this.props.conversation.intent ? (
                             <span> - {this.props.conversation.intent} </span>
                         ) : undefined}
