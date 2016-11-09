@@ -21,7 +21,7 @@ interface NewSourceProps {
  * Validator class for the SourceForm.  Exported for direct testing.
  */
 export class OurNameRule implements NameRule {
-    regex: RegExp = /^[a-zA-Z\d-][a-zA-Z\d- ]+[a-zA-Z\d-]$/;
+    regex: RegExp = /^[a-zA-Z0-9-][a-zA-Z0-9- ]+[a-zA-Z0-9-]$/;
     errorMessage = (input: string): string => {
         return "The name must have three letters and contain no special characters except hyphen.";
     }
