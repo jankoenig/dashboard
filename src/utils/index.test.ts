@@ -55,4 +55,14 @@ describe("Utils", function () {
             expect(utils.stringToSlug("groß word")).to.equal("gros-word");
         });
     });
+
+    describe("Tests the random string generator", function() {
+        it ("Tries to get a random string", function() {
+            expect(utils.randomString(5).length).to.equal(5);
+        });
+
+        it ("Ensures a negative number throws exception", function() {
+            expect(utils.randomString.bind(utils, -5)).to.throw(Error);
+        });
+    });
 });

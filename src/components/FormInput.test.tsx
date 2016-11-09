@@ -6,7 +6,7 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import FormInput from "./FormInput";
+import * as Form from "./FormInput";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -17,7 +17,7 @@ describe("FormInput", function () {
         let value = "value";
         const onChange = sinon.spy();
         const wrapper = shallow(
-            <FormInput
+            <Form.FormInput
                 type={"text"}
                 label={"Label"}
                 value={value}
@@ -36,11 +36,27 @@ describe("FormInput", function () {
         expect(input.props().type).to.equal("text");
         expect(input.props().id).to.equal("label");
         expect(input.props().value).to.equal("value");
-        expect(input.props().onChange).to.equal(onChange);
 
         let label = wrapper.find("label");
         expect(label.props().htmlFor).to.equal("label");
         expect(label.props().children).to.equal("Label");
+    });
+
+    describe("Checks the onChange gets routed to our method.", function() {
+        let value = "value";
+        const onChange = sinon.spy();
+        const wrapper = shallow(
+            <Form.FormInput
+                type={"text"}
+                label={"Label"}
+                value={value}
+                onChange={onChange}
+                />
+        );
+
+        wrapper.find("input").simulate("change", {target: {value: "A"}});
+
+        expect(onChange).is.calledOnce;
     });
 
     describe("with floatingLabel = true", function () {
@@ -48,7 +64,7 @@ describe("FormInput", function () {
             let value = "value";
             const onChange = sinon.spy();
             const wrapper = shallow(
-                <FormInput
+                <Form.FormInput
                     type={"text"}
                     label={"Label"}
                     value={value}
@@ -66,7 +82,7 @@ describe("FormInput", function () {
             let value = "value";
             const onChange = sinon.spy();
             const wrapper = shallow(
-                <FormInput
+                <Form.FormInput
                     type={"text"}
                     label={"Label"}
                     value={value}
@@ -86,7 +102,7 @@ describe("FormInput", function () {
             let value = "value";
             const onChange = sinon.spy();
             const wrapper = shallow(
-                <FormInput
+                <Form.FormInput
                     type={"text"}
                     label={"Label"}
                     value={value}
@@ -104,7 +120,7 @@ describe("FormInput", function () {
             let value = "value";
             const onChange = sinon.spy();
             const wrapper = shallow(
-                <FormInput
+                <Form.FormInput
                     type={"text"}
                     label={"Label"}
                     value={value}
@@ -115,6 +131,77 @@ describe("FormInput", function () {
 
             let input = wrapper.find("input");
             expect(input.props().readOnly).to.equal(true);
+        });
+    });
+
+    describe("With error handler", function() {
+        it("Check that there is no pattern if error is not applied", function() {
+            let value = "value";
+
+            const onChange = sinon.spy();
+            const wrapper = shallow(
+                <Form.FormInput
+                    type={"text"}
+                    label={"Label"}
+                    value={value}
+                    onChange={onChange}
+                    readOnly={true}
+                    />
+            );
+
+            let input = wrapper.find("input");
+            expect(input.props().pattern).is.undefined;
+        });
+
+        it("Checks that the error handler pattern is applied", function() {
+            let value = "value";
+            let error: Form.ErrorHandler = {
+                regex: /^\w$/,
+                errorMessage: function(input: string): string {
+                    return "Check";
+                }
+            };
+
+            const onChange = sinon.spy();
+            const wrapper = shallow(
+                <Form.FormInput
+                    type={"text"}
+                    label={"Label"}
+                    value={value}
+                    onChange={onChange}
+                    readOnly={true}
+                    error={error}
+                    />
+            );
+
+            let input = wrapper.find("input");
+            expect(input.props().pattern).is.equal(error.regex.source);
+        });
+
+        it ("Checks that the error message is thrown when pattern doesn't match.", function() {
+            let value = "value";
+            let error: Form.ErrorHandler = {
+                regex: /^[A-Z]$/,
+                errorMessage: sinon.spy(function(input: string): string {
+                    return "Check";
+                })
+            };
+
+            const onChange = sinon.spy();
+            const wrapper = shallow(
+                <Form.FormInput
+                    type={"text"}
+                    label={"Label"}
+                    value={value}
+                    onChange={onChange}
+                    readOnly={true}
+                    error={error}
+                    />
+            );
+
+            wrapper.find("input").simulate("change", {target: {value: "A"}});
+
+            expect(error.errorMessage).to.be.calledOnce;
         });
     });
 });
