@@ -20,7 +20,7 @@ interface NewSourceProps {
 /**
  * Validator class for the SourceForm.  Exported for direct testing.
  */
-export class OurNameRule implements NameRule {
+export class SourceNameRule implements NameRule {
     regex: RegExp = /^[a-zA-Z0-9-][a-zA-Z0-9- ]+[a-zA-Z0-9-]$/;
     errorMessage = (input: string): string => {
         return "The name must have three letters and contain no special characters except hyphen.";
@@ -93,7 +93,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                             createSource={this.createSource.bind(this)}
                             disable={this.props.newSource ? true : false}
                             error={this.props.error}
-                            nameRule={new OurNameRule()} />
+                            nameRule={new SourceNameRule()} />
                     </Cell>
                 </Grid>
                 <Grid>

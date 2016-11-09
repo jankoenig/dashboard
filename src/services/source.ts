@@ -15,7 +15,7 @@ export namespace source {
             // The child exists, return a default promise that returns true.
             console.info("RETURNING " + snapshot.val());
             return snapshot.val();
-         }, function() {
+         }).catch(function() {
             // Error callback.  The child doesn't exist, so now we can add it.
             console.info("Adding child.");
             return db.child("users").child(user.uid).child("sources").child(key).set("owner").then(function() {

@@ -135,7 +135,7 @@ describe("FormInput", function () {
     });
 
     describe("With error handler", function() {
-        it("Check that there is no patter if error is not applied", function() {
+        it("Check that there is no pattern if error is not applied", function() {
             let value = "value";
 
             const onChange = sinon.spy();
