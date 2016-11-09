@@ -179,7 +179,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                     hideRoot={true}
                     invertTheme={false}
                     theme={this.getTheme()}
-                    /* shouldExpandNode={this.shouldExpandNode} */ />
+                    shouldExpandNode={this.shouldExpandNode} />
             );
         } else {
             request = (<p>Select a conversation or message to inspect the payload</p>);
@@ -198,7 +198,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                     hideRoot={true}
                     invertTheme={false}
                     theme={this.getTheme()}
-                    /* shouldExpandNode={this.shouldExpandNode} */ />
+                    shouldExpandNode={this.shouldExpandNode} />
             );
         } else {
             response = (<p>Select a conversation or message to inspect the payload</p>);

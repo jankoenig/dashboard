@@ -2,10 +2,10 @@ declare namespace ReactJsonTree {
 
     interface JSONTreeProps{
         data: any;
+        shouldExpandNode?: (keyName: string[], data: any, level: number) => boolean;
         hideRoot?: boolean;
         invertTheme?: boolean;
         theme?: any | string;
-        shouldExpandNode?: (keyName: string[], data: any, level: number) => boolean;
     }
 
     class JSONTree extends React.Component<JSONTreeProps, any> {}
