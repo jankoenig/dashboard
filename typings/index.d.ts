@@ -16,6 +16,7 @@
 /// <reference path="globals/react-addons-transition-group/index.d.ts" />
 /// <reference path="globals/react-addons-update/index.d.ts" />
 /// <reference path="globals/react-dom/index.d.ts" />
+/// <reference path="globals/react-ga/index.d.ts" />
 /// <reference path="globals/react-global/index.d.ts" />
 /// <reference path="globals/react-redux/index.d.ts" />
 /// <reference path="globals/react-router-redux/index.d.ts" />
