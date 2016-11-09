@@ -41,7 +41,9 @@ export namespace source {
         .then(keepTryingFunction)
         .catch(function() {
             // Error callback.  The child doesn't exist, so now we can add it.
-            return sourcesPath.child(key).set(source);
+            return sourcesPath.child(key).set(source).then(function() {
+                return db.child("users").child(user.uid).child("sources").child(key).set("owner");
+            });
          });
     }
 
