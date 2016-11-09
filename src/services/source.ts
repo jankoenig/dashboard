@@ -9,7 +9,7 @@ export namespace source {
 
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
-        let key = db.child("/users/" + user.uid + "/sources").push().key;
+        let key = source.slug;
 
         return db.child("/users/" + user.uid + "/sources/" + key).set("owner").then(function() {
             return db.child("/sources/" + key).set(source);
