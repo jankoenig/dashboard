@@ -1,23 +1,38 @@
 import Utils from "../utils/index";
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
+import * as objectAssign from "object-assign";
 
-import { Source, SourceProperties, } from "../models/source";
+import { Source } from "../models/source";
+import SourceProfile from "../models/source-profile";
 
 export namespace source {
 
+    class MutableSource {
+        secretKey: string;
+        name: string;
+        slug: string;
+        members: any;
+        profile?: SourceProfile;
+
+        constructor(source: Source) {
+            this.secretKey = source.secretKey;
+            this.name = source.name;
+            this.slug = source.slug;
+            this.members = objectAssign({}, source.members);
+            this.profile = source.profile;
+        }
+    }
+
     export function createSource(source: Source): Firebase.Promise<void> {
+
+        let mutableSource: MutableSource = new MutableSource(source);
 
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
         let sourcesPath = db.child("sources");
 
-        // Add the current user as the owner of the source.
-        let sourceProps: SourceProperties = source.copyFromSource();
-        sourceProps.members[user.uid] = "owner";
-        source = new Source(sourceProps);
-
-        let baseKey = source.slug;
+        let baseKey = mutableSource.slug;
         let key = baseKey;
 
         let count = 0;
@@ -40,8 +55,12 @@ export namespace source {
         return sourcesPath.child(key).once("value")
         .then(keepTryingFunction)
         .catch(function() {
+            // Add the current user as the owner of the source.
+            mutableSource.members[user.uid] = "owner";
+            mutableSource.slug = key;
+
             // Error callback.  The child doesn't exist, so now we can add it.
-            return sourcesPath.child(key).set(source).then(function() {
+            return sourcesPath.child(key).set(mutableSource).then(function() {
                 return db.child("users").child(user.uid).child("sources").child(key).set("owner");
             });
          });
