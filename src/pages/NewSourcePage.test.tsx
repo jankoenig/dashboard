@@ -6,7 +6,7 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import { NewSourcePage, OurNameRule } from "./NewSourcePage";
+import { NewSourcePage, SourceNameRule } from "./NewSourcePage";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -28,11 +28,11 @@ describe("New Source Page", function () {
 
     describe("Tests that ensure the validator function only allows passwords within the rules.", function() {
 
-        let nameRule: OurNameRule;
+        let nameRule: SourceNameRule;
         let invalidChars = "!@#$%^&*()_+={}[];:'\"<,>.?/|\\~`";
 
         before(function() {
-            nameRule = new OurNameRule;
+            nameRule = new SourceNameRule;
         });
 
         it ("Tests the \"At leat 3 rule\"", function() {

@@ -1,3 +1,4 @@
+import Utils from "../utils/index";
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
 
@@ -9,17 +10,33 @@ export namespace source {
 
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
-        let key = source.slug;
+        let baseKey = source.slug;
+        let key = baseKey;
+        let sourcesPath = db.child("sources");
 
-        return db.child("sources").child(key).once("value").then(function(snapshot) {
-            // The child exists, return a default promise that returns true.
-            console.info("RETURNING " + snapshot.val());
-            return snapshot.val();
-         }).catch(function() {
+        let count = 0;
+        let appendLength = 5;
+        // Want it to keep looping until we finally have a unique value.
+        // This constantly pings the database until we have a key that doesn't exist.
+        // Hopefully, it wouldn't take more than a couple iterations max.
+        let keepTryingFunction = function(snapshot: firebase.database.DataSnapshot): Firebase.Promise<any> {
+            // Child exists, so do another with an appended key.
+            ++count;
+            if (count % 10 === 0) {
+                // Basically, if we've somehow gone 10 iterations because we're really popular and we keep getting collisions, then lengthen it.
+                ++appendLength;
+            }
+            console.info("Trying again. " + count);
+            key = baseKey + "-" + Utils.randomString(appendLength);
+            return sourcesPath.child(key).once("value").then(this);
+        };
+
+        return sourcesPath.child(key).once("value")
+        .then(keepTryingFunction)
+        .catch(function() {
             // Error callback.  The child doesn't exist, so now we can add it.
-            console.info("Adding child.");
             return db.child("users").child(user.uid).child("sources").child(key).set("owner").then(function() {
-                return db.child("sources").child(key).set(source);
+                return sourcesPath.child(key).set(source);
             });
          });
     }
