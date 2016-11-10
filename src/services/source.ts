@@ -4,7 +4,6 @@ import "isomorphic-fetch";
 import * as objectAssign from "object-assign";
 
 import { Source } from "../models/source";
-import SourceProfile from "../models/source-profile";
 
 export namespace source {
 
@@ -13,20 +12,19 @@ export namespace source {
         name: string;
         id: string;
         members: any;
-        profile?: SourceProfile;
 
         constructor(source: Source) {
             this.secretKey = source.secretKey;
             this.name = source.name;
             this.id = source.id;
             this.members = objectAssign({}, source.members);
-            this.profile = source.profile;
         }
     }
 
     export function createSource(source: Source): Promise<Source> {
         return new Promise(function (callback, reject) {
 
+            // Create a new mutable source from the source passed in
             let mutableSource: MutableSource = new MutableSource(source);
 
             let user = Firebase.auth().currentUser;
@@ -50,7 +48,8 @@ export namespace source {
                 // Child exists, so do another with an appended key.
                 ++count;
                 if (count % 10 === 0) {
-                    // Basically, if we've somehow gone 10 iterations because we're really popular and we keep getting collisions, then lengthen it.
+                    // Basically, if we've somehow gone 10 iterations because we're really
+                    // popular and we keep getting collisions, then lengthen it.
                     ++appendLength;
                 }
 
@@ -80,6 +79,7 @@ export namespace source {
                     }).catch(renameAndTryAgain); // If it fails, keep trying
             };
 
+            // This starts off the recursion
             // Try to read the value at the key to see if it exists
             sourcesPath.child(key).once("value")
                 // If it does, we need to change the key and try again

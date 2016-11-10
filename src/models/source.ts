@@ -26,14 +26,6 @@ export class Source implements SourceProperties {
         this.profile = props.profile ? props.profile : SourceProfileUnspecified;
         this.members = props.members ? props.members : {};
     }
-
-    toJSON(): any {
-        return {
-            secretKey: this.secretKey,
-            name: this.name,
-            members: this.members
-        };
-    }
 }
 
 export default Source;
