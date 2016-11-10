@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
@@ -29,8 +30,11 @@ export class SourceListPage extends React.Component<SourceListPageProps, any> {
 
         for (let source of this.props.sources) {
             listItems.push((
-                <li key={source.name} className="mdl-list__item">
-                    <Link to={"/skills/" + source.slug + "/logs"}>{source.name}</Link>
+                <li key={source.id} className="mdl-list__item">
+                    <Link to={"/skills/" + source.id + "/logs"}>{source.name}</Link>
+                    <span style={{ textAlign: "center", marginLeft: "10px", fontSize: "12px" }}>
+                        Created {moment(source.created).format("MMM Do, YYYY")}
+                    </span>
                 </li>
             ));
         }

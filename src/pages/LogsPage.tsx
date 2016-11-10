@@ -101,7 +101,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         // lets first see if there are any sources,
         // then we find the one with the matching slug
         for (let source of sources) {
-            if (this.props.params.sourceSlug === source.slug) {
+            if (this.props.params.sourceId === source.id) {
                 this.props.setCurrentSource(source);
                 this.props.getLogs(source.secretKey);
                 this.setState({

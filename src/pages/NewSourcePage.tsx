@@ -113,7 +113,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                 <Grid>
                     <Cell col={12}>
                         {this.props.newSource ? (
-                            <Button accent={true} raised={true}><Link style={{color: "white", textDecoration: "none"}} to={"/skills/" + this.props.newSource.slug + "/logs"}>Next: Check for Logs</Link></Button>
+                            <Button accent={true} raised={true}><Link style={{color: "white", textDecoration: "none"}} to={"/skills/" + this.props.newSource.id + "/logs"}>Next: Check for Logs</Link></Button>
                         ) : (undefined)}
                     </Cell>
                 </Grid>
@@ -121,8 +121,6 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
         );
     }
 };
-
-
 
 export default connect(
     mapStateToProps,

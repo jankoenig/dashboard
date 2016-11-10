@@ -48,7 +48,7 @@ namespace auth {
     }
 
     function authProviderFailHandler(error: any, callback: (success: boolean, error?: string) => void) {
-        console.log("Error logging In: " + error.message);
+        console.error("Error logging In: " + error.message);
         callback(false, error.message);
     }
 
@@ -68,7 +68,7 @@ namespace auth {
             else {
                 if (validateEmail(email)) {
                     Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
-                        console.log("Error signing up: " + error.message);
+                        console.error("Error signing up: " + error.message);
                         callback(false, error.message);
                     }).then(function (user: Firebase.User) {
                         ReactGA.event({
@@ -93,7 +93,7 @@ namespace auth {
 
     export function login(email: string, password: string, callback: (success: boolean, error?: string) => void): void {
         Firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
-            console.log("Error logging In: " + error.message);
+            console.error("Error logging In: " + error.message);
             callback(false, error.message);
         }).then(function (user: Firebase.User) {
             ReactGA.event({
