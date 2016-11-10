@@ -1,25 +1,44 @@
 import Utils from "../utils/index";
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
+import * as objectAssign from "object-assign";
 
-import { Source, SourceProperties, } from "../models/source";
+import { Source } from "../models/source";
+import SourceProfile from "../models/source-profile";
 
 export namespace source {
 
+    class MutableSource {
+        secretKey: string;
+        name: string;
+        slug: string;
+        members: any;
+        profile?: SourceProfile;
+
+        constructor(source: Source) {
+            this.secretKey = source.secretKey;
+            this.name = source.name;
+            this.slug = source.slug;
+            this.members = objectAssign({}, source.members);
+            this.profile = source.profile;
+        }
+    }
+
     export function createSource(source: Source): Promise<Source> {
         return new Promise(function (callback, reject) {
+
+            let mutableSource: MutableSource = new MutableSource(source);
 
             let user = Firebase.auth().currentUser;
             let db = Firebase.database().ref();
             let sourcesPath = db.child("sources");
 
-            // Add the current user as the owner of the source.
-            let sourceProps: SourceProperties = source.copyFromSource();
-            sourceProps.members[user.uid] = "owner";
-            source = new Source(sourceProps);
-
-            let baseKey = source.slug;
+            // Create the base key and initial key
+            let baseKey = mutableSource.slug;
             let key = baseKey;
+
+            // Add the current user as the owner of the source.
+            mutableSource.members[user.uid] = "owner";
 
             let count = 0;
             let appendLength = 5;
@@ -48,17 +67,18 @@ export namespace source {
             // for the key.  If it fails, it generates and new key and
             // tries again.
             let setTheSource = function (): Firebase.Promise<any> {
-                return sourcesPath.child(key).set(source)
+                // Update the key
+                mutableSource.slug = key;
+                console.log("saving source");
+                console.log(mutableSource);
+                return sourcesPath.child(key).set(mutableSource)
                     .then(function () {
-                        // Copy the old source into the new one,
-                        // passing on the key used as the slug
-                        let newSource = new Source({
-                            secretKey: source.secretKey,
-                            name: source.name,
-                            slug: key
+                        // Save the source to the user's list of sources
+                        db.child("users").child(user.uid).child("sources").child(key).set("owner").then(function () {
+                            console.log("skill saved");
+                            callback(mutableSource);
                         });
-                        callback(newSource);
-                    }).catch(renameAndTryAgain); // If it fails, keep tring
+                    }).catch(renameAndTryAgain); // If it fails, keep trying
             };
 
             // Try to read the value at the key to see if it exists
@@ -72,6 +92,7 @@ export namespace source {
     }
 
     export function getSources(): Promise<any> {
+        console.log("getSources");
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
         return db.child("/users/" + user.uid + "/sources").once("value");
