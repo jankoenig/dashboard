@@ -65,7 +65,7 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                 <button
                         className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
                         onClick={this.props.onForgetPassword}>
-                        Reset Passord (Email required)
+                        Reset Password (Email required)
                     </button>
                 </div>
                 {this.props.onLoginWithGithub ? (
