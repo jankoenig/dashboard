@@ -17,4 +17,9 @@ describe("Auth ts not mocked", function () {
                auth.signUpWithEmail("testuser@testuser.com", "secradad", "secr", (success: true, error: "") => void{});
         });
     });
+    describe("send reset password email", function(){
+        it ("Test use bad email.", function() {
+               auth.sendResetPasswordEmail("testusercom", (success: true, error: "") => void{});
+        });
+    });
  });

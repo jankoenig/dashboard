@@ -105,11 +105,16 @@ namespace auth {
     }
 
     export function sendResetPasswordEmail(email: string, callback: (success: boolean, error?: string) => void): void {
-        Firebase.auth().sendPasswordResetEmail(email).catch(function(error){
-            callback(false, error.message);
-        }).then(function(){
-            callback(true);
-        });
+        if (validateEmail(email)) {
+            Firebase.auth().sendPasswordResetEmail(email).then(function(){
+                callback(true, "Reset email has been sent!");
+            }, function(error){
+                callback(false, "No user record for this email");
+            });
+
+        } else {
+            callback(false, "Please enter a valid email");
+        }
     }
 }
 
