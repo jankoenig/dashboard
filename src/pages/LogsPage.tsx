@@ -127,6 +127,12 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             this.setCurrentSourceFromSources(this.props.sources);
         }
     }
+
+    componentWillUnmount() {
+        // Clear out the current source when the page unmounts
+        this.props.setCurrentSource(undefined);
+    }
+
     /* Comment out until we can style the console messages
     getConsoleMessages(): JSX.Element[] {
 
