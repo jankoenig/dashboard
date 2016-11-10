@@ -89,7 +89,7 @@ let render = function () {
                     <IndexRoute component={HomePage} />
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
-                    <Route path="/skills/:sourceSlug/logs" component={LogsPage} />
+                    <Route path="/skills/:sourceId/logs" component={LogsPage} />
                     <Route path="*" component={NotFoundPage} />
                 </Route>
             </Router>

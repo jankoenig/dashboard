@@ -11,14 +11,14 @@ export namespace source {
     class MutableSource {
         secretKey: string;
         name: string;
-        slug: string;
+        id: string;
         members: any;
         profile?: SourceProfile;
 
         constructor(source: Source) {
             this.secretKey = source.secretKey;
             this.name = source.name;
-            this.slug = source.slug;
+            this.id = source.id;
             this.members = objectAssign({}, source.members);
             this.profile = source.profile;
         }
@@ -34,7 +34,7 @@ export namespace source {
             let sourcesPath = db.child("sources");
 
             // Create the base key and initial key
-            let baseKey = mutableSource.slug;
+            let baseKey = mutableSource.id;
             let key = baseKey;
 
             // Add the current user as the owner of the source.
@@ -68,7 +68,7 @@ export namespace source {
             // tries again.
             let setTheSource = function (): Firebase.Promise<any> {
                 // Update the key
-                mutableSource.slug = key;
+                mutableSource.id = key;
 
                 return sourcesPath.child(key).set(mutableSource)
                     .then(function () {
