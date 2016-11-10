@@ -12,6 +12,7 @@ export interface AuthFormProps {
     onSubmit: (event: React.FormEvent) => void;
     onLoginWithGithub?: (event: React.FormEvent) => void;
     onSignUpWithEmail?: (event: React.FormEvent) => void;
+    onForgetPassword?: (event: React.FormEvent) => void;
 }
 
 export interface AuthFormState {
@@ -59,6 +60,13 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                             onClick={this.props.onSignUpWithEmail}>
                             Submit
                     </button>) : undefined}
+                </div>
+                <div>
+                <button
+                        className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+                        onClick={this.props.onForgetPassword}>
+                        Reset Passord (Email required)
+                    </button>
                 </div>
                 {this.props.onLoginWithGithub ? (
                     <div className="mdl-card__actions mdl-card--border">

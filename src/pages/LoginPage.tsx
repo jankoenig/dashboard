@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { changeForm } from "../actions/auth-form";
-import { login, loginWithGithub, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
+import { forgotPassword, login, loginWithGithub, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -28,6 +28,7 @@ interface LoginPageProps {
     login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
+    forgotPassword: (email: string) => (dispatch: Redux.Dispatch<any>) => void;
     location?: RoutingData.Location<LoginConfig>;
 };
 
@@ -53,6 +54,9 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         },
         loginWithGithub: function (redirectStrat: SuccessCallback) {
             return dispatch(loginWithGithub(redirectStrat));
+        },
+        forgotPassword: function(email: string) {
+            return dispatch(forgotPassword(email));
         }
     };
 }
@@ -64,6 +68,11 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
         // See http://stackoverflow.com/a/39214607/1349766
         let target = event.target as HTMLSelectElement;
         this.props.changeForm(target.id, target.value);
+    }
+
+    handleForgotPassword(event: React.FormEvent) {
+        event.preventDefault();
+        this.props.forgotPassword(this.props.email);
     }
 
     handleFormSubmit(event: React.FormEvent) {
@@ -104,6 +113,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
                             onChange={this.handleFormChanged.bind(this)}
                             onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
                             onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}
+                            onForgetPassword={this.handleForgotPassword.bind(this)}
                             />
                     </Card>
                 </Cell>

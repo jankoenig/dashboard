@@ -100,3 +100,14 @@ export function logout() {
     });
   };
 }
+export function forgotPassword(email: string) {
+  return function (dispatch: Redux.Dispatch<any>) {
+    auth.sendResetPasswordEmail(email, function (success, message?) {
+      if (success) {
+        console.log("Reset password email sent successfully!");
+      } else {
+        console.log(message);
+      }
+    });
+  };
+}
