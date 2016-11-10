@@ -82,7 +82,7 @@ describe("Session.ts", function () {
         });
 
         it ("Tests the login flow works properly on a successful github login with a default login strategy.", function() {
-            verifySuccessLogin("/", (store: any) => {
+            verifySuccessLogin("/#welcome", (store: any) => {
                 session.loginWithGithub()(store.dispatch);
             });
         });
@@ -115,7 +115,7 @@ describe("Session.ts", function () {
         });
 
         it ("Tests the login flow works properly on a successful username and password login with a default login strategy.", function() {
-            verifySuccessLogin("/", (store: any) => {
+            verifySuccessLogin("/#welcome", (store: any) => {
                 session.login("testuser", "secretPassword")(store.dispatch);
             });
         });
@@ -147,7 +147,7 @@ describe("Session.ts", function () {
         });
 
         it ("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function() {
-            verifySuccessLogin("/", (store: any) => {
+            verifySuccessLogin("/#welcome", (store: any) => {
                 session.signUpWithEmail("testuser", "secretPassword", "secretPassword")(store.dispatch);
             });
         });

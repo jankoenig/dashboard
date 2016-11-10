@@ -2,8 +2,11 @@ import * as React from "react";
 
 import Source from "../models/source";
 import Button from "./Button";
-import FormInput from "./FormInput";
+import {ErrorHandler, FormInput} from "./FormInput";
 
+export interface NameRule extends ErrorHandler {
+    // Passing up the ErrorHandler interface so our parents don't have to know about it.
+}
 
 interface SourceFormProps {
     name?: string;
@@ -12,20 +15,23 @@ interface SourceFormProps {
     creatingSource?: boolean;
     disable?: boolean;
     onChange?: (event: React.FormEvent) => any;
+    nameRule: NameRule;
     createSource: (source: Source) => void;
 }
 
 interface SourceFormState {
-    source: Source;
+    name: string;
+    source?: Source;
 }
 
-export default class SourceForm extends React.Component<SourceFormProps, SourceFormState> {
+export class SourceForm extends React.Component<SourceFormProps, SourceFormState> {
 
     constructor(props: SourceFormProps) {
         super(props);
         this.state = {
+            name: "",
             // Setup an initial source
-            source: new Source({ name: "" })
+            source: undefined
         };
     }
 
@@ -36,15 +42,23 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
         };
     }
 
-    onChange(event: React.FormEvent) {
+    onSecretChange(event: React.FormEvent) {
+        // Doing nothing right now.
+    }
+
+    onNameChange(event: React.FormEvent) {
         let target = event.target as HTMLSelectElement;
+        let valid = this.props.nameRule.regex.test(target.value);
         this.setState({
-            source: new Source({ name: target.value }),
+            name: target.value,
+            source: (valid) ? new Source({ name: target.value }) : undefined,
         });
     }
 
     onClick(event: React.FormEvent) {
-        this.props.createSource(this.state.source);
+        if (this.state.source) {
+            this.props.createSource(this.state.source);
+        }
     }
 
     render() {
@@ -54,17 +68,18 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
                     <FormInput
                         style={this.textFieldStyleOverrides()}
                         type={"text"}
-                        value={this.state.source.name}
-                        onChange={this.onChange.bind(this)}
+                        value={this.state.name}
+                        onChange={this.onNameChange.bind(this)}
                         label={"Name"}
                         floatingLabel={true}
                         autoComplete={"off"}
+                        error={this.props.nameRule}
                         readOnly={this.props.disable} />
                     <FormInput style={this.textFieldStyleOverrides()}
-                        type="text"
-                        value={this.state.source.secretKey}
-                        onChange={this.onChange.bind(this)}
-                        label={"Secret Key"}
+                        type={"text"}
+                        value={this.state.source ? this.state.source.secretKey : ""}
+                        onChange={this.onSecretChange.bind(this)}
+                        label={this.state.source ? "" : "Secret Key"}
                         floatingLabel={true}
                         autoComplete={"off"}
                         readOnly={true} />
@@ -79,3 +94,5 @@ export default class SourceForm extends React.Component<SourceFormProps, SourceF
         );
     }
 }
+
+export default SourceForm;

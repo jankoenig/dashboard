@@ -2,10 +2,23 @@ import {
     CREATE_SOURCE_ERROR,
     CREATE_SOURCE_REQUEST,
     CREATE_SOURCE_SUCCESS,
+    SET_CURRENT_SOURCE,
     SET_SOURCES
 } from "../constants";
 import Source from "../models/source";
 import service from "../services/source";
+
+export type SetCurrentSource = {
+    type: SET_CURRENT_SOURCE,
+    source: Source
+}
+
+export function setCurrentSource(source: Source): SetCurrentSource {
+    return {
+        type: SET_CURRENT_SOURCE,
+        source: source
+    };
+}
 
 export type SetSources = {
     type: SET_SOURCES,
@@ -81,9 +94,10 @@ export function createSourceError(error: Error): CreateSourceError {
 export function createSource(source: Source): Redux.ThunkAction<any, any, any> {
     return function (dispatch: Redux.Dispatch<any>) {
         dispatch(createSourceRequest());
-        return service.createSource(source).then(function (newSource) {
-            dispatch(createSourceSuccess(source));
+        return service.createSource(source).then(function (newSource: Source) {
+            dispatch(createSourceSuccess(newSource));
         }, function (error) {
+            console.error(error);
             dispatch(createSourceError(error));
         });
     };

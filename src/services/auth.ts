@@ -1,4 +1,5 @@
 import * as Firebase from "firebase";
+import * as ReactGA from "react-ga";
 
 import { FirebaseUser } from "../models/user";
 import User from "../models/user";
@@ -19,25 +20,43 @@ namespace auth {
             // Use redirect to authenticate user if it's a mobile device
             Firebase.auth().signInWithRedirect(provider);
             Firebase.auth().getRedirectResult().then(function (result) {
-                authSuccessHandler(result, callback);
+                authProviderSuccessHandler(result, callback);
             }).catch(function (error) {
-                authFailHandler(error, callback);
+                authProviderFailHandler(error, callback);
             });
 
         } else {
             Firebase.auth().signInWithPopup(provider).then(function (result) {
-                authSuccessHandler(result, callback);
+                authProviderSuccessHandler(result, callback);
                 // TODO: Potential error condition here that needs to be handled
             }).catch(function (error) {
-                authFailHandler(error, callback);
+                authProviderFailHandler(error, callback);
             });
         }
+    }
+
+    function authProviderSuccessHandler(result: any, callback: (success: boolean, error?: string) => void) {
+        if (result.user !== undefined) {
+            ReactGA.event({
+                category: "Authorization",
+                action: "Login With Github"
+            });
+            let user: Firebase.User = result.user;
+            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
+            callback(true);
+        }
+    }
+
+    function authProviderFailHandler(error: any, callback: (success: boolean, error?: string) => void) {
+        console.error("Error logging In: " + error.message);
+        callback(false, error.message);
     }
 
     function validateEmail(email: string) {
         let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
     }
+
     export function signUpWithEmail(email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void): void {
 
         let localError: string;
@@ -49,9 +68,13 @@ namespace auth {
             else {
                 if (validateEmail(email)) {
                     Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
-                        console.log("Error signing up: " + error.message);
+                        console.error("Error signing up: " + error.message);
                         callback(false, error.message);
                     }).then(function (user: Firebase.User) {
+                        ReactGA.event({
+                            category: "Authorization",
+                            action: "Signup With Email"
+                        });
                         localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
                         callback(true);
                     });
@@ -68,24 +91,15 @@ namespace auth {
         }
     }
 
-    function authSuccessHandler(result: any, callback: (success: boolean, error?: string) => void) {
-        if (result.user !== undefined) {
-            let user: Firebase.User = result.user;
-            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
-            callback(true);
-        }
-    }
-
-    function authFailHandler(error: any, callback: (success: boolean, error?: string) => void) {
-        console.log("Error logging In: " + error.message);
-        callback(false, error.message);
-    }
-
     export function login(email: string, password: string, callback: (success: boolean, error?: string) => void): void {
         Firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
-            console.log("Error logging In: " + error.message);
+            console.error("Error logging In: " + error.message);
             callback(false, error.message);
         }).then(function (user: Firebase.User) {
+            ReactGA.event({
+                category: "Authorization",
+                action: "Login With Email"
+            });
             localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
             callback(true);
         });

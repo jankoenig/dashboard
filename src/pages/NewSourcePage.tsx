@@ -5,7 +5,7 @@ import { Link } from "react-router";
 import { createSource } from "../actions/source";
 import Button from "../components/Button";
 import { Cell, Grid } from "../components/Grid";
-import SourceForm from "../components/SourceForm";
+import { NameRule, SourceForm} from "../components/SourceForm";
 import Source from "../models/source";
 import { State } from "../reducers";
 
@@ -15,6 +15,16 @@ interface NewSourceProps {
     error: Error | undefined;
     sourceRequest: boolean;
     sources: Source[];
+}
+
+/**
+ * Validator class for the SourceForm.  Exported for direct testing.
+ */
+export class SourceNameRule implements NameRule {
+    regex: RegExp = /^[a-zA-Z0-9-][a-zA-Z0-9- ]+[a-zA-Z0-9-]$/;
+    errorMessage = (input: string): string => {
+        return "The name must have three letters and contain no special characters except hyphen.";
+    }
 }
 
 function mapStateToProps(state: State.All) {
@@ -73,13 +83,17 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                     <Cell col={12}>
                         <h4>New Skill Setup</h4>
                     </Cell>
+                    <Cell col={12}>
+                        <p>Currently all skills must be at least three characters in length and not contain any special characters.</p>
+                    </Cell>
                 </Grid>
                 <Grid>
                     <Cell col={12}>
                         <SourceForm
                             createSource={this.createSource.bind(this)}
                             disable={this.props.newSource ? true : false}
-                            error={this.props.error} />
+                            error={this.props.error}
+                            nameRule={new SourceNameRule()} />
                     </Cell>
                 </Grid>
                 <Grid>
@@ -99,7 +113,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
                 <Grid>
                     <Cell col={12}>
                         {this.props.newSource ? (
-                            <Button accent={true} raised={true}><Link style={{color: "white", textDecoration: "none"}} to={"/skills/" + this.props.newSource.slug + "/logs"}>Next: Check for Logs</Link></Button>
+                            <Button accent={true} raised={true}><Link style={{color: "white", textDecoration: "none"}} to={"/skills/" + this.props.newSource.id + "/logs"}>Next: Check for Logs</Link></Button>
                         ) : (undefined)}
                     </Cell>
                 </Grid>
