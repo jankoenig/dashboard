@@ -69,13 +69,12 @@ export namespace source {
             let setTheSource = function (): Firebase.Promise<any> {
                 // Update the key
                 mutableSource.slug = key;
-                console.log("saving source");
-                console.log(mutableSource);
+
                 return sourcesPath.child(key).set(mutableSource)
                     .then(function () {
                         // Save the source to the user's list of sources
                         db.child("users").child(user.uid).child("sources").child(key).set("owner").then(function () {
-                            console.log("skill saved");
+                            // And finally provide it back to the callback
                             callback(mutableSource);
                         });
                     }).catch(renameAndTryAgain); // If it fails, keep trying
@@ -92,7 +91,6 @@ export namespace source {
     }
 
     export function getSources(): Promise<any> {
-        console.log("getSources");
         let user = Firebase.auth().currentUser;
         let db = Firebase.database().ref();
         return db.child("/users/" + user.uid + "/sources").once("value");
