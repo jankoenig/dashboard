@@ -9,6 +9,7 @@ export interface SourceProperties {
     name: string;
     members?: any;
     profile?: SourceProfile;
+    slug?: string;
 }
 
 export class Source implements SourceProperties {
@@ -22,7 +23,7 @@ export class Source implements SourceProperties {
     constructor(props: SourceProperties) {
         this.secretKey = props.secretKey ? props.secretKey : uuid.v4();
         this.name = props.name;
-        this.slug = util.stringToSlug(this.name);
+        this.slug = props.slug ? props.slug : util.stringToSlug(this.name);
         this.profile = props.profile ? props.profile : SourceProfileUnspecified;
         this.members = props.members ? props.members : {};
     }

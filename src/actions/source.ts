@@ -94,10 +94,10 @@ export function createSourceError(error: Error): CreateSourceError {
 export function createSource(source: Source): Redux.ThunkAction<any, any, any> {
     return function (dispatch: Redux.Dispatch<any>) {
         dispatch(createSourceRequest());
-        return service.createSource(source).then(function (source: Source) {
-            console.log("createSource().then().onResolve");
-            console.log(source);
-            dispatch(createSourceSuccess(source));
+        return service.createSource(source).then(function (newSource: Source) {
+            console.log("Created a new source");
+            console.log(newSource);
+            dispatch(createSourceSuccess(newSource));
         }, function (error) {
             console.log("createSource().then().onReject");
             console.log(error);
