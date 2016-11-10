@@ -9,6 +9,7 @@ export interface SourceProperties {
     members?: any;
     profile?: SourceProfile;
     id?: string;
+    created?: Date | string;
 }
 
 export class Source implements SourceProperties {
@@ -18,6 +19,7 @@ export class Source implements SourceProperties {
     readonly members: any;
     readonly id: string;
     readonly profile?: SourceProfile;
+    readonly created: Date;
 
     constructor(props: SourceProperties) {
         this.name = props.name;
@@ -25,6 +27,16 @@ export class Source implements SourceProperties {
         this.id = props.id ? props.id : util.stringToSlug(this.name);
         this.profile = props.profile ? props.profile : SourceProfileUnspecified;
         this.members = props.members ? props.members : {};
+
+        this.created = new Date();
+
+        if (props.created) {
+            if (props.created instanceof Date) {
+                this.created = props.created;
+            } else if (typeof props.created  === "string") {
+                this.created = new Date(props.created);
+            }
+        }
     }
 }
 

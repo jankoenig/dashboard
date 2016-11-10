@@ -12,12 +12,14 @@ export namespace source {
         name: string;
         id: string;
         members: any;
+        created: string;
 
         constructor(source: Source) {
             this.secretKey = source.secretKey;
             this.name = source.name;
             this.id = source.id;
             this.members = objectAssign({}, source.members);
+            this.created = source.created.toISOString();
         }
     }
 
