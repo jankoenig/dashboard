@@ -66,7 +66,7 @@ export namespace source {
             // for the key.  If it fails, it generates and new key and
             // tries again.
             let setTheSource = function (): Firebase.Promise<any> {
-                // Update the key
+                // Update the key with the final iteraction before saving
                 mutableSource.id = key;
 
                 return sourcesPath.child(key).set(mutableSource)
