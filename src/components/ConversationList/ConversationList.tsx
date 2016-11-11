@@ -24,11 +24,11 @@ export default class ConversationList extends React.Component<ConversationListPr
         if (logs) {
             for (let log of logs) {
 
-                if (log.tags.indexOf("request") > -1) {
+                if (log.tags && log.tags.indexOf("request") > -1) {
                     request = log;
                 }
 
-                if (log.tags.indexOf("response") > -1) {
+                if (log.tags && log.tags.indexOf("response") > -1) {
                     response = log;
                 }
 
