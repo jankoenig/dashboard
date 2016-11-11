@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { requestIntentLog, requestLaunchIntentLog, responseLog } from "../utils/test";
+import { requestIntentLog, requestLaunchIntentLog, requestPlayerLog, responseLog, responsePlayerLog } from "../utils/test";
 import Conversation from "./conversation";
 
 describe("Conversation", function () {
@@ -32,6 +32,12 @@ describe("Conversation", function () {
 
             expect(conversation.intent).to.be.undefined;
 
+        });
+    });
+    describe("with request from player", function() {
+        it("sets the userId", function() {
+            let conversation = new Conversation({ response: responsePlayerLog, request: requestPlayerLog});
+            expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
         });
     });
 });

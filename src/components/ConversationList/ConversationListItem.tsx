@@ -62,14 +62,16 @@ export default class ConversationListItem extends React.Component<ConversationLi
                 style={this.listItemStyle()}
                 onClick={this.props.onClick.bind(this, this.props.conversation)}>
                 <span style={this.primaryContentStyle()}>
-                    <div style={{ backgroundColor: Color.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
-                        <Icon
-                            style={{ fill: this.getUserFillColor(), marginTop: "4px" }}
-                            width={30}
-                            height={30}
-                            icon={ICON.DEFAULT_USER}
-                            />
-                    </div>
+                    {this.props.conversation.userId ? (
+                        <div style={{ backgroundColor: Color.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
+                            <Icon
+                                style={{ fill: this.getUserFillColor(), marginTop: "4px" }}
+                                width={30}
+                                height={30}
+                                icon={ICON.DEFAULT_USER}
+                                />
+                        </div>
+                    ) : undefined}
                     <span>
                         {this.props.conversation.requestType}
                         {this.props.conversation.intent ? (

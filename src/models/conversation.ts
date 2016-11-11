@@ -28,8 +28,17 @@ export default class Conversation implements ConversationProperties {
         return this.request.payload.session.sessionId;
     }
 
-    get userId(): string {
-        return this.request.payload.session.user.userId;
+    get userId(): string | undefined {
+
+        let userId: string | undefined = undefined;
+
+        if (this.request.payload.session.user) {
+            userId = this.request.payload.session.user.userId;
+        } else if (this.request.payload.context && this.request.payload.context.System.user) {
+            userId = this.request.payload.context.System.user.userId;
+        }
+
+        return userId;
     }
 
     get requestType(): string {
