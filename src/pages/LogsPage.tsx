@@ -179,10 +179,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     getTree(log: Log): JSX.Element {
-        let request: JSX.Element = (<p>Loading logs...</p>);
-
+        let tree: JSX.Element;
         if (log) {
-            request = (
+            tree = (
                 <JSONTree
                     data={log.payload}
                     hideRoot={true}
@@ -191,10 +190,10 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                     shouldExpandNode={this.shouldExpandNode} />
             );
         } else {
-            request = (<p>Select a conversation or message to inspect the payload</p>);
+            tree = (<p>Select a conversation or message to inspect the payload</p>);
         }
 
-        return request;
+        return tree;
     }
 
     render() {
