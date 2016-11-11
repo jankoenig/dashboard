@@ -10867,6 +10867,7 @@
 	    return function (dispatch) {
 	        auth_1.default.logout(function (success) {
 	            if (success) {
+	                dispatch({ type: constants_1.LOGOUT_USER });
 	                dispatch(react_router_redux_1.push("/login"));
 	            }
 	        });
@@ -20250,9 +20251,9 @@
 	    ConversationListItem.prototype.render = function () {
 	        return (React.createElement("li", {key: this.props.conversation.id, style: this.listItemStyle(), onClick: this.props.onClick.bind(this, this.props.conversation)}, 
 	            React.createElement("span", {style: this.primaryContentStyle()}, 
-	                React.createElement("div", {style: { backgroundColor: color_1.default.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}, 
+	                this.props.conversation.userId ? (React.createElement("div", {style: { backgroundColor: color_1.default.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}, 
 	                    React.createElement(Icon_1.Icon, {style: { fill: this.getUserFillColor(), marginTop: "4px" }, width: 30, height: 30, icon: Icon_1.ICON.DEFAULT_USER})
-	                ), 
+	                )) : undefined, 
 	                React.createElement("span", null, 
 	                    this.props.conversation.requestType, 
 	                    this.props.conversation.intent ? (React.createElement("span", null, 
@@ -34955,10 +34956,10 @@
 	        if (logs) {
 	            for (var _i = 0, logs_1 = logs; _i < logs_1.length; _i++) {
 	                var log = logs_1[_i];
-	                if (log.tags.indexOf("request") > -1) {
+	                if (log.tags && log.tags.indexOf("request") > -1) {
 	                    request = log;
 	                }
-	                if (log.tags.indexOf("response") > -1) {
+	                if (log.tags && log.tags.indexOf("response") > -1) {
 	                    response = log;
 	                }
 	                if (response && request) {
@@ -35043,7 +35044,14 @@
 	    });
 	    Object.defineProperty(Conversation.prototype, "userId", {
 	        get: function () {
-	            return this.request.payload.session.user.userId;
+	            var userId = undefined;
+	            if (this.request.payload.session.user) {
+	                userId = this.request.payload.session.user.userId;
+	            }
+	            else if (this.request.payload.context && this.request.payload.context.System.user) {
+	                userId = this.request.payload.context.System.user.userId;
+	            }
+	            return userId;
 	        },
 	        enumerable: true,
 	        configurable: true
@@ -35346,17 +35354,27 @@
 	"use strict";
 	var react_router_redux_1 = __webpack_require__(121);
 	var redux_1 = __webpack_require__(54);
+	var constants_1 = __webpack_require__(128);
 	var auth_form_1 = __webpack_require__(466);
 	var log_1 = __webpack_require__(467);
 	var session_1 = __webpack_require__(468);
 	var source_1 = __webpack_require__(469);
-	var rootReducer = redux_1.combineReducers({
+	var appReducer = redux_1.combineReducers({
 	    session: session_1.session,
 	    source: source_1.source,
 	    authForm: auth_form_1.authForm,
 	    log: log_1.log,
 	    routing: react_router_redux_1.routerReducer
 	});
+	// Intercept global actions, such as logout to reset the state.
+	// From http://stackoverflow.com/a/35641992/1349766
+	var rootReducer = function (state, action) {
+	    if (action.type === constants_1.LOGOUT_USER) {
+	        state = undefined;
+	    }
+	    // and pass it on to the high level reducers
+	    return appReducer(state, action);
+	};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = rootReducer;
 
