@@ -1,7 +1,7 @@
 import { goBack, push, replace } from "react-router-redux";
 
 import { changeErrorInForm } from "../actions/auth-form";
-import { SENDING_REQUEST, SET_USER } from "../constants";
+import { LOGOUT_USER, SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
 import auth from "../services/auth";
 
@@ -91,10 +91,12 @@ export function signUpWithEmail(email: string, password: string, confirmPassword
     });
   };
 }
+
 export function logout() {
   return function (dispatch: Redux.Dispatch<any>) {
     auth.logout(function (success) {
       if (success) {
+        dispatch({type: LOGOUT_USER});
         dispatch(push("/login"));
       }
     });
