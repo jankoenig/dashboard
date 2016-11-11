@@ -178,13 +178,13 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return 200;
     }
 
-    getRequest(): JSX.Element {
+    getTree(log: Log): JSX.Element {
         let request: JSX.Element = (<p>Loading logs...</p>);
 
-        if (this.state.request) {
+        if (log) {
             request = (
                 <JSONTree
-                    data={this.state.request.payload}
+                    data={log.payload}
                     hideRoot={true}
                     invertTheme={false}
                     theme={this.getTheme()}
@@ -195,25 +195,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         }
 
         return request;
-    }
-
-    getResponse(): JSX.Element {
-        let response: JSX.Element = (<p>Loading logs...</p>);
-
-        if (this.state.response) {
-            response = (
-                <JSONTree
-                    data={this.state.response.payload}
-                    hideRoot={true}
-                    invertTheme={false}
-                    theme={this.getTheme()}
-                    shouldExpandNode={this.shouldExpandNode} />
-            );
-        } else {
-            response = (<p>Select a conversation or message to inspect the payload</p>);
-        }
-
-        return response;
     }
 
     render() {
@@ -236,9 +217,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 </Cell>
                 <Cell col={6} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
                     <h6>REQUEST</h6>
-                    {this.getRequest()}
+                    {this.getTree(this.state.request)}
                     <h6>RESPONSE</h6>
-                    {this.getResponse()}
+                    {this.getTree(this.state.response)}
                 </Cell>
             </Grid>
         );
