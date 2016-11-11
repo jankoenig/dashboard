@@ -180,8 +180,8 @@ export const requestPlayerLog: Log = new Log({
         }
     },
     log_type: "INFO",
-    source: "b5dc9d93-329f-4d4e-8dd1-6743f42ba661",
-    transaction_id: "source",
+    source: "source",
+    transaction_id: "bf1e8de6-2d40-40d2-8392-0e47672eea64",
     timestamp: new Date("2016-11-10T23:59:50.111Z"),
     tags: [
         "request"
@@ -215,7 +215,7 @@ export const responsePlayerLog: Log = new Log({
         }
     },
     log_type: "INFO",
-    source: "b5dc9d93-329f-4d4e-8dd1-6743f42ba661",
+    source: "source",
     transaction_id: "bf1e8de6-2d40-40d2-8392-0e47672eea64",
     timestamp: new Date("2016-11-10T23:59:50.112Z"),
     tags: [
