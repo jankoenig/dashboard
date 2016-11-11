@@ -1,5 +1,6 @@
 import * as Firebase from "firebase";
 import { createHistory } from "history";
+import "isomorphic-fetch";
 import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
@@ -7,8 +8,11 @@ import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, us
 import { syncHistoryWithStore } from "react-router-redux";
 
 import { setUser } from "./actions/session";
+import { setCurrentSource } from "./actions/source";
 import Dashboard from "./frames/Dashboard";
+
 import Login from "./frames/Login";
+import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -17,6 +21,7 @@ import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SourceListPage from "./pages/SourceListPage";
 import rootReducer from "./reducers";
+import source from "./services/source";
 
 import configureStore from "./store";
 
@@ -78,6 +83,40 @@ let onUpdate = function() {
     ReactGA.pageview(window.location.pathname);
 };
 
+let setSource = function (nextState: RouterState, replace: RedirectFunction) {
+    Promise.all(store.getState().source.sources)
+        .then(function (sources: Source[]) {
+            if (sources && sources.length > 0) {
+                return sources;
+            } else {
+                return source.getSourcesObj();
+            }
+        })
+        .then(function (sources: Source[]) {
+            let sourceId: string = nextState.params["sourceId"];
+            let returnSource: Source;
+            for (let source of sources) {
+                if (source.id === sourceId) {
+                    returnSource = source;
+                    break;
+                }
+
+                throw Error("Unable to find source with name.");
+            }
+            return returnSource;
+        })
+        .then(function (source: Source) {
+            store.dispatch(setCurrentSource(source));
+        }).catch(function (a?: Error) {
+            console.info("ERROR " + a);
+            // TODO: Put in a 404.
+        });
+};
+
+let removeSource = function() {
+    store.dispatch(setCurrentSource(undefined));
+};
+
 let render = function () {
     ReactDOM.render(
         <Provider store={store}>
@@ -89,7 +128,9 @@ let render = function () {
                     <IndexRoute component={HomePage} />
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
-                    <Route path="/skills/:sourceId/logs" component={LogsPage} />
+                    <Route path="/skill/:sourceId"  onEnter={setSource} onLeave={removeSource} >
+                        <Route path="/skills/:sourceId/logs" component={LogsPage}/>
+                    </Route>
                     <Route path="*" component={NotFoundPage} />
                 </Route>
             </Router>

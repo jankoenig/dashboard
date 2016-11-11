@@ -98,9 +98,33 @@ export namespace source {
         return db.child("/users/" + user.uid + "/sources").once("value");
     }
 
+    export function getSourcesObj(): Promise<Source[]> {
+        let user = Firebase.auth().currentUser;
+        let db = Firebase.database().ref();
+
+        return db.child("/users/" + user.uid + "/sources").once("value")
+            .then(function (retVal) {
+                return (retVal.val()) ? Object.keys(retVal.val()) : [];
+            }).then(function (keys: string[]) {
+                let getPromises: Promise<Source>[] = [];
+                for (let key of keys) {
+                    getPromises.push(getSourceObj(key));
+                }
+                return Promise.all(getPromises);
+            });
+    }
+
     export function getSource(key: string): Promise<any> {
         let db = Firebase.database().ref();
         return db.child("/sources/" + key).once("value");
+    }
+
+    export function getSourceObj(key: string): Promise<Source> {
+        return getSource(key)
+                .then(function (data) {
+                    let source: Source = new Source(data.val());
+                    return source;
+                });
     }
 }
 
