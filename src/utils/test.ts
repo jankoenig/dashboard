@@ -136,6 +136,94 @@ export const responseLog: Log = new Log({
     id: "581cd1047a0db10022c081e8"
 });
 
+export const requestPlayerLog: Log = new Log({
+    payload: {
+        "request": {
+            "type": "LaunchRequest",
+            "locale": "en-US",
+            "requestId": "amzn1.echo-api.request.f9181e8c-0e69-484e-8332-83b5043fa83a",
+            "timestamp": "2016-11-10T23:59:50Z"
+        },
+        "context": {
+            "System": {
+                "application": {
+                    "applicationId": "appId"
+                },
+                "user": {
+                    "userId": "amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7"
+                }
+            },
+            "AudioPlayer": {
+                "playerActivity": "STOPPED",
+                "token": "0",
+                "offsetInMilliseconds": 0
+            }
+        },
+        "version": "1.0",
+        "session": {
+            "sessionId": "SessionID.65b8bf17-a13e-4baa-b55c-6ca9127a6d76",
+            "application": {
+                "applicationId": "JPK"
+            },
+            "user": {
+                "userId": "amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7"
+            },
+            "new": true,
+            "attributes": {
+                "STATE": "",
+                "index": 0,
+                "offsetInMilliseconds": 0,
+                "playbackFinished": false,
+                "playbackIndexChanged": true,
+                "enqueuedToken": false
+            }
+        }
+    },
+    log_type: "INFO",
+    source: "b5dc9d93-329f-4d4e-8dd1-6743f42ba661",
+    transaction_id: "source",
+    timestamp: new Date("2016-11-10T23:59:50.111Z"),
+    tags: [
+        "request"
+    ],
+    id: "582509f77a0db10022c0886b"
+});
+
+export const responsePlayerLog: Log = new Log({
+    payload: {
+        "version": "1.0",
+        "response": {
+            "shouldEndSession": false,
+            "outputSpeech": {
+                "type": "SSML",
+                "ssml": "<speak> <audio src=\"https://s3.amazonaws.com/bespoken/streaming/bespokenspodcast-INTRODUCTION.mp3\" />You can say play, scan titles, or about the podcast </speak>"
+            },
+            "reprompt": {
+                "outputSpeech": {
+                    "type": "SSML",
+                    "ssml": "<speak> You can say play, scan titles, or about the podcast </speak>"
+                }
+            }
+        },
+        "sessionAttributes": {
+            "STATE": "",
+            "index": 0,
+            "offsetInMilliseconds": 0,
+            "playbackFinished": false,
+            "playbackIndexChanged": true,
+            "enqueuedToken": false
+        }
+    },
+    log_type: "INFO",
+    source: "b5dc9d93-329f-4d4e-8dd1-6743f42ba661",
+    transaction_id: "bf1e8de6-2d40-40d2-8392-0e47672eea64",
+    timestamp: new Date("2016-11-10T23:59:50.112Z"),
+    tags: [
+        "response"
+    ],
+    id: "582509f77a0db10022c0886c"
+});
+
 /**
  * Returns a specified amount of dummy sources for unit testing
  *
@@ -148,7 +236,7 @@ export function dummySources(length: number): Source[] {
     let sources: Source[] = [];
 
     for (let i = 0; i < length; i++) {
-        let source = new Source({ name: "Source Name"});
+        let source = new Source({ name: "Source Name" });
 
         sources.push(source);
     }
