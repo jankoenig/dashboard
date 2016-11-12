@@ -2,11 +2,18 @@ import * as React from "react";
 
 import Conversation from "../../models/conversation";
 import Log from "../../models/log";
+import Output from "../../models/output";
 import ConversationListItem from "./ConversationListItem";
+
+class MutableConversation {
+    request: Log;
+    response: Log;
+    outputs: Output[] = [];
+}
 
 interface ConversationListProps {
     readonly logs: Log[];
-    readonly onClick: (request: Log, response: Log, event: React.MouseEvent) => void;
+    readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
 }
 
 interface ConversationListState {
@@ -17,29 +24,35 @@ interface ConversationListState {
 export default class ConversationList extends React.Component<ConversationListProps, ConversationListState> {
 
     getConversations(logs: Log[]): Conversation[] {
+
         let conversations: Conversation[] = [];
-        let request: Log;
-        let response: Log;
+        let conversationMap: { [transaction_id: string]: MutableConversation } = {};
 
         if (logs) {
             for (let log of logs) {
 
+                // First make sure the map has an object there
+                if (!conversationMap[log.transaction_id]) {
+                    conversationMap[log.transaction_id] = new MutableConversation();
+                }
+
                 if (log.tags && log.tags.indexOf("request") > -1) {
-                    request = log;
+                    conversationMap[log.transaction_id].request = log;
                 }
 
                 if (log.tags && log.tags.indexOf("response") > -1) {
-                    response = log;
+                    conversationMap[log.transaction_id].response = log;
                 }
 
-                if (response && request) {
-                    if (response.transaction_id === request.transaction_id) {
-                        conversations.push(new Conversation({ request: request, response: response }));
-                        request = undefined;
-                        response = undefined;
-                    }
+                if (typeof log.payload === "string") {
+                    conversationMap[log.transaction_id].outputs.push(Output.fromLog(log));
                 }
             }
+
+            // convert to an array
+            conversations = Object.keys(conversationMap).map(function (key) {
+                return new Conversation(conversationMap[key]);
+            });
         }
 
         return conversations;
@@ -71,7 +84,7 @@ export default class ConversationList extends React.Component<ConversationListPr
             conversations: this.state.conversations,
             activeConversation: conversation
         });
-        this.props.onClick(conversation.request, conversation.response, event);
+        this.props.onClick(conversation, event);
     }
 
     isConversationActive(conversation: Conversation) {
@@ -92,7 +105,7 @@ export default class ConversationList extends React.Component<ConversationListPr
                     key={conversation.id}
                     conversation={conversation}
                     onClick={this.onClick.bind(this)}
-                    active={ this.isConversationActive(conversation) } />
+                    active={this.isConversationActive(conversation)} />
             ));
         }
 

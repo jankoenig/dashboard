@@ -2,12 +2,14 @@ import { expect } from "chai";
 
 import { requestIntentLog, requestLaunchIntentLog, requestPlayerLog, responseLog, responsePlayerLog } from "../utils/test";
 import Conversation from "./conversation";
+// import Output from "./output";
 
 describe("Conversation", function () {
     it("sets the properties", function () {
 
         let response = responseLog;
         let request = requestIntentLog;
+        // let outputs = [new Output()];
 
         let conversation = new Conversation({ response: response, request: request });
 

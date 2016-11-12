@@ -6,7 +6,10 @@ import { getLogs } from "../actions/log";
 import { setCurrentSource } from "../actions/source";
 import { ConversationList } from "../components/ConversationList";
 import { Cell, Grid } from "../components/Grid";
+import { OutputList } from "../components/OutputList";
+import Conversation from "../models/conversation";
 import Log from "../models/log";
+import Output from "../models/output";
 import Source from "../models/source";
 import { State } from "../reducers";
 
@@ -22,6 +25,7 @@ interface LogsPageState {
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
+    outputs: Output[] | undefined;
 }
 
 function mapStateToProps(state: State.All) {
@@ -92,7 +96,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.state = {
             source: undefined,
             request: undefined,
-            response: undefined
+            response: undefined,
+            outputs: []
         };
     }
 
@@ -107,7 +112,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 this.setState({
                     source: source,
                     request: this.state.request,
-                    response: this.state.response
+                    response: this.state.response,
+                    outputs: this.state.outputs
                 });
 
                 // Found a match, jump out of the loop
@@ -133,27 +139,12 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.props.setCurrentSource(undefined);
     }
 
-    /* Comment out until we can style the console messages
-    getConsoleMessages(): JSX.Element[] {
-
-        let messages: JSX.Element[] = [];
-
-        if (this.props.logs) {
-            for (let log of this.props.logs) {
-                if (typeof log.payload === "string") {
-                    messages.push((<li key={log.id} id={log.id}>{log.payload}</li>));
-                }
-            }
-        }
-
-        return messages;
-    } */
-
-    onConversationClicked(request: Log, response: Log, event: React.MouseEvent) {
+    onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
         this.setState({
             source: this.state.source,
-            request: request,
-            response: response
+            request: conversation.request,
+            response: conversation.response,
+            outputs: conversation.outputs
         });
     }
 
@@ -201,14 +192,18 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         let response: JSX.Element = (<p>Loading logs...</p>);
 
         if (this.state.response) {
-            response = (
-                <JSONTree
-                    data={this.state.response.payload}
-                    hideRoot={true}
-                    invertTheme={false}
-                    theme={this.getTheme()}
-                    shouldExpandNode={this.shouldExpandNode} />
-            );
+            if (typeof this.state.response.payload !== "string") {
+                response = (
+                    <JSONTree
+                        data={this.state.response.payload}
+                        hideRoot={true}
+                        invertTheme={false}
+                        theme={this.getTheme()}
+                        shouldExpandNode={this.shouldExpandNode} />
+                );
+            } else {
+                response = undefined;
+            }
         } else {
             response = (<p>Select a conversation or message to inspect the payload</p>);
         }
@@ -226,17 +221,12 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                             logs={this.props.logs}
                             onClick={this.onConversationClicked.bind(this)} />
                     </div>
-                    { /*
-                        Commenting out the console messages until we can style them better
-                        <h6>CONSOLE</h6>
-                        <ul>
-                            {this.getConsoleMessages()}
-                        </ul>
-                    */ }
                 </Cell>
                 <Cell col={6} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
                     <h6>REQUEST</h6>
                     {this.getRequest()}
+                    <h6>CONSOLE</h6>
+                    <OutputList outputs={this.state.outputs} />
                     <h6>RESPONSE</h6>
                     {this.getResponse()}
                 </Cell>

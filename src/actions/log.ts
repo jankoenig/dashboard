@@ -37,6 +37,7 @@ export function getLogs(source: string) {
             startTime: startTime
         };
         return service.getLogs(query).then(function (logs) {
+            // console.log(logs);
             dispatch(setLogs(logs));
         });
     };
