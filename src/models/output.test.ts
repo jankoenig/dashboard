@@ -77,7 +77,7 @@ describe("Output", function () {
                 transaction_id: "transaction_id",
                 id: "id"
             });
-            expect(output.levelColor).to.equal("green");
+            expect(output.levelColor).to.equal("rgb(166, 226, 46)");
         });
     });
 });

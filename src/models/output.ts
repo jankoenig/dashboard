@@ -19,7 +19,7 @@ export default class Output implements OutputProperties {
         "ERROR": "red",
         "WARN": "orange",
         "INFO": "yellow",
-        "DEBUG": "green"
+        "DEBUG": "rgb(166, 226, 46)"
     };
 
     get levelColor(): string {

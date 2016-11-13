@@ -16,8 +16,9 @@ export default class OutputList extends React.Component<OutputListProps, any> {
         return {
             listStyle: "none",
             userSelect: "none",
+            paddingTop: "10px",
+            paddingBottom: "10px",
             paddingLeft: "0px",
-            border: "2px solid rgb(166, 226, 46)",
             margin: "0.5em 0px 0.5em 0.125em",
             backgroundColor: "rgb(39, 40, 34)",
             borderRadius: "10px"

@@ -77,10 +77,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     getJSONTreeStyle() {
         return {
             padding: "15px",
-            borderRadius: "10px",
-            borderStyle: "solid",
-            borderWidth: "2px",
-            borderColor: this.monokaiTheme.base0B
+            borderRadius: "10px"
         };
     }
 
