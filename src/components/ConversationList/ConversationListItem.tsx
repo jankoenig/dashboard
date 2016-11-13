@@ -49,6 +49,16 @@ export default class ConversationListItem extends React.Component<ConversationLi
         };
     }
 
+    errorPillStyle(): React.CSSProperties {
+        return {
+            backgroundColor: "#e53935",
+            padding: "5px",
+            borderRadius: "5px",
+            color: "#eeeeee",
+            fontSize: "10px"
+        };
+    }
+
     getUserFillColor() {
         let userId: string = this.props.conversation.userId;
         let lastFive = userId.substr(userId.length - 5);
@@ -82,8 +92,15 @@ export default class ConversationListItem extends React.Component<ConversationLi
                     </span>
                     <span style={this.subtitleStyle()}>
                         {moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a")}
-                        <span style={{color: "#616161", paddingLeft: "5px"}}>{moment(this.props.conversation.timestamp).fromNow()} </span>
+                        <span style={{ color: "#BDBDBD", paddingLeft: "5px" }}>{moment(this.props.conversation.timestamp).fromNow()} </span>
                     </span>
+                </span>
+                <span>
+                    {this.props.conversation.hasError ? (
+                        <span style={this.errorPillStyle()}>
+                            <span>error</span>
+                        </span>
+                    ) : undefined}
                 </span>
             </li>
         );

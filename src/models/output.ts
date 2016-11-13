@@ -16,7 +16,7 @@ export default class Output implements OutputProperties {
     readonly level: LOG_LEVELS;
 
     private levelColors: { [level: string]: string } = {
-        "ERROR": "red",
+        "ERROR": "#e53935",
         "WARN": "orange",
         "INFO": "yellow",
         "DEBUG": "rgb(166, 226, 46)"

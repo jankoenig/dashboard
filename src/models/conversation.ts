@@ -61,5 +61,17 @@ export default class Conversation implements ConversationProperties {
     get timestamp(): Date {
         return this.request.timestamp;
     }
+
+    get hasError(): boolean {
+        let hasError = false;
+
+        for (let output of this.outputs) {
+            if (output.level === "ERROR") {
+                hasError = true;
+            }
+        }
+
+        return hasError;
+    }
 }
 
