@@ -47,7 +47,7 @@ describe("Output", function () {
                 transaction_id: "transaction_id",
                 id: "id"
             });
-            expect(output.levelColor).to.equal("red");
+            expect(output.levelColor).to.equal("#e53935");
         });
         it("returns the proper orange for warn", function () {
             let output = new Output({
