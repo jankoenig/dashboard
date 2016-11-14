@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { getLogs } from "../actions/log";
 import { ConversationList } from "../components/ConversationList";
 import { Cell, Grid } from "../components/Grid";
-import { OutputList } from "../components/OutputList";
 import Conversation from "../models/conversation";
 import Log from "../models/log";
 import Output from "../models/output";
