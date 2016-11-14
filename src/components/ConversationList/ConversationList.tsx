@@ -24,7 +24,7 @@ interface ConversationListState {
 export default class ConversationList extends React.Component<ConversationListProps, ConversationListState> {
 
     // TODO: This logic should go somewhere else outside of this component.
-    //  The property shoudl then change from a list of logs to a list of conversations
+    //  The property should then change from a list of logs to a list of conversations
     getConversations(logs: Log[]): Conversation[] {
 
         let conversations: Conversation[] = [];
