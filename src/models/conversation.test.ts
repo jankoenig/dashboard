@@ -2,18 +2,28 @@ import { expect } from "chai";
 
 import { requestIntentLog, requestLaunchIntentLog, requestPlayerLog, responseLog, responsePlayerLog } from "../utils/test";
 import Conversation from "./conversation";
+import Output from "./output";
 
 describe("Conversation", function () {
     it("sets the properties", function () {
 
         let response = responseLog;
         let request = requestIntentLog;
+        let output = new Output({
+            message: "message",
+            level: "DEBUG",
+            timestamp: new Date(),
+            transaction_id: "transaction_id",
+            id: "id"
+        });
+        let outputs = [output];
 
-        let conversation = new Conversation({ response: response, request: request });
+        let conversation = new Conversation({ response: response, request: request, outputs: outputs });
 
         expect(conversation).to.exist;
         expect(conversation.request).to.exist;
         expect(conversation.response).to.exist;
+        expect(conversation.outputs).to.have.length(1);
 
         expect(conversation.applicationId).to.equal("amzn1.ask.skill.07dc249f-caf2-4fc0-bdbe-32b6702426ea");
         expect(conversation.sessionId).to.equal("SessionId.c5f6c9d5-e923-4305-9804-defee172386e");
@@ -21,6 +31,9 @@ describe("Conversation", function () {
         expect(conversation.requestType).to.equal("IntentRequest");
         expect(conversation.intent).to.equal("HelloWorldIntent");
         expect(conversation.timestamp).to.equal(request.timestamp);
+        expect(conversation.outputs[0]).to.equal(output);
+        expect(conversation.hasError).to.be.false;
+
     });
     describe("with launch intent request", function () {
         it("returns undefined for intent", function () {
@@ -34,10 +47,27 @@ describe("Conversation", function () {
 
         });
     });
-    describe("with request from player", function() {
-        it("sets the userId", function() {
-            let conversation = new Conversation({ response: responsePlayerLog, request: requestPlayerLog});
+    describe("with request from player", function () {
+        it("sets the userId", function () {
+            let conversation = new Conversation({ response: responsePlayerLog, request: requestPlayerLog });
             expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
+        });
+    });
+    describe("hasError", function () {
+        it("returns true when an error output exists", function () {
+            let response = responseLog;
+            let request = requestIntentLog;
+            let output = new Output({
+                message: "message",
+                level: "ERROR",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            expect(conversation.hasError).to.be.true;
         });
     });
 });

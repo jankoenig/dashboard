@@ -1,8 +1,10 @@
 import Log from "./log";
+import Output from "./output";
 
 export interface ConversationProperties {
     request: Log;
     response: Log;
+    outputs?: Output[];
 }
 
 export default class Conversation implements ConversationProperties {
@@ -11,9 +13,12 @@ export default class Conversation implements ConversationProperties {
 
     readonly response: Log;
 
+    readonly outputs: Output[];
+
     constructor(props: ConversationProperties) {
         this.request = props.request;
         this.response = props.response;
+        this.outputs = props.outputs ? props.outputs.slice() : [];
     }
 
     get id(): string {
@@ -55,6 +60,18 @@ export default class Conversation implements ConversationProperties {
 
     get timestamp(): Date {
         return this.request.timestamp;
+    }
+
+    get hasError(): boolean {
+        let hasError = false;
+
+        for (let output of this.outputs) {
+            if (output.level === "ERROR") {
+                hasError = true;
+            }
+        }
+
+        return hasError;
     }
 }
 

@@ -1,7 +1,10 @@
+
+import { LOG_LEVELS } from "../constants";
+
 export interface LogProperties {
     payload: string | any;
     stack?: string;
-    log_type: "INFO" | "ERROR";
+    log_type: LOG_LEVELS;
     source: string;
     transaction_id: string;
     timestamp: Date;
@@ -12,7 +15,7 @@ export interface LogProperties {
 export default class Log implements LogProperties {
     readonly payload: string | any;
     readonly stack: string;
-    readonly log_type: "INFO" | "ERROR";
+    readonly log_type: LOG_LEVELS;
     readonly source: string;
     readonly transaction_id: string;
     readonly timestamp: Date;

@@ -4,7 +4,10 @@ import { connect } from "react-redux";
 import { getLogs } from "../actions/log";
 import { ConversationList } from "../components/ConversationList";
 import { Cell, Grid } from "../components/Grid";
+import { OutputList } from "../components/OutputList";
+import Conversation from "../models/conversation";
 import Log from "../models/log";
+import Output from "../models/output";
 import Source from "../models/source";
 import { State } from "../reducers";
 import Interaction from "./Interaction";
@@ -20,6 +23,7 @@ interface LogsPageState {
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
+    outputs: Output[] | undefined;
 }
 
 function mapStateToProps(state: State.All) {
@@ -44,7 +48,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.state = {
             source: props.source,
             request: undefined,
-            response: undefined
+            response: undefined,
+            outputs: []
         };
     }
 
@@ -54,7 +59,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             this.setState({
                 source: source,
                 request: this.state.request,
-                response: this.state.response
+                response: this.state.response,
+                outputs: this.state.outputs
             });
         }
     }
@@ -65,28 +71,21 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         }
     }
 
-    /* Comment out until we can style the console messages
-    getConsoleMessages(): JSX.Element[] {
-
-        let messages: JSX.Element[] = [];
-
-        if (this.props.logs) {
-            for (let log of this.props.logs) {
-                if (typeof log.payload === "string") {
-                    messages.push((<li key={log.id} id={log.id}>{log.payload}</li>));
-                }
-            }
-        }
-
-        return messages;
-    } */
-
-    onConversationClicked(request: Log, response: Log, event: React.MouseEvent) {
+    onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
         this.setState({
             source: this.state.source,
-            request: request,
-            response: response
+            request: conversation.request,
+            response: conversation.response,
+            outputs: conversation.outputs
         });
+    }
+
+    shouldExpandNode(keyName: string[], data: any, level: number) {
+        // only expand the initial node, request and response by default
+        if (keyName.length === 0 || keyName.indexOf("request") > -1 || keyName.indexOf("response") > -1) {
+            return true;
+        }
+        return false;
     }
 
     getContentHeight() {
@@ -112,13 +111,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                             logs={this.props.logs}
                             onClick={this.onConversationClicked.bind(this)} />
                     </div>
-                    { /*
-                        Commenting out the console messages until we can style them better
-                        <h6>CONSOLE</h6>
-                        <ul>
-                            {this.getConsoleMessages()}
-                        </ul>
-                    */ }
                 </Cell>
                 <Cell col={6} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
                     <Interaction

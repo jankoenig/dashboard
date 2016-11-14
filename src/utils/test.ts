@@ -165,9 +165,6 @@ export const requestPlayerLog: Log = new Log({
             "application": {
                 "applicationId": "JPK"
             },
-            "user": {
-                "userId": "amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7"
-            },
             "new": true,
             "attributes": {
                 "STATE": "",
