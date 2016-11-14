@@ -17,12 +17,23 @@ import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
 
+/**
+ * Extend the Element object with the MaterialLayout.toggleDrawer function
+ * so we can close the drawer
+ */
+interface MDLElement extends Element {
+    MaterialLayout: {
+      toggleDrawer: () => void;
+    };
+}
+
 interface DashboardProps {
   user: User;
   currentSource: Source;
   login: () => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
+  location: Location;
 }
 
 function mapStateToProps(state: State.All) {
@@ -58,6 +69,22 @@ class Dashboard extends React.Component<DashboardProps, any> {
 
   componentWillMount() {
     this.props.getSources();
+  }
+
+  componentWillReceiveProps(nextProps: DashboardProps) {
+
+    // Solution suggested by https://github.com/react-mdl/react-mdl/issues/254#issuecomment-237926011 for
+    // closing the navigation drawer after a click
+    //
+    // If our locations are different and drawer is open, force a close
+    if (this.props.location.pathname !== nextProps.location.pathname) {
+      const layout = document.querySelector(".mdl-js-layout") as MDLElement;
+      const drawer = document.querySelector(".mdl-layout__drawer");
+
+      if (layout.classList.contains("is-small-screen") && drawer.classList.contains("is-visible")) {
+        layout.MaterialLayout.toggleDrawer();
+      }
+    }
   }
 
   render() {
