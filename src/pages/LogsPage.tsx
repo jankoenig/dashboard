@@ -79,14 +79,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         });
     }
 
-    shouldExpandNode(keyName: string[], data: any, level: number) {
-        // only expand the initial node, request and response by default
-        if (keyName.length === 0 || keyName.indexOf("request") > -1 || keyName.indexOf("response") > -1) {
-            return true;
-        }
-        return false;
-    }
-
     getContentHeight() {
         if (document.getElementsByClassName !== undefined) {
             let mains = document.getElementsByClassName("mdl-layout__content");
