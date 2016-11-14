@@ -5,6 +5,8 @@
  *
  */
 
+export type LOG_LEVELS = "DEBUG" | "INFO" | "WARN" | "ERROR";
+
 export type CHANGE_FORM = "bst/CHANGE_FORM";
 export const CHANGE_FORM: CHANGE_FORM = "bst/CHANGE_FORM";
 

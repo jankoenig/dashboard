@@ -18,8 +18,10 @@ export default class ConversationListItem extends React.Component<ConversationLi
             padding: "10px",
             margin: "10px",
             cursor: "hande",
-            backgroundColor: (this.props.active ? "#90A4AE" : "#E0E0E0"),
-            borderRadius: "10px",
+            backgroundColor: (this.props.active ? "#90A4AE" : "#FAFAFA"),
+            borderTop: "solid #90A4AE",
+            borderBottom: "solid #90A4AE",
+            borderWidth: "1px",
             position: "relative",
             height: "72px",
             boxSizing: "border-box",
@@ -42,8 +44,17 @@ export default class ConversationListItem extends React.Component<ConversationLi
     subtitleStyle(): React.CSSProperties {
         return {
             fontSize: "14px",
-            color: "#616161",
             display: "block"
+        };
+    }
+
+    errorPillStyle(): React.CSSProperties {
+        return {
+            backgroundColor: "#e53935",
+            padding: "5px",
+            borderRadius: "5px",
+            color: "#eeeeee",
+            fontSize: "10px"
         };
     }
 
@@ -79,8 +90,16 @@ export default class ConversationListItem extends React.Component<ConversationLi
                         ) : undefined}
                     </span>
                     <span style={this.subtitleStyle()}>
-                        {moment(this.props.conversation.timestamp).fromNow()}
+                        {moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a")}
+                        <span style={{ color: "#BDBDBD", paddingLeft: "5px" }}>{moment(this.props.conversation.timestamp).fromNow()} </span>
                     </span>
+                </span>
+                <span>
+                    {this.props.conversation.hasError ? (
+                        <span style={this.errorPillStyle()}>
+                            <span>error</span>
+                        </span>
+                    ) : undefined}
                 </span>
             </li>
         );
