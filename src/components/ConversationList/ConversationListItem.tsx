@@ -19,7 +19,6 @@ export default class ConversationListItem extends React.Component<ConversationLi
             margin: "10px",
             cursor: "hande",
             backgroundColor: (this.props.active ? "#90A4AE" : "#FAFAFA"),
-            // borderStyle: "solid",
             borderTop: "solid #90A4AE",
             borderBottom: "solid #90A4AE",
             borderWidth: "1px",
