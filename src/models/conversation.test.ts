@@ -2,6 +2,7 @@ import { expect } from "chai";
 
 import { requestIntentLog, requestLaunchIntentLog, requestPlayerLog, responseLog, responsePlayerLog } from "../utils/test";
 import Conversation from "./conversation";
+import Log from "./log";
 import Output from "./output";
 
 describe("Conversation", function () {
@@ -68,6 +69,122 @@ describe("Conversation", function () {
 
             let conversation = new Conversation({ response: response, request: request, outputs: outputs });
             expect(conversation.hasError).to.be.true;
+        });
+    });
+    describe("userColors", function () {
+        it("returns default colors for an undefined userId", function () {
+
+            let request = new Log({
+                payload: {},
+                log_type: "DEBUG",
+                source: "source",
+                transaction_id: "transaction_id",
+                timestamp: new Date(),
+                tags: [],
+                id: ""
+            });
+            let response = responseLog;
+            let output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+
+            expect(conversation.userColors.fill).to.equal("#ffffff");
+            expect(conversation.userColors.background).to.equal("#000000");
+
+        });
+        it("returns the default colors for an empty string userId", function () {
+            let request = new Log({
+                payload: { session: {
+                    user: {
+                        userId: ""
+                    }
+                }},
+                log_type: "DEBUG",
+                source: "source",
+                transaction_id: "transaction_id",
+                timestamp: new Date(),
+                tags: [],
+                id: ""
+            });
+            let response = responseLog;
+            let output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+
+            expect(conversation.userColors.fill).to.equal("#ffffff");
+            expect(conversation.userColors.background).to.equal("#000000");
+        });
+        it("returns the hex color for a hex userId", function () {
+            let request = new Log({
+                payload: { session: {
+                    user: {
+                        userId: "A234b6"
+                    }
+                }},
+                log_type: "DEBUG",
+                source: "source",
+                transaction_id: "transaction_id",
+                timestamp: new Date(),
+                tags: [],
+                id: ""
+            });
+            let response = responseLog;
+            let output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+
+            expect(conversation.userColors.fill).to.equal("#A234b6");
+            expect(conversation.userColors.background).to.equal("#48b634");
+        });
+        it("returns the hex value for a base 36 userId", function () {
+            let request = new Log({
+                payload: { session: {
+                    user: {
+                        userId: "ZZZZZZ"
+                    }
+                }},
+                log_type: "DEBUG",
+                source: "source",
+                transaction_id: "transaction_id",
+                timestamp: new Date(),
+                tags: [],
+                id: ""
+            });
+            let response = responseLog;
+            let output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+
+            expect(conversation.userColors.fill).to.equal("#bf0fff");
+            expect(conversation.userColors.background).to.equal("#4fff0f");
         });
     });
 });
