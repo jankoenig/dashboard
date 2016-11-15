@@ -20192,7 +20192,7 @@
 	"use strict";
 	var ConversationListItem_1 = __webpack_require__(349);
 	exports.ConversationListItem = ConversationListItem_1.default;
-	var ConversationList_1 = __webpack_require__(459);
+	var ConversationList_1 = __webpack_require__(457);
 	exports.ConversationList = ConversationList_1.default;
 
 
@@ -20208,7 +20208,6 @@
 	};
 	var moment = __webpack_require__(350);
 	var React = __webpack_require__(45);
-	var color_1 = __webpack_require__(457);
 	var Icon_1 = __webpack_require__(154);
 	var ConversationListItem = (function (_super) {
 	    __extends(ConversationListItem, _super);
@@ -20256,19 +20255,11 @@
 	            fontSize: "10px"
 	        };
 	    };
-	    ConversationListItem.prototype.getUserFillColor = function () {
-	        var userId = this.props.conversation.userId;
-	        var lastFive = userId.substr(userId.length - 5);
-	        var decimalValue = parseInt(lastFive, 36);
-	        var avatarFill = decimalValue.toString(16);
-	        // add the octothorpe and trim it to 6
-	        return "#" + avatarFill.substr(avatarFill.length - 6);
-	    };
 	    ConversationListItem.prototype.render = function () {
 	        return (React.createElement("li", {key: this.props.conversation.id, style: this.listItemStyle(), onClick: this.props.onClick.bind(this, this.props.conversation)}, 
 	            React.createElement("span", {style: this.primaryContentStyle()}, 
-	                this.props.conversation.userId ? (React.createElement("div", {style: { backgroundColor: color_1.default.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}, 
-	                    React.createElement(Icon_1.Icon, {style: { fill: this.getUserFillColor(), marginTop: "4px" }, width: 30, height: 30, icon: Icon_1.ICON.DEFAULT_USER})
+	                this.props.conversation.userId ? (React.createElement("div", {style: { backgroundColor: this.props.conversation.userColors.background, borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}, 
+	                    React.createElement(Icon_1.Icon, {style: { fill: this.props.conversation.userColors.fill, marginTop: "4px" }, width: 30, height: 30, icon: Icon_1.ICON.DEFAULT_USER})
 	                )) : undefined, 
 	                React.createElement("span", null, 
 	                    this.props.conversation.requestType, 
@@ -34709,7 +34700,229 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var numbers_1 = __webpack_require__(458);
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(45);
+	var conversation_1 = __webpack_require__(458);
+	var output_1 = __webpack_require__(461);
+	var ConversationListItem_1 = __webpack_require__(349);
+	var MutableConversation = (function () {
+	    function MutableConversation() {
+	        this.outputs = [];
+	    }
+	    return MutableConversation;
+	}());
+	var ConversationList = (function (_super) {
+	    __extends(ConversationList, _super);
+	    function ConversationList(props) {
+	        _super.call(this, props);
+	        this.state = {
+	            conversations: this.getConversations(this.props.logs),
+	            activeConversation: undefined
+	        };
+	    }
+	    // TODO: This logic should go somewhere else outside of this component.
+	    //  The property should then change from a list of logs to a list of conversations
+	    ConversationList.prototype.getConversations = function (logs) {
+	        var conversations = [];
+	        var conversationMap = {};
+	        if (logs) {
+	            for (var _i = 0, logs_1 = logs; _i < logs_1.length; _i++) {
+	                var log = logs_1[_i];
+	                // First make sure the map has an object there
+	                if (!conversationMap[log.transaction_id]) {
+	                    conversationMap[log.transaction_id] = new MutableConversation();
+	                }
+	                if (log.tags && log.tags.indexOf("request") > -1) {
+	                    conversationMap[log.transaction_id].request = log;
+	                }
+	                if (log.tags && log.tags.indexOf("response") > -1) {
+	                    conversationMap[log.transaction_id].response = log;
+	                }
+	                if (typeof log.payload === "string") {
+	                    conversationMap[log.transaction_id].outputs.push(output_1.default.fromLog(log));
+	                }
+	            }
+	            // convert to an array
+	            conversations = Object.keys(conversationMap).map(function (key) {
+	                return new conversation_1.default(conversationMap[key]);
+	            });
+	        }
+	        return conversations;
+	    };
+	    ConversationList.prototype.componentWillReceiveProps = function (nextProps, nextContext) {
+	        this.setState({
+	            conversations: this.getConversations(nextProps.logs)
+	        });
+	    };
+	    ConversationList.prototype.style = function () {
+	        return {
+	            listStyle: "none",
+	            paddingLeft: "0px"
+	        };
+	    };
+	    ConversationList.prototype.onClick = function (conversation, event) {
+	        this.setState({
+	            conversations: this.state.conversations,
+	            activeConversation: conversation
+	        });
+	        this.props.onClick(conversation, event);
+	    };
+	    ConversationList.prototype.isConversationActive = function (conversation) {
+	        if (this.state.activeConversation) {
+	            return this.state.activeConversation.id === conversation.id;
+	        }
+	        return false;
+	    };
+	    ConversationList.prototype.render = function () {
+	        var conversations = [];
+	        for (var _i = 0, _a = this.state.conversations; _i < _a.length; _i++) {
+	            var conversation = _a[_i];
+	            conversations.push((React.createElement(ConversationListItem_1.default, {key: conversation.id, conversation: conversation, onClick: this.onClick.bind(this), active: this.isConversationActive(conversation)})));
+	        }
+	        return (React.createElement("div", null, conversations.length > 0 ? (React.createElement("ul", {style: this.style()}, conversations)) : (React.createElement("p", null, " No available data "))));
+	    };
+	    return ConversationList;
+	}(React.Component));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = ConversationList;
+
+
+/***/ },
+/* 458 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var color_1 = __webpack_require__(459);
+	var Conversation = (function () {
+	    function Conversation(props) {
+	        this.request = props.request;
+	        this.response = props.response;
+	        this.outputs = props.outputs ? props.outputs.slice() : [];
+	    }
+	    Object.defineProperty(Conversation.prototype, "id", {
+	        get: function () {
+	            return this.request.id;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "applicationId", {
+	        get: function () {
+	            return this.request.payload.session.application.applicationId;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "sessionId", {
+	        get: function () {
+	            return this.request.payload.session.sessionId;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "userId", {
+	        get: function () {
+	            var userId = undefined;
+	            if (typeof this.request.payload === "object") {
+	                if (this.request.payload.session && this.request.payload.session.user) {
+	                    userId = this.request.payload.session.user.userId;
+	                }
+	                else if (this.request.payload.context && this.request.payload.context.System.user) {
+	                    userId = this.request.payload.context.System.user.userId;
+	                }
+	            }
+	            return userId;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "userColors", {
+	        get: function () {
+	            // set the default
+	            var colors = {
+	                fill: "#ffffff",
+	                background: "#000000"
+	            };
+	            if (this.userId) {
+	                var lastSix = this.userId.substr(this.userId.length - 6);
+	                // regex for checking hex
+	                var isHex = /(^[0-9a-fA-F]{6}$)/;
+	                if (isHex.test(lastSix)) {
+	                    colors.fill = "#" + lastSix;
+	                    colors.background = color_1.default.complementaryColor(lastSix);
+	                }
+	                else {
+	                    // not hex, try to convert it to hex
+	                    var decimalValue = parseInt(lastSix, 36);
+	                    var convertedHex = decimalValue.toString(16);
+	                    var fill = convertedHex.substr(convertedHex.length - 6);
+	                    if (isHex.test(fill)) {
+	                        colors.fill = "#" + fill;
+	                        colors.background = color_1.default.complementaryColor(fill);
+	                    }
+	                }
+	            }
+	            return colors;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "requestType", {
+	        get: function () {
+	            return this.request.payload.request.type;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "intent", {
+	        get: function () {
+	            if (this.request.payload.request.intent) {
+	                return this.request.payload.request.intent.name;
+	            }
+	            else {
+	                return undefined;
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "timestamp", {
+	        get: function () {
+	            return this.request.timestamp;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "hasError", {
+	        get: function () {
+	            var hasError = false;
+	            for (var _i = 0, _a = this.outputs; _i < _a.length; _i++) {
+	                var output = _a[_i];
+	                if (output.level === "ERROR") {
+	                    hasError = true;
+	                }
+	            }
+	            return hasError;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    return Conversation;
+	}());
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Conversation;
+
+
+/***/ },
+/* 459 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var numbers_1 = __webpack_require__(460);
 	var Color;
 	(function (Color) {
 	    /**
@@ -34892,7 +35105,7 @@
 
 
 /***/ },
-/* 458 */
+/* 460 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -34947,194 +35160,6 @@
 	})(Numbers = exports.Numbers || (exports.Numbers = {}));
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = Numbers;
-
-
-/***/ },
-/* 459 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(45);
-	var conversation_1 = __webpack_require__(460);
-	var output_1 = __webpack_require__(461);
-	var ConversationListItem_1 = __webpack_require__(349);
-	var MutableConversation = (function () {
-	    function MutableConversation() {
-	        this.outputs = [];
-	    }
-	    return MutableConversation;
-	}());
-	var ConversationList = (function (_super) {
-	    __extends(ConversationList, _super);
-	    function ConversationList(props) {
-	        _super.call(this, props);
-	        this.state = {
-	            conversations: this.getConversations(this.props.logs),
-	            activeConversation: undefined
-	        };
-	    }
-	    // TODO: This logic should go somewhere else outside of this component.
-	    //  The property should then change from a list of logs to a list of conversations
-	    ConversationList.prototype.getConversations = function (logs) {
-	        var conversations = [];
-	        var conversationMap = {};
-	        if (logs) {
-	            for (var _i = 0, logs_1 = logs; _i < logs_1.length; _i++) {
-	                var log = logs_1[_i];
-	                // First make sure the map has an object there
-	                if (!conversationMap[log.transaction_id]) {
-	                    conversationMap[log.transaction_id] = new MutableConversation();
-	                }
-	                if (log.tags && log.tags.indexOf("request") > -1) {
-	                    conversationMap[log.transaction_id].request = log;
-	                }
-	                if (log.tags && log.tags.indexOf("response") > -1) {
-	                    conversationMap[log.transaction_id].response = log;
-	                }
-	                if (typeof log.payload === "string") {
-	                    conversationMap[log.transaction_id].outputs.push(output_1.default.fromLog(log));
-	                }
-	            }
-	            // convert to an array
-	            conversations = Object.keys(conversationMap).map(function (key) {
-	                return new conversation_1.default(conversationMap[key]);
-	            });
-	        }
-	        return conversations;
-	    };
-	    ConversationList.prototype.componentWillReceiveProps = function (nextProps, nextContext) {
-	        this.setState({
-	            conversations: this.getConversations(nextProps.logs)
-	        });
-	    };
-	    ConversationList.prototype.style = function () {
-	        return {
-	            listStyle: "none",
-	            paddingLeft: "0px"
-	        };
-	    };
-	    ConversationList.prototype.onClick = function (conversation, event) {
-	        this.setState({
-	            conversations: this.state.conversations,
-	            activeConversation: conversation
-	        });
-	        this.props.onClick(conversation, event);
-	    };
-	    ConversationList.prototype.isConversationActive = function (conversation) {
-	        if (this.state.activeConversation) {
-	            return this.state.activeConversation.id === conversation.id;
-	        }
-	        return false;
-	    };
-	    ConversationList.prototype.render = function () {
-	        var conversations = [];
-	        for (var _i = 0, _a = this.state.conversations; _i < _a.length; _i++) {
-	            var conversation = _a[_i];
-	            conversations.push((React.createElement(ConversationListItem_1.default, {key: conversation.id, conversation: conversation, onClick: this.onClick.bind(this), active: this.isConversationActive(conversation)})));
-	        }
-	        return (React.createElement("div", null, conversations.length > 0 ? (React.createElement("ul", {style: this.style()}, conversations)) : (React.createElement("p", null, " No available data "))));
-	    };
-	    return ConversationList;
-	}(React.Component));
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = ConversationList;
-
-
-/***/ },
-/* 460 */
-/***/ function(module, exports) {
-
-	"use strict";
-	var Conversation = (function () {
-	    function Conversation(props) {
-	        this.request = props.request;
-	        this.response = props.response;
-	        this.outputs = props.outputs ? props.outputs.slice() : [];
-	    }
-	    Object.defineProperty(Conversation.prototype, "id", {
-	        get: function () {
-	            return this.request.id;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "applicationId", {
-	        get: function () {
-	            return this.request.payload.session.application.applicationId;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "sessionId", {
-	        get: function () {
-	            return this.request.payload.session.sessionId;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "userId", {
-	        get: function () {
-	            var userId = undefined;
-	            if (this.request.payload.session.user) {
-	                userId = this.request.payload.session.user.userId;
-	            }
-	            else if (this.request.payload.context && this.request.payload.context.System.user) {
-	                userId = this.request.payload.context.System.user.userId;
-	            }
-	            return userId;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "requestType", {
-	        get: function () {
-	            return this.request.payload.request.type;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "intent", {
-	        get: function () {
-	            if (this.request.payload.request.intent) {
-	                return this.request.payload.request.intent.name;
-	            }
-	            else {
-	                return undefined;
-	            }
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "timestamp", {
-	        get: function () {
-	            return this.request.timestamp;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "hasError", {
-	        get: function () {
-	            var hasError = false;
-	            for (var _i = 0, _a = this.outputs; _i < _a.length; _i++) {
-	                var output = _a[_i];
-	                if (output.level === "ERROR") {
-	                    hasError = true;
-	                }
-	            }
-	            return hasError;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    return Conversation;
-	}());
-	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Conversation;
 
 
 /***/ },
