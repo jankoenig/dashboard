@@ -128,7 +128,7 @@ describe("Conversation", function () {
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
         });
-        it("returns the default colors for a hex userId", function () {
+        it("returns the hex color for a hex userId", function () {
             let request = new Log({
                 payload: { session: {
                     user: {
@@ -157,7 +157,7 @@ describe("Conversation", function () {
             expect(conversation.userColors.fill).to.equal("#A234b6");
             expect(conversation.userColors.background).to.equal("#48b634");
         });
-        it("returns the default colors for a base 36 userId", function () {
+        it("returns the hex value for a base 36 userId", function () {
             let request = new Log({
                 payload: { session: {
                     user: {
