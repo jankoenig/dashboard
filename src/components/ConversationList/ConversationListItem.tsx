@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 
 import Conversation from "../../models/conversation";
-import Color from "../../utils/color";
+
 import { Icon, ICON } from "../Icon";
 
 interface ConversationListItemProps {
@@ -58,15 +58,6 @@ export default class ConversationListItem extends React.Component<ConversationLi
         };
     }
 
-    getUserFillColor() {
-        let userId: string = this.props.conversation.userId;
-        let lastFive = userId.substr(userId.length - 5);
-        let decimalValue = parseInt(lastFive, 36);
-        let avatarFill = decimalValue.toString(16);
-        // add the octothorpe and trim it to 6
-        return "#" + avatarFill.substr(avatarFill.length - 6);
-    }
-
     render() {
         return (
             <li key={this.props.conversation.id}
@@ -74,9 +65,9 @@ export default class ConversationListItem extends React.Component<ConversationLi
                 onClick={this.props.onClick.bind(this, this.props.conversation)}>
                 <span style={this.primaryContentStyle()}>
                     {this.props.conversation.userId ? (
-                        <div style={{ backgroundColor: Color.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
+                        <div style={{ backgroundColor: this.props.conversation.userColors.background, borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
                             <Icon
-                                style={{ fill: this.getUserFillColor(), marginTop: "4px" }}
+                                style={{ fill: this.props.conversation.userColors.fill, marginTop: "4px" }}
                                 width={30}
                                 height={30}
                                 icon={ICON.DEFAULT_USER}
