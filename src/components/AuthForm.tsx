@@ -62,7 +62,7 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                     </button>) : undefined}
                 </div>
                 <div className="mdl-card__actions clearfix">
-                <a href="#" style={{ fontSize: 10, color:"blue"}} onClick={this.props.onForgetPassword}>Reset Password (Email required)</a>
+                <a href="#" style={{ fontSize: 12, color:"blue"}} onClick={this.props.onForgetPassword}>Reset Password</a>
                 </div>
                 {this.props.onLoginWithGithub ? (
                     <div className="mdl-card__actions mdl-card--border">
@@ -74,6 +74,7 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                         </button>
                     </div>
                 ) : undefined}
-            </div>);
+            </div>
+            );
     }
 }

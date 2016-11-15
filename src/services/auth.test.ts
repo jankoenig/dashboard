@@ -1,5 +1,5 @@
 import auth from "./auth";
-
+import { expect } from "chai";
 
 describe("Auth ts not mocked", function () {
     describe("sign up bad email", function() {
@@ -19,7 +19,7 @@ describe("Auth ts not mocked", function () {
     });
     describe("send reset password email", function(){
         it ("Test use bad email.", function() {
-               auth.sendResetPasswordEmail("testusercom", (success: true, error: "") => void{});
+            expect(auth.sendResetPasswordEmail("testusercom")).to.equal("Please enter a valid email");
         });
     });
  });

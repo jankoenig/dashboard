@@ -268,18 +268,7 @@ describe("Session.ts", function () {
 
     describe("Reset password", function() {
         it("shows error message on login page for bad email input.", function() {
-            let initialState = {};
-            let store = mockStore(initialState);
-
-            store.dispatch(session.forgotPassword("testuserxappmedia.com"));
-
-            console.info(store.getActions());
-
-            expect(store.getActions().length).to.equal(1);
-
-            let finalAction: any = store.getActions()[store.getActions().length - 1];
-            expect(finalAction.type).to.equal("bst/AUTH_ERROR"); // This is redux-route method which could change as that library changes.
-            expect(finalAction.value).to.equal("Please enter a valid email");
+            expect(session.forgotPassword("testuserxappmedia.com")).to.equal("Please enter a valid email");
         });
     });
 

@@ -4,10 +4,12 @@ import { connect } from "react-redux";
 
 import { changeForm } from "../actions/auth-form";
 import { forgotPassword, login, loginWithGithub, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
-import AuthForm from "../components/AuthForm";
-import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
 import { State } from "../reducers";
+
+import AuthForm from "../components/AuthForm";
+import Card from "../components/Card";
+import SnackBar from "../components/SnackBar";
 
 /**
  * Configuration objects to pass in to the router when pushing or replacing this page on the router.
@@ -28,7 +30,7 @@ interface LoginPageProps {
     login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    forgotPassword: (email: string) => (dispatch: Redux.Dispatch<any>) => void;
+    forgotPassword: (email: string) => string;
     location?: RoutingData.Location<LoginConfig>;
 };
 
@@ -56,12 +58,39 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
             return dispatch(loginWithGithub(redirectStrat));
         },
         forgotPassword: function(email: string) {
-            return dispatch(forgotPassword(email));
+            return forgotPassword(email);
         }
     };
 }
 
-export class LoginPage extends React.Component<LoginPageProps, any> {
+interface LoginPageState {
+    message?: string;
+    showSnackBar: boolean;
+}
+
+export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
+    constructor() {
+        super();
+        this.state = {
+            showSnackBar: false
+        };
+
+        this.showSnackBar = this.showSnackBar.bind(this);
+    }
+
+    showSnackBar(message: string) {
+        this.setState({
+            message: message,
+            showSnackBar: true
+        });
+        setTimeout(() => { this.hideSnackBar(); }, 2000);
+    }
+
+    hideSnackBar() {
+        this.setState({
+            showSnackBar: false
+        });
+    }
 
     handleFormChanged(event: React.FormEvent) {
         // Need to cast in order to get to id and value
@@ -72,7 +101,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleForgotPassword(event: React.FormEvent) {
         event.preventDefault();
-        this.props.forgotPassword(this.props.email);
+        this.showSnackBar(this.props.forgotPassword(this.props.email));
     }
 
     handleFormSubmit(event: React.FormEvent) {
@@ -100,6 +129,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
 
     render() {
         return (
+            <div>
             <Grid>
                 <Cell col={4} tablet={2} hidePhone={true} />
                 <Cell col={4} tablet={4} phone={4} align={"middle"}>
@@ -119,6 +149,8 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
                 </Cell>
                 <Cell col={4} tablet={2} hidePhone={true} />
             </Grid>
+            <SnackBar show={this.state.showSnackBar} snackBarText={this.state.message}/>
+            </div>
         );
     }
 };

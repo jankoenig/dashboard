@@ -101,9 +101,5 @@ export function logout() {
   };
 }
 export function forgotPassword(email: string) {
-  return function (dispatch: Redux.Dispatch<any>) {
-    auth.sendResetPasswordEmail(email, function (success, message) {
-        dispatch(changeErrorInForm(message));
-    });
-  };
+  return auth.sendResetPasswordEmail(email);
 }
