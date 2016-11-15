@@ -22,7 +22,7 @@ describe("ConversationListItem", function () {
 
         expect(wrapper.find("li")).to.have.length(1);
         let li = wrapper.find("li");
-        expect(li.props().style.backgroundColor).to.equal("#E0E0E0");
+        expect(li.props().style.backgroundColor).to.equal("#FAFAFA");
         expect(wrapper.find("Icon")).to.have.length(1);
     });
     describe("when active", function () {
