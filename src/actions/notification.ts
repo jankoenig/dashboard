@@ -5,7 +5,7 @@ export type SetSnackbarMessage = {
     message: string | undefined
 }
 
-function setSnackbarMessage(message: string | undefined) {
+export function setSnackbarMessage(message: string | undefined) {
     return {
         type: SET_SNACKBAR_MESSAGE,
         message: message
