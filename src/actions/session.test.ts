@@ -256,9 +256,7 @@ describe("Session.ts", function () {
 
             store.dispatch(session.logout());
 
-            console.info(store.getActions());
-
-            expect(store.getActions().length).to.equal(1);
+            expect(store.getActions().length).to.equal(2);
 
             let finalAction: any = store.getActions()[store.getActions().length - 1];
             expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.

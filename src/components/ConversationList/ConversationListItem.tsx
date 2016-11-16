@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 
 import Conversation from "../../models/conversation";
-import Color from "../../utils/color";
+
 import { Icon, ICON } from "../Icon";
 
 interface ConversationListItemProps {
@@ -18,8 +18,10 @@ export default class ConversationListItem extends React.Component<ConversationLi
             padding: "10px",
             margin: "10px",
             cursor: "hande",
-            backgroundColor: (this.props.active ? "#90A4AE" : "#E0E0E0"),
-            borderRadius: "10px",
+            backgroundColor: (this.props.active ? "#90A4AE" : "#FAFAFA"),
+            borderTop: "solid #90A4AE",
+            borderBottom: "solid #90A4AE",
+            borderWidth: "1px",
             position: "relative",
             height: "72px",
             boxSizing: "border-box",
@@ -42,18 +44,18 @@ export default class ConversationListItem extends React.Component<ConversationLi
     subtitleStyle(): React.CSSProperties {
         return {
             fontSize: "14px",
-            color: "#616161",
             display: "block"
         };
     }
 
-    getUserFillColor() {
-        let userId: string = this.props.conversation.userId;
-        let lastFive = userId.substr(userId.length - 5);
-        let decimalValue = parseInt(lastFive, 36);
-        let avatarFill = decimalValue.toString(16);
-        // add the octothorpe and trim it to 6
-        return "#" + avatarFill.substr(avatarFill.length - 6);
+    errorPillStyle(): React.CSSProperties {
+        return {
+            backgroundColor: "#e53935",
+            padding: "5px",
+            borderRadius: "5px",
+            color: "#eeeeee",
+            fontSize: "10px"
+        };
     }
 
     render() {
@@ -62,14 +64,16 @@ export default class ConversationListItem extends React.Component<ConversationLi
                 style={this.listItemStyle()}
                 onClick={this.props.onClick.bind(this, this.props.conversation)}>
                 <span style={this.primaryContentStyle()}>
-                    <div style={{ backgroundColor: Color.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
-                        <Icon
-                            style={{ fill: this.getUserFillColor(), marginTop: "4px" }}
-                            width={30}
-                            height={30}
-                            icon={ICON.DEFAULT_USER}
-                            />
-                    </div>
+                    {this.props.conversation.userId ? (
+                        <div style={{ backgroundColor: this.props.conversation.userColors.background, borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
+                            <Icon
+                                style={{ fill: this.props.conversation.userColors.fill, marginTop: "4px" }}
+                                width={30}
+                                height={30}
+                                icon={ICON.DEFAULT_USER}
+                                />
+                        </div>
+                    ) : undefined}
                     <span>
                         {this.props.conversation.requestType}
                         {this.props.conversation.intent ? (
@@ -77,8 +81,16 @@ export default class ConversationListItem extends React.Component<ConversationLi
                         ) : undefined}
                     </span>
                     <span style={this.subtitleStyle()}>
-                        {moment(this.props.conversation.timestamp).fromNow()}
+                        {moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a")}
+                        <span style={{ color: "#BDBDBD", paddingLeft: "5px" }}>{moment(this.props.conversation.timestamp).fromNow()} </span>
                     </span>
+                </span>
+                <span>
+                    {this.props.conversation.hasError ? (
+                        <span style={this.errorPillStyle()}>
+                            <span>error</span>
+                        </span>
+                    ) : undefined}
                 </span>
             </li>
         );

@@ -59,11 +59,11 @@
 	var HomePage_1 = __webpack_require__(158);
 	var LoginPage_1 = __webpack_require__(162);
 	var LogsPage_1 = __webpack_require__(166);
-	var NewSourcePage_1 = __webpack_require__(461);
-	var NotFoundPage_1 = __webpack_require__(463);
-	var SourceListPage_1 = __webpack_require__(464);
-	var reducers_1 = __webpack_require__(465);
-	var store_1 = __webpack_require__(470);
+	var NewSourcePage_1 = __webpack_require__(465);
+	var NotFoundPage_1 = __webpack_require__(467);
+	var SourceListPage_1 = __webpack_require__(468);
+	var reducers_1 = __webpack_require__(469);
+	var store_1 = __webpack_require__(474);
 	// Initialize Google Analytics
 	ReactGA.initialize("UA-40630247-7");
 	// Creates the Redux reducer with the redux-thunk middleware, which allows us
@@ -10867,6 +10867,7 @@
 	    return function (dispatch) {
 	        auth_1.default.logout(function (success) {
 	            if (success) {
+	                dispatch({ type: constants_1.LOGOUT_USER });
 	                dispatch(react_router_redux_1.push("/login"));
 	            }
 	        });
@@ -11243,6 +11244,19 @@
 	    };
 	    Dashboard.prototype.componentWillMount = function () {
 	        this.props.getSources();
+	    };
+	    Dashboard.prototype.componentWillReceiveProps = function (nextProps) {
+	        // Solution suggested by https://github.com/react-mdl/react-mdl/issues/254#issuecomment-237926011 for
+	        // closing the navigation drawer after a click
+	        //
+	        // If our locations are different and drawer is open, force a close
+	        if (this.props.location.pathname !== nextProps.location.pathname) {
+	            var layout = document.querySelector(".mdl-js-layout");
+	            var drawer = document.querySelector(".mdl-layout__drawer");
+	            if (layout.classList.contains("is-small-screen") && drawer.classList.contains("is-visible")) {
+	                layout.MaterialLayout.toggleDrawer();
+	            }
+	        }
 	    };
 	    Dashboard.prototype.render = function () {
 	        return (React.createElement(Layout_1.default, {drawer: true, header: true}, 
@@ -13182,6 +13196,7 @@
 	var source_1 = __webpack_require__(134);
 	var ConversationList_1 = __webpack_require__(348);
 	var Grid_1 = __webpack_require__(159);
+	var OutputList_1 = __webpack_require__(462);
 	function mapStateToProps(state) {
 	    return {
 	        logs: state.log.logs,
@@ -13230,16 +13245,14 @@
 	        this.state = {
 	            source: undefined,
 	            request: undefined,
-	            response: undefined
+	            response: undefined,
+	            outputs: []
 	        };
 	    }
 	    LogsPage.prototype.getJSONTreeStyle = function () {
 	        return {
 	            padding: "15px",
-	            borderRadius: "10px",
-	            borderStyle: "solid",
-	            borderWidth: "2px",
-	            borderColor: this.monokaiTheme.base0B
+	            borderRadius: "10px"
 	        };
 	    };
 	    LogsPage.prototype.getTheme = function () {
@@ -13260,7 +13273,8 @@
 	                this.setState({
 	                    source: source,
 	                    request: this.state.request,
-	                    response: this.state.response
+	                    response: this.state.response,
+	                    outputs: this.state.outputs
 	                });
 	                // Found a match, jump out of the loop
 	                break;
@@ -13281,34 +13295,20 @@
 	        // Clear out the current source when the page unmounts
 	        this.props.setCurrentSource(undefined);
 	    };
-	    /* Comment out until we can style the console messages
-	    getConsoleMessages(): JSX.Element[] {
-	
-	        let messages: JSX.Element[] = [];
-	
-	        if (this.props.logs) {
-	            for (let log of this.props.logs) {
-	                if (typeof log.payload === "string") {
-	                    messages.push((<li key={log.id} id={log.id}>{log.payload}</li>));
-	                }
-	            }
-	        }
-	
-	        return messages;
-	    } */
-	    LogsPage.prototype.onConversationClicked = function (request, response, event) {
+	    LogsPage.prototype.onConversationClicked = function (conversation, event) {
 	        this.setState({
 	            source: this.state.source,
-	            request: request,
-	            response: response
+	            request: conversation.request,
+	            response: conversation.response,
+	            outputs: conversation.outputs
 	        });
 	    };
 	    LogsPage.prototype.shouldExpandNode = function (keyName, data, level) {
-	        // don't expand the really long nodes by default
-	        if (keyName.indexOf("user") > -1 || keyName.indexOf("application") > -1) {
-	            return false;
+	        // only expand the initial node, request and response by default
+	        if (keyName.length === 0 || keyName.indexOf("request") > -1 || keyName.indexOf("response") > -1) {
+	            return true;
 	        }
-	        return true;
+	        return false;
 	    };
 	    LogsPage.prototype.getContentHeight = function () {
 	        if (document.getElementsByClassName !== undefined) {
@@ -13335,7 +13335,12 @@
 	    LogsPage.prototype.getResponse = function () {
 	        var response = (React.createElement("p", null, "Loading logs..."));
 	        if (this.state.response) {
-	            response = (React.createElement(react_json_tree_1.default, {data: this.state.response.payload, hideRoot: true, invertTheme: false, theme: this.getTheme(), shouldExpandNode: this.shouldExpandNode}));
+	            if (typeof this.state.response.payload !== "string") {
+	                response = (React.createElement(react_json_tree_1.default, {data: this.state.response.payload, hideRoot: true, invertTheme: false, theme: this.getTheme(), shouldExpandNode: this.shouldExpandNode}));
+	            }
+	            else {
+	                response = undefined;
+	            }
 	        }
 	        else {
 	            response = (React.createElement("p", null, "Select a conversation or message to inspect the payload"));
@@ -13352,6 +13357,8 @@
 	            React.createElement(Grid_1.Cell, {col: 6, style: { maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}, 
 	                React.createElement("h6", null, "REQUEST"), 
 	                this.getRequest(), 
+	                React.createElement("h6", null, "CONSOLE"), 
+	                React.createElement(OutputList_1.OutputList, {outputs: this.state.outputs}), 
 	                React.createElement("h6", null, "RESPONSE"), 
 	                this.getResponse())));
 	    };
@@ -20185,7 +20192,7 @@
 	"use strict";
 	var ConversationListItem_1 = __webpack_require__(349);
 	exports.ConversationListItem = ConversationListItem_1.default;
-	var ConversationList_1 = __webpack_require__(459);
+	var ConversationList_1 = __webpack_require__(457);
 	exports.ConversationList = ConversationList_1.default;
 
 
@@ -20201,7 +20208,6 @@
 	};
 	var moment = __webpack_require__(350);
 	var React = __webpack_require__(45);
-	var color_1 = __webpack_require__(457);
 	var Icon_1 = __webpack_require__(154);
 	var ConversationListItem = (function (_super) {
 	    __extends(ConversationListItem, _super);
@@ -20213,8 +20219,10 @@
 	            padding: "10px",
 	            margin: "10px",
 	            cursor: "hande",
-	            backgroundColor: (this.props.active ? "#90A4AE" : "#E0E0E0"),
-	            borderRadius: "10px",
+	            backgroundColor: (this.props.active ? "#90A4AE" : "#FAFAFA"),
+	            borderTop: "solid #90A4AE",
+	            borderBottom: "solid #90A4AE",
+	            borderWidth: "1px",
 	            position: "relative",
 	            height: "72px",
 	            boxSizing: "border-box",
@@ -20235,32 +20243,38 @@
 	    ConversationListItem.prototype.subtitleStyle = function () {
 	        return {
 	            fontSize: "14px",
-	            color: "#616161",
 	            display: "block"
 	        };
 	    };
-	    ConversationListItem.prototype.getUserFillColor = function () {
-	        var userId = this.props.conversation.userId;
-	        var lastFive = userId.substr(userId.length - 5);
-	        var decimalValue = parseInt(lastFive, 36);
-	        var avatarFill = decimalValue.toString(16);
-	        // add the octothorpe and trim it to 6
-	        return "#" + avatarFill.substr(avatarFill.length - 6);
+	    ConversationListItem.prototype.errorPillStyle = function () {
+	        return {
+	            backgroundColor: "#e53935",
+	            padding: "5px",
+	            borderRadius: "5px",
+	            color: "#eeeeee",
+	            fontSize: "10px"
+	        };
 	    };
 	    ConversationListItem.prototype.render = function () {
 	        return (React.createElement("li", {key: this.props.conversation.id, style: this.listItemStyle(), onClick: this.props.onClick.bind(this, this.props.conversation)}, 
 	            React.createElement("span", {style: this.primaryContentStyle()}, 
-	                React.createElement("div", {style: { backgroundColor: color_1.default.complementaryColor(this.getUserFillColor()), borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}, 
-	                    React.createElement(Icon_1.Icon, {style: { fill: this.getUserFillColor(), marginTop: "4px" }, width: 30, height: 30, icon: Icon_1.ICON.DEFAULT_USER})
-	                ), 
+	                this.props.conversation.userId ? (React.createElement("div", {style: { backgroundColor: this.props.conversation.userColors.background, borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}, 
+	                    React.createElement(Icon_1.Icon, {style: { fill: this.props.conversation.userColors.fill, marginTop: "4px" }, width: 30, height: 30, icon: Icon_1.ICON.DEFAULT_USER})
+	                )) : undefined, 
 	                React.createElement("span", null, 
 	                    this.props.conversation.requestType, 
 	                    this.props.conversation.intent ? (React.createElement("span", null, 
 	                        " - ", 
 	                        this.props.conversation.intent, 
 	                        " ")) : undefined), 
-	                React.createElement("span", {style: this.subtitleStyle()}, moment(this.props.conversation.timestamp).fromNow()))
-	        ));
+	                React.createElement("span", {style: this.subtitleStyle()}, 
+	                    moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a"), 
+	                    React.createElement("span", {style: { color: "#BDBDBD", paddingLeft: "5px" }}, 
+	                        moment(this.props.conversation.timestamp).fromNow(), 
+	                        " "))), 
+	            React.createElement("span", null, this.props.conversation.hasError ? (React.createElement("span", {style: this.errorPillStyle()}, 
+	                React.createElement("span", null, "error")
+	            )) : undefined)));
 	    };
 	    return ConversationListItem;
 	}(React.Component));
@@ -34686,7 +34700,229 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var numbers_1 = __webpack_require__(458);
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(45);
+	var conversation_1 = __webpack_require__(458);
+	var output_1 = __webpack_require__(461);
+	var ConversationListItem_1 = __webpack_require__(349);
+	var MutableConversation = (function () {
+	    function MutableConversation() {
+	        this.outputs = [];
+	    }
+	    return MutableConversation;
+	}());
+	var ConversationList = (function (_super) {
+	    __extends(ConversationList, _super);
+	    function ConversationList(props) {
+	        _super.call(this, props);
+	        this.state = {
+	            conversations: this.getConversations(this.props.logs),
+	            activeConversation: undefined
+	        };
+	    }
+	    // TODO: This logic should go somewhere else outside of this component.
+	    //  The property should then change from a list of logs to a list of conversations
+	    ConversationList.prototype.getConversations = function (logs) {
+	        var conversations = [];
+	        var conversationMap = {};
+	        if (logs) {
+	            for (var _i = 0, logs_1 = logs; _i < logs_1.length; _i++) {
+	                var log = logs_1[_i];
+	                // First make sure the map has an object there
+	                if (!conversationMap[log.transaction_id]) {
+	                    conversationMap[log.transaction_id] = new MutableConversation();
+	                }
+	                if (log.tags && log.tags.indexOf("request") > -1) {
+	                    conversationMap[log.transaction_id].request = log;
+	                }
+	                if (log.tags && log.tags.indexOf("response") > -1) {
+	                    conversationMap[log.transaction_id].response = log;
+	                }
+	                if (typeof log.payload === "string") {
+	                    conversationMap[log.transaction_id].outputs.push(output_1.default.fromLog(log));
+	                }
+	            }
+	            // convert to an array
+	            conversations = Object.keys(conversationMap).map(function (key) {
+	                return new conversation_1.default(conversationMap[key]);
+	            });
+	        }
+	        return conversations;
+	    };
+	    ConversationList.prototype.componentWillReceiveProps = function (nextProps, nextContext) {
+	        this.setState({
+	            conversations: this.getConversations(nextProps.logs)
+	        });
+	    };
+	    ConversationList.prototype.style = function () {
+	        return {
+	            listStyle: "none",
+	            paddingLeft: "0px"
+	        };
+	    };
+	    ConversationList.prototype.onClick = function (conversation, event) {
+	        this.setState({
+	            conversations: this.state.conversations,
+	            activeConversation: conversation
+	        });
+	        this.props.onClick(conversation, event);
+	    };
+	    ConversationList.prototype.isConversationActive = function (conversation) {
+	        if (this.state.activeConversation) {
+	            return this.state.activeConversation.id === conversation.id;
+	        }
+	        return false;
+	    };
+	    ConversationList.prototype.render = function () {
+	        var conversations = [];
+	        for (var _i = 0, _a = this.state.conversations; _i < _a.length; _i++) {
+	            var conversation = _a[_i];
+	            conversations.push((React.createElement(ConversationListItem_1.default, {key: conversation.id, conversation: conversation, onClick: this.onClick.bind(this), active: this.isConversationActive(conversation)})));
+	        }
+	        return (React.createElement("div", null, conversations.length > 0 ? (React.createElement("ul", {style: this.style()}, conversations)) : (React.createElement("p", null, " No available data "))));
+	    };
+	    return ConversationList;
+	}(React.Component));
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = ConversationList;
+
+
+/***/ },
+/* 458 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var color_1 = __webpack_require__(459);
+	var Conversation = (function () {
+	    function Conversation(props) {
+	        this.request = props.request;
+	        this.response = props.response;
+	        this.outputs = props.outputs ? props.outputs.slice() : [];
+	    }
+	    Object.defineProperty(Conversation.prototype, "id", {
+	        get: function () {
+	            return this.request.id;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "applicationId", {
+	        get: function () {
+	            return this.request.payload.session.application.applicationId;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "sessionId", {
+	        get: function () {
+	            return this.request.payload.session.sessionId;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "userId", {
+	        get: function () {
+	            var userId = undefined;
+	            if (typeof this.request.payload === "object") {
+	                if (this.request.payload.session && this.request.payload.session.user) {
+	                    userId = this.request.payload.session.user.userId;
+	                }
+	                else if (this.request.payload.context && this.request.payload.context.System.user) {
+	                    userId = this.request.payload.context.System.user.userId;
+	                }
+	            }
+	            return userId;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "userColors", {
+	        get: function () {
+	            // set the default
+	            var colors = {
+	                fill: "#ffffff",
+	                background: "#000000"
+	            };
+	            if (this.userId) {
+	                var lastSix = this.userId.substr(this.userId.length - 6);
+	                // regex for checking hex
+	                var isHex = /(^[0-9a-fA-F]{6}$)/;
+	                if (isHex.test(lastSix)) {
+	                    colors.fill = "#" + lastSix;
+	                    colors.background = color_1.default.complementaryColor(lastSix);
+	                }
+	                else {
+	                    // not hex, try to convert it to hex
+	                    var decimalValue = parseInt(lastSix, 36);
+	                    var convertedHex = decimalValue.toString(16);
+	                    var fill = convertedHex.substr(convertedHex.length - 6);
+	                    if (isHex.test(fill)) {
+	                        colors.fill = "#" + fill;
+	                        colors.background = color_1.default.complementaryColor(fill);
+	                    }
+	                }
+	            }
+	            return colors;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "requestType", {
+	        get: function () {
+	            return this.request.payload.request.type;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "intent", {
+	        get: function () {
+	            if (this.request.payload.request.intent) {
+	                return this.request.payload.request.intent.name;
+	            }
+	            else {
+	                return undefined;
+	            }
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "timestamp", {
+	        get: function () {
+	            return this.request.timestamp;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Object.defineProperty(Conversation.prototype, "hasError", {
+	        get: function () {
+	            var hasError = false;
+	            for (var _i = 0, _a = this.outputs; _i < _a.length; _i++) {
+	                var output = _a[_i];
+	                if (output.level === "ERROR") {
+	                    hasError = true;
+	                }
+	            }
+	            return hasError;
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    return Conversation;
+	}());
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Conversation;
+
+
+/***/ },
+/* 459 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var numbers_1 = __webpack_require__(460);
 	var Color;
 	(function (Color) {
 	    /**
@@ -34869,7 +35105,7 @@
 
 
 /***/ },
-/* 458 */
+/* 460 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -34927,7 +35163,59 @@
 
 
 /***/ },
-/* 459 */
+/* 461 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var Output = (function () {
+	    function Output(props) {
+	        this.levelColors = {
+	            "ERROR": "#e53935",
+	            "WARN": "orange",
+	            "INFO": "yellow",
+	            "DEBUG": "rgb(166, 226, 46)"
+	        };
+	        this.message = props.message;
+	        this.level = props.level;
+	        this.timestamp = props.timestamp;
+	        this.transaction_id = props.transaction_id;
+	        this.id = props.id;
+	    }
+	    Object.defineProperty(Output.prototype, "levelColor", {
+	        get: function () {
+	            return this.levelColors[this.level];
+	        },
+	        enumerable: true,
+	        configurable: true
+	    });
+	    Output.fromLog = function (log) {
+	        return new Output({
+	            message: log.payload,
+	            level: log.log_type,
+	            timestamp: log.timestamp,
+	            transaction_id: log.transaction_id,
+	            id: log.id
+	        });
+	    };
+	    return Output;
+	}());
+	Object.defineProperty(exports, "__esModule", { value: true });
+	exports.default = Output;
+
+
+/***/ },
+/* 462 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var OutputList_1 = __webpack_require__(463);
+	exports.OutputList = OutputList_1.default;
+	var OutputListItem_1 = __webpack_require__(464);
+	exports.OutputListItem = OutputListItem_1.default;
+
+
+/***/ },
+/* 463 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -34937,151 +35225,79 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(45);
-	var conversation_1 = __webpack_require__(460);
-	var ConversationListItem_1 = __webpack_require__(349);
-	var ConversationList = (function (_super) {
-	    __extends(ConversationList, _super);
-	    function ConversationList(props) {
+	var OutputListItem_1 = __webpack_require__(464);
+	var OutputList = (function (_super) {
+	    __extends(OutputList, _super);
+	    function OutputList(props) {
 	        _super.call(this, props);
-	        this.state = {
-	            conversations: this.getConversations(this.props.logs),
-	            activeConversation: undefined
-	        };
 	    }
-	    ConversationList.prototype.getConversations = function (logs) {
-	        var conversations = [];
-	        var request;
-	        var response;
-	        if (logs) {
-	            for (var _i = 0, logs_1 = logs; _i < logs_1.length; _i++) {
-	                var log = logs_1[_i];
-	                if (log.tags.indexOf("request") > -1) {
-	                    request = log;
-	                }
-	                if (log.tags.indexOf("response") > -1) {
-	                    response = log;
-	                }
-	                if (response && request) {
-	                    if (response.transaction_id === request.transaction_id) {
-	                        conversations.push(new conversation_1.default({ request: request, response: response }));
-	                        request = undefined;
-	                        response = undefined;
-	                    }
-	                }
-	            }
-	        }
-	        return conversations;
-	    };
-	    ConversationList.prototype.componentWillReceiveProps = function (nextProps, nextContext) {
-	        this.setState({
-	            conversations: this.getConversations(nextProps.logs)
-	        });
-	    };
-	    ConversationList.prototype.style = function () {
+	    OutputList.prototype.style = function () {
 	        return {
 	            listStyle: "none",
-	            paddingLeft: "0px"
+	            userSelect: "none",
+	            paddingTop: "10px",
+	            paddingBottom: "10px",
+	            paddingLeft: "0px",
+	            margin: "0.5em 0px 0.5em 0.125em",
+	            backgroundColor: "rgb(39, 40, 34)",
+	            borderRadius: "10px"
 	        };
 	    };
-	    ConversationList.prototype.onClick = function (conversation, event) {
-	        this.setState({
-	            conversations: this.state.conversations,
-	            activeConversation: conversation
-	        });
-	        this.props.onClick(conversation.request, conversation.response, event);
-	    };
-	    ConversationList.prototype.isConversationActive = function (conversation) {
-	        if (this.state.activeConversation) {
-	            return this.state.activeConversation.id === conversation.id;
+	    OutputList.prototype.render = function () {
+	        var outputs = [];
+	        for (var _i = 0, _a = this.props.outputs; _i < _a.length; _i++) {
+	            var output_1 = _a[_i];
+	            outputs.push((React.createElement(OutputListItem_1.default, {key: output_1.id, output: output_1})));
 	        }
-	        return false;
-	    };
-	    ConversationList.prototype.render = function () {
-	        var conversations = [];
-	        for (var _i = 0, _a = this.state.conversations; _i < _a.length; _i++) {
-	            var conversation = _a[_i];
-	            conversations.push((React.createElement(ConversationListItem_1.default, {key: conversation.id, conversation: conversation, onClick: this.onClick.bind(this), active: this.isConversationActive(conversation)})));
+	        var output = (React.createElement("span", null, " No outputs "));
+	        if (outputs.length > 0) {
+	            output = (React.createElement("ul", {style: this.style()}, outputs));
 	        }
-	        return (React.createElement("div", null, conversations.length > 0 ? (React.createElement("ul", {style: this.style()}, conversations)) : (React.createElement("p", null, " No available data "))));
+	        return output;
 	    };
-	    return ConversationList;
+	    return OutputList;
 	}(React.Component));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = ConversationList;
+	exports.default = OutputList;
 
 
 /***/ },
-/* 460 */
-/***/ function(module, exports) {
+/* 464 */
+/***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	var Conversation = (function () {
-	    function Conversation(props) {
-	        this.request = props.request;
-	        this.response = props.response;
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var moment = __webpack_require__(350);
+	var React = __webpack_require__(45);
+	var OutputListItem = (function (_super) {
+	    __extends(OutputListItem, _super);
+	    function OutputListItem() {
+	        _super.apply(this, arguments);
 	    }
-	    Object.defineProperty(Conversation.prototype, "id", {
-	        get: function () {
-	            return this.request.id;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "applicationId", {
-	        get: function () {
-	            return this.request.payload.session.application.applicationId;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "sessionId", {
-	        get: function () {
-	            return this.request.payload.session.sessionId;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "userId", {
-	        get: function () {
-	            return this.request.payload.session.user.userId;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "requestType", {
-	        get: function () {
-	            return this.request.payload.request.type;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "intent", {
-	        get: function () {
-	            if (this.request.payload.request.intent) {
-	                return this.request.payload.request.intent.name;
-	            }
-	            else {
-	                return undefined;
-	            }
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    Object.defineProperty(Conversation.prototype, "timestamp", {
-	        get: function () {
-	            return this.request.timestamp;
-	        },
-	        enumerable: true,
-	        configurable: true
-	    });
-	    return Conversation;
-	}());
+	    OutputListItem.prototype.style = function () {
+	        return {
+	            color: "white",
+	            margin: "5px"
+	        };
+	    };
+	    OutputListItem.prototype.render = function () {
+	        return (React.createElement("li", {key: this.props.output.id, style: this.style()}, 
+	            React.createElement("span", {style: { color: "rgb(102, 217, 239)", paddingRight: "10px" }}, moment(this.props.output.timestamp).format("hh:mm:ss.SSSSS")), 
+	            React.createElement("span", {style: { color: this.props.output.levelColor }}, this.props.output.level), 
+	            React.createElement("span", {style: { paddingLeft: "10px", color: "#EEEEEE" }}, this.props.output.message)));
+	    };
+	    return OutputListItem;
+	}(React.Component));
 	Object.defineProperty(exports, "__esModule", { value: true });
-	exports.default = Conversation;
+	exports.default = OutputListItem;
 
 
 /***/ },
-/* 461 */
+/* 465 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35096,7 +35312,7 @@
 	var source_1 = __webpack_require__(134);
 	var Button_1 = __webpack_require__(145);
 	var Grid_1 = __webpack_require__(159);
-	var SourceForm_1 = __webpack_require__(462);
+	var SourceForm_1 = __webpack_require__(466);
 	/**
 	 * Validator class for the SourceForm.  Exported for direct testing.
 	 */
@@ -35195,7 +35411,7 @@
 
 
 /***/ },
-/* 462 */
+/* 466 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35259,7 +35475,7 @@
 
 
 /***/ },
-/* 463 */
+/* 467 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35286,7 +35502,7 @@
 
 
 /***/ },
-/* 464 */
+/* 468 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35340,29 +35556,39 @@
 
 
 /***/ },
-/* 465 */
+/* 469 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var react_router_redux_1 = __webpack_require__(121);
 	var redux_1 = __webpack_require__(54);
-	var auth_form_1 = __webpack_require__(466);
-	var log_1 = __webpack_require__(467);
-	var session_1 = __webpack_require__(468);
-	var source_1 = __webpack_require__(469);
-	var rootReducer = redux_1.combineReducers({
+	var constants_1 = __webpack_require__(128);
+	var auth_form_1 = __webpack_require__(470);
+	var log_1 = __webpack_require__(471);
+	var session_1 = __webpack_require__(472);
+	var source_1 = __webpack_require__(473);
+	var appReducer = redux_1.combineReducers({
 	    session: session_1.session,
 	    source: source_1.source,
 	    authForm: auth_form_1.authForm,
 	    log: log_1.log,
 	    routing: react_router_redux_1.routerReducer
 	});
+	// Intercept global actions, such as logout to reset the state.
+	// From http://stackoverflow.com/a/35641992/1349766
+	var rootReducer = function (state, action) {
+	    if (action.type === constants_1.LOGOUT_USER) {
+	        state = undefined;
+	    }
+	    // and pass it on to the high level reducers
+	    return appReducer(state, action);
+	};
 	Object.defineProperty(exports, "__esModule", { value: true });
 	exports.default = rootReducer;
 
 
 /***/ },
-/* 466 */
+/* 470 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35390,7 +35616,7 @@
 
 
 /***/ },
-/* 467 */
+/* 471 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35414,7 +35640,7 @@
 
 
 /***/ },
-/* 468 */
+/* 472 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35437,7 +35663,7 @@
 
 
 /***/ },
-/* 469 */
+/* 473 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -35470,13 +35696,13 @@
 
 
 /***/ },
-/* 470 */
+/* 474 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 	var react_router_redux_1 = __webpack_require__(121);
 	var redux_1 = __webpack_require__(54);
-	var redux_thunk_1 = __webpack_require__(471);
+	var redux_thunk_1 = __webpack_require__(475);
 	function configureStore(history, rootReducer) {
 	    // Create the history middleware which is needed for routing
 	    var historyMiddleware = react_router_redux_1.routerMiddleware(history);
@@ -35490,7 +35716,7 @@
 
 
 /***/ },
-/* 471 */
+/* 475 */
 /***/ function(module, exports) {
 
 	'use strict';
