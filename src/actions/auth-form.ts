@@ -1,27 +1,27 @@
-import { AUTH_ERROR, CHANGE_FORM } from "../constants";
+import { AUTH_FORM_CHANGED, AUTH_FORM_ERROR } from "../constants";
 
-export type ChangeForm = {
-    type: CHANGE_FORM,
+export type AuthFormChanged = {
+    type: AUTH_FORM_CHANGED,
     field: string,
     value: string
 }
 
-export function changeForm(field: string, value: string): ChangeForm {
+export function authFormChanged(field: string, value: string): AuthFormChanged {
     return {
-        type: CHANGE_FORM,
+        type: AUTH_FORM_CHANGED,
         field: field,
         value: value
     };
 }
 
-export type ChangeErrorInForm = {
-    type: AUTH_ERROR,
+export type AuthFormError = {
+    type: AUTH_FORM_ERROR,
     value: string;
 }
 
-export function changeErrorInForm(value: string): ChangeErrorInForm {
+export function authFormError(value: string): AuthFormError {
     return {
-        type: AUTH_ERROR,
+        type: AUTH_FORM_ERROR,
         value: value
     };
 }

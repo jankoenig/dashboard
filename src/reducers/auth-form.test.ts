@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { changeErrorInForm, changeForm } from "../actions/auth-form";
+import { authFormChanged, authFormError } from "../actions/auth-form";
 import { authForm } from "./auth-form";
 
 describe("Auth Form Reducer", function() {
@@ -13,13 +13,13 @@ describe("Auth Form Reducer", function() {
     });
     describe("change form action", function() {
         it("sets the field and value", function() {
-            let newState = authForm({}, changeForm("email", "my@email.com"));
+            let newState = authForm({}, authFormChanged("email", "my@email.com"));
             expect(newState.email).to.equal("my@email.com");
         });
     });
     describe("auth error", function() {
         it("sets the error", function() {
-            let newState = authForm(undefined, changeErrorInForm("error"));
+            let newState = authForm(undefined, authFormError("error"));
             expect(newState.error).to.equal("error");
         });
     });

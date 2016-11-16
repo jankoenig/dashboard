@@ -1,7 +1,7 @@
 import * as objectAssign from "object-assign";
 
-import { ChangeErrorInForm, ChangeForm } from "../actions/auth-form";
-import { AUTH_ERROR, CHANGE_FORM } from "../constants";
+import { AuthFormChanged, AuthFormError } from "../actions/auth-form";
+import { AUTH_FORM_CHANGED, AUTH_FORM_ERROR } from "../constants";
 
 export type AuthFormState = {
     readonly email?: string;
@@ -17,14 +17,14 @@ const INITIAL_STATE: AuthFormState = {
     error: "",
 };
 
-type AuthFormAction = ChangeErrorInForm | ChangeForm | { type: "" };
+type AuthFormAction = AuthFormChanged | AuthFormError | { type: "" };
 
 export function authForm(state: AuthFormState = INITIAL_STATE, action: AuthFormAction): AuthFormState {
 
     switch (action.type) {
-        case CHANGE_FORM:
+        case AUTH_FORM_CHANGED:
             return objectAssign({}, state, { [action.field]: action.value });
-        case AUTH_ERROR:
+        case AUTH_FORM_ERROR:
             return objectAssign({}, state, { error: action.value });
         default:
             return state;

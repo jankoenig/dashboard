@@ -5,11 +5,11 @@
 
 export type LOG_LEVELS = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
-export type CHANGE_FORM = "bst/CHANGE_FORM";
-export const CHANGE_FORM: CHANGE_FORM = "bst/CHANGE_FORM";
+export type AUTH_FORM_CHANGED = "bst/AUTH_FORM_CHANGED";
+export const AUTH_FORM_CHANGED: AUTH_FORM_CHANGED = "bst/AUTH_FORM_CHANGED";
 
-export type AUTH_ERROR = "bst/AUTH_ERROR";
-export const AUTH_ERROR: AUTH_ERROR = "bst/AUTH_ERROR";
+export type AUTH_FORM_ERROR = "bst/AUTH_FORM_ERROR";
+export const AUTH_FORM_ERROR: AUTH_FORM_ERROR = "bst/AUTH_FORM_ERROR";
 
 export type SET_USER = "bst/SET_USER";
 export const SET_USER: SET_USER = "bst/SET_USER";

@@ -1,6 +1,6 @@
 import { goBack, push, replace } from "react-router-redux";
 
-import { changeErrorInForm } from "../actions/auth-form";
+import { authFormError } from "../actions/auth-form";
 import { displaySnackbar } from "../actions/notification";
 import { LOGOUT_USER, SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
@@ -63,7 +63,7 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
       redirectStrat.loginSuccess(dispatch, auth.user());
     } else {
       if (error) {
-        dispatch(changeErrorInForm(error));
+        dispatch(authFormError(error));
       }
     }
   });
@@ -110,7 +110,7 @@ export function resetPassword(email: string) {
       if (success) {
         dispatch(displaySnackbar("Check your inbox!"));
       } else {
-        dispatch(changeErrorInForm(error));
+        dispatch(authFormError(error));
       }
     });
   };

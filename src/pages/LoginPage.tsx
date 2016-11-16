@@ -2,7 +2,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { changeForm } from "../actions/auth-form";
+import { authFormChanged } from "../actions/auth-form";
 import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
 import { Cell, Grid } from "../components/Grid";
 import { State } from "../reducers";
@@ -45,7 +45,7 @@ function mapStateToProps(state: State.All) {
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
         changeForm: function (field: string, value: string) {
-            dispatch(changeForm(field, value));
+            dispatch(authFormChanged(field, value));
         },
         login: function (email: string, password: string, redirectStrat: SuccessCallback) {
             return dispatch(login(email, password, redirectStrat));
