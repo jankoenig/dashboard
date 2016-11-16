@@ -23,6 +23,7 @@ import SourceListPage from "./pages/SourceListPage";
 import rootReducer from "./reducers";
 import source from "./services/source";
 
+import IndexUtils from "./index-utils";
 import configureStore from "./store";
 
 // Initialize Google Analytics
@@ -84,37 +85,17 @@ let onUpdate = function() {
 };
 
 let setSource = function (nextState: RouterState, replace: RedirectFunction) {
-    Promise.all(store.getState().source.sources)
-        .then(function (sources: Source[]) {
-            if (sources && sources.length > 0) {
-                return sources;
-            } else {
-                return source.getSourcesObj();
-            }
-        })
-        .then(function (sources: Source[]) {
-            let sourceId: string = nextState.params["sourceId"];
-            let returnSource: Source;
-            for (let source of sources) {
-                if (source.id === sourceId) {
-                    returnSource = source;
-                    break;
-                }
-
-                throw Error("Unable to find source with name.");
-            }
-            return returnSource;
-        })
-        .then(function (source: Source) {
-            store.dispatch(setCurrentSource(source));
-        }).catch(function (a?: Error) {
+    let sources: Source[] = store.getState().source.sources;
+    let sourceId: string = nextState.params["sourceId"];
+    IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources)
+        .catch(function (a?: Error) {
             console.info("ERROR " + a);
             // TODO: Put in a 404.
         });
 };
 
 let removeSource = function() {
-    store.dispatch(setCurrentSource(undefined));
+    IndexUtils.removeSource(store.dispatch);
 };
 
 let render = function () {
