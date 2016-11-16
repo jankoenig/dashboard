@@ -29,7 +29,7 @@ describe("LoginPage", () => {
                 changeForm={changeForm}
                 loginWithGithub={loginWithGithub}
                 signUpWithEmail ={signUpWithEmail}
-                forgotPassword = {forgotPassword}/>
+                resetPassword = {forgotPassword}/>
         );
         // It contains the AuthForm
         expect(wrapper.find("AuthForm")).to.have.length(1);

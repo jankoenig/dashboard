@@ -9,7 +9,7 @@ import MDLComponent from "./MDLComponent";
  */
 export interface ErrorHandler {
     /**
-     * The regex to set fo the form to check against.  An undefined means that any text will be accepted.
+     * The regex to set to the form to check against.  An undefined means that any text will be accepted.
      */
     regex: RegExp;
     /**

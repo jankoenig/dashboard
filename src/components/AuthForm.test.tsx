@@ -19,8 +19,7 @@ describe("AuthForm", function () {
         // A form, two inputs and a button
         expect(wrapper.find("form")).to.have.length(1);
         expect(wrapper.find("FormInput")).to.have.length(3);
-        expect(wrapper.find("button")).to.have.length(2);
-        expect(wrapper.find("a")).to.have.length(1);
+        expect(wrapper.find("button")).to.have.length(3);
     });
     it("can be submitted", function () {
         const onSubmit = sinon.spy();

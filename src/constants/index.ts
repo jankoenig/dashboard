@@ -1,8 +1,6 @@
 /*
- * AppConstants
  * These are the variables that determine what our central data store (reducer.js)
  * changes in our state. When you add a new action, you have to add a new constant here
- *
  */
 
 export type LOG_LEVELS = "DEBUG" | "INFO" | "WARN" | "ERROR";
@@ -44,11 +42,14 @@ export const CREATE_SOURCE_SUCCESS: CREATE_SOURCE_SUCCESS = "bst/CREATE_SOURCE_S
 export type CREATE_SOURCE_ERROR = "bst/CREATE_SOURCE_ERROR";
 export const CREATE_SOURCE_ERROR: CREATE_SOURCE_ERROR = "bst/CREATE_SOURCE_ERROR";
 
-export type FETCH_SOURCES_REQUEST = "bst/FETCH_SOURCES_REQUEST"
+export type FETCH_SOURCES_REQUEST = "bst/FETCH_SOURCES_REQUEST";
 export const FETCH_SOURCES_REQUEST: FETCH_SOURCES_REQUEST = "bst/FETCH_SOURCES_REQUEST";
 
-export type FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SUCCESS"
+export type FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SUCCESS";
 export const FETCH_SOURCES_SUCCESS: FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SUCCESS";
+
+export type SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
+export const SET_SNACKBAR_MESSAGE: SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 
 export namespace CLASSES {
     export namespace COLOR {
