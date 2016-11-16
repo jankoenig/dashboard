@@ -12,7 +12,7 @@ export interface AuthFormProps {
     onSubmit: (event: React.FormEvent) => void;
     onLoginWithGithub?: (event: React.FormEvent) => void;
     onSignUpWithEmail?: (event: React.FormEvent) => void;
-    onForgetPassword?: (event: React.FormEvent) => void;
+    onResetPassword?: (event: React.FormEvent) => void;
 }
 
 export interface AuthFormState {
@@ -79,7 +79,7 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                 </div>
                 <div className="mdl-card__actions clearfix">
                     <button
-                    onClick={this.props.onForgetPassword}
+                    onClick={this.props.onResetPassword}
                     className="mdl-button mdl-js-button mdl-js-ripple-effect"
                     style={{height: "16px", fontSize: "12px", color: "#03A9F4", textTransform: "none", lineHeight: "12px"}}>
                         Reset Password

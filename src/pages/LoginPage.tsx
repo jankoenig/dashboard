@@ -115,7 +115,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
                             onChange={this.handleFormChanged.bind(this)}
                             onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
                             onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}
-                            onForgetPassword={this.handleResetPassword.bind(this)}
+                            onResetPassword={this.handleResetPassword.bind(this)}
                             />
                     </Card>
                 </Cell>
