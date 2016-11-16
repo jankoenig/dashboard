@@ -93,7 +93,7 @@ let setSource = function (nextState: RouterState, replace: RedirectFunction) {
 };
 
 let removeSource = function() {
-    IndexUtils.removeSource(store.dispatch);
+    IndexUtils.removeSelectedSource(store.dispatch);
 };
 
 let render = function () {

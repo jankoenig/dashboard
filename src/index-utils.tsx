@@ -71,7 +71,7 @@ export namespace IndexUtils {
     /**
      * Dispatches the current selected source as "undefined".
      */
-    export function removeSource(dispatch: Redux.Dispatch<any>) {
+    export function removeSelectedSource(dispatch: Redux.Dispatch<any>) {
         dispatch(setCurrentSource(undefined));
     };
 }

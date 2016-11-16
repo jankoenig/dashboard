@@ -168,4 +168,20 @@ describe("Unit tests for the index-utils.ts", function () {
                     });
         });
     });
+
+    describe("Tests the \"RemoveSelectedSource\" method", function() {
+        let store: any;
+
+        beforeEach(function() {
+            store = mockStore({});
+        });
+
+        it ("Checks that a dispatched action for removing the selected source was thrown.", function() {
+            IndexUtils.removeSelectedSource(store.dispatch);
+
+            let action: any = store.getActions()[0];
+            expect(action.type).to.equal(SET_CURRENT_SOURCE);
+            expect(action.source).to.equal(undefined);
+        });
+    });
 });
