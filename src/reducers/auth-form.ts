@@ -25,7 +25,7 @@ export function authForm(state: AuthFormState = INITIAL_STATE, action: AuthFormA
         case AUTH_FORM_CHANGED:
             return objectAssign({}, state, { [action.field]: action.value });
         case AUTH_FORM_ERROR:
-            return objectAssign({}, state, { error: action.value });
+            return objectAssign({}, state, { error: action.error });
         default:
             return state;
     }

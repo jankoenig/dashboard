@@ -16,12 +16,12 @@ export function authFormChanged(field: string, value: string): AuthFormChanged {
 
 export type AuthFormError = {
     type: AUTH_FORM_ERROR,
-    value: string;
+    error: string;
 }
 
-export function authFormError(value: string): AuthFormError {
+export function authFormError(error: string): AuthFormError {
     return {
         type: AUTH_FORM_ERROR,
-        value: value
+        error: error
     };
 }

@@ -19,7 +19,7 @@ describe("AuthForm action", function () {
         it("sets the value", function () {
             let action = authForm.authFormError("error");
             expect(action.type).to.equal(AUTH_FORM_ERROR);
-            expect(action.value).to.equal("error");
+            expect(action.error).to.equal("error");
         });
     });
 });

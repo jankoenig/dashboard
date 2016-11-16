@@ -15,7 +15,7 @@ export function setSnackbarMessage(message: string | undefined) {
 export function displaySnackbar(message: string | undefined, duration: number = 1000) {
     return function (dispatch: Redux.Dispatch<any>){
         dispatch(setSnackbarMessage(message));
-        // Now, after the provided duration we set it back to ""
+        // Now, after the provided duration we set it back to undefined, clearing it out
         setTimeout(() => {
             dispatch(setSnackbarMessage(undefined));
         }, duration);
