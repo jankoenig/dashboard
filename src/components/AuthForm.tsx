@@ -62,7 +62,12 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                     </button>) : undefined}
                 </div>
                 <div className="mdl-card__actions clearfix">
-                <a href="#" style={{ fontSize: 12, color:"blue"}} onClick={this.props.onForgetPassword}>Reset Password</a>
+                    <button
+                    onClick={this.props.onForgetPassword}
+                    className="mdl-button mdl-js-button mdl-js-ripple-effect"
+                    style={{height: "16px", fontSize: "12px", color: "#03A9F4", textTransform: "none", lineHeight: "12px"}}>
+                        Reset Password
+                    </button>
                 </div>
                 {this.props.onLoginWithGithub ? (
                     <div className="mdl-card__actions mdl-card--border">
