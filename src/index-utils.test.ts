@@ -146,6 +146,7 @@ describe("Unit tests for the index-utils.ts", function () {
         });
 
         it("Tests that the found Source was properly dispatched with null sources.", function() {
+            // tslint:disable:no-null-keyword
             return IndexUtils.dispatchSelectedSourceSource(store.dispatch, sources[3].id, null)
                     .then(function(returnedSource: Source) {
                         expect(returnedSource).to.equal(sources[3]);
@@ -155,6 +156,7 @@ describe("Unit tests for the index-utils.ts", function () {
                         expect(action.type).to.equal(SET_CURRENT_SOURCE);
                         expect(action.source).to.equal(sources[3]);
                     });
+            // tslint:enable:no-null-keyword
         });
 
         it("Tests that an error is thrown if no source is found.", function() {

@@ -8,7 +8,6 @@ import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, us
 import { syncHistoryWithStore } from "react-router-redux";
 
 import { setUser } from "./actions/session";
-import { setCurrentSource } from "./actions/source";
 import Dashboard from "./frames/Dashboard";
 
 import Login from "./frames/Login";
@@ -21,7 +20,6 @@ import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SourceListPage from "./pages/SourceListPage";
 import rootReducer from "./reducers";
-import source from "./services/source";
 
 import IndexUtils from "./index-utils";
 import configureStore from "./store";
