@@ -3,6 +3,7 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as sinon from "sinon";
 
+import { SET_CURRENT_SOURCE } from "./constants";
 import IndexUtils from "./index-utils";
 import Source from "./models/source";
 import source from "./services/source";
@@ -90,6 +91,79 @@ describe("Unit tests for the index-utils.ts", function () {
                 expect(getSourceSpy).to.be.calledOnce;
             });
             // tslint:enable:no-null-keyword
+        });
+
+        it ("Tests an error is thrown if there is no source found with the given id.", function() {
+            return IndexUtils.findSource(sources, "Not really an ID that is in the array, but if it is then that's really weird.").then(function(returnedSource: Source) {
+                expect(true).to.be.false("A Source was returned when it should not have existed.");
+            }).catch(function(a: Error) {
+                expect(a).to.not.be.undefined;
+            });
+        });
+    });
+
+    describe("Tests \"dispatchSelectedSourceSource\" method.", function() {
+
+        let store: any;
+
+        beforeEach(function() {
+            store = mockStore({});
+        });
+
+        it("Tests that the found Source was properly dispatched.", function() {
+            return IndexUtils.dispatchSelectedSourceSource(store.dispatch, sources[3].id, sources)
+                    .then(function(returnedSource: Source) {
+                        expect(returnedSource).to.equal(sources[3]);
+
+                        let action: any = store.getActions()[0];
+                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
+                        expect(action.source).to.equal(sources[3]);
+                    });
+        });
+
+        it("Tests that the found Source was properly dispatched with empty sources.", function() {
+            return IndexUtils.dispatchSelectedSourceSource(store.dispatch, sources[3].id, [])
+                    .then(function(returnedSource: Source) {
+                        expect(returnedSource).to.equal(sources[3]);
+                        expect(getSourceSpy).to.be.calledOnce;
+
+                        let action: any = store.getActions()[0];
+                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
+                        expect(action.source).to.equal(sources[3]);
+                    });
+        });
+
+        it("Tests that the found Source was properly dispatched with undefined sources.", function() {
+            return IndexUtils.dispatchSelectedSourceSource(store.dispatch, sources[3].id, undefined)
+                    .then(function(returnedSource: Source) {
+                        expect(returnedSource).to.equal(sources[3]);
+                        expect(getSourceSpy).to.be.calledOnce;
+
+                        let action: any = store.getActions()[0];
+                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
+                        expect(action.source).to.equal(sources[3]);
+                    });
+        });
+
+        it("Tests that the found Source was properly dispatched with null sources.", function() {
+            return IndexUtils.dispatchSelectedSourceSource(store.dispatch, sources[3].id, null)
+                    .then(function(returnedSource: Source) {
+                        expect(returnedSource).to.equal(sources[3]);
+                        expect(getSourceSpy).to.be.calledOnce;
+
+                        let action: any = store.getActions()[0];
+                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
+                        expect(action.source).to.equal(sources[3]);
+                    });
+        });
+
+        it("Tests that an error is thrown if no source is found.", function() {
+            return IndexUtils.dispatchSelectedSourceSource(store.dispatch, "Really fake ID that doesn't exist in the sources.", sources)
+                    .then(function(returnedSource: Source) {
+                        expect(true).to.be.false("A Source was returned when it should not have existed.");
+                    }).catch(function(a: Error) {
+                        expect(a).to.not.be.undefined;
+                    });
         });
     });
 });

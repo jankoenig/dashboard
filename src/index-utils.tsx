@@ -39,11 +39,8 @@ export namespace IndexUtils {
         return getAndSaveSources(sources)
             .then(function (foundSources: Source[]) {
                 let returnSource: Source;
-                console.info("CHECKING SOURCES = " + foundSources.length + " for " + sourceId);
                 for (let source of foundSources) {
-                    console.info("source.id = " + source.id);
                     if (source.id === sourceId) {
-                        console.info("FOUND IT " + source.id + " = " + sourceId);
                         returnSource = source;
                         break;
                     }
@@ -64,14 +61,11 @@ export namespace IndexUtils {
      * @param {Source} The sources to search through. Can be undefined in which case they will be pulled form the server.
      */
     export function dispatchSelectedSourceSource(dispatch: Redux.Dispatch<any>,  sourceId: string, sources?: Source[]): Promise<Source> {
-        return getAndSaveSources(sources)
-            .then(function (sources: Source[]) {
-                return findSource(sources, sourceId);
-            })
-            .then(function (source: Source) {
-                dispatch(setCurrentSource(source));
-                return source;
-            });
+        return findSource(sources, sourceId)
+                .then(function (source: Source) {
+                    dispatch(setCurrentSource(source));
+                    return source;
+                });
     }
 
     /**
