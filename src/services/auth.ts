@@ -118,17 +118,12 @@ namespace auth {
         return localStorage.getItem("user") ? new User(JSON.parse(localStorage.getItem("user"))) : undefined;
     }
 
-    export function sendResetPasswordEmail(email: string): string {
-        if (validateEmail(email)) {
-            Firebase.auth().sendPasswordResetEmail(email).then(function(){
-                return "Reset password email has been sent to " + email ;
-            }, function(error){
-                return "No user record for this email";
-            });
-
-        } else {
-            return "Please enter a valid email";
-        }
+    export function sendResetPasswordEmail(email: string, callback: (success: boolean, error?: string) => void): void {
+        Firebase.auth().sendPasswordResetEmail(email).then(function () {
+            callback(true);
+        }, function (error) {
+            callback(false, error.message);
+        });
     }
 }
 
