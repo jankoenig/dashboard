@@ -1,18 +1,18 @@
 import * as classNames from "classnames";
 import * as React from "react";
 
-export interface SnackBarProps {
+export interface SnackbarProps {
     text: string;
 };
 
-interface SnackBarState {
+interface SnackbarState {
     // the internal state for showing or hiding is for
     // when the user dismisses the snackbar manually
     show: boolean;
 }
 
-export default class SnackBar extends React.Component<SnackBarProps, SnackBarState> {
-    constructor(props: SnackBarProps) {
+export default class Snackbar extends React.Component<SnackbarProps, SnackbarState> {
+    constructor(props: SnackbarProps) {
         super(props);
 
         this.state = {
@@ -20,13 +20,13 @@ export default class SnackBar extends React.Component<SnackBarProps, SnackBarSta
         };
     }
 
-    componentWillReceiveProps(nextProps: SnackBarProps) {
+    componentWillReceiveProps(nextProps: SnackbarProps) {
         this.setState({
             show: this.shouldShowSnackbar(nextProps)
         });
     }
 
-    shouldShowSnackbar(props: SnackBarProps): boolean {
+    shouldShowSnackbar(props: SnackbarProps): boolean {
         let showSnackbar = false;
 
         if (props.text && props.text.length > 0) {
