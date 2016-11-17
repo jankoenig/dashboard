@@ -1,4 +1,6 @@
+import { LOG_LEVELS } from "../constants";
 import Log from "../models/log";
+import Output from "../models/output";
 import Source from "../models/source";
 
 /**
@@ -37,6 +39,34 @@ export function dummyLogs(length: number): Log[] {
         logs.push(log);
     }
     return logs;
+}
+
+/**
+ * Returns a specified number of Output objects.
+ *
+ * @export
+ * @param {number} length The number of Output objects.
+ * @returns {Output[]}
+ */
+export function dummyOutputs(length: number): Output[] {
+    let outputs: Output[] = [];
+
+    let baseMessage: string = "TestOutput";
+    let baseLevel: LOG_LEVELS = "DEBUG";
+    let baseTimestamp: Date = new Date();
+    let baseTransactionId: string = "TestTransactionID";
+    let baseId: string = "TestID";
+
+    for (let i = 0; i < length; i++) {
+        outputs.push(new Output({
+            message: baseMessage + i,
+            level: baseLevel,
+            timestamp: baseTimestamp,
+            transaction_id: baseTransactionId + i,
+            id: baseId + i
+        }));
+    }
+    return outputs;
 }
 
 export const requestLaunchIntentLog: Log = new Log({
@@ -229,11 +259,24 @@ export const responsePlayerLog: Log = new Log({
  * @returns {Source[]}
  */
 export function dummySources(length: number): Source[] {
+    let baseName: string = "Source Name";
+    let baseSecret: string = "Super-Secret-Key";
+    let baseMembers: any = [];
+    let baseProfile: any = undefined;
+    let baseId: string = "Source-ID";
+    let baseCreated: Date = new Date();
 
     let sources: Source[] = [];
 
     for (let i = 0; i < length; i++) {
-        let source = new Source({ name: "Source Name" });
+        let source = new Source({
+            name: baseName + i,
+            secretKey: baseSecret + i,
+            id: baseId + i,
+            members: baseMembers,
+            profile: baseProfile,
+            created: baseCreated
+        });
 
         sources.push(source);
     }
