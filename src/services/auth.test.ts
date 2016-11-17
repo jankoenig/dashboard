@@ -1,6 +1,8 @@
 import auth from "./auth";
 
-
+/**
+ * TODO: We need to revisit these once we figure out how to mock Firebase
+ */
 describe("Auth ts not mocked", function () {
     describe("sign up bad email", function() {
         it ("Test the sign up funct.", function() {

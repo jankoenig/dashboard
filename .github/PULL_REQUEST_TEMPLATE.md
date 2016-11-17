@@ -5,4 +5,4 @@ Changes in this pull request include:
 -
 -
 
-@name of person who needs to review
+@ mention the name of person who needs to review

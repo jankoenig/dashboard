@@ -1,11 +1,29 @@
 import * as classNames from "classnames";
 import * as React from "react";
+import { connect } from "react-redux";
 
 import Content from "../components/Content";
 import Layout from "../components/Layout";
+import Snackbar from "../components/Snackbar";
 import { CLASSES } from "../constants";
+import { State } from "../reducers";
 
-export default class Login extends React.Component<any, any> {
+interface LoginProps {
+    snackBarMessage: string;
+    classNames?: string;
+}
+
+function mapStateToProps(state: State.All) {
+    return {
+        snackBarMessage: state.notification.snackBarMessage
+    };
+}
+
+function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+    return { /* nothing to match at the moment */ };
+}
+
+export class Login extends React.Component<LoginProps, any> {
 
     classes() {
         return classNames(this.props.classNames, CLASSES.COLOR.GREY_100);
@@ -17,7 +35,13 @@ export default class Login extends React.Component<any, any> {
                 <Content classNames={ this.classes() } >
                     {this.props.children}
                 </Content>
+                <Snackbar text={this.props.snackBarMessage}/>
             </Layout>
         );
     }
 }
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(Login);

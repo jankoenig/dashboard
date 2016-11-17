@@ -2,12 +2,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { changeForm } from "../actions/auth-form";
-import { login, loginWithGithub, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
-import AuthForm from "../components/AuthForm";
-import Card from "../components/Card";
+import { authFormChanged } from "../actions/auth-form";
+import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
 import { Cell, Grid } from "../components/Grid";
 import { State } from "../reducers";
+
+import AuthForm from "../components/AuthForm";
+import Card from "../components/Card";
 
 /**
  * Configuration objects to pass in to the router when pushing or replacing this page on the router.
@@ -28,6 +29,7 @@ interface LoginPageProps {
     login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
+    resetPassword: (email: string) => (dispatch: Redux.Dispatch<void>) => void;
     location?: RoutingData.Location<LoginConfig>;
 };
 
@@ -43,7 +45,7 @@ function mapStateToProps(state: State.All) {
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
         changeForm: function (field: string, value: string) {
-            dispatch(changeForm(field, value));
+            dispatch(authFormChanged(field, value));
         },
         login: function (email: string, password: string, redirectStrat: SuccessCallback) {
             return dispatch(login(email, password, redirectStrat));
@@ -53,6 +55,9 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         },
         loginWithGithub: function (redirectStrat: SuccessCallback) {
             return dispatch(loginWithGithub(redirectStrat));
+        },
+        resetPassword: function (email: string) {
+            return dispatch(resetPassword(email));
         }
     };
 }
@@ -64,6 +69,12 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
         // See http://stackoverflow.com/a/39214607/1349766
         let target = event.target as HTMLSelectElement;
         this.props.changeForm(target.id, target.value);
+    }
+
+    handleResetPassword(event: React.FormEvent) {
+        event.preventDefault();
+        this.props.resetPassword(this.props.email);
+        // Show some feedback in the link
     }
 
     handleFormSubmit(event: React.FormEvent) {
@@ -104,6 +115,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
                             onChange={this.handleFormChanged.bind(this)}
                             onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
                             onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}
+                            onResetPassword={this.handleResetPassword.bind(this)}
                             />
                     </Card>
                 </Cell>

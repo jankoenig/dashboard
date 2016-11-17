@@ -117,6 +117,14 @@ namespace auth {
     export function user(): User | undefined {
         return localStorage.getItem("user") ? new User(JSON.parse(localStorage.getItem("user"))) : undefined;
     }
+
+    export function sendResetPasswordEmail(email: string, callback: (success: boolean, error?: string) => void): void {
+        Firebase.auth().sendPasswordResetEmail(email).then(function () {
+            callback(true);
+        }, function (error) {
+            callback(false, error.message);
+        });
+    }
 }
 
 export default auth;

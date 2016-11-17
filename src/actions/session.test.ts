@@ -3,7 +3,7 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as sinon from "sinon";
 
-import { SET_USER } from "../constants";
+import { AUTH_FORM_ERROR, SET_SNACKBAR_MESSAGE, SET_USER } from "../constants";
 import User from "../models/user";
 import auth from "../services/auth";
 import * as session from "./session";
@@ -261,6 +261,53 @@ describe("Session.ts", function () {
             let finalAction: any = store.getActions()[store.getActions().length - 1];
             expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
             expect(finalAction.payload.args[0]).to.equal("/login");
+        });
+    });
+
+    describe("resetPassword", function() {
+
+        let sendResetPasswordEmailStub: Sinon.SinonStub;
+        let stubSuccess: boolean;
+        let stubError: string;
+
+        before(function() {
+            sendResetPasswordEmailStub = sinon.stub(auth, "sendResetPasswordEmail", (email: string, callback: (success: boolean, error?: string) => void) => {
+                callback(stubSuccess, stubError);
+            });
+        });
+
+        after(function() {
+            sendResetPasswordEmailStub.restore();
+            stubSuccess = false;
+            stubError = undefined;
+        });
+
+        it("sets snackbar on success", function() {
+
+            let initialState = {};
+            let store = mockStore(initialState);
+            stubSuccess = true;
+
+            store.dispatch(session.resetPassword("test@email.com"));
+
+            let actions: any[] = store.getActions();
+            expect(actions.length).to.equal(1);
+            expect(actions[0].type).to.equal(SET_SNACKBAR_MESSAGE);
+            expect(actions[0].message).to.equal("Check your inbox!");
+        });
+        it("passes through the error on failure", function() {
+
+            let initialState = {};
+            let store = mockStore(initialState);
+            stubSuccess = false;
+            stubError = "error";
+
+            store.dispatch(session.resetPassword("test@email.com"));
+
+            let actions: any[] = store.getActions();
+            expect(actions.length).to.equal(1);
+            expect(actions[0].type).to.equal(AUTH_FORM_ERROR);
+            expect(actions[0].error).to.equal("error");
         });
     });
 
