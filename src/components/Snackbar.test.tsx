@@ -35,4 +35,24 @@ describe("Snackbar", function () {
             expect(div.props().className).to.equal("mdl-js-snackbar mdl-snackbar");
         });
     });
+    describe("componentWillReceiveProps", function() {
+        it("hides the snackbar when it receives an undefined message", function() {
+            const wrapper = shallow(<Snackbar text={"a message"} />);
+
+            wrapper.setProps({text: undefined});
+
+            const div = wrapper.find("div").first();
+            expect(div.props().className).to.equal("mdl-js-snackbar mdl-snackbar");
+
+        });
+        it("shows the snackbar when it receives a message", function() {
+            const wrapper = shallow(<Snackbar text={undefined} />);
+
+            wrapper.setProps({text: "a message"});
+
+            const div = wrapper.find("div").first();
+            expect(div.props().className).to.equal("mdl-js-snackbar mdl-snackbar mdl-snackbar--active");
+
+        });
+    });
 });
