@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import Content from "../components/Content";
 import Layout from "../components/Layout";
-import SnackBar from "../components/SnackBar";
+import Snackbar from "../components/Snackbar";
 import { CLASSES } from "../constants";
 import { State } from "../reducers";
 
@@ -35,7 +35,7 @@ export class Login extends React.Component<LoginProps, any> {
                 <Content classNames={ this.classes() } >
                     {this.props.children}
                 </Content>
-                <SnackBar text={this.props.snackBarMessage}/>
+                <Snackbar text={this.props.snackBarMessage}/>
             </Layout>
         );
     }
