@@ -58,11 +58,11 @@ export class Interaction extends React.Component<InteractionProps, any> {
     }
 
     shouldExpandNode(keyName: string[], data: any, level: number) {
-        // don't expand the really long nodes by default
-        if (keyName.indexOf("user") > -1 || keyName.indexOf("application") > -1) {
-            return false;
+        // only expand the initial node, request and response by default
+        if (keyName.length === 0 || keyName.indexOf("request") > -1 || keyName.indexOf("response") > -1) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     getTree(log: Log): JSX.Element {
