@@ -93,7 +93,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     render() {
-        console.info("OUTPUTS " + this.state.outputs);
         return (
             <Grid>
                 <Cell col={6}>
