@@ -12,7 +12,7 @@ export interface AuthFormProps {
     onSubmit: (event: React.FormEvent) => void;
     onLoginWithGithub?: (event: React.FormEvent) => void;
     onSignUpWithEmail?: (event: React.FormEvent) => void;
-    onForgetPassword?: (event: React.FormEvent) => void;
+    onResetPassword?: (event: React.FormEvent) => void;
 }
 
 export interface AuthFormState {
@@ -23,7 +23,7 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
 
     constructor(props: AuthFormProps) {
         super(props);
-        this.state = { isConfirmPasswordVisible: false};
+        this.state = { isConfirmPasswordVisible: false };
     }
 
     onRegister() {
@@ -34,11 +34,27 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
         return (
             <div className="mdl-card__supporting-text">
                 <form id="auth">
-                    <FormInput label={"Email"} type={"text"} floatingLabel={true} value={this.props.email} onChange={this.props.onChange}  />
-                    <FormInput label={"Password"} type={"password"} floatingLabel={true} value={this.props.password} onChange={this.props.onChange} />
-                    <FormInput label={"Confirm Password"} type={"password"} floatingLabel={true} value={this.props.confirmPassword} onChange={this.props.onChange} hidden={!this.state.isConfirmPasswordVisible} />
-                    <div className="mdl-label mdl-js-label">
-                        <label className="mdl-label" htmlFor="error">{this.props.error}</label>
+                    <FormInput
+                        label={"Email"}
+                        type={"text"}
+                        floatingLabel={true}
+                        value={this.props.email}
+                        onChange={this.props.onChange} />
+                    <FormInput
+                        label={"Password"}
+                        type={"password"}
+                        floatingLabel={true}
+                        value={this.props.password}
+                        onChange={this.props.onChange} />
+                    <FormInput
+                        label={"Confirm Password"}
+                        type={"password"}
+                        floatingLabel={true}
+                        value={this.props.confirmPassword}
+                        onChange={this.props.onChange}
+                        hidden={!this.state.isConfirmPasswordVisible} />
+                    <div style={{ color: "#d50000", marginTop: "5px", marginBottom: "10px" }}>
+                        <label>{this.props.error}</label>
                     </div>
                 </form>
                 <div className="mdl-card__actions mdl-card--border clearfix">
@@ -62,7 +78,12 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                     </button>) : undefined}
                 </div>
                 <div className="mdl-card__actions clearfix">
-                <a href="#" style={{ fontSize: 12, color:"blue"}} onClick={this.props.onForgetPassword}>Reset Password</a>
+                    <button
+                    onClick={this.props.onResetPassword}
+                    className="mdl-button mdl-js-button mdl-js-ripple-effect"
+                    style={{height: "16px", fontSize: "12px", color: "#03A9F4", textTransform: "none", lineHeight: "12px"}}>
+                        Reset Password
+                    </button>
                 </div>
                 {this.props.onLoginWithGithub ? (
                     <div className="mdl-card__actions mdl-card--border">
@@ -75,6 +96,6 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                     </div>
                 ) : undefined}
             </div>
-            );
+        );
     }
 }

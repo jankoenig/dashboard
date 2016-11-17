@@ -4,25 +4,28 @@ import { combineReducers } from "redux";
 import { LOGOUT_USER } from "../constants";
 import { authForm, AuthFormState } from "./auth-form";
 import { log, LogState } from "./log";
+import { notification, NotificationState } from "./notification";
 import { session, SessionState } from "./session";
 import { source, SourceState } from "./source";
 
 export namespace State {
   export type All = {
-    session: SessionState,
-    source: SourceState;
     authForm: AuthFormState,
     log: LogState,
-    routing: any
+    notification: NotificationState,
+    routing: any,
+    session: SessionState,
+    source: SourceState;
   }
 }
 
 const appReducer = combineReducers<State.All>({
-  session,
-  source,
   authForm,
   log,
-  routing: routerReducer
+  notification,
+  routing: routerReducer,
+  session,
+  source
 });
 
 // Intercept global actions, such as logout to reset the state.

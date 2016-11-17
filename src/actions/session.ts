@@ -1,6 +1,7 @@
 import { goBack, push, replace } from "react-router-redux";
 
-import { changeErrorInForm } from "../actions/auth-form";
+import { authFormError } from "../actions/auth-form";
+import { displaySnackbar } from "../actions/notification";
 import { LOGOUT_USER, SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
 import auth from "../services/auth";
@@ -60,10 +61,9 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
 
     if (success) {
       redirectStrat.loginSuccess(dispatch, auth.user());
-    }
-    else {
+    } else {
       if (error) {
-        dispatch(changeErrorInForm(error));
+        dispatch(authFormError(error));
       }
     }
   });
@@ -84,6 +84,7 @@ export function loginWithGithub(redirectStrat?: SuccessCallback) {
     });
   };
 }
+
 export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
@@ -93,15 +94,24 @@ export function signUpWithEmail(email: string, password: string, confirmPassword
 }
 
 export function logout() {
-  return function (dispatch: Redux.Dispatch<any>) {
+  return function (dispatch: Redux.Dispatch<void>) {
     auth.logout(function (success) {
       if (success) {
-        dispatch({type: LOGOUT_USER});
+        dispatch({ type: LOGOUT_USER });
         dispatch(push("/login"));
       }
     });
   };
 }
-export function forgotPassword(email: string) {
-  return auth.sendResetPasswordEmail(email);
+
+export function resetPassword(email: string) {
+  return function (dispatch: Redux.Dispatch<void>) {
+    auth.sendResetPasswordEmail(email, function (success, error) {
+      if (success) {
+        dispatch(displaySnackbar("Check your inbox!"));
+      } else {
+        dispatch(authFormError(error));
+      }
+    });
+  };
 }

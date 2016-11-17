@@ -2,14 +2,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { changeForm } from "../actions/auth-form";
-import { forgotPassword, login, loginWithGithub, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
+import { authFormChanged } from "../actions/auth-form";
+import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
 import { Cell, Grid } from "../components/Grid";
 import { State } from "../reducers";
 
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
-import SnackBar from "../components/SnackBar";
 
 /**
  * Configuration objects to pass in to the router when pushing or replacing this page on the router.
@@ -30,7 +29,7 @@ interface LoginPageProps {
     login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
     signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    forgotPassword: (email: string) => string;
+    resetPassword: (email: string) => (dispatch: Redux.Dispatch<void>) => void;
     location?: RoutingData.Location<LoginConfig>;
 };
 
@@ -46,7 +45,7 @@ function mapStateToProps(state: State.All) {
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
         changeForm: function (field: string, value: string) {
-            dispatch(changeForm(field, value));
+            dispatch(authFormChanged(field, value));
         },
         login: function (email: string, password: string, redirectStrat: SuccessCallback) {
             return dispatch(login(email, password, redirectStrat));
@@ -57,40 +56,13 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         loginWithGithub: function (redirectStrat: SuccessCallback) {
             return dispatch(loginWithGithub(redirectStrat));
         },
-        forgotPassword: function(email: string) {
-            return forgotPassword(email);
+        resetPassword: function (email: string) {
+            return dispatch(resetPassword(email));
         }
     };
 }
 
-interface LoginPageState {
-    message?: string;
-    showSnackBar: boolean;
-}
-
-export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
-    constructor() {
-        super();
-        this.state = {
-            showSnackBar: false
-        };
-
-        this.showSnackBar = this.showSnackBar.bind(this);
-    }
-
-    showSnackBar(message: string) {
-        this.setState({
-            message: message,
-            showSnackBar: true
-        });
-        setTimeout(() => { this.hideSnackBar(); }, 2000);
-    }
-
-    hideSnackBar() {
-        this.setState({
-            showSnackBar: false
-        });
-    }
+export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormChanged(event: React.FormEvent) {
         // Need to cast in order to get to id and value
@@ -99,9 +71,10 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         this.props.changeForm(target.id, target.value);
     }
 
-    handleForgotPassword(event: React.FormEvent) {
+    handleResetPassword(event: React.FormEvent) {
         event.preventDefault();
-        this.showSnackBar(this.props.forgotPassword(this.props.email));
+        this.props.resetPassword(this.props.email);
+        // Show some feedback in the link
     }
 
     handleFormSubmit(event: React.FormEvent) {
@@ -129,7 +102,6 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 
     render() {
         return (
-            <div>
             <Grid>
                 <Cell col={4} tablet={2} hidePhone={true} />
                 <Cell col={4} tablet={4} phone={4} align={"middle"}>
@@ -143,14 +115,12 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                             onChange={this.handleFormChanged.bind(this)}
                             onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
                             onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}
-                            onForgetPassword={this.handleForgotPassword.bind(this)}
+                            onResetPassword={this.handleResetPassword.bind(this)}
                             />
                     </Card>
                 </Cell>
                 <Cell col={4} tablet={2} hidePhone={true} />
             </Grid>
-            <SnackBar show={this.state.showSnackBar} snackBarText={this.state.message}/>
-            </div>
         );
     }
 };

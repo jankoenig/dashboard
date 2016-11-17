@@ -1,6 +1,8 @@
 import auth from "./auth";
-import { expect } from "chai";
 
+/**
+ * TODO: We need to revisit these once we figure out how to mock Firebase
+ */
 describe("Auth ts not mocked", function () {
     describe("sign up bad email", function() {
         it ("Test the sign up funct.", function() {
@@ -15,11 +17,6 @@ describe("Auth ts not mocked", function () {
     describe("sign up not matching passes", function() {
         it ("Test the sign up funct.", function() {
                auth.signUpWithEmail("testuser@testuser.com", "secradad", "secr", (success: true, error: "") => void{});
-        });
-    });
-    describe("send reset password email", function(){
-        it ("Test use bad email.", function() {
-            expect(auth.sendResetPasswordEmail("testusercom")).to.equal("Please enter a valid email");
         });
     });
  });

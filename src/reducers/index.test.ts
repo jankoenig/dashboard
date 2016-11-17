@@ -17,6 +17,7 @@ describe("rootReducer", function() {
         expect(store.getState().source).to.exist;
         expect(store.getState().log).to.exist;
         expect(store.getState().routing).to.exist;
+        expect(store.getState().notification).to.exist;
     });
     it("resets on logout", function() {
         let store = createStore(rootReducer);
