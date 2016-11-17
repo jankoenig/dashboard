@@ -4,18 +4,43 @@ import * as ReactGA from "react-ga";
 import { FirebaseUser } from "../models/user";
 import User from "../models/user";
 import utils from "../utils";
+import { remoteservice } from "./remote-service";
 
 /**
  * Auth Service
  */
 namespace auth {
 
-    export function loginWithGithub(callback: (success: boolean, error?: string) => void) {
-        let provider = new Firebase.auth.GithubAuthProvider();
-        loginWithProvider(provider, callback);
+    export function loginWithGithub(service: remoteservice.Service, callback: (success: boolean, error?: string) => void) {
+        let provider = new remoteservice.auth.GithubAuthProvider();
+        loginWithProvider(service, provider, callback);
     }
 
-    function loginWithProvider(provider: firebase.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
+    function loginWithProvider(service: remoteservice.Service, provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
+        if (utils.isMobileOrTablet()) {
+            // Use redirect to authenticate user if it's a mobile device
+            service.auth().signInWithRedirect(provider);
+            service.auth().getRedirectResult().then(function (result) {
+                authProviderSuccessHandler(result, callback);
+            }).catch(function (error) {
+                authProviderFailHandler(error, callback);
+            });
+        } else {
+            service.auth().signInWithPopup(provider).then(function (result) {
+                authProviderSuccessHandler(result, callback);
+                // TODO: Potential error condition here that needs to be handled
+            }).catch(function (error) {
+                authProviderFailHandler(error, callback);
+            });
+        }
+    }
+
+    export function oldloginWithGithub(callback: (success: boolean, error?: string) => void) {
+        let provider = new Firebase.auth.GithubAuthProvider();
+        oldloginWithProvider(provider, callback);
+    }
+
+    function oldloginWithProvider(provider: firebase.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
         if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             Firebase.auth().signInWithRedirect(provider);

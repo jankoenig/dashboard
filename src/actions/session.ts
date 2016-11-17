@@ -5,6 +5,7 @@ import { displaySnackbar } from "../actions/notification";
 import { LOGOUT_USER, SENDING_REQUEST, SET_USER } from "../constants";
 import User from "../models/user";
 import auth from "../services/auth";
+import { remoteservice } from "../services/remote-service";
 
 export function sendingRequest(sending: boolean) {
   return {
@@ -80,7 +81,7 @@ export function login(email: string, password: string, redirectStrat?: SuccessCa
 export function loginWithGithub(redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.loginWithGithub(internalCallback);
+      auth.loginWithGithub(remoteservice.defaultService(), internalCallback);
     });
   };
 }
