@@ -22,7 +22,7 @@ interface LogsPageState {
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
-    outputs: Output[] | undefined;
+    outputs: Output[];
 }
 
 function mapStateToProps(state: State.All) {
@@ -93,6 +93,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     render() {
+        console.info("OUTPUTS " + this.state.outputs);
         return (
             <Grid>
                 <Cell col={6}>
@@ -106,7 +107,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 <Cell col={6} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
                     <Interaction
                         request={this.state.request}
-                        response={this.state.response}/>
+                        response={this.state.response}
+                        outputs={this.state.outputs}/>
                 </Cell>
             </Grid>
         );
