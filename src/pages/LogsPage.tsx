@@ -4,12 +4,12 @@ import { connect } from "react-redux";
 import { getLogs } from "../actions/log";
 import { ConversationList } from "../components/ConversationList";
 import { Cell, Grid } from "../components/Grid";
+import Interaction from "../components/Interaction";
 import Conversation from "../models/conversation";
 import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
 import { State } from "../reducers";
-import Interaction from "./Interaction";
 
 interface LogsPageProps {
     logs: Log[];
