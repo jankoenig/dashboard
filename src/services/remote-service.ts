@@ -1,3 +1,5 @@
+import * as firebase from "firebase";
+
 /**
  * RemoteService is the link between the world and the rest of the universe. The defaultService
  * provided is the concrete implementation of this link. The rest of the class is extensible for unit
@@ -30,11 +32,11 @@ export namespace remoteservice.user {
 
 export namespace remoteservice.auth {
 
-    export class GithubAuthProvider implements AuthProvider {
-        static readonly PROVIDER_GITHUB: "Github";
-        get providerId() {
-            return GithubAuthProvider.PROVIDER_GITHUB;
-        }
+    export class GithubAuthProvider extends firebase.auth.GithubAuthProvider {
+        // static readonly PROVIDER_GITHUB: "Github";
+        // get providerId() {
+        //     return GithubAuthProvider.PROVIDER_GITHUB;
+        // }
     }
 
     export interface AuthCredential {
