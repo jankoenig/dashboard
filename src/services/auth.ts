@@ -23,11 +23,16 @@ namespace auth {
         if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             console.info("WOOOO 3");
-            auth.signInWithRedirect(provider);
-            auth.getRedirectResult().then(function (result) {
+            auth.signInWithRedirect(provider)
+            .then(function() {
+                return auth.getRedirectResult();
+            })
+            .then(function (result) {
                 authProviderSuccessHandler(result, callback, storage);
             }).catch(function (error) {
+                console.info("WOOO 9");
                 authProviderFailHandler(error, callback);
+                console.info("WOOO 10");
             });
         } else {
             console.info("WOOOO  4");
@@ -35,6 +40,7 @@ namespace auth {
                 authProviderSuccessHandler(result, callback, storage);
                 // TODO: Potential error condition here that needs to be handled
             }).catch(function (error) {
+                console.info("WOOO 7");
                 authProviderFailHandler(error, callback);
             });
         }
@@ -56,6 +62,7 @@ namespace auth {
     }
 
     function authProviderFailHandler(error: any, callback: (success: boolean, error?: string) => void) {
+        console.info("WOOO 8");
         console.error("Error logging In: " + error.message);
         callback(false, error.message);
     }

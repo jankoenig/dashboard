@@ -58,16 +58,6 @@ export default remoteservice;
 
 /** Firebase implementation beyond this point **/
 
-// function getRemoteToFirebaseProvider(provider: remoteservice.auth.AuthProvider): firebase.auth.AuthProvider {
-//     switch (provider.providerId) {
-//         case remoteservice.auth.GithubAuthProvider.PROVIDER_GITHUB:
-//             return new firebase.auth.GithubAuthProvider;
-
-//         default:
-//             throw Error("Provider " + provider.providerId + " does not exist.");
-//     }
-// }
-
 /**
  * Firebase implementation of the remote-service class.
  */
@@ -76,31 +66,3 @@ class FirebaseService implements remoteservice.Service {
         return firebase.auth();
     };
 }
-
-// class FirebaseAuth implements remoteservice.auth.Auth {
-//     private auth: firebase.auth.Auth;
-
-//     constructor(auth: firebase.auth.Auth) {
-//         this.auth = auth;
-//     }
-
-//     get currentUser(): remoteservice.user.User | undefined {
-//         return this.auth.currentUser;
-//     }
-
-//     createUserWithEmailAndPassword(email: string, password: string): Promise<any> {
-//         return this.auth.createUserWithEmailAndPassword(email, password);
-//     }
-
-//     signInWithRedirect(provider: remoteservice.auth.AuthProvider): Promise<any> {
-//         return this.auth.signInWithRedirect(getRemoteToFirebaseProvider(provider));
-//     }
-
-//     getRedirectResult(): Promise<any> {
-//         return this.auth.getRedirectResult();
-//     };
-
-//     signInWithPopup(provider: remoteservice.auth.AuthProvider): Promise<any> {
-//         return this.auth.signInWithPopup(getRemoteToFirebaseProvider(provider));
-//     }
-// }

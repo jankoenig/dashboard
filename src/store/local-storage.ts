@@ -75,7 +75,7 @@ export class MemoryCacheStorage implements LocalStorage {
     }
 
     removeItem(key: string): void {
-        this[key] = null;
+        delete this[key];
     }
 }
 // tslint:enable:no-null-keyword
