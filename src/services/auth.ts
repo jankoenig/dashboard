@@ -37,8 +37,8 @@ namespace auth {
         } else {
             console.info("WOOOO  4");
             auth.signInWithPopup(provider).then(function (result) {
+                console.info("WOOOO  5");
                 authProviderSuccessHandler(result, callback, storage);
-                // TODO: Potential error condition here that needs to be handled
             }).catch(function (error) {
                 console.info("WOOO 7");
                 authProviderFailHandler(error, callback);
