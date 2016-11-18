@@ -252,6 +252,68 @@ describe("Auth ts not mocked", function () {
         });
     });
 
+    describe("Tests \"signUpWithEmail\".", function() {
+        let userPromise = new Promise<remoteservice.user.User>((resolve, reject) => {
+            resolve(user);
+        });
+
+        let badPromise = new Promise<any>((resolve, reject) => {
+            reject(new Error("Error thrown per test requirement."));
+        });
+
+        it("Tests passwords do not match.", function(done: MochaDone) {
+            auth.signUpWithEmail("firstemail@domain.com", "password", "secondPassword", (success: boolean, error?: string) => {
+                expect(success).to.be.false;
+                expect(error).to.not.be.undefined;
+                done();
+            }, authService);
+        });
+
+        it("Tests password is too short.", function(done: MochaDone) {
+            auth.signUpWithEmail("firstemail@domain.com", "2", "2", (success: boolean, error?: string) => {
+                expect(success).to.be.false;
+                expect(error).to.not.be.undefined;
+                done();
+            }, authService);
+        });
+
+        it("Tests email invalid.", function(done: MochaDone) {
+            auth.signUpWithEmail("firstemail", "1234567", "1234567", (success: boolean, error?: string) => {
+                expect(success).to.be.false;
+                expect(error).to.not.be.undefined;
+                done();
+            }, authService);
+        });
+
+        it("Tests a successful creation.", function(done: MochaDone) {
+            authService.createUserWithEmailAndPassword = sinon.stub().returns(userPromise);
+
+            let userName = "testEmail@domain.com";
+            let password = "password";
+            auth.signUpWithEmail(userName, password, password, (success: boolean, error?: string) => {
+                expect(success).to.be.true;
+                expect(error).to.be.undefined;
+                expect(authService.createUserWithEmailAndPassword).to.be.calledOnce;
+                expect(authService.createUserWithEmailAndPassword).to.be.calledWith(userName, password);
+                done();
+            }, authService, localStorage);
+        });
+
+        it("Tests a unsuccessful creation.", function(done: MochaDone) {
+            authService.createUserWithEmailAndPassword = sinon.stub().returns(badPromise);
+
+            let userName = "testEmail@domain.com";
+            let password = "password";
+            auth.signUpWithEmail(userName, password, password, (success: boolean, error?: string) => {
+                expect(success).to.be.false;
+                expect(error).to.not.be.undefined;
+                expect(authService.createUserWithEmailAndPassword).to.be.calledOnce;
+                expect(authService.createUserWithEmailAndPassword).to.be.calledWith(userName, password);
+                done();
+            }, authService, localStorage);
+        });
+    });
+
     // describe("sign up bad email", function() {
     //     it ("Test the sign up funct.", function() {
     //            auth.signUpWithEmail("testuser", "secretPassword", "secretPassword", (success: true, error: "") => void{});

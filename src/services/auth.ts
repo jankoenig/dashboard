@@ -1,4 +1,3 @@
-import * as Firebase from "firebase";
 import * as ReactGA from "react-ga";
 
 import { FirebaseUser } from "../models/user";
@@ -21,14 +20,14 @@ namespace auth {
         if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             auth.signInWithRedirect(provider)
-            .then(function() {
-                return auth.getRedirectResult();
-            })
-            .then(function (result) {
-                authProviderSuccessHandler(result, callback, storage);
-            }).catch(function (error) {
-                authProviderFailHandler(error, callback);
-            });
+                .then(function () {
+                    return auth.getRedirectResult();
+                })
+                .then(function (result) {
+                    authProviderSuccessHandler(result, callback, storage);
+                }).catch(function (error) {
+                    authProviderFailHandler(error, callback);
+                });
         } else {
             auth.signInWithPopup(provider).then(function (result) {
                 authProviderSuccessHandler(result, callback, storage);
@@ -72,17 +71,17 @@ namespace auth {
             else {
                 if (validateEmail(email)) {
                     auth.createUserWithEmailAndPassword(email, password)
-                        .then(function (user: Firebase.User) {
-                        ReactGA.event({
-                            category: "Authorization",
-                            action: "Signup With Email"
+                        .then(function (user: remoteservice.user.User) {
+                            ReactGA.event({
+                                category: "Authorization",
+                                action: "Signup With Email"
+                            });
+                            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
+                            callback(true);
+                        }).catch(function (error) {
+                            console.error("Error signing up: " + error.message);
+                            callback(false, error.message);
                         });
-                        localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
-                        callback(true);
-                    }).catch(function (error) {
-                        console.error("Error signing up: " + error.message);
-                        callback(false, error.message);
-                    });
                 }
                 else {
                     localError = "Enter a valid email";
@@ -97,20 +96,18 @@ namespace auth {
     }
 
     export function login(email: string, password: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
-        console.info("WOOO 1");
         auth.signInWithEmailAndPassword(email, password)
-            .then(function (user: Firebase.User) {
-            console.info("WOOO 2");
-            ReactGA.event({
-                category: "Authorization",
-                action: "Login With Email"
+            .then(function (user: remoteservice.user.User) {
+                ReactGA.event({
+                    category: "Authorization",
+                    action: "Login With Email"
+                });
+                localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
+                callback(true);
+            }).catch(function (error) {
+                console.error("Error logging In: " + error.message);
+                callback(false, error.message);
             });
-            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
-            callback(true);
-        }).catch(function (error) {
-            console.error("Error logging In: " + error.message);
-            callback(false, error.message);
-        });
     }
 
     export function logout(callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
@@ -128,10 +125,8 @@ namespace auth {
 
     export function sendResetPasswordEmail(email: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth()): void {
         auth.sendPasswordResetEmail(email).then(function () {
-            console.info("WOOOOO");
             callback(true);
         }, function (error) {
-            console.info("NOOOOO");
             callback(false, error.message);
         });
     }
