@@ -51,6 +51,8 @@ export namespace remoteservice.auth {
         signInWithRedirect(provider: AuthProvider): Promise<any>;
         getRedirectResult(): Promise<any>;
         signInWithPopup(provider: AuthProvider): Promise<any>;
+        signInWithEmailAndPassword(email: string, password: string): Promise<any>;
+        signOut(): Promise<any>;
     }
 }
 

@@ -10,47 +10,44 @@ import remoteservice from "./remote-service";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-/**
- * TODO: We need to revisit these once we figure out how to mock Firebase
- */
+let user: remoteservice.user.User = {
+    emailVerified: true,
+    displayName: "testUsers",
+    email: "test@testdomain.test",
+    photoURL: undefined,
+    providerId: "ABC123",
+    uid: "ABCD1234567890"
+};
+
+let successRedirect = new Promise<any>((resolve, reject) => {
+    console.info("SUCCESS PROMISE");
+    resolve({
+        success: true
+    });
+});
+let successResult = new Promise<any>((resolve, reject) => {
+    console.info("SUCCESS REDIRECT");
+    resolve({
+        user: user
+    });
+});
+
+let unsuccessfulRedirect = new Promise<any>((resolve, reject) => {
+    reject(new Error("Error thrown from promise as per test requirement."));
+});
+
+let unsuccessfulResult = new Promise<any>((resolve, reject) => {
+    reject(new Error("Error thrown from redirect as per test requirement."));
+});
+
 describe("Auth ts not mocked", function () {
+
+    let localStorage: MemoryCacheStorage;
+    let authService: remoteservice.auth.Auth = <remoteservice.auth.Auth>{};
+
     describe("Log in with github.", function () {
 
-        let user: remoteservice.user.User = {
-            emailVerified: true,
-            displayName: "testUsers",
-            email: "test@testdomain.test",
-            photoURL: undefined,
-            providerId: "ABC123",
-            uid: "ABCD1234567890"
-        };
-
-        let successRedirect = new Promise<any>((resolve, reject) => {
-            console.info("SUCCESS PROMISE");
-            resolve({
-                success: true
-            });
-        });
-        let successResult = new Promise<any>((resolve, reject) => {
-            console.info("SUCCESS REDIRECT");
-            resolve({
-                user: user
-            });
-        });
-
-        let unsuccessfulRedirect = new Promise<any>((resolve, reject) => {
-            reject(new Error("Error thrown from promise as per test requirement."));
-        });
-
-        let unsuccessfulResult = new Promise<any>((resolve, reject) => {
-            reject(new Error("Error thrown from redirect as per test requirement."));
-        });
-
-        let localStorage: MemoryCacheStorage;
-        let authService: remoteservice.auth.Auth = <remoteservice.auth.Auth>{};
-
         let utilsStub: Sinon.SinonStub;
-
 
         before(function () {
             localStorage = new MemoryCacheStorage();
@@ -58,7 +55,7 @@ describe("Auth ts not mocked", function () {
             utilsStub = sinon.stub(utils, "isMobileOrTablet").returns(true);
         });
 
-        beforeEach(function() {
+        beforeEach(function () {
             authService = <remoteservice.auth.Auth>{}; // reseting all stubs.
         });
 
@@ -72,6 +69,9 @@ describe("Auth ts not mocked", function () {
         });
 
         it("Tests a successful github login.", function (done: MochaDone) {
+            utilsStub.restore();
+            utilsStub = sinon.stub(utils, "isMobileOrTablet").returns(true);
+
             authService.signInWithRedirect = sinon.stub().returns(successRedirect);
             authService.getRedirectResult = sinon.stub().returns(successResult);
 
@@ -130,6 +130,74 @@ describe("Auth ts not mocked", function () {
                 expect(authService.signInWithPopup).to.be.calledOnce;
                 done();
             }, authService, localStorage);
+        });
+    });
+
+    describe("Login with email.", function () {
+
+        afterEach(function() {
+            localStorage.clear();
+        });
+
+        it("Tests successful login.", function(done: MochaDone) {
+            authService.signInWithEmailAndPassword = sinon.stub().returns(successResult);
+
+            let username = "testuser@test.com";
+            let password = "12345: The kind of password an idiot would have on his briefcase";
+            auth.login(username, password, (success: boolean, error?: string) => {
+                expect(success).to.be.true;
+                expect(error).to.be.undefined;
+                expect(authService.signInWithEmailAndPassword).to.be.calledOnce;
+                expect(authService.signInWithEmailAndPassword).to.have.been.calledWith(username, password);
+                done();
+            }, authService, localStorage);
+        });
+
+        it("Tests unsuccessful login.", function(done: MochaDone) {
+            authService.signInWithEmailAndPassword = sinon.stub().returns(unsuccessfulResult);
+
+            let username = "testuser@test.com";
+            let password = "12345: The kind of password an idiot would have on his briefcase";
+            auth.login(username, password, (success: boolean, error?: string) => {
+                expect(success).to.be.false;
+                expect(error).to.not.be.undefined;
+                expect(authService.signInWithEmailAndPassword).to.be.calledOnce;
+                expect(authService.signInWithEmailAndPassword).to.have.been.calledWith(username, password);
+                done();
+            }, authService, localStorage);
+        });
+    });
+
+    describe("Test logout.", function() {
+        let successPromise: Promise<any> = new Promise<any>((resolve, reject) => {
+            resolve("YAY");
+        });
+        let failPromise: Promise<any> = new Promise<any>((resolve, reject) => {
+            reject("NO");
+        });
+
+        beforeEach(function() {
+            localStorage.setItem("user", JSON.stringify(user));
+        });
+
+        it ("Tests a successful logout.", function() {
+            authService.signOut = sinon.stub().returns(successPromise);
+
+            auth.logout((success: boolean, error?: string) => {
+                expect(success).to.be.true;
+                expect(error).to.be.undefined;
+                expect(localStorage.getItem("user")).to.be.null;
+            }, authService);
+        });
+
+        it ("Tests a unsuccessful logout.", function() {
+            authService.signOut = sinon.stub().returns(failPromise);
+
+            auth.logout((success: boolean, error?: string) => {
+                expect(success).to.be.false;
+                expect(error).to.not.be.undefined;
+                expect(localStorage.getItem("user")).to.not.be.null;
+            }, authService);
         });
     });
 

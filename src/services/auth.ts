@@ -13,16 +13,13 @@ import { remoteservice } from "./remote-service";
 namespace auth {
 
     export function loginWithGithub(callback: (success: boolean, error?: string) => void, auth?: remoteservice.auth.Auth, storage?: LocalStorage) {
-        console.info("WOOOO");
         let provider = new remoteservice.auth.GithubAuthProvider();
         loginWithProvider(provider, callback, auth, storage);
     }
 
     function loginWithProvider(provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): void {
-        console.info("WOOOO 2");
         if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
-            console.info("WOOOO 3");
             auth.signInWithRedirect(provider)
             .then(function() {
                 return auth.getRedirectResult();
@@ -30,26 +27,19 @@ namespace auth {
             .then(function (result) {
                 authProviderSuccessHandler(result, callback, storage);
             }).catch(function (error) {
-                console.info("WOOO 9");
                 authProviderFailHandler(error, callback);
-                console.info("WOOO 10");
             });
         } else {
-            console.info("WOOOO  4");
             auth.signInWithPopup(provider).then(function (result) {
-                console.info("WOOOO  5");
                 authProviderSuccessHandler(result, callback, storage);
             }).catch(function (error) {
-                console.info("WOOO 7");
                 authProviderFailHandler(error, callback);
             });
         }
     }
 
     function authProviderSuccessHandler(result: any, callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()) {
-        console.info("WOOOO 5");
         if (result.user !== undefined) {
-            console.info("WOOOO 6");
             ReactGA.event({
                 category: "Authorization",
                 action: "Login With Github"
@@ -62,7 +52,6 @@ namespace auth {
     }
 
     function authProviderFailHandler(error: any, callback: (success: boolean, error?: string) => void) {
-        console.info("WOOO 8");
         console.error("Error logging In: " + error.message);
         callback(false, error.message);
     }
@@ -107,26 +96,29 @@ namespace auth {
         }
     }
 
-    export function login(email: string, password: string, callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()): void {
-        Firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
-            console.error("Error logging In: " + error.message);
-            callback(false, error.message);
-        }).then(function (user: Firebase.User) {
+    export function login(email: string, password: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
+        console.info("WOOO 1");
+        auth.signInWithEmailAndPassword(email, password)
+            .then(function (user: Firebase.User) {
+            console.info("WOOO 2");
             ReactGA.event({
                 category: "Authorization",
                 action: "Login With Email"
             });
             localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
             callback(true);
+        }).catch(function (error) {
+            console.error("Error logging In: " + error.message);
+            callback(false, error.message);
         });
     }
 
-    export function logout(callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()): void {
-        Firebase.auth().signOut().catch(function (error) {
-            callback(false, error.message);
-        }).then(function () {
+    export function logout(callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
+        auth.signOut().then(function () {
             localStorage.removeItem("user");
             callback(true);
+        }).catch(function (error) {
+            callback(false, error.message);
         });
     }
 
