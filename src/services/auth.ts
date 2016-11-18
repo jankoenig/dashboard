@@ -12,13 +12,13 @@ import { remoteservice } from "./remote-service";
  */
 namespace auth {
 
-    export function loginWithGithub(auth: remoteservice.auth.Auth, callback: (success: boolean, error?: string) => void, storage?: LocalStorage) {
+    export function loginWithGithub(callback: (success: boolean, error?: string) => void, auth?: remoteservice.auth.Auth, storage?: LocalStorage) {
         console.info("WOOOO");
         let provider = new remoteservice.auth.GithubAuthProvider();
-        loginWithProvider(auth, provider, callback, storage);
+        loginWithProvider(provider, callback, auth, storage);
     }
 
-    function loginWithProvider(auth: remoteservice.auth.Auth, provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void, storage?: LocalStorage): void {
+    function loginWithProvider(provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): void {
         console.info("WOOOO 2");
         if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device

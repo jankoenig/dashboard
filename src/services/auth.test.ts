@@ -53,12 +53,12 @@ describe("Auth ts not mocked", function () {
         });
 
         it ("Tests a successful github login.", function(done: MochaDone) {
-            auth.loginWithGithub(authService, (success: boolean, error?: string) => {
+            auth.loginWithGithub((success: boolean, error?: string) => {
                 expect(success).to.be.true;
                 expect(error).to.be.undefined;
                 expect(localStorage.length).to.equal(1);
                 done();
-             }, localStorage);
+             }, authService, localStorage);
         });
     });
 
