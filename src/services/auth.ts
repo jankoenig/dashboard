@@ -3,7 +3,7 @@ import * as ReactGA from "react-ga";
 
 import { FirebaseUser } from "../models/user";
 import User from "../models/user";
-import utils from "../utils";
+import browser from "../utils/browser";
 
 /**
  * Auth Service
@@ -16,7 +16,7 @@ namespace auth {
     }
 
     function loginWithProvider(provider: firebase.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
-        if (utils.isMobileOrTablet()) {
+        if (browser.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             Firebase.auth().signInWithRedirect(provider);
             Firebase.auth().getRedirectResult().then(function (result) {
