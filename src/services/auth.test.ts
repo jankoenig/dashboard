@@ -173,7 +173,7 @@ describe("Auth ts not mocked", function () {
             resolve("YAY");
         });
         let failPromise: Promise<any> = new Promise<any>((resolve, reject) => {
-            reject("NO");
+            reject(new Error("NO"));
         });
 
         beforeEach(function() {
@@ -197,6 +197,57 @@ describe("Auth ts not mocked", function () {
                 expect(success).to.be.false;
                 expect(error).to.not.be.undefined;
                 expect(localStorage.getItem("user")).to.not.be.null;
+            }, authService);
+        });
+    });
+
+    describe("Test get user.", function() {
+        beforeEach(function() {
+            localStorage.clear();
+        });
+
+        it ("Tests it gets the user from localStorage.", function() {
+            localStorage.setItem("user", JSON.stringify(user));
+
+            expect(auth.user(localStorage).displayName).equals(user.displayName);
+        });
+
+        it ("Tests it returns undefined when user doesn't exist.", function() {
+            expect(auth.user(localStorage)).to.be.undefined;
+        });
+    });
+
+    describe("Test \"sendResetPasswordEmail\".", function() {
+        let successPromise: Promise<any> = new Promise<any>((resolve, reject) => {
+            resolve("YAY");
+        });
+        let failPromise: Promise<any> = new Promise<any>((resolve, reject) => {
+            reject(new Error("NO"));
+        });
+
+        it ("Tests a successful response.", function(done: MochaDone) {
+            authService.sendPasswordResetEmail = sinon.stub().returns(successPromise);
+
+            let username = "test@testdomain.com";
+            auth.sendResetPasswordEmail(username, (success: boolean, error?: string) => {
+                expect(success).to.be.true;
+                expect(error).to.be.undefined;
+                expect(authService.sendPasswordResetEmail).to.be.calledOnce;
+                expect(authService.sendPasswordResetEmail).to.be.calledWith(username);
+                done();
+            }, authService);
+        });
+
+        it ("Tests a unsuccessful response.", function(done: MochaDone) {
+            authService.sendPasswordResetEmail = sinon.stub().returns(failPromise);
+
+            let username = "test@testdomain.com";
+            auth.sendResetPasswordEmail(username, (success: boolean, error?: string) => {
+                expect(success).to.be.false;
+                expect(error).to.not.be.undefined;
+                expect(authService.sendPasswordResetEmail).to.be.calledOnce;
+                expect(authService.sendPasswordResetEmail).to.be.calledWith(username);
+                done();
             }, authService);
         });
     });

@@ -53,6 +53,7 @@ export namespace remoteservice.auth {
         signInWithPopup(provider: AuthProvider): Promise<any>;
         signInWithEmailAndPassword(email: string, password: string): Promise<any>;
         signOut(): Promise<any>;
+        sendPasswordResetEmail(email: string): Promise<any>;
     }
 }
 

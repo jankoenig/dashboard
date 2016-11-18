@@ -126,10 +126,12 @@ namespace auth {
         return localStorage.getItem("user") ? new User(JSON.parse(localStorage.getItem("user"))) : undefined;
     }
 
-    export function sendResetPasswordEmail(email: string, callback: (success: boolean, error?: string) => void): void {
-        Firebase.auth().sendPasswordResetEmail(email).then(function () {
+    export function sendResetPasswordEmail(email: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth()): void {
+        auth.sendPasswordResetEmail(email).then(function () {
+            console.info("WOOOOO");
             callback(true);
         }, function (error) {
+            console.info("NOOOOO");
             callback(false, error.message);
         });
     }
