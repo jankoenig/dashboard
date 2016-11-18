@@ -180,24 +180,26 @@ describe("Auth ts not mocked", function () {
             localStorage.setItem("user", JSON.stringify(user));
         });
 
-        it ("Tests a successful logout.", function() {
+        it ("Tests a successful logout.", function(done: MochaDone) {
             authService.signOut = sinon.stub().returns(successPromise);
 
             auth.logout((success: boolean, error?: string) => {
                 expect(success).to.be.true;
                 expect(error).to.be.undefined;
                 expect(localStorage.getItem("user")).to.be.null;
-            }, authService);
+                done();
+            }, authService, localStorage);
         });
 
-        it ("Tests a unsuccessful logout.", function() {
+        it ("Tests a unsuccessful logout.", function(done: MochaDone) {
             authService.signOut = sinon.stub().returns(failPromise);
 
             auth.logout((success: boolean, error?: string) => {
                 expect(success).to.be.false;
                 expect(error).to.not.be.undefined;
                 expect(localStorage.getItem("user")).to.not.be.null;
-            }, authService);
+                done();
+            }, authService, localStorage);
         });
     });
 
@@ -266,7 +268,7 @@ describe("Auth ts not mocked", function () {
                 expect(success).to.be.false;
                 expect(error).to.not.be.undefined;
                 done();
-            }, authService);
+            }, authService, localStorage);
         });
 
         it("Tests password is too short.", function(done: MochaDone) {
@@ -274,7 +276,7 @@ describe("Auth ts not mocked", function () {
                 expect(success).to.be.false;
                 expect(error).to.not.be.undefined;
                 done();
-            }, authService);
+            }, authService, localStorage);
         });
 
         it("Tests email invalid.", function(done: MochaDone) {
@@ -282,7 +284,7 @@ describe("Auth ts not mocked", function () {
                 expect(success).to.be.false;
                 expect(error).to.not.be.undefined;
                 done();
-            }, authService);
+            }, authService, localStorage);
         });
 
         it("Tests a successful creation.", function(done: MochaDone) {
