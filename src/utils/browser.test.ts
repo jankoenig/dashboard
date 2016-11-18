@@ -25,4 +25,17 @@ describe("Utils", function () {
             expect(browser.isMobileOrTabletImpl("", "")).to.be.false;
         });
     });
+    describe("isMobileWidth", function() {
+        it("throws an error on node.js if you don't pass in a window", function() {
+            expect(browser.isMobileWidth).to.throw(ReferenceError);
+        });
+        it("returns true on small windows", function() {
+            let dummyWindow = {innerWidth: 839};
+            expect(browser.isMobileWidth(<Window>dummyWindow)).to.equal(true);
+        });
+        it("returns false on large windows", function() {
+            let dummyWindow = {innerWidth: 840};
+            expect(browser.isMobileWidth(<Window>dummyWindow)).to.equal(false);
+        });
+    });
 });

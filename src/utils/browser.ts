@@ -17,6 +17,19 @@ export namespace Browser {
         })(userAgent || vendor);
         return check;
     }
+
+    export function isMobileWidth(_window?: Window): boolean {
+        // if a window is passed in, use that otherwise set it to the global window object
+        _window = _window ? _window : window;
+
+        let isMobileWidth = false;
+
+        if (_window.innerWidth < 840) {
+            isMobileWidth = true;
+        }
+
+        return isMobileWidth;
+    }
 }
 
 export default Browser;
