@@ -65,7 +65,7 @@ namespace auth {
         return re.test(email);
     }
 
-    export function signUpWithEmail(email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()): void {
+    export function signUpWithEmail(email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
 
         let localError: string;
         if (password === confirmPassword) {
@@ -75,16 +75,17 @@ namespace auth {
             }
             else {
                 if (validateEmail(email)) {
-                    Firebase.auth().createUserWithEmailAndPassword(email, password).catch(function (error) {
-                        console.error("Error signing up: " + error.message);
-                        callback(false, error.message);
-                    }).then(function (user: Firebase.User) {
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .then(function (user: Firebase.User) {
                         ReactGA.event({
                             category: "Authorization",
                             action: "Signup With Email"
                         });
                         localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
                         callback(true);
+                    }).catch(function (error) {
+                        console.error("Error signing up: " + error.message);
+                        callback(false, error.message);
                     });
                 }
                 else {

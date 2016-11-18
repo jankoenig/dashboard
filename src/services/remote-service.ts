@@ -32,7 +32,9 @@ export namespace remoteservice.auth {
 
     export class GithubAuthProvider implements AuthProvider {
         static readonly PROVIDER_GITHUB: "Github";
-        readonly providerId: "Github";
+        get providerId() {
+            return GithubAuthProvider.PROVIDER_GITHUB;
+        }
     }
 
     export interface AuthCredential {
@@ -45,7 +47,7 @@ export namespace remoteservice.auth {
 
     export interface Auth {
         currentUser: remoteservice.user.User | undefined;
-        createUserWithEmailAndPassword(email: string, password: string): Promise<user.User>;
+        createUserWithEmailAndPassword(email: string, password: string): Promise<any>;
         signInWithRedirect(provider: AuthProvider): Promise<any>;
         getRedirectResult(): Promise<any>;
         signInWithPopup(provider: AuthProvider): Promise<any>;
@@ -56,45 +58,49 @@ export default remoteservice;
 
 /** Firebase implementation beyond this point **/
 
-function getRemoteToFirebaseProvider(provider: remoteservice.auth.AuthProvider): firebase.auth.AuthProvider {
-    switch (provider.providerId) {
-        case remoteservice.auth.GithubAuthProvider.PROVIDER_GITHUB:
-            return new firebase.auth.GithubAuthProvider;
+// function getRemoteToFirebaseProvider(provider: remoteservice.auth.AuthProvider): firebase.auth.AuthProvider {
+//     switch (provider.providerId) {
+//         case remoteservice.auth.GithubAuthProvider.PROVIDER_GITHUB:
+//             return new firebase.auth.GithubAuthProvider;
 
-        default:
-            throw Error("Provider " + provider.providerId + " does not exist.");
-    }
-}
+//         default:
+//             throw Error("Provider " + provider.providerId + " does not exist.");
+//     }
+// }
 
 /**
  * Firebase implementation of the remote-service class.
  */
 class FirebaseService implements remoteservice.Service {
     auth(): remoteservice.auth.Auth {
-        return new FirebaseAuth(firebase.auth());
+        return firebase.auth();
     };
 }
 
-class FirebaseAuth implements remoteservice.auth.Auth {
-    currentUser: remoteservice.user.User | undefined;
-    auth: firebase.auth.Auth;
+// class FirebaseAuth implements remoteservice.auth.Auth {
+//     private auth: firebase.auth.Auth;
 
-    constructor(auth: firebase.auth.Auth) {
-        this.auth = auth;
-    }
-    createUserWithEmailAndPassword(email: string, password: string): Promise<remoteservice.user.User> {
-        return this.auth.createUserWithEmailAndPassword(email, password);
-    }
+//     constructor(auth: firebase.auth.Auth) {
+//         this.auth = auth;
+//     }
 
-    signInWithRedirect(provider: remoteservice.auth.AuthProvider): Promise<any> {
-        return this.auth.signInWithRedirect(getRemoteToFirebaseProvider(provider));
-    }
+//     get currentUser(): remoteservice.user.User | undefined {
+//         return this.auth.currentUser;
+//     }
 
-    getRedirectResult(): Promise<any> {
-        return this.auth.getRedirectResult();
-    };
+//     createUserWithEmailAndPassword(email: string, password: string): Promise<any> {
+//         return this.auth.createUserWithEmailAndPassword(email, password);
+//     }
 
-    signInWithPopup(provider: remoteservice.auth.AuthProvider): Promise<any> {
-        return this.auth.signInWithPopup(getRemoteToFirebaseProvider(provider));
-    }
-}
+//     signInWithRedirect(provider: remoteservice.auth.AuthProvider): Promise<any> {
+//         return this.auth.signInWithRedirect(getRemoteToFirebaseProvider(provider));
+//     }
+
+//     getRedirectResult(): Promise<any> {
+//         return this.auth.getRedirectResult();
+//     };
+
+//     signInWithPopup(provider: remoteservice.auth.AuthProvider): Promise<any> {
+//         return this.auth.signInWithPopup(getRemoteToFirebaseProvider(provider));
+//     }
+// }
