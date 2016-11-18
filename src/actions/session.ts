@@ -81,7 +81,7 @@ export function login(email: string, password: string, redirectStrat?: SuccessCa
 export function loginWithGithub(redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.loginWithGithub(remoteservice.defaultService(), internalCallback);
+      auth.loginWithGithub(remoteservice.defaultService().auth(), internalCallback);
     });
   };
 }

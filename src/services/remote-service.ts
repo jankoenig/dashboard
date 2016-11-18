@@ -10,12 +10,12 @@ export namespace remoteservice {
     }
 
     export function defaultService(): Service {
-        return new FirebaseNamespace.FirebaseService();
+        return new FirebaseService();
     }
 }
 
 export namespace remoteservice.user {
-    export interface User {
+    export interface User extends UserInfo {
         emailVerified: boolean;
     }
 
@@ -69,12 +69,10 @@ function getRemoteToFirebaseProvider(provider: remoteservice.auth.AuthProvider):
 /**
  * Firebase implementation of the remote-service class.
  */
-namespace FirebaseNamespace {
-    export class FirebaseService implements remoteservice.Service {
-        auth(): remoteservice.auth.Auth {
-            return new FirebaseAuth(firebase.auth());
-        };
-    }
+class FirebaseService implements remoteservice.Service {
+    auth(): remoteservice.auth.Auth {
+        return new FirebaseAuth(firebase.auth());
+    };
 }
 
 class FirebaseAuth implements remoteservice.auth.Auth {

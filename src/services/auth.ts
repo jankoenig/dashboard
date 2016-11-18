@@ -3,6 +3,7 @@ import * as ReactGA from "react-ga";
 
 import { FirebaseUser } from "../models/user";
 import User from "../models/user";
+import { BrowserStorage, LocalStorage } from "../store/local-storage";
 import utils from "../utils";
 import { remoteservice } from "./remote-service";
 
@@ -11,23 +12,27 @@ import { remoteservice } from "./remote-service";
  */
 namespace auth {
 
-    export function loginWithGithub(service: remoteservice.Service, callback: (success: boolean, error?: string) => void) {
+    export function loginWithGithub(auth: remoteservice.auth.Auth, callback: (success: boolean, error?: string) => void, storage?: LocalStorage) {
+        console.info("WOOOO");
         let provider = new remoteservice.auth.GithubAuthProvider();
-        loginWithProvider(service, provider, callback);
+        loginWithProvider(auth, provider, callback, storage);
     }
 
-    function loginWithProvider(service: remoteservice.Service, provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
+    function loginWithProvider(auth: remoteservice.auth.Auth, provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void, storage?: LocalStorage): void {
+        console.info("WOOOO 2");
         if (utils.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
-            service.auth().signInWithRedirect(provider);
-            service.auth().getRedirectResult().then(function (result) {
-                authProviderSuccessHandler(result, callback);
+            console.info("WOOOO 3");
+            auth.signInWithRedirect(provider);
+            auth.getRedirectResult().then(function (result) {
+                authProviderSuccessHandler(result, callback, storage);
             }).catch(function (error) {
                 authProviderFailHandler(error, callback);
             });
         } else {
-            service.auth().signInWithPopup(provider).then(function (result) {
-                authProviderSuccessHandler(result, callback);
+            console.info("WOOOO  4");
+            auth.signInWithPopup(provider).then(function (result) {
+                authProviderSuccessHandler(result, callback, storage);
                 // TODO: Potential error condition here that needs to be handled
             }).catch(function (error) {
                 authProviderFailHandler(error, callback);
@@ -35,41 +40,19 @@ namespace auth {
         }
     }
 
-    export function oldloginWithGithub(callback: (success: boolean, error?: string) => void) {
-        let provider = new Firebase.auth.GithubAuthProvider();
-        oldloginWithProvider(provider, callback);
-    }
-
-    function oldloginWithProvider(provider: firebase.auth.AuthProvider, callback: (success: boolean, error?: string) => void): void {
-        if (utils.isMobileOrTablet()) {
-            // Use redirect to authenticate user if it's a mobile device
-            Firebase.auth().signInWithRedirect(provider);
-            Firebase.auth().getRedirectResult().then(function (result) {
-                authProviderSuccessHandler(result, callback);
-            }).catch(function (error) {
-                authProviderFailHandler(error, callback);
-            });
-
-        } else {
-            Firebase.auth().signInWithPopup(provider).then(function (result) {
-                authProviderSuccessHandler(result, callback);
-                // TODO: Potential error condition here that needs to be handled
-            }).catch(function (error) {
-                authProviderFailHandler(error, callback);
-            });
-        }
-    }
-
-    function authProviderSuccessHandler(result: any, callback: (success: boolean, error?: string) => void) {
+    function authProviderSuccessHandler(result: any, callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()) {
+        console.info("WOOOO 5");
         if (result.user !== undefined) {
+            console.info("WOOOO 6");
             ReactGA.event({
                 category: "Authorization",
                 action: "Login With Github"
             });
-            let user: Firebase.User = result.user;
+            let user: remoteservice.user.User = result.user;
             localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
-            callback(true);
         }
+
+        callback(true);
     }
 
     function authProviderFailHandler(error: any, callback: (success: boolean, error?: string) => void) {
@@ -82,7 +65,7 @@ namespace auth {
         return re.test(email);
     }
 
-    export function signUpWithEmail(email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void): void {
+    export function signUpWithEmail(email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()): void {
 
         let localError: string;
         if (password === confirmPassword) {
@@ -116,7 +99,7 @@ namespace auth {
         }
     }
 
-    export function login(email: string, password: string, callback: (success: boolean, error?: string) => void): void {
+    export function login(email: string, password: string, callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()): void {
         Firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
             console.error("Error logging In: " + error.message);
             callback(false, error.message);
@@ -130,7 +113,7 @@ namespace auth {
         });
     }
 
-    export function logout(callback: (success: boolean, error?: string) => void): void {
+    export function logout(callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()): void {
         Firebase.auth().signOut().catch(function (error) {
             callback(false, error.message);
         }).then(function () {
@@ -139,7 +122,7 @@ namespace auth {
         });
     }
 
-    export function user(): User | undefined {
+    export function user(localStorage: LocalStorage = new BrowserStorage()): User | undefined {
         return localStorage.getItem("user") ? new User(JSON.parse(localStorage.getItem("user"))) : undefined;
     }
 
