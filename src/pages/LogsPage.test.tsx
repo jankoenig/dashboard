@@ -10,6 +10,7 @@ import Conversation from "../models/conversation";
 import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
+import browser from "../utils/browser";
 import { dummyLogs, dummyOutputs } from "../utils/test";
 import { LogsPage } from "./LogsPage";
 
@@ -18,7 +19,17 @@ chai.use(sinonChai);
 let expect = chai.expect;
 
 describe("Logs Page", function () {
+
+    let browserStub: Sinon.SinonStub;
+
+    afterEach(function() {
+        browserStub.restore();
+    });
+
     it("should render correctly", function () {
+
+        browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+
         const getLogs = sinon.spy();
         const wrapper = shallow(
             <LogsPage
@@ -34,6 +45,9 @@ describe("Logs Page", function () {
     describe("with sources", function () {
         describe("without logs", function () {
             it("should render correctly", function () {
+
+                browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+
                 const getLogs = sinon.spy();
                 let logs: Log[] = [];
                 let source = new Source({ name: "name" });
@@ -54,6 +68,9 @@ describe("Logs Page", function () {
 
         describe("with logs", function () {
             it("should render correctly", function () {
+
+                browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+
                 const getLogs = sinon.spy();
                 let logs: Log[] = dummyLogs(4);
                 let source = new Source({ name: "name" });
@@ -72,7 +89,8 @@ describe("Logs Page", function () {
             });
         });
 
-        describe("Test interactions", function() {
+        describe("Test interactions", function () {
+
             const getLogs = sinon.spy();
             let logs: Log[] = dummyLogs(2);
             let outputs: Output[] = dummyOutputs(2);
@@ -81,18 +99,20 @@ describe("Logs Page", function () {
                 sourceSlug: "name"
             };
 
-            let convo: Conversation = new Conversation({request: logs[0], response: logs[1], outputs: outputs});
+            let convo: Conversation = new Conversation({ request: logs[0], response: logs[1], outputs: outputs });
             let wrapper: ShallowWrapper<any, any>; // LogsPageProps and LogsPageState respectively.
 
-            beforeEach(function() {
+            beforeEach(function () {
+                browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+
                 wrapper = shallow(<LogsPage
-                        logs={logs}
-                        getLogs={getLogs}
-                        source={source}
-                        params={params} />);
+                    logs={logs}
+                    getLogs={getLogs}
+                    source={source}
+                    params={params} />);
             });
 
-            it ("Checks the state is proper after a user click.", function() {
+            it("Checks the state is proper after a user click.", function () {
                 wrapper.find("ConversationList").simulate("click", convo);
 
                 expect(wrapper.state().request).to.equal(logs[0]);
