@@ -30,11 +30,11 @@ describe("Utils", function () {
             expect(browser.isMobileWidth).to.throw(ReferenceError);
         });
         it("returns true on small windows", function() {
-            let dummyWindow = {innerWidth: 839};
+            let dummyWindow = {innerWidth: 479};
             expect(browser.isMobileWidth(<Window>dummyWindow)).to.equal(true);
         });
         it("returns false on large windows", function() {
-            let dummyWindow = {innerWidth: 840};
+            let dummyWindow = {innerWidth: 480};
             expect(browser.isMobileWidth(<Window>dummyWindow)).to.equal(false);
         });
     });

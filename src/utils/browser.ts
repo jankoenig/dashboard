@@ -24,7 +24,7 @@ export namespace Browser {
 
         let isMobileWidth = false;
 
-        if (_window.innerWidth < 840) {
+        if (_window.innerWidth < 480) {
             isMobileWidth = true;
         }
 

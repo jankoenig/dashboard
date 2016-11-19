@@ -10,6 +10,7 @@ import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
 import { State } from "../reducers";
+import browser from "../utils/browser";
 
 interface LogsPageProps {
     logs: Log[];
@@ -71,6 +72,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
+        console.log("onConversationClicked");
         this.setState({
             source: this.state.source,
             request: conversation.request,
@@ -95,21 +97,27 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     render() {
         return (
             <Grid>
-                <Cell col={6}>
-                    <h6>CONVERSATIONS</h6>
-                    <div style={{ maxHeight: this.getContentHeight() - 90, overflowY: "scroll" }}>
+                <Cell col={6} phone={4} tablet={4}>
+                    <div style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
                         <ConversationList
                             logs={this.props.logs}
+                            expandListItemWhenActive={browser.isMobileWidth()}
                             onClick={this.onConversationClicked.bind(this)} />
                     </div>
                 </Cell>
-                <Cell col={6} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
-                    <Interaction
-                        request={this.state.request}
-                        response={this.state.response}
-                        outputs={this.state.outputs}/>
+                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
+                    {this.state.request ?
+                        (
+                            <Interaction
+                                request={this.state.request}
+                                response={this.state.response}
+                                outputs={this.state.outputs} />
+                        ) : (
+                            <h6> Select a log to view </h6>
+                        )
+                    }
                 </Cell>
-            </Grid>
+            </Grid >
         );
     }
 }

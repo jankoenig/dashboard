@@ -42,9 +42,7 @@ export class Interaction extends React.Component<InteractionProps, any> {
         return {
             padding: "15px",
             borderRadius: "10px",
-            borderStyle: "solid",
-            borderWidth: "2px",
-            borderColor: this.monokaiTheme.base0B
+            borderStyle: "solid"
         };
     }
 
@@ -84,14 +82,15 @@ export class Interaction extends React.Component<InteractionProps, any> {
     }
 
     render() {
-        return (<div>
-                    <h6>REQUEST</h6>
-                        {this.getTree(this.props.request)}
-                    <h6>CONSOLE</h6>
-                        <OutputList outputs={this.props.outputs} />
-                    <h6>RESPONSE</h6>
-                        {this.getTree(this.props.response)}
-                </div>);
+        return (
+            <div>
+                <h6>REQUEST</h6>
+                {this.getTree(this.props.request)}
+                <h6>CONSOLE</h6>
+                <OutputList outputs={this.props.outputs} />
+                <h6>RESPONSE</h6>
+                {this.getTree(this.props.response)}
+            </div>);
     }
 }
 
