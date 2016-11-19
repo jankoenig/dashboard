@@ -5,6 +5,7 @@ import Conversation from "../../models/conversation";
 import Button from "../Button";
 import { Icon, ICON } from "../Icon";
 import Interaction from "../Interaction";
+import Pill from "../Pill";
 
 interface ConversationListItemProps {
     readonly conversation: Conversation;
@@ -44,20 +45,23 @@ export default class ConversationListItem extends React.Component<ConversationLi
         };
     }
 
+    iconWrapperStyle(): React.CSSProperties {
+        return {
+            backgroundColor: this.props.conversation.userColors.background,
+            borderRadius: "20px",
+            width: "40px",
+            height: "40px",
+            textAlign: "center",
+            float: "left",
+            marginRight: "16px",
+            marginTop: "5px"
+        };
+    }
+
     subtitleStyle(): React.CSSProperties {
         return {
             fontSize: "14px",
             display: "block"
-        };
-    }
-
-    errorPillStyle(): React.CSSProperties {
-        return {
-            backgroundColor: "#e53935",
-            padding: "5px",
-            borderRadius: "5px",
-            color: "#eeeeee",
-            fontSize: "10px"
         };
     }
 
@@ -69,7 +73,7 @@ export default class ConversationListItem extends React.Component<ConversationLi
                     onClick={this.props.onClick.bind(this, this.props.conversation)}>
                     <span style={this.primaryContentStyle()}>
                         {this.props.conversation.userId ? (
-                            <div style={{ backgroundColor: this.props.conversation.userColors.background, borderRadius: "20px", width: "40px", height: "40px", textAlign: "center", float: "left", marginRight: "16px" }}>
+                            <div style={this.iconWrapperStyle()}>
                                 <Icon
                                     style={{ fill: this.props.conversation.userColors.fill, marginTop: "4px" }}
                                     width={30}
@@ -91,9 +95,9 @@ export default class ConversationListItem extends React.Component<ConversationLi
                     </span>
                     <span>
                         {this.props.conversation.hasError ? (
-                            <span style={this.errorPillStyle()}>
-                                <span>error</span>
-                            </span>
+                            <Pill>
+                                error
+                            </Pill>
                         ) : undefined}
                     </span>
                 </li>
@@ -104,10 +108,10 @@ export default class ConversationListItem extends React.Component<ConversationLi
                             response={this.props.conversation.response}
                             outputs={this.props.conversation.outputs} />
                         <Button
-                        primary={true}
-                        ripple={true}
-                        icon={"keyboard_arrow_up"}
-                        onClick={this.props.onClick.bind(this, this.props.conversation)}>Collapse</Button>
+                            primary={true}
+                            ripple={true}
+                            icon={"keyboard_arrow_up"}
+                            onClick={this.props.onClick.bind(this, this.props.conversation)}>Collapse</Button>
                     </span>
                 ) : undefined}
             </span>
