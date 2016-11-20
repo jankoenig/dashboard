@@ -7,14 +7,14 @@ import { Icon, ICON } from "../Icon";
 import Interaction from "../Interaction";
 import Pill from "../Pill";
 
-interface ConversationListItemProps {
+interface ConversationListViewItemProps {
     readonly conversation: Conversation;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
     readonly active?: boolean;
     readonly showInteractionOnActive?: boolean;
 }
 
-export default class ConversationListItem extends React.Component<ConversationListItemProps, any> {
+export default class ConversationListViewItem extends React.Component<ConversationListViewItemProps, any> {
 
     listItemStyle(): React.CSSProperties {
         return {
@@ -27,7 +27,7 @@ export default class ConversationListItem extends React.Component<ConversationLi
             borderBottom: "solid #90A4AE",
             borderWidth: "1px",
             position: "relative",
-            height: "72px",
+            minHeight: "72px",
             boxSizing: "border-box",
             display: "flex",
             flexDirection: "row",

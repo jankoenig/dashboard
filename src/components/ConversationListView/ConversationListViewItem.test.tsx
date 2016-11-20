@@ -10,13 +10,13 @@ import Conversation from "../../models/conversation";
 import Log from "../../models/log";
 import Output from "../../models/output";
 import { requestIntentLog, responseLog } from "../../utils/test";
-import ConversationListItem from "./ConversationListItem";
+import ConversationListItem from "./ConversationListViewItem";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("ConversationListItem", function () {
+describe("ConversationListViewItem", function () {
     it("renders correctly", function () {
         let onClick = sinon.spy();
         let conversation = new Conversation({ request: requestIntentLog, response: responseLog });

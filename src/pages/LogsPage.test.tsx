@@ -39,7 +39,7 @@ describe("Logs Page", function () {
         );
 
         expect(wrapper.find("Grid")).to.have.length(1);
-        expect(wrapper.find("ConversationList")).to.have.length(1);
+        expect(wrapper.find("ConversationListView")).to.have.length(1);
     });
 
     describe("with sources", function () {
@@ -113,7 +113,7 @@ describe("Logs Page", function () {
             });
 
             it("Checks the state is proper after a user click.", function () {
-                wrapper.find("ConversationList").simulate("click", convo);
+                wrapper.find("ConversationListView").simulate("click", convo);
 
                 expect(wrapper.state().request).to.equal(logs[0]);
                 expect(wrapper.state().response).to.equal(logs[1]);

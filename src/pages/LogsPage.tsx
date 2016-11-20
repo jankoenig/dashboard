@@ -2,10 +2,11 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { getLogs } from "../actions/log";
-import { ConversationList } from "../components/ConversationList";
+import { ConversationListView } from "../components/ConversationListView";
 import { Cell, Grid } from "../components/Grid";
 import Interaction from "../components/Interaction";
 import Conversation from "../models/conversation";
+import ConversationList from "../models/conversation-list";
 import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
@@ -45,12 +46,33 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     constructor(props: LogsPageProps) {
         super(props);
+
         this.state = {
             source: props.source,
             request: undefined,
             response: undefined,
             outputs: []
         };
+    }
+
+    // Tracks the previous size for resize events
+    previousSize: { width: number, height: number } = { width: window.innerWidth, height: window.innerWidth };
+
+    componentDidMount() {
+        window.addEventListener("resize", (event) => {
+            // The case where the browser got smaller
+            if (window.innerWidth < browser.mobileWidthThreshold && this.previousSize.width >= browser.mobileWidthThreshold) {
+                this.forceUpdate();
+            }
+
+            // The case where the browser got bigger
+            if (window.innerWidth >= browser.mobileWidthThreshold && this.previousSize.width < browser.mobileWidthThreshold) {
+                this.forceUpdate();
+            }
+
+            // Update the previous size
+            this.previousSize = { width: window.innerWidth, height: window.innerHeight };
+        });
     }
 
     setCurrentSourceFromSources(source: Source) {
@@ -72,7 +94,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
-        console.log("onConversationClicked");
         this.setState({
             source: this.state.source,
             request: conversation.request,
@@ -99,8 +120,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             <Grid>
                 <Cell col={6} phone={4} tablet={4}>
                     <div style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
-                        <ConversationList
-                            logs={this.props.logs}
+                        <ConversationListView
+                            conversations={ConversationList.fromLogs(this.props.logs)}
                             expandListItemWhenActive={browser.isMobileWidth()}
                             onClick={this.onConversationClicked.bind(this)} />
                     </div>

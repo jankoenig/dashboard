@@ -18,13 +18,25 @@ export namespace Browser {
         return check;
     }
 
+    /**
+     * The threshold where greater than or equal is not mobile, everything less than is considered mobile.
+     */
+    export const mobileWidthThreshold = 480;
+
+    /**
+     * Determine if the current window inner width is less than the mobile width threshold.
+     *
+     * @export
+     * @param {Window} [_window] Optional window paramter, only used when unit testing
+     * @returns {boolean} True if the
+     */
     export function isMobileWidth(_window?: Window): boolean {
         // if a window is passed in, use that otherwise set it to the global window object
         _window = _window ? _window : window;
 
         let isMobileWidth = false;
 
-        if (_window.innerWidth < 480) {
+        if (_window.innerWidth < mobileWidthThreshold) {
             isMobileWidth = true;
         }
 

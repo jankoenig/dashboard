@@ -1,75 +1,27 @@
 import * as objectAssign from "object-assign";
 import * as React from "react";
 
-import Conversation, { ConversationProperties } from "../../models/conversation";
-import Log from "../../models/log";
-import Output from "../../models/output";
-import ConversationListItem from "./ConversationListItem";
+import Conversation from "../../models/conversation";
+import ConversationList, { ConversationMap } from "../../models/conversation-list";
+import ConversationListViewItem from "./ConversationListViewItem";
 
-type ConversationMap = { [id: string]: ConversationProperties }
-
-interface ConversationListProps {
-    readonly logs: Log[];
+interface ConversationListViewProps {
+    readonly conversations: ConversationList;
     readonly expandListItemWhenActive?: boolean;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
 }
 
-interface ConversationListState {
-    readonly conversations: Conversation[];
+interface ConversationListViewState {
     readonly activeConversations?: ConversationMap;
 }
 
-export default class ConversationList extends React.Component<ConversationListProps, ConversationListState> {
+export default class ConversationListView extends React.Component<ConversationListViewProps, ConversationListViewState> {
 
-    // TODO: This logic should go somewhere else outside of this component.
-    // The property should then change from a list of logs to a list of conversations
-    getConversations(logs: Log[]): Conversation[] {
-
-        let conversations: Conversation[] = [];
-        let conversationMap: ConversationMap = {};
-
-        if (logs) {
-            for (let log of logs) {
-
-                // First make sure the map has an object there
-                if (!conversationMap[log.transaction_id]) {
-                    conversationMap[log.transaction_id] = { request: undefined, response: undefined, outputs: [] };
-                }
-
-                if (log.tags && log.tags.indexOf("request") > -1) {
-                    conversationMap[log.transaction_id].request = log;
-                }
-
-                if (log.tags && log.tags.indexOf("response") > -1) {
-                    conversationMap[log.transaction_id].response = log;
-                }
-
-                if (typeof log.payload === "string") {
-                    conversationMap[log.transaction_id].outputs.push(Output.fromLog(log));
-                }
-            }
-
-            // convert to an array
-            conversations = Object.keys(conversationMap).map(function (key) {
-                return new Conversation(conversationMap[key]);
-            });
-        }
-
-        return conversations;
-    }
-
-    constructor(props: ConversationListProps) {
+    constructor(props: ConversationListViewProps) {
         super(props);
         this.state = {
-            conversations: this.getConversations(this.props.logs),
             activeConversations: {}
         };
-    }
-
-    componentWillReceiveProps(nextProps: ConversationListProps, nextContext: any) {
-        this.setState({
-            conversations: this.getConversations(nextProps.logs)
-        });
     }
 
     style(): React.CSSProperties {
@@ -103,7 +55,6 @@ export default class ConversationList extends React.Component<ConversationListPr
         }
 
         this.setState({
-            conversations: this.state.conversations,
             activeConversations: activeConversations
         });
         this.props.onClick(conversation, event);
@@ -117,9 +68,9 @@ export default class ConversationList extends React.Component<ConversationListPr
 
         let conversations: JSX.Element[] = [];
 
-        for (let conversation of this.state.conversations) {
+        for (let conversation of this.props.conversations) {
             conversations.push((
-                <ConversationListItem
+                <ConversationListViewItem
                     key={conversation.id}
                     conversation={conversation}
                     onClick={this.onClick.bind(this)}
