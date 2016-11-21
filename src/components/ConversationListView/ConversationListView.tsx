@@ -5,13 +5,13 @@ import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";
 
-interface ConversationListViewProps {
+export interface ConversationListViewProps {
     readonly conversations: ConversationList;
     readonly expandListItemWhenActive?: boolean;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
 }
 
-interface ConversationListViewState {
+export interface ConversationListViewState {
     readonly activeConversations?: ConversationMap;
 }
 

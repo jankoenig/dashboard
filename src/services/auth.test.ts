@@ -20,13 +20,11 @@ let user: remoteservice.user.User = {
 };
 
 let successRedirect = new Promise<any>((resolve, reject) => {
-    console.info("SUCCESS PROMISE");
     resolve({
         success: true
     });
 });
 let successResult = new Promise<any>((resolve, reject) => {
-    console.info("SUCCESS REDIRECT");
     resolve({
         user: user
     });

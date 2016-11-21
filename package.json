@@ -48,6 +48,7 @@
     "firebase": "^3.5.2",
     "istanbul": "^0.4.5",
     "mocha": "^3.1.2",
+    "mocha-jsdom": "^1.1.0",
     "postcss-loader": "^0.13.0",
     "react-addons-test-utils": "^15.3.2",
     "redux-mock-store": "^1.2.1",
