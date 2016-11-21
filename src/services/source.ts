@@ -54,10 +54,8 @@ export namespace source {
             // Hopefully, it wouldn't take more than a couple iterations max.
             let renameAndTryAgain = function (): Firebase.Promise<any> {
                 // Child exists, so do another with an appended key.
-                console.info("Rename and try again " + count);
                 ++count;
                 if (count % 10 === 0) {
-                    console.info("Appending length.");
                     // Basically, if we've somehow gone 10 iterations because we're really
                     // popular and we keep getting collisions, then lengthen it.
                     ++appendLength;
@@ -77,7 +75,6 @@ export namespace source {
             // tries again.
             let setTheSource = function (): Firebase.Promise<any> {
                 // Update the key with the final iteraction before saving
-                console.info("settings the source " + key);
                 mutableSource.id = key;
                 return sourcesPath.child(key).set(mutableSource)
                     .then(function () {
@@ -89,7 +86,6 @@ export namespace source {
                     }).catch(renameAndTryAgain); // If it fails, keep trying
             };
 
-            console.info("Diving in.");
             // This starts off the recursion
             // Try to read the value at the key to see if it exists
             sourcesPath.child(key).once("value")
@@ -111,13 +107,17 @@ export namespace source {
         let user = auth.currentUser;
         let ref = db.ref();
 
+        console.info("Getting sources for /users/" + user.uid + "/sources");
         return ref.child("/users/" + user.uid + "/sources").once("value")
             .then(function (retVal) {
+                console.info("RetVal = " + JSON.stringify(retVal.val()));
                 return (retVal.val()) ? Object.keys(retVal.val()) : [];
             }).then(function (keys: string[]) {
+                console.info("RetVal 2 = " + keys.length);
                 let getPromises: Promise<Source>[] = [];
                 for (let key of keys) {
-                    getPromises.push(getSourceObj(key));
+                    console.info("Getting obj for " + key);
+                    getPromises.push(getSourceObj(key, db));
                 }
                 return Promise.all(getPromises);
             });
@@ -125,13 +125,16 @@ export namespace source {
 
     export function getSource(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<any> {
         let ref = db.ref();
+        console.info("GETTING SOURCE " + key + " " + "/sources/" + key);
         return ref.child("/sources/" + key).once("value");
     }
 
     export function getSourceObj(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return getSource(key, db)
                 .then(function (data) {
+                    console.info("HEEYY " + JSON.stringify(data) + " " + JSON.stringify(data.val()));
                     let source: Source = new Source(data.val());
+                    console.info("Found a source obj for " + key + " " + source.id);
                     return source;
                 });
     }

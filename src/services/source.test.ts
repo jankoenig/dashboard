@@ -10,17 +10,28 @@ import remoteservice from "./remote-service";
 chai.use(sinonChai);
 let expect = chai.expect;
 
+/**
+ * Convience method to generate the props with a unique ID.
+ *
+ * @param {string} The ID to put.
+ */
 function generateSourceProps(sourceId?: string): SourceModel.SourceProperties {
-    return {
+    let props: SourceModel.SourceProperties = {
         secretKey: "SuperSecretKey",
         name: "Test Source",
         members: undefined,
         profile: undefined,
-        id: sourceId ? sourceId : undefined,
+        id: (sourceId) ? sourceId : undefined,
         created: new Date()
     };
+
+    console.info("Generating source wiht id " + props.id);
+    return props;
 };
 
+/**
+ * The User to be defined as the current logged in user.
+ */
 let mockUser: remoteservice.user.User = {
     emailVerified: true,
     displayName: "testUsers",
@@ -30,39 +41,76 @@ let mockUser: remoteservice.user.User = {
     uid: "ABCD1234567890"
 };
 
-const mockSource: SourceModel.Source = new SourceModel.Source(generateSourceProps("test-source"));
-
-new Promise<any>((resolve, reject) => {
-    console.info("SUCCESS PROMISE");
-    resolve({
-        success: true
+/**
+ * A promise to simulate the database returning a single source along with the other objects it may
+ * return as well.
+ */
+function successResponseSourcePromise(id?: string): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+        resolve({
+            code: 200,
+            val(): any {
+                let prop = generateSourceProps(id);
+                console.info("Returning Source " + prop.id);
+                return prop;
+            }
+        });
     });
-});
+}
 
-const successSingleSourcePromise = new Promise<SourceModel.Source>((resolve, reject) => {
-    resolve(mockSource);
-});
+/**
+ * A promise to simulate the database returning a collection of sources along with the other objects it may
+ * return as well.
+ */
+function successResponseSourcesArrayPromise(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+        let objs: SourceModel.SourceProperties[] = [];
 
-const successSourceArrayPromise = new Promise<SourceModel.Source[]>((resolve, reject) => {
-    let objs: SourceModel.Source[] = [];
+        for (let i = 0; i < 10; ++i) {
+            objs.push(generateSourceProps("TestSourceId" + i));
+        }
 
-    for (let i = 0; i < 10; ++i) {
-        objs.push(new SourceModel.Source(generateSourceProps("TestSourceId" + i)));
-    }
-
-    resolve(objs);
-});
-
-const successResponsePromise = new Promise<any>((resolve, reject) => {
-    resolve({
-        code: 200,
-        message: "Success"
+        resolve({
+            code: 200,
+            val(): any {
+                return objs;
+            }
+        });
     });
-});
+}
 
-const errorResponsePromise = new Promise<any>((resolve, reject) => {
-    reject(Error("Error thrown per requirements of the test."));
-});
+/**
+ * A response promise that will return the response given when requesting all the owned sources.
+ */
+function successGetOwnedSourcesPromise(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+        let obj: any = {};
+
+        for (let i = 0; i < 10; ++i) {
+            obj["TestSourceId" + i] = "owner";
+        }
+        resolve ({
+            val(): any {
+                return obj;
+            }
+        });
+    });
+}
+
+function successResponsePromise(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+        resolve({
+            code: 200,
+            message: "Success"
+        });
+    });
+}
+
+function errorResponsePromise(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+        reject(Error("Error thrown per requirements of the test."));
+    });
+}
 
 const mockAuth: remoteservice.auth.Auth = <remoteservice.auth.Auth>{
     get currentUser() {
@@ -87,14 +135,14 @@ describe("Source Service", function () {
 
         describe("Tests successful create responses.", function () {
             beforeEach(function () {
-                ref.set = sinon.stub().returns(successResponsePromise);
+                ref.set = sinon.stub().returns(successResponsePromise());
             });
 
             it("Creates a new Source", function () {
                 // It will only create a stub if it can't find a Source with the given slug.  That's determined by an error when queried.
-                ref.once = sinon.stub().returns(errorResponsePromise);
+                ref.once = sinon.stub().returns(errorResponsePromise());
 
-                return SourceService.default.createSource(mockSource, mockAuth, db)
+                return SourceService.default.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
                         expect(ref.once).to.be.calledOnce;
                         expect(source.id).to.equal("test-source"); // "The default "slugged" name is the source name made in to a URL format.
@@ -102,11 +150,11 @@ describe("Source Service", function () {
             });
 
             it ("Creates a new Source when the slug already exists.", function() {
-                let onceStub = sinon.stub().returns(errorResponsePromise);
-                onceStub.onFirstCall().returns(successSingleSourcePromise);
+                let onceStub = sinon.stub().returns(errorResponsePromise());
+                onceStub.onFirstCall().returns(successResponseSourcePromise());
                 ref.once = onceStub;
 
-                return SourceService.default.createSource(mockSource, mockAuth, db)
+                return SourceService.default.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
 
                         let base = "test-source";
@@ -120,11 +168,11 @@ describe("Source Service", function () {
             });
 
             it ("Creates a new Source when the first hundred slugs exist.", function() {
-                let onceStub = sinon.stub().returns(successResponsePromise);
-                onceStub.onCall(100).returns(errorResponsePromise);
+                let onceStub = sinon.stub().returns(successResponsePromise());
+                onceStub.onCall(100).returns(errorResponsePromise());
                 ref.once = onceStub;
 
-                return SourceService.default.createSource(mockSource, mockAuth, db)
+                return SourceService.default.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
 
                         let base = "test-source";
@@ -135,6 +183,72 @@ describe("Source Service", function () {
                         expect(firstPart).to.equal(base);
                         expect(extension.length).to.equal(16); // ID number increases by 1 every 10 calls.  It should increase 10 times. (5 x 10) + dash (-).
                     });
+            });
+        });
+    });
+
+    describe("Tests the \"getSources\" function.", function() {
+        it ("Tests the get sources function with a successful payload.", function() {
+            ref.once = sinon.stub().returns(successResponseSourcesArrayPromise());
+
+            return SourceService.default.getSources(mockAuth, db).then(function(retVal: any) {
+                expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
+                expect(retVal).to.not.be.undefined;
+            });
+        });
+
+        it ("Tests the get sources function with a successful payload.", function() {
+            ref.once = sinon.stub().returns(errorResponsePromise());
+
+            return SourceService.default.getSources(mockAuth, db).catch(function(retVal: any) {
+                expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
+                expect(retVal).to.not.be.undefined;
+            });
+        });
+    });
+
+    describe("Tests the \"getSourcesObj\" function.", function() {
+
+        /**
+         * The "getSource" must return an individual source from the url "/source/{sourceId}" so we're
+         * going to put that in to the stub for each available source.
+         */
+        beforeEach(function() {
+            let mainStub: Sinon.SinonStub = sinon.stub().withArgs("/sources/").returns(errorResponsePromise());
+            for (let i = 0; i < 10; i++) {
+                let subRef = <remoteservice.database.Reference> {};
+                subRef.once = sinon.stub().returns(successResponseSourcePromise("TestSourceId" + i));
+
+                // First call should be the call to get all object keys.  All subsequent calls should be to get the actual object.
+                mainStub.onCall(i + 1).returns(subRef);
+                // mainStub.withArgs("/sources/TestSourceId" + i).returns(subRef);
+            }
+            ref.child = mainStub;
+        });
+
+        it ("Tests the get sources object function with a successful payload.", function() {
+            let subRef = <remoteservice.database.Reference> {};
+            subRef.once = sinon.stub().returns(successGetOwnedSourcesPromise());
+
+            (<Sinon.SinonStub> ref.child).onFirstCall().returns(subRef);
+
+            return SourceService.default.getSourcesObj(mockAuth, db).then(function(sources: SourceModel.Source[]) {
+                expect(ref.child).to.be.callCount(11);
+                expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
+                expect(sources.length).to.equal(10); // The side that the main promise returns.
+            });
+        });
+
+        it ("Tests the get sources function with an unsuccessful payload.", function() {
+            let subRef = <remoteservice.database.Reference> {};
+            subRef.once = sinon.stub().returns(errorResponsePromise());
+
+            (<Sinon.SinonStub> ref.child).returns(subRef);
+
+            return SourceService.default.getSourcesObj(mockAuth, db).catch(function(retVal: any) {
+                expect(ref.child).to.be.callCount(1);
+                expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
+                expect(retVal).to.not.be.undefined;
             });
         });
     });
