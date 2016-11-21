@@ -252,4 +252,62 @@ describe("Source Service", function () {
             });
         });
     });
+
+    describe("Testing the \"getSource\" method.", function() {
+
+        it ("Tests a successful response for Get Source.", function() {
+
+            ref.once = sinon.stub().returns(successResponseSourcePromise("TestSourceId"));
+
+            return SourceService.default.getSource("TestSourceId", db).then(function(obj: any) {
+                expect(ref.once).to.be.calledOnce;
+                expect(ref.child).to.be.calledOnce;
+                expect(ref.child).to.be.calledWith("/sources/TestSourceId");
+                expect(obj).to.not.be.undefined;
+                expect(obj.val()).to.not.be.undefined;
+            });
+        });
+
+        it ("Tests an unsuccessful response for Get Source.", function() {
+
+            ref.once = sinon.stub().returns(errorResponsePromise());
+
+            return SourceService.default.getSource("TestSourceId", db).catch(function(obj: any) {
+                expect(ref.once).to.be.calledOnce;
+                expect(ref.child).to.be.calledOnce;
+                expect(ref.child).to.be.calledWith("/sources/TestSourceId");
+                expect(obj).to.not.be.undefined;
+                expect(obj).to.be.a("Error");
+            });
+        });
+    });
+
+    describe("Testing the \"getSourceObj\" method.", function() {
+
+        it ("Tests a successful response for Get Source.", function() {
+
+            ref.once = sinon.stub().returns(successResponseSourcePromise("TestSourceId"));
+
+            return SourceService.default.getSourceObj("TestSourceId", db).then(function(obj: SourceModel.Source) {
+                expect(ref.once).to.be.calledOnce;
+                expect(ref.child).to.be.calledOnce;
+                expect(ref.child).to.be.calledWith("/sources/TestSourceId");
+                expect(obj).to.not.be.undefined;
+                expect(obj.id).to.equal("TestSourceId");
+            });
+        });
+
+        it ("Tests an unsuccessful response for Get Source.", function() {
+
+            ref.once = sinon.stub().returns(errorResponsePromise());
+
+            return SourceService.default.getSourceObj("TestSourceId", db).catch(function(obj: any) {
+                expect(ref.once).to.be.calledOnce;
+                expect(ref.child).to.be.calledOnce;
+                expect(ref.child).to.be.calledWith("/sources/TestSourceId");
+                expect(obj).to.not.be.undefined;
+                expect(obj).to.be.a("Error");
+            });
+        });
+    });
 });
