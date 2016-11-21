@@ -5,7 +5,6 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
-// let jsdom = require("mocha-jsdom");
 
 import Conversation from "../models/conversation";
 import Log from "../models/log";
@@ -21,15 +20,13 @@ let expect = chai.expect;
 
 describe("Logs Page", function () {
 
+    // Set up some stubs
     let isMobileWidthStub: Sinon.SinonStub;
     let onResizeStub: Sinon.SinonStub;
     let sizeStub: Sinon.SinonStub;
 
-    beforeEach(function() {
-
-    });
-
     afterEach(function () {
+        // and restore them after each test
         isMobileWidthStub.restore();
         onResizeStub.restore();
         sizeStub.restore();
