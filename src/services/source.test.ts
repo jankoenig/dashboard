@@ -3,9 +3,8 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import * as SourceModel from "../models/source";
-import utils from "../utils";
-import * as SourceService from "./source";
 import remoteservice from "./remote-service";
+import * as SourceService from "./source";
 
 chai.use(sinonChai);
 let expect = chai.expect;

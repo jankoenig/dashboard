@@ -44,9 +44,6 @@ export namespace source {
             let count = 0;
             let appendLength = 5;
 
-            let maxRetries = 15;
-            let currentRetries = 0;
-
             // Want it to keep looping until we finally have a unique value.
             // This constantly pings the database until we have a key that doesn't exist.
             // Hopefully, it wouldn't take more than a couple iterations max.
