@@ -5,6 +5,7 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
+// let jsdom = require("mocha-jsdom");
 
 import Conversation from "../models/conversation";
 import Log from "../models/log";
@@ -20,15 +21,25 @@ let expect = chai.expect;
 
 describe("Logs Page", function () {
 
-    let browserStub: Sinon.SinonStub;
+    let isMobileWidthStub: Sinon.SinonStub;
+    let onResizeStub: Sinon.SinonStub;
+    let sizeStub: Sinon.SinonStub;
 
-    afterEach(function() {
-        browserStub.restore();
+    beforeEach(function() {
+
+    });
+
+    afterEach(function () {
+        isMobileWidthStub.restore();
+        onResizeStub.restore();
+        sizeStub.restore();
     });
 
     it("should render correctly", function () {
 
-        browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+        isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+        onResizeStub = sinon.stub(browser, "onResize");
+        sizeStub = sinon.stub(browser, "size").returns({width: 800, height: 800});
 
         const getLogs = sinon.spy();
         const wrapper = shallow(
@@ -46,7 +57,9 @@ describe("Logs Page", function () {
         describe("without logs", function () {
             it("should render correctly", function () {
 
-                browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                onResizeStub = sinon.stub(browser, "onResize");
+                sizeStub = sinon.stub(browser, "size").returns({width: 800, height: 800});
 
                 const getLogs = sinon.spy();
                 let logs: Log[] = [];
@@ -69,7 +82,9 @@ describe("Logs Page", function () {
         describe("with logs", function () {
             it("should render correctly", function () {
 
-                browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                onResizeStub = sinon.stub(browser, "onResize");
+                sizeStub = sinon.stub(browser, "size").returns({width: 800, height: 800});
 
                 const getLogs = sinon.spy();
                 let logs: Log[] = dummyLogs(4);
@@ -103,7 +118,9 @@ describe("Logs Page", function () {
             let wrapper: ShallowWrapper<any, any>; // LogsPageProps and LogsPageState respectively.
 
             beforeEach(function () {
-                browserStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                onResizeStub = sinon.stub(browser, "onResize");
+                sizeStub = sinon.stub(browser, "size").returns({width: 800, height: 800});
 
                 wrapper = shallow(<LogsPage
                     logs={logs}

@@ -42,6 +42,16 @@ export namespace Browser {
 
         return isMobileWidth;
     }
+
+    export function onResize(callback: (event: UIEvent) => void, _window?: Window) {
+        _window = _window ? _window : window;
+        _window.addEventListener("resize", callback);
+    }
+
+    export function size(_window?: Window): { width: number, height: number } {
+        _window = _window ? _window : window;
+        return { width: _window.innerWidth, height: _window.innerHeight };
+    }
 }
 
 export default Browser;

@@ -56,22 +56,28 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     // Tracks the previous size for resize events
-    previousSize: { width: number, height: number } = { width: window.innerWidth, height: window.innerWidth };
+    previousSize: { width: number, height: number } = { width: browser.size().width, height: browser.size().width };
 
     componentDidMount() {
-        window.addEventListener("resize", (event) => {
+        browser.onResize((event) => {
+
+            let target = event.target as Window;
+
             // The case where the browser got smaller
-            if (window.innerWidth < browser.mobileWidthThreshold && this.previousSize.width >= browser.mobileWidthThreshold) {
+            if (target.innerWidth < browser.mobileWidthThreshold && this.previousSize.width >= browser.mobileWidthThreshold) {
                 this.forceUpdate();
             }
 
             // The case where the browser got bigger
-            if (window.innerWidth >= browser.mobileWidthThreshold && this.previousSize.width < browser.mobileWidthThreshold) {
+            if (target.innerWidth >= browser.mobileWidthThreshold && this.previousSize.width < browser.mobileWidthThreshold) {
                 this.forceUpdate();
             }
 
             // Update the previous size
-            this.previousSize = { width: window.innerWidth, height: window.innerHeight };
+            this.previousSize = {
+                width: target.innerWidth,
+                height: target.innerHeight
+            };
         });
     }
 
