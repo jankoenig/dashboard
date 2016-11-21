@@ -9,6 +9,7 @@ import * as firebase from "firebase";
 export namespace remoteservice {
     export interface Service {
         auth(): remoteservice.auth.Auth;
+        database(): remoteservice.database.Database;
     }
 
     export function defaultService(): Service {
@@ -59,6 +60,21 @@ export namespace remoteservice.auth {
     }
 }
 
+export namespace remoteservice.database {
+    export interface Database {
+        ref(path?: string): Reference;
+    }
+
+    export interface Reference extends Query {
+        child(path: string): Reference;
+        set(value: any): firebase.Promise<any>;
+    }
+
+    export interface Query {
+        once(eventType: string): firebase.Promise<any>;
+    }
+}
+
 export default remoteservice;
 
 /** Firebase implementation beyond this point **/
@@ -70,4 +86,8 @@ class FirebaseService implements remoteservice.Service {
     auth(): remoteservice.auth.Auth {
         return firebase.auth();
     };
+
+    database(): remoteservice.database.Database {
+        return firebase.database();
+    }
 }

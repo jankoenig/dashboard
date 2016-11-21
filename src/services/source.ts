@@ -4,6 +4,7 @@ import "isomorphic-fetch";
 import * as objectAssign from "object-assign";
 
 import { Source } from "../models/source";
+import { remoteservice  } from "./remote-service";
 
 export namespace source {
 
@@ -23,15 +24,17 @@ export namespace source {
         }
     }
 
-    export function createSource(source: Source): Promise<Source> {
+    export function createSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return new Promise(function (callback, reject) {
+
+            console.info("Creating source " + source.name);
 
             // Create a new mutable source from the source passed in
             let mutableSource: MutableSource = new MutableSource(source);
 
-            let user = Firebase.auth().currentUser;
-            let db = Firebase.database().ref();
-            let sourcesPath = db.child("sources");
+            let user = auth.currentUser;
+            let ref = db.ref();
+            let sourcesPath = ref.child("sources");
 
             // Create the base key and initial key
             let baseKey = mutableSource.id;
@@ -43,13 +46,18 @@ export namespace source {
             let count = 0;
             let appendLength = 5;
 
+            let maxRetries = 15;
+            let currentRetries = 0;
+
             // Want it to keep looping until we finally have a unique value.
             // This constantly pings the database until we have a key that doesn't exist.
             // Hopefully, it wouldn't take more than a couple iterations max.
             let renameAndTryAgain = function (): Firebase.Promise<any> {
                 // Child exists, so do another with an appended key.
+                console.info("Rename and try again " + count);
                 ++count;
                 if (count % 10 === 0) {
+                    console.info("Appending length.");
                     // Basically, if we've somehow gone 10 iterations because we're really
                     // popular and we keep getting collisions, then lengthen it.
                     ++appendLength;
@@ -69,18 +77,19 @@ export namespace source {
             // tries again.
             let setTheSource = function (): Firebase.Promise<any> {
                 // Update the key with the final iteraction before saving
+                console.info("settings the source " + key);
                 mutableSource.id = key;
-
                 return sourcesPath.child(key).set(mutableSource)
                     .then(function () {
                         // Save the source to the user's list of sources
-                        db.child("users").child(user.uid).child("sources").child(key).set("owner").then(function () {
+                        ref.child("users").child(user.uid).child("sources").child(key).set("owner").then(function () {
                             // And finally provide it back to the callback
                             callback(mutableSource);
                         });
                     }).catch(renameAndTryAgain); // If it fails, keep trying
             };
 
+            console.info("Diving in.");
             // This starts off the recursion
             // Try to read the value at the key to see if it exists
             sourcesPath.child(key).once("value")
@@ -92,17 +101,17 @@ export namespace source {
         });
     }
 
-    export function getSources(): Promise<any> {
-        let user = Firebase.auth().currentUser;
-        let db = Firebase.database().ref();
-        return db.child("/users/" + user.uid + "/sources").once("value");
+    export function getSources(auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<any> {
+        let user = auth.currentUser;
+        let ref = db.ref();
+        return ref.child("/users/" + user.uid + "/sources").once("value");
     }
 
-    export function getSourcesObj(): Promise<Source[]> {
-        let user = Firebase.auth().currentUser;
-        let db = Firebase.database().ref();
+    export function getSourcesObj(auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source[]> {
+        let user = auth.currentUser;
+        let ref = db.ref();
 
-        return db.child("/users/" + user.uid + "/sources").once("value")
+        return ref.child("/users/" + user.uid + "/sources").once("value")
             .then(function (retVal) {
                 return (retVal.val()) ? Object.keys(retVal.val()) : [];
             }).then(function (keys: string[]) {
@@ -114,13 +123,13 @@ export namespace source {
             });
     }
 
-    export function getSource(key: string): Promise<any> {
-        let db = Firebase.database().ref();
-        return db.child("/sources/" + key).once("value");
+    export function getSource(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<any> {
+        let ref = db.ref();
+        return ref.child("/sources/" + key).once("value");
     }
 
-    export function getSourceObj(key: string): Promise<Source> {
-        return getSource(key)
+    export function getSourceObj(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
+        return getSource(key, db)
                 .then(function (data) {
                     let source: Source = new Source(data.val());
                     return source;
