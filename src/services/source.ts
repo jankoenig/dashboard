@@ -27,8 +27,6 @@ export namespace source {
     export function createSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return new Promise(function (callback, reject) {
 
-            console.info("Creating source " + source.name);
-
             // Create a new mutable source from the source passed in
             let mutableSource: MutableSource = new MutableSource(source);
 
@@ -107,16 +105,12 @@ export namespace source {
         let user = auth.currentUser;
         let ref = db.ref();
 
-        console.info("Getting sources for /users/" + user.uid + "/sources");
         return ref.child("/users/" + user.uid + "/sources").once("value")
             .then(function (retVal) {
-                console.info("RetVal = " + JSON.stringify(retVal.val()));
                 return (retVal.val()) ? Object.keys(retVal.val()) : [];
             }).then(function (keys: string[]) {
-                console.info("RetVal 2 = " + keys.length);
                 let getPromises: Promise<Source>[] = [];
                 for (let key of keys) {
-                    console.info("Getting obj for " + key);
                     getPromises.push(getSourceObj(key, db));
                 }
                 return Promise.all(getPromises);
@@ -125,16 +119,13 @@ export namespace source {
 
     export function getSource(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<any> {
         let ref = db.ref();
-        console.info("GETTING SOURCE " + key + " " + "/sources/" + key);
         return ref.child("/sources/" + key).once("value");
     }
 
     export function getSourceObj(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return getSource(key, db)
                 .then(function (data) {
-                    console.info("HEEYY " + JSON.stringify(data) + " " + JSON.stringify(data.val()));
                     let source: Source = new Source(data.val());
-                    console.info("Found a source obj for " + key + " " + source.id);
                     return source;
                 });
     }
