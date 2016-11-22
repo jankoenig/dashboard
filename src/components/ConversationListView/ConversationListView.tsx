@@ -1,9 +1,12 @@
 import * as objectAssign from "object-assign";
 import * as React from "react";
+// import { ReactList } from "react-list";
 
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";
+
+let ReactList = require("react-list");
 
 export interface ConversationListViewProps {
     readonly conversations: ConversationList;
@@ -24,10 +27,17 @@ export default class ConversationListView extends React.Component<ConversationLi
         };
     }
 
-    style(): React.CSSProperties {
+    divStyle(): React.CSSProperties {
         return {
-            listStyle: "none",
+            overflow: "auto",
             paddingLeft: "0px"
+        };
+    }
+
+    listStyle(): React.CSSProperties {
+        return {
+            marginLeft: "20px",
+            marginRight: "20px"
         };
     }
 
@@ -64,27 +74,49 @@ export default class ConversationListView extends React.Component<ConversationLi
         return this.state.activeConversations[conversation.id] ? true : false;
     }
 
+    renderItem(index: number, key: string): JSX.Element {
+        console.info("Render item " + index + " " + key);
+        let conversation = this.props.conversations[index];
+        return <ConversationListViewItem
+            key={conversation.id}
+            conversation={conversation}
+            onClick={this.onClick.bind(this)}
+            active={this.isConversationActive(conversation)}
+            showInteractionOnActive={this.props.expandListItemWhenActive} />
+    }
+
     render() {
 
-        let conversations: JSX.Element[] = [];
+        // let conversations: JSX.Element[] = [];
 
-        for (let conversation of this.props.conversations) {
-            conversations.push((
-                <ConversationListViewItem
-                    key={conversation.id}
-                    conversation={conversation}
-                    onClick={this.onClick.bind(this)}
-                    active={this.isConversationActive(conversation)}
-                    showInteractionOnActive={this.props.expandListItemWhenActive} />
-            ));
-        }
+        // for (let conversation of this.props.conversations) {
+        //     console.info("Found " + conversation.id);
+        //     conversations.push((
+        //         <ConversationListViewItem
+        //             key={conversation.id}
+        //             conversation={conversation}
+        //             onClick={this.onClick.bind(this)}
+        //             active={this.isConversationActive(conversation)}
+        //             showInteractionOnActive={this.props.expandListItemWhenActive} />
+        //     ));
+        // }
+
+        console.info("Found " + this.props.conversations.length);
 
         return (
             <div>
-                {conversations.length > 0 ? (
-                    <ul style={this.style()}>
-                        {conversations}
-                    </ul>
+                {this.props.conversations.length > 0 ? (
+                    <div style={this.divStyle()}>
+                    <ReactList
+                        style={this.listStyle()}
+                        itemRenderer={this.renderItem.bind(this)}
+                        length={this.props.conversations.length}
+                        type={"uniform"}
+                        useStateSize={true}/>
+                    </div>
+                    // <ul style={this.style()}>
+                    //     {conversations}
+                    // </ul>
                 ) : (
                         <p> No available data </p>
                     )
