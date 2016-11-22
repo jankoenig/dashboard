@@ -33,7 +33,7 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
     render() {
         return (
             <div className="mdl-card__supporting-text">
-                <form id="auth">
+                <form id="auth" onSubmit={this.props.onSubmit} >
                     <FormInput
                         label={"Email"}
                         type={"text"}
@@ -58,12 +58,12 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                     </div>
                 </form>
                 <div className="mdl-card__actions mdl-card--border clearfix">
-                    {/* I could not get the <form onSubmit> to work, had to use onClick */}
-                    <button
+                    <input
+                        type="submit"
+                        form="auth"
+                        value="Login"
                         className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-pull-left"
-                        onClick={this.props.onSubmit}>
-                        Login
-                    </button>
+                        />
                     {!this.state.isConfirmPasswordVisible ? (
                         <button
                             className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-pull-right"
