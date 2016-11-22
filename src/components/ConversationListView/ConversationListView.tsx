@@ -29,7 +29,6 @@ export default class ConversationListView extends React.Component<ConversationLi
 
     divStyle(): React.CSSProperties {
         return {
-            overflow: "auto",
             paddingLeft: "0px"
         };
     }
@@ -86,37 +85,17 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     render() {
-
-        // let conversations: JSX.Element[] = [];
-
-        // for (let conversation of this.props.conversations) {
-        //     console.info("Found " + conversation.id);
-        //     conversations.push((
-        //         <ConversationListViewItem
-        //             key={conversation.id}
-        //             conversation={conversation}
-        //             onClick={this.onClick.bind(this)}
-        //             active={this.isConversationActive(conversation)}
-        //             showInteractionOnActive={this.props.expandListItemWhenActive} />
-        //     ));
-        // }
-
         console.info("Found " + this.props.conversations.length);
 
         return (
             <div>
                 {this.props.conversations.length > 0 ? (
-                    <div style={this.divStyle()}>
                     <ReactList
                         style={this.listStyle()}
                         itemRenderer={this.renderItem.bind(this)}
                         length={this.props.conversations.length}
-                        type={"uniform"}
-                        useStateSize={true}/>
-                    </div>
-                    // <ul style={this.style()}>
-                    //     {conversations}
-                    // </ul>
+                        pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
+                        type={"uniform"} />
                 ) : (
                         <p> No available data </p>
                     )

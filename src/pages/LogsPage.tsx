@@ -119,7 +119,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return (
             <Grid>
                 <Cell col={6} phone={4} tablet={4}>
-                    <div style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
+                    <div style={{ maxHeight: this.getContentHeight() - 30, overflowY: "auto"}}>
                         <ConversationListView
                             conversations={ConversationList.fromLogs(this.props.logs)}
                             expandListItemWhenActive={browser.isMobileWidth()}
