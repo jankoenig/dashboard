@@ -1,6 +1,6 @@
 import * as uuid from "uuid";
 
-import util from "../utils";
+import StringUtil from "../utils/string";
 import SourceProfile, { SourceProfileUnspecified } from "./source-profile";
 
 export interface SourceProperties {
@@ -25,7 +25,7 @@ export class Source implements SourceProperties {
 
         this.name = props.name;
         this.secretKey = props.secretKey ? props.secretKey : uuid.v4();
-        this.id = props.id ? props.id : util.stringToSlug(this.name);
+        this.id = props.id ? props.id : StringUtil.stringToSlug(this.name);
         this.profile = props.profile ? props.profile : SourceProfileUnspecified;
         this.members = props.members ? props.members : {};
 

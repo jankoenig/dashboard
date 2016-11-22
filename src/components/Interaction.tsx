@@ -42,9 +42,7 @@ export class Interaction extends React.Component<InteractionProps, any> {
         return {
             padding: "15px",
             borderRadius: "10px",
-            borderStyle: "solid",
-            borderWidth: "2px",
-            borderColor: this.monokaiTheme.base0B
+            borderStyle: "solid"
         };
     }
 
@@ -58,11 +56,11 @@ export class Interaction extends React.Component<InteractionProps, any> {
     }
 
     shouldExpandNode(keyName: string[], data: any, level: number) {
-        // don't expand the really long nodes by default
-        if (keyName.indexOf("user") > -1 || keyName.indexOf("application") > -1) {
-            return false;
+        // only expand the initial node, request and response by default
+        if (keyName.length === 0 || keyName.indexOf("request") > -1 || keyName.indexOf("response") > -1) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     getTree(log: Log): JSX.Element {
@@ -84,14 +82,15 @@ export class Interaction extends React.Component<InteractionProps, any> {
     }
 
     render() {
-        return (<div>
-                    <h6>REQUEST</h6>
-                        {this.getTree(this.props.request)}
-                    <h6>CONSOLE</h6>
-                        <OutputList outputs={this.props.outputs} />
-                    <h6>RESPONSE</h6>
-                        {this.getTree(this.props.response)}
-                </div>);
+        return (
+            <div>
+                <h6>REQUEST</h6>
+                {this.getTree(this.props.request)}
+                <h6>CONSOLE</h6>
+                <OutputList outputs={this.props.outputs} />
+                <h6>RESPONSE</h6>
+                {this.getTree(this.props.response)}
+            </div>);
     }
 }
 

@@ -1,4 +1,5 @@
-export namespace Utils {
+
+export namespace Browser {
     /**
      * Check if the browser is mobile or not
      * From: http://stackoverflow.com/a/11381730/1349766
@@ -17,69 +18,56 @@ export namespace Utils {
         return check;
     }
 
+    /**
+     * The threshold where greater than or equal is not mobile, everything less than is considered mobile.
+     */
+    export const mobileWidthThreshold = 480;
 
     /**
-     * Converts a string to camelCase
-     *
-     * From: http://stackoverflow.com/a/2970667/1349766
+     * Determine if the current window inner width is less than the mobile width threshold.
      *
      * @export
-     * @param {string} str
-     * @returns {string}
+     * @param {Window} [_window] Optional window paramter, only used when unit testing
+     * @returns {boolean} True if the
      */
-    export function stringToCamelCase(str: string): string {
-        return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
-            if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
-            return index === 0 ? match.toLowerCase() : match.toUpperCase();
-        });
-    }
+    export function isMobileWidth(_window?: Window): boolean {
+        // if a window is passed in, use that otherwise set it to the global window object
+        _window = _window ? _window : window;
 
+        let isMobileWidth = false;
 
-    /**
-     * Converts a string to a slug for use in a URL path.
-     *
-     * From: http://stackoverflow.com/a/5782563/1349766
-     *
-     * @export
-     * @param {string} str
-     * @returns {string} A slug fit for a path
-     */
-    export function stringToSlug(str: string): string {
-
-        str = str.replace(/^\s+|\s+$/g, ""); // trim
-        str = str.toLowerCase();
-
-        // remove accents, swap ñ for n, etc
-        let from = "ãàáäâẽèéëêìíïîõòóöôùúüûñçß·/_,:;";
-        let to   = "aaaaaeeeeeiiiiooooouuuuncs------";
-        for (let i = 0, l = from.length; i < l; i++) {
-            str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
+        if (_window.innerWidth < mobileWidthThreshold) {
+            isMobileWidth = true;
         }
 
-        str = str.replace(/[^a-z0-9 -]/g, "") // remove invalid chars
-            .replace(/\s+/g, "-") // collapse whitespace and replace by -
-            .replace(/-+/g, "-"); // collapse dashes
-
-        return str;
+        return isMobileWidth;
     }
 
     /**
-     * Generates a random string of characters both upper and lowercase with numbers.
+     * Register a callback to listen for browser resize events.
      *
-     * @param {number} size Length of the string.  Can not be null.
-     * @param {string} charset Optionally a subset of characters to pull from.
+     * @export
+     * @param {(event: UIEvent) => void} callback
+     * @param {Window} [_window]
+    * */
+    export function onResize(callback: (event: UIEvent) => void, _window?: Window) {
+        _window = _window ? _window : window;
+        _window.addEventListener("resize", callback);
+    }
+
+    /**
+     * Get the current size of the browser window.
+     *
+     * Returns window.innerWidth and window.innerHeight.
+     *
+     * @export
+     * @param {Window} [_window] Optional window object, only used when testing.
+     * @returns {{ width: number, height: number }}
      */
-    export function randomString(size: number): string {
-        if (size < 0) {
-            throw Error("Random string can not have a negative length.");
-        }
-        let useChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
-        let full: string = "";
-        for (let i = 0; i < size; ++i) {
-            full += useChars.charAt(Math.floor(Math.random() * useChars.length));
-        }
-        return full;
+    export function size(_window?: Window): { width: number, height: number } {
+        _window = _window ? _window : window;
+        return { width: _window.innerWidth, height: _window.innerHeight };
     }
 }
 
-export default Utils;
+export default Browser;

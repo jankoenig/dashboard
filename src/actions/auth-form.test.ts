@@ -1,6 +1,5 @@
 import * as chai from "chai";
 
-
 import { AUTH_FORM_CHANGED, AUTH_FORM_ERROR } from "../constants";
 import * as authForm from "./auth-form";
 

@@ -3,7 +3,7 @@ import * as ReactGA from "react-ga";
 import { FirebaseUser } from "../models/user";
 import User from "../models/user";
 import { BrowserStorage, LocalStorage } from "../store/local-storage";
-import utils from "../utils";
+import browser from "../utils/browser";
 import { remoteservice } from "./remote-service";
 
 /**
@@ -17,7 +17,7 @@ namespace auth {
     }
 
     function loginWithProvider(provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): void {
-        if (utils.isMobileOrTablet()) {
+        if (browser.isMobileOrTablet()) {
             // Use redirect to authenticate user if it's a mobile device
             auth.signInWithRedirect(provider)
                 .then(function () {
