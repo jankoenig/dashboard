@@ -22,6 +22,7 @@ export class Source implements SourceProperties {
     readonly created: Date;
 
     constructor(props: SourceProperties) {
+
         this.name = props.name;
         this.secretKey = props.secretKey ? props.secretKey : uuid.v4();
         this.id = props.id ? props.id : StringUtil.stringToSlug(this.name);
