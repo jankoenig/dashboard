@@ -5,7 +5,6 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
-
 let jsdom = require("mocha-jsdom");
 
 import ConversationList from "../../models/conversation-list";

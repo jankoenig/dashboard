@@ -43,11 +43,27 @@ export namespace Browser {
         return isMobileWidth;
     }
 
+    /**
+     * Register a callback to listen for browser resize events.
+     *
+     * @export
+     * @param {(event: UIEvent) => void} callback
+     * @param {Window} [_window]
+    * */
     export function onResize(callback: (event: UIEvent) => void, _window?: Window) {
         _window = _window ? _window : window;
         _window.addEventListener("resize", callback);
     }
 
+    /**
+     * Get the current size of the browser window.
+     *
+     * Returns window.innerWidth and window.innerHeight.
+     *
+     * @export
+     * @param {Window} [_window] Optional window object, only used when testing.
+     * @returns {{ width: number, height: number }}
+     */
     export function size(_window?: Window): { width: number, height: number } {
         _window = _window ? _window : window;
         return { width: _window.innerWidth, height: _window.innerHeight };
