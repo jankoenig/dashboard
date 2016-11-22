@@ -21,6 +21,8 @@ export interface LogsPageProps {
 }
 
 export interface LogsPageState {
+    width: number;
+    height: number;
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
@@ -48,6 +50,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         super(props);
 
         this.state = {
+            width: 0,
+            height: 0,
             source: props.source,
             request: undefined,
             response: undefined,
@@ -55,29 +59,33 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         };
     }
 
-    // Tracks the previous size for resize events
-    previousSize: { width: number, height: number } = { width: browser.size().width, height: browser.size().width };
+    componentWillMount() {
+        this.updateDimensions();
+    }
 
     componentDidMount() {
-        browser.onResize((event) => {
+        window.addEventListener("resize", this.updateDimensions.bind(this));
+    }
 
-            let target = event.target as Window;
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateDimensions.bind(this));
+    }
 
-            // The case where the browser got smaller
-            if (target.innerWidth < browser.mobileWidthThreshold && this.previousSize.width >= browser.mobileWidthThreshold) {
-                this.forceUpdate();
-            }
+    updateDimensions() {
+        let w = window,
+            d = document,
+            documentElement = d.documentElement,
+            body = d.getElementsByTagName("mdl-layout__content")[0],
+            width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
+            height = w.innerHeight || documentElement.clientHeight || body.clientHeight;
 
-            // The case where the browser got bigger
-            if (target.innerWidth >= browser.mobileWidthThreshold && this.previousSize.width < browser.mobileWidthThreshold) {
-                this.forceUpdate();
-            }
-
-            // Update the previous size
-            this.previousSize = {
-                width: target.innerWidth,
-                height: target.innerHeight
-            };
+        this.setState({
+            width: width,
+            height: height,
+            source: (this.state) ? this.state.source : undefined,
+            request: (this.state) ? this.state.request : undefined,
+            response: (this.state) ? this.state.response : undefined,
+            outputs: (this.state) ? this.state.outputs : undefined
         });
     }
 
@@ -86,6 +94,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             this.props.getLogs(nextProps.source.secretKey);
             this.setState({
                 source: nextProps.source,
+                width: this.state.width,
+                height: this.state.height,
                 request: this.state.request,
                 response: this.state.response,
                 outputs: this.state.outputs
@@ -95,6 +105,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
         this.setState({
+            width: this.state.width,
+            height: this.state.height,
             source: this.state.source,
             request: conversation.request,
             response: conversation.response,
@@ -102,32 +114,19 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         });
     }
 
-    getContentHeight() {
-        if (document.getElementsByClassName !== undefined) {
-            let mains = document.getElementsByClassName("mdl-layout__content");
-            if (mains.length > 0) {
-                let main: Element = mains.item(0);
-                return main.clientHeight;
-            }
-        }
-        // Return default height, this is when the page isn't fully rendered
-        //  or when we are unit testing
-        return 200;
-    }
-
     render() {
         return (
             <Grid
                 noSpacing={true}>
-                <Cell col={6} phone={4} tablet={4} style={{paddingLeft: "10px", paddingRight: "5px"}}>
-                    <div style={{ maxHeight: this.getContentHeight(), overflowY: "auto"}}>
+                <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
+                    <div style={{ maxHeight: this.state.height, overflowY: "auto" }}>
                         <ConversationListView
                             conversations={ConversationList.fromLogs(this.props.logs)}
                             expandListItemWhenActive={browser.isMobileWidth()}
                             onClick={this.onConversationClicked.bind(this)} />
                     </div>
                 </Cell>
-                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.getContentHeight(), overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px"}}>
+                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
                     {this.state.request ?
                         (
                             <Interaction
