@@ -1,4 +1,4 @@
-import Utils from "../utils/index";
+import StringUtil from "../utils/string";
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
 import * as objectAssign from "object-assign";
@@ -56,7 +56,7 @@ export namespace source {
                 }
 
                 // Update the key for later usage
-                key = baseKey + "-" + Utils.randomString(appendLength);
+                key = baseKey + "-" + StringUtil.randomString(appendLength);
 
                 // If you can read it again with the new key, try again
                 return sourcesPath.child(key).once("value")

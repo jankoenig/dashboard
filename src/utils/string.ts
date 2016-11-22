@@ -1,4 +1,4 @@
-export namespace Utils {
+export namespace String {
 
     /**
      * Converts a string to camelCase
@@ -64,4 +64,4 @@ export namespace Utils {
     }
 }
 
-export default Utils;
+export default String;

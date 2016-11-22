@@ -1,10 +1,10 @@
 import * as chai from "chai";
 
-import utils from "./index";
+import utils from "./string";
 
 let expect = chai.expect;
 
-describe("Utils", function () {
+describe("String", function () {
     describe("converts to camelCase", function() {
         it("a string in camelCase", function() {
             expect(utils.stringToCamelCase("camelCase")).to.equal("camelCase");

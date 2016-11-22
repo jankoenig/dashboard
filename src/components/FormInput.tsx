@@ -1,7 +1,7 @@
 import * as classNames from "classnames";
 import * as React from "react";
 
-import util from "../utils";
+import StringUtil from "../utils/string";
 import MDLComponent from "./MDLComponent";
 
 /**
@@ -81,14 +81,14 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     autoComplete={this.props.autoComplete ? this.props.autoComplete : "off"}
                     className="mdl-textfield__input"
                     type={this.props.type}
-                    id={util.stringToCamelCase(this.props.label)}
+                    id={StringUtil.stringToCamelCase(this.props.label)}
                     value={this.props.value}
                     pattern={pattern}
                     onChange={this.onFormChange.bind(this)}
                     readOnly={this.props.readOnly}/>
                 <label
                     className="mdl-textfield__label"
-                    htmlFor={util.stringToCamelCase(this.props.label)}>
+                    htmlFor={StringUtil.stringToCamelCase(this.props.label)}>
                     {this.props.label}
                 </label>
                 <span className="mdl-textfield__error">{this.state.errorMsg}</span>
