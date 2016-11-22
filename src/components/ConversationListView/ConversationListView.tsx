@@ -6,6 +6,7 @@ import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";
 
+// TODO: Would be nice to get this to work with typescript
 let ReactList = require("react-list");
 
 export interface ConversationListViewProps {
@@ -73,7 +74,6 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     renderItem(index: number, key: string): JSX.Element {
-        console.info("Render item " + index + " " + key);
         let conversation = this.props.conversations[index];
         return <ConversationListViewItem
             key={conversation.id}
@@ -84,8 +84,6 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     render() {
-        console.info("Found " + this.props.conversations.length);
-
         return (
             <div>
                 {this.props.conversations.length > 0 ? (
