@@ -95,7 +95,8 @@ export default class ConversationListView extends React.Component<ConversationLi
                         itemRenderer={this.renderItem.bind(this)}
                         length={this.props.conversations.length}
                         pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
-                        type={"uniform"} />
+                        type={"uniform"}
+                        useStaticSize={true} />
                 ) : (
                         <p> No available data </p>
                     )
