@@ -13,14 +13,14 @@ import Source from "../models/source";
 import { State } from "../reducers";
 import browser from "../utils/browser";
 
-interface LogsPageProps {
+export interface LogsPageProps {
     logs: Log[];
     source: Source;
     getLogs: (source: string) => (dispatch: Redux.Dispatch<any>) => void;
     params?: any;
 }
 
-interface LogsPageState {
+export interface LogsPageState {
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
@@ -81,21 +81,15 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         });
     }
 
-    setCurrentSourceFromSources(source: Source) {
-        if (source) {
-            this.props.getLogs(source.secretKey);
+    componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
+        if (this.state.source === undefined && nextProps.source) {
+            this.props.getLogs(nextProps.source.secretKey);
             this.setState({
-                source: source,
+                source: nextProps.source,
                 request: this.state.request,
                 response: this.state.response,
                 outputs: this.state.outputs
             });
-        }
-    }
-
-    componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
-        if (this.state.source === undefined) {
-            this.setCurrentSourceFromSources(nextProps.source);
         }
     }
 
