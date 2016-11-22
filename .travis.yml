@@ -5,9 +5,9 @@ node_js:
   - "5"
   - "4"
 script: npm run coveralls
-# branches:
-  # only:
-  #   - "master"
+branches:
+  only:
+    - "master"
 cache:
   directories:
   - node_modules
