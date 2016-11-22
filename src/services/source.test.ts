@@ -23,8 +23,6 @@ function generateSourceProps(sourceId?: string): SourceModel.SourceProperties {
         id: (sourceId) ? sourceId : undefined,
         created: new Date()
     };
-
-    console.info("Generating source wiht id " + props.id);
     return props;
 };
 
@@ -49,9 +47,7 @@ function successResponseSourcePromise(id?: string): Promise<any> {
         resolve({
             code: 200,
             val(): any {
-                let prop = generateSourceProps(id);
-                console.info("Returning Source " + prop.id);
-                return prop;
+                return generateSourceProps(id);
             }
         });
     });
