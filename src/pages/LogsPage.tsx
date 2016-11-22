@@ -72,6 +72,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     updateDimensions() {
+        // Algorithm taken from https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
         let w = window,
             d = document,
             documentElement = d.documentElement,
