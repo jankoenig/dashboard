@@ -117,16 +117,17 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     render() {
         return (
-            <Grid>
-                <Cell col={6} phone={4} tablet={4}>
-                    <div style={{ maxHeight: this.getContentHeight() - 30, overflowY: "auto"}}>
+            <Grid
+                noSpacing={true}>
+                <Cell col={6} phone={4} tablet={4} style={{paddingLeft: "10px", paddingRight: "5px"}}>
+                    <div style={{ maxHeight: this.getContentHeight(), overflowY: "auto"}}>
                         <ConversationListView
                             conversations={ConversationList.fromLogs(this.props.logs)}
                             expandListItemWhenActive={browser.isMobileWidth()}
                             onClick={this.onConversationClicked.bind(this)} />
                     </div>
                 </Cell>
-                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
+                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.getContentHeight(), overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px"}}>
                     {this.state.request ?
                         (
                             <Interaction

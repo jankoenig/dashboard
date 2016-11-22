@@ -29,7 +29,6 @@ export default class ConversationListView extends React.Component<ConversationLi
 
     divStyle(): React.CSSProperties {
         return {
-            paddingLeft: "0px"
         };
     }
 
