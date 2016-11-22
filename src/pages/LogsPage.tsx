@@ -2,23 +2,25 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { getLogs } from "../actions/log";
-import { ConversationList } from "../components/ConversationList";
+import { ConversationListView } from "../components/ConversationListView";
 import { Cell, Grid } from "../components/Grid";
+import Interaction from "../components/Interaction";
 import Conversation from "../models/conversation";
+import ConversationList from "../models/conversation-list";
 import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
 import { State } from "../reducers";
-import Interaction from "./Interaction";
+import browser from "../utils/browser";
 
-interface LogsPageProps {
+export interface LogsPageProps {
     logs: Log[];
     source: Source;
     getLogs: (source: string) => (dispatch: Redux.Dispatch<any>) => void;
     params?: any;
 }
 
-interface LogsPageState {
+export interface LogsPageState {
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
@@ -44,6 +46,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     constructor(props: LogsPageProps) {
         super(props);
+
         this.state = {
             source: props.source,
             request: undefined,
@@ -52,21 +55,41 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         };
     }
 
-    setCurrentSourceFromSources(source: Source) {
-        if (source) {
-            this.props.getLogs(source.secretKey);
+    // Tracks the previous size for resize events
+    previousSize: { width: number, height: number } = { width: browser.size().width, height: browser.size().width };
+
+    componentDidMount() {
+        browser.onResize((event) => {
+
+            let target = event.target as Window;
+
+            // The case where the browser got smaller
+            if (target.innerWidth < browser.mobileWidthThreshold && this.previousSize.width >= browser.mobileWidthThreshold) {
+                this.forceUpdate();
+            }
+
+            // The case where the browser got bigger
+            if (target.innerWidth >= browser.mobileWidthThreshold && this.previousSize.width < browser.mobileWidthThreshold) {
+                this.forceUpdate();
+            }
+
+            // Update the previous size
+            this.previousSize = {
+                width: target.innerWidth,
+                height: target.innerHeight
+            };
+        });
+    }
+
+    componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
+        if (this.state.source === undefined && nextProps.source) {
+            this.props.getLogs(nextProps.source.secretKey);
             this.setState({
-                source: source,
+                source: nextProps.source,
                 request: this.state.request,
                 response: this.state.response,
                 outputs: this.state.outputs
             });
-        }
-    }
-
-    componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
-        if (this.state.source === undefined) {
-            this.setCurrentSourceFromSources(nextProps.source);
         }
     }
 
@@ -93,24 +116,29 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     render() {
-        console.info("OUTPUTS " + this.state.outputs);
         return (
             <Grid>
-                <Cell col={6}>
-                    <h6>CONVERSATIONS</h6>
-                    <div style={{ maxHeight: this.getContentHeight() - 90, overflowY: "scroll" }}>
-                        <ConversationList
-                            logs={this.props.logs}
+                <Cell col={6} phone={4} tablet={4}>
+                    <div style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
+                        <ConversationListView
+                            conversations={ConversationList.fromLogs(this.props.logs)}
+                            expandListItemWhenActive={browser.isMobileWidth()}
                             onClick={this.onConversationClicked.bind(this)} />
                     </div>
                 </Cell>
-                <Cell col={6} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
-                    <Interaction
-                        request={this.state.request}
-                        response={this.state.response}
-                        outputs={this.state.outputs}/>
+                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
+                    {this.state.request ?
+                        (
+                            <Interaction
+                                request={this.state.request}
+                                response={this.state.response}
+                                outputs={this.state.outputs} />
+                        ) : (
+                            <h6> Select a log to view </h6>
+                        )
+                    }
                 </Cell>
-            </Grid>
+            </Grid >
         );
     }
 }

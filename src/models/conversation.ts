@@ -2,7 +2,6 @@ import Color from "../utils/color";
 import Log from "./log";
 import Output from "./output";
 
-
 export interface ConversationProperties {
     request: Log;
     response: Log;
@@ -81,15 +80,20 @@ export default class Conversation implements ConversationProperties {
         }
 
         return colors;
-
     }
 
-    get requestType(): string {
-        return this.request.payload.request.type;
+    get requestType(): string | undefined {
+        let requestType: string;
+
+        if (this.request.payload.request) {
+            requestType = this.request.payload.request.type;
+        }
+
+        return requestType;
     }
 
     get intent(): string | undefined {
-        if (this.request.payload.request.intent) {
+        if (this.request.payload.request && this.request.payload.request.intent) {
             return this.request.payload.request.intent.name;
         } else {
             return undefined;

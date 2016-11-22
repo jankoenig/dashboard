@@ -3,7 +3,7 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import { MemoryCacheStorage } from "../store/local-storage";
-import utils from "../utils";
+import browser from "../utils/browser";
 import auth from "./auth";
 import remoteservice from "./remote-service";
 
@@ -20,13 +20,11 @@ let user: remoteservice.user.User = {
 };
 
 let successRedirect = new Promise<any>((resolve, reject) => {
-    console.info("SUCCESS PROMISE");
     resolve({
         success: true
     });
 });
 let successResult = new Promise<any>((resolve, reject) => {
-    console.info("SUCCESS REDIRECT");
     resolve({
         user: user
     });
@@ -52,7 +50,7 @@ describe("Auth ts not mocked", function () {
         before(function () {
             localStorage = new MemoryCacheStorage();
 
-            utilsStub = sinon.stub(utils, "isMobileOrTablet").returns(true);
+            utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
         });
 
         beforeEach(function () {
@@ -70,7 +68,7 @@ describe("Auth ts not mocked", function () {
 
         it("Tests a successful github login.", function (done: MochaDone) {
             utilsStub.restore();
-            utilsStub = sinon.stub(utils, "isMobileOrTablet").returns(true);
+            utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
             authService.signInWithRedirect = sinon.stub().returns(successRedirect);
             authService.getRedirectResult = sinon.stub().returns(successResult);
@@ -87,7 +85,7 @@ describe("Auth ts not mocked", function () {
 
         it("Tests a successful github login for pop-up condition.", function (done: MochaDone) {
             utilsStub.restore();
-            utilsStub = sinon.stub(utils, "isMobileOrTablet").returns(false);
+            utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(false);
 
             authService.signInWithPopup = sinon.stub().returns(successResult);
 
@@ -102,7 +100,7 @@ describe("Auth ts not mocked", function () {
 
         it("Tests an unsuccessful github login.", function (done: MochaDone) {
             utilsStub.restore();
-            utilsStub = sinon.stub(utils, "isMobileOrTablet").returns(true);
+            utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
             authService.getRedirectResult = sinon.stub().returns(unsuccessfulRedirect);
             authService.signInWithRedirect = sinon.stub().returns(unsuccessfulResult);
@@ -119,7 +117,7 @@ describe("Auth ts not mocked", function () {
 
         it("Tests a unsuccessful github login for pop-up condition.", function (done: MochaDone) {
             utilsStub.restore();
-            utilsStub = sinon.stub(utils, "isMobileOrTablet").returns(false);
+            utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(false);
 
             authService.signInWithPopup = sinon.stub().returns(unsuccessfulResult);
 

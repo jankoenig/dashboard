@@ -6,6 +6,7 @@
 /// <reference path="globals/isomorphic-fetch/index.d.ts" />
 /// <reference path="globals/mocha/index.d.ts" />
 /// <reference path="globals/moment/index.d.ts" />
+/// <reference path="globals/node/index.d.ts" />
 /// <reference path="globals/object-assign/index.d.ts" />
 /// <reference path="globals/react-addons-create-fragment/index.d.ts" />
 /// <reference path="globals/react-addons-css-transition-group/index.d.ts" />

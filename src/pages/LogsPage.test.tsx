@@ -1,39 +1,150 @@
 import * as chai from "chai";
-import { shallow, ShallowWrapper } from "enzyme";
+import { mount, shallow, ShallowWrapper } from "enzyme";
 // tslint:disable:no-unused-variable
 import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
+let jsdom = require("mocha-jsdom");
 
 import Conversation from "../models/conversation";
 import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
+import browser from "../utils/browser";
 import { dummyLogs, dummyOutputs } from "../utils/test";
-import { LogsPage } from "./LogsPage";
+import { LogsPage, LogsPageProps } from "./LogsPage";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
 
 describe("Logs Page", function () {
-    it("should render correctly", function () {
-        const getLogs = sinon.spy();
-        const wrapper = shallow(
-            <LogsPage
-                logs={undefined}
-                getLogs={getLogs}
-                source={undefined} />
-        );
+    describe("componentDidMount", function () {
 
-        expect(wrapper.find("Grid")).to.have.length(1);
-        expect(wrapper.find("ConversationList")).to.have.length(1);
+        jsdom();
+
+        it("registers an onResize listener", function () {
+
+            let onResize = sinon.spy(browser, "onResize");
+            let getLogs = sinon.spy();
+            mount(
+                <LogsPage
+                    logs={undefined}
+                    getLogs={getLogs}
+                    source={undefined} />
+            );
+
+            expect(onResize).to.have.been.calledOnce;
+
+            onResize.restore();
+        });
+        it("when window gets smaller it forces an update", function () {
+            let sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
+            let onResizeStub = sinon.stub(browser, "onResize").yields({ target: { innerWidth: 200, innerHeight: 800 } });
+            let forceUpdate = sinon.spy(React.Component.prototype, "forceUpdate");
+            let getLogs = sinon.spy();
+            mount(
+                <LogsPage
+                    logs={undefined}
+                    getLogs={getLogs}
+                    source={undefined} />
+            );
+
+            expect(forceUpdate).to.have.been.calledOnce;
+
+            sizeStub.restore();
+            onResizeStub.restore();
+            forceUpdate.restore();
+        });
+        it("when window gets larger it forces an update", function () {
+            let sizeStub = sinon.stub(browser, "size").returns({ width: 200, height: 800 });
+            let onResizeStub = sinon.stub(browser, "onResize").yields({ target: { innerWidth: 800, innerHeight: 800 } });
+            let forceUpdate = sinon.spy(React.Component.prototype, "forceUpdate");
+            let getLogs = sinon.spy();
+            mount(
+                <LogsPage
+                    logs={undefined}
+                    getLogs={getLogs}
+                    source={undefined} />
+            );
+
+            expect(forceUpdate).to.have.been.calledOnce;
+
+            sizeStub.restore();
+            onResizeStub.restore();
+            forceUpdate.restore();
+        });
     });
+    describe("without source", function () {
 
-    describe("with sources", function () {
+        // Set up some stubs
+        let isMobileWidthStub: Sinon.SinonStub;
+        let onResizeStub: Sinon.SinonStub;
+        let sizeStub: Sinon.SinonStub;
+
+        let getLogs: Sinon.SinonSpy;
+        let wrapper: ShallowWrapper<LogsPageProps, any>;
+
+        beforeEach(function () {
+
+            isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+            onResizeStub = sinon.stub(browser, "onResize");
+            sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
+
+            getLogs = sinon.spy();
+            wrapper = shallow(
+                <LogsPage
+                    logs={undefined}
+                    getLogs={getLogs}
+                    source={undefined} />
+            );
+        });
+
+        afterEach(function () {
+            // and restore them after each test
+            isMobileWidthStub.restore();
+            onResizeStub.restore();
+            sizeStub.restore();
+        });
+
+        it("should render correctly", function () {
+            expect(wrapper.find("Grid")).to.have.length(1);
+            expect(wrapper.find("ConversationListView")).to.have.length(1);
+        });
+        describe("componentWillReceiveProps", function () {
+            it("sets the source and requests logs", function () {
+                wrapper.setProps({
+                    source: new Source({ name: "name" }),
+                    logs: [],
+                    getLogs: getLogs
+                });
+
+                expect(getLogs).to.have.been.calledOnce;
+            });
+        });
+    });
+    describe("with source", function () {
+
+        // Set up some stubs
+        let isMobileWidthStub: Sinon.SinonStub;
+        let onResizeStub: Sinon.SinonStub;
+        let sizeStub: Sinon.SinonStub;
+
+        afterEach(function () {
+            // and restore them after each test
+            isMobileWidthStub.restore();
+            onResizeStub.restore();
+            sizeStub.restore();
+        });
+
         describe("without logs", function () {
             it("should render correctly", function () {
+
+                isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                onResizeStub = sinon.stub(browser, "onResize");
+                sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
+
                 const getLogs = sinon.spy();
                 let logs: Log[] = [];
                 let source = new Source({ name: "name" });
@@ -54,6 +165,11 @@ describe("Logs Page", function () {
 
         describe("with logs", function () {
             it("should render correctly", function () {
+
+                isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                onResizeStub = sinon.stub(browser, "onResize");
+                sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
+
                 const getLogs = sinon.spy();
                 let logs: Log[] = dummyLogs(4);
                 let source = new Source({ name: "name" });
@@ -72,7 +188,8 @@ describe("Logs Page", function () {
             });
         });
 
-        describe("Test interactions", function() {
+        describe("Test interactions", function () {
+
             const getLogs = sinon.spy();
             let logs: Log[] = dummyLogs(2);
             let outputs: Output[] = dummyOutputs(2);
@@ -81,19 +198,22 @@ describe("Logs Page", function () {
                 sourceSlug: "name"
             };
 
-            let convo: Conversation = new Conversation({request: logs[0], response: logs[1], outputs: outputs});
-            let wrapper: ShallowWrapper<any, any>; // LogsPageProps and LogsPageState respectively.
+            let convo: Conversation = new Conversation({ request: logs[0], response: logs[1], outputs: outputs });
+            let wrapper: ShallowWrapper<LogsPageProps, any>;
 
-            beforeEach(function() {
+            beforeEach(function () {
+                isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
+                onResizeStub = sinon.stub(browser, "onResize");
+                sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
+
                 wrapper = shallow(<LogsPage
-                        logs={logs}
-                        getLogs={getLogs}
-                        source={source}
-                        params={params} />);
+                    logs={logs}
+                    getLogs={getLogs}
+                    source={source}
+                    params={params} />);
             });
-
-            it ("Checks the state is proper after a user click.", function() {
-                wrapper.find("ConversationList").simulate("click", convo);
+            it("Checks the state is proper after a user click.", function () {
+                wrapper.find("ConversationListView").simulate("click", convo);
 
                 expect(wrapper.state().request).to.equal(logs[0]);
                 expect(wrapper.state().response).to.equal(logs[1]);
