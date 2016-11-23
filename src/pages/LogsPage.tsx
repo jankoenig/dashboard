@@ -65,14 +65,11 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     componentDidMount() {
-        console.info("adding event listener.");
         this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
-        console.info("Got listener " + this.resizeEvent);
         this.resizeEvent.register();
     }
 
     componentWillUnmount() {
-        console.info("removing event listener.");
         this.resizeEvent.unregister();
     }
 
@@ -93,8 +90,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             width = 200;
             height = 200;
         }
-
-        console.info("Updating dimensions " + width + " " + height);
 
         this.setState({
             width: width,
