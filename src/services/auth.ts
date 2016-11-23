@@ -50,44 +50,50 @@ namespace auth {
         });
     }
 
-    function validateEmail(email: string) {
+    function validateEmail(email: string): Promise<any> {
         let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
+
+        return new Promise<any>(function(resolve, reject) {
+            if (re.test(email)) {
+                resolve(email);
+            } else {
+                reject(new Error("Email " + email + " is not a valid email."));
+            }
+        });
     }
 
-    export function signUpWithEmail(email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
+    function validatePassword(password: string, confirmPassword: string): Promise<any> {
+        let matchProm = new Promise<any>(function (resolve, reject) {
+            if (password === confirmPassword) {
+                resolve(password);
+            } else {
+                reject(new Error("Passwords to not match."));
+            }
+        });
+        let sizeProm = new Promise<any>(function (resolve, reject) {
+            if (password.length >= 6) {
+                resolve(password);
+            } else {
+                reject(new Error("Password must be greater than five characters."));
+            }
+        });
 
-        let localError: string;
-        if (password === confirmPassword) {
-            if (password.length < 6) {
-                localError = "Password needs to be at least 6 characters";
-                callback(false, localError);
-            }
-            else {
-                if (validateEmail(email)) {
-                    auth.createUserWithEmailAndPassword(email, password)
-                        .then(function (user: remoteservice.user.User) {
-                            ReactGA.event({
-                                category: "Authorization",
-                                action: "Signup With Email"
-                            });
-                            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
-                            callback(true);
-                        }).catch(function (error) {
-                            console.error("Error signing up: " + error.message);
-                            callback(false, error.message);
-                        });
-                }
-                else {
-                    localError = "Enter a valid email";
-                    callback(false, localError);
-                }
-            }
-        }
-        else {
-            localError = "Passwords do not match.";
-            callback(false, localError);
-        }
+        return Promise.all([matchProm, sizeProm]);
+    }
+
+    export function signUpWithEmail(email: string, password: string, confirmPassword: string, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): Promise<User> {
+        return Promise.all([validateEmail(email), validatePassword(password, confirmPassword)])
+            .then(function (result: any) {
+                return auth.createUserWithEmailAndPassword(email, password);
+            }).then(function (user: remoteservice.user.User) {
+                ReactGA.event({
+                    category: "Authorization",
+                    action: "Signup With Email"
+                });
+                let modelUser: User = new FirebaseUser(user);
+                localStorage.setItem("user", JSON.stringify(modelUser));
+                return modelUser;
+            });
     }
 
     export function login(email: string, password: string, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): Promise<User> {
@@ -113,12 +119,8 @@ namespace auth {
         return localStorage.getItem("user") ? new User(JSON.parse(localStorage.getItem("user"))) : undefined;
     }
 
-    export function sendResetPasswordEmail(email: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth()): void {
-        auth.sendPasswordResetEmail(email).then(function () {
-            callback(true);
-        }, function (error) {
-            callback(false, error.message);
-        });
+    export function sendResetPasswordEmail(email: string, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth()): Promise<any> {
+        return auth.sendPasswordResetEmail(email);
     }
 }
 

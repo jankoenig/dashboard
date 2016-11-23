@@ -98,7 +98,11 @@ export function loginWithGithub(redirectStrat?: SuccessCallback): (dispatch: Red
 export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.signUpWithEmail(email, password, confirmPassword, internalCallback);
+      auth.signUpWithEmail(email, password, confirmPassword).then(function () {
+        internalCallback(true);
+      }).catch(function (err: Error) {
+        internalCallback(false, err.message);
+      });
     });
   };
 }
@@ -117,13 +121,19 @@ export function logout(callback?: (success: boolean) => void) {
   };
 }
 
-export function resetPassword(email: string) {
+export function resetPassword(email: string, callback?: (success: boolean) => void) {
   return function (dispatch: Redux.Dispatch<void>) {
-    auth.sendResetPasswordEmail(email, function (success, error) {
-      if (success) {
-        dispatch(displaySnackbar("Check your inbox!"));
-      } else {
-        dispatch(authFormError(error));
+    auth.sendResetPasswordEmail(email).then(function () {
+      dispatch(displaySnackbar("Check your inbox!"));
+      console.info("SUCCESS");
+      if (callback) {
+        callback(true);
+      }
+    }).catch(function (error: Error) {
+      dispatch(authFormError(error.message));
+      console.info("FAIL");
+      if (callback) {
+        callback(false);
       }
     });
   };
