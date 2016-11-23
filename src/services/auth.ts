@@ -11,48 +11,43 @@ import { remoteservice } from "./remote-service";
  */
 namespace auth {
 
-    export function loginWithGithub(callback: (success: boolean, error?: string) => void, auth?: remoteservice.auth.Auth, storage?: LocalStorage) {
+    export function loginWithGithub(auth?: remoteservice.auth.Auth, storage?: LocalStorage): Promise<User> {
         let provider = new remoteservice.auth.GithubAuthProvider();
-        loginWithProvider(provider, callback, auth, storage);
+        return loginWithProvider(provider, auth, storage);
     }
 
-    function loginWithProvider(provider: remoteservice.auth.AuthProvider, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): void {
+    function loginWithProvider(provider: remoteservice.auth.AuthProvider, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): Promise<User> {
+        let firstPromise: Promise<User>;
         if (browser.isMobileOrTablet()) {
-            // Use redirect to authenticate user if it's a mobile device
-            auth.signInWithRedirect(provider)
-                .then(function () {
-                    return auth.getRedirectResult();
-                })
-                .then(function (result) {
-                    authProviderSuccessHandler(result, callback, storage);
-                }).catch(function (error) {
-                    authProviderFailHandler(error, callback);
-                });
+            firstPromise = auth.signInWithRedirect(provider)
+                                .then(function (results: any) {
+                                    return auth.getRedirectResult();
+                                });
         } else {
-            auth.signInWithPopup(provider).then(function (result) {
-                authProviderSuccessHandler(result, callback, storage);
-            }).catch(function (error) {
-                authProviderFailHandler(error, callback);
-            });
-        }
-    }
-
-    function authProviderSuccessHandler(result: any, callback: (success: boolean, error?: string) => void, localStorage: LocalStorage = new BrowserStorage()) {
-        if (result.user !== undefined) {
-            ReactGA.event({
-                category: "Authorization",
-                action: "Login With Github"
-            });
-            let user: remoteservice.user.User = result.user;
-            localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
+            firstPromise = auth.signInWithPopup(provider);
         }
 
-        callback(true);
+        firstPromise.then(function (result: any) {
+            return authProviderSuccessHandler(result, storage);
+        });
+        return firstPromise;
     }
 
-    function authProviderFailHandler(error: any, callback: (success: boolean, error?: string) => void) {
-        console.error("Error logging In: " + error.message);
-        callback(false, error.message);
+    function authProviderSuccessHandler(result: any, localStorage: LocalStorage = new BrowserStorage()): Promise<User> {
+        return new Promise<User>((resolve, reject) => {
+            let user: User = undefined;
+            if (result.user !== undefined) {
+                ReactGA.event({
+                    category: "Authorization",
+                    action: "Login With Github"
+                });
+                user = new FirebaseUser(result.user);
+                localStorage.setItem("user", JSON.stringify(user));
+                resolve(user);
+            } else {
+                reject(new Error("Error returned trying to log in."));
+            }
+        });
     }
 
     function validateEmail(email: string) {

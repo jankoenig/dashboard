@@ -67,9 +67,13 @@ describe("Session.ts", function () {
         let setUserStub: Sinon.SinonStub;
 
         before("Stubbing auth namespace.", function() {
-            loginGithubStub = sinon.stub(auth, "loginWithGithub", (callback: (success: boolean, error?: string) => void) => {
-                callback(true, undefined);
-            });
+            loginGithubStub = sinon.stub(auth, "loginWithGithub").returns(new Promise<User>((resolve, reject) => {
+                resolve(new User({
+                    email: "test@test.com",
+                    displayName: "TestyMcTestFace",
+                    photoUrl: undefined
+                }));
+            }));
 
             setUserStub = sinon.stub(auth, "user", () => {
                 return new User({ email: "testEmail" });
@@ -81,15 +85,17 @@ describe("Session.ts", function () {
             setUserStub.restore();
         });
 
-        it ("Tests the login flow works properly on a successful github login with a default login strategy.", function() {
+        it ("Tests the login flow works properly on a successful github login with a default login strategy.", function(done: MochaDone) {
             verifySuccessLogin("/#welcome", (store: any) => {
                 session.loginWithGithub()(store.dispatch);
+                done();
             });
         });
 
-        it ("Tests the login flow works properly on successful github login with overridden login strategy.", function() {
+        it ("Tests the login flow works properly on successful github login with overridden login strategy.", function(done: MochaDone) {
             verifySuccessLogin("/NextPath", (store: any) => {
                 session.loginWithGithub(new session.ToPathCallback("/NextPath"))(store.dispatch);
+                done();
             });
         });
     });

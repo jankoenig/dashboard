@@ -55,7 +55,7 @@ class DefaultRedirectCallback extends ToPathCallback {
 
 function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallback = new DefaultRedirectCallback(), loginStrat: (callback: (success: boolean, error?: string) => void) => void) {
   dispatch(sendingRequest(true));
-  loginStrat(function (success, error) {
+  loginStrat((success, error) => {
     dispatch(sendingRequest(false));
     dispatch(setUser(auth.user()));
 
@@ -69,7 +69,7 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
   });
 }
 
-export function login(email: string, password: string, redirectStrat?: SuccessCallback) {
+export function login(email: string, password: string, redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => void  {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
       auth.login(email, password, internalCallback);
@@ -77,10 +77,14 @@ export function login(email: string, password: string, redirectStrat?: SuccessCa
   };
 }
 
-export function loginWithGithub(redirectStrat?: SuccessCallback) {
+export function loginWithGithub(redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => void {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.loginWithGithub(internalCallback);
+      auth.loginWithGithub().then((user: User) => {
+          internalCallback(true);
+      }).catch((err: Error) => {
+          internalCallback(false, err.message);
+      });
     });
   };
 }

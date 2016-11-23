@@ -2,6 +2,7 @@ import * as chai from "chai";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
+import User from "../models/user";
 import { MemoryCacheStorage } from "../store/local-storage";
 import browser from "../utils/browser";
 import auth from "./auth";
@@ -66,68 +67,61 @@ describe("Auth ts not mocked", function () {
             utilsStub.restore();
         });
 
-        it("Tests a successful github login.", function (done: MochaDone) {
+        it("Tests a successful github login.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
             authService.signInWithRedirect = sinon.stub().returns(successRedirect);
             authService.getRedirectResult = sinon.stub().returns(successResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
-                expect(localStorage.length).to.equal(1);
-                expect(authService.signInWithRedirect).to.be.calledOnce;
-                expect(authService.getRedirectResult).to.be.calledOnce;
-                done();
-            }, authService, localStorage);
+            return auth.loginWithGithub(authService, localStorage)
+                .then(function(user: User) {
+                    expect(user).to.not.be.undefined;
+                    expect(localStorage.length).to.equal(1);
+                    expect(authService.signInWithRedirect).to.be.calledOnce;
+                    expect(authService.getRedirectResult).to.be.calledOnce;
+            });
         });
 
-        it("Tests a successful github login for pop-up condition.", function (done: MochaDone) {
+        it("Tests a successful github login for pop-up condition.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(false);
 
             authService.signInWithPopup = sinon.stub().returns(successResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
+            auth.loginWithGithub(authService, localStorage).then(function(user: User) {
+                expect(user).to.not.be.undefined;
                 expect(localStorage.length).to.equal(1);
                 expect(authService.signInWithPopup).to.be.calledOnce;
-                done();
-            }, authService, localStorage);
+            });
         });
 
-        it("Tests an unsuccessful github login.", function (done: MochaDone) {
+        it("Tests an unsuccessful github login.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
             authService.getRedirectResult = sinon.stub().returns(unsuccessfulRedirect);
             authService.signInWithRedirect = sinon.stub().returns(unsuccessfulResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
+            auth.loginWithGithub(authService, localStorage).catch(function(err: Error) {
+                expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithRedirect).to.be.calledOnce;
                 expect(authService.getRedirectResult).to.not.be.called;
-                done();
-            }, authService, localStorage);
+            });
         });
 
-        it("Tests a unsuccessful github login for pop-up condition.", function (done: MochaDone) {
+        it("Tests a unsuccessful github login for pop-up condition.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(false);
 
             authService.signInWithPopup = sinon.stub().returns(unsuccessfulResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
+            auth.loginWithGithub(authService, localStorage).catch(function(err: Error) {
+                expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithPopup).to.be.calledOnce;
-                done();
-            }, authService, localStorage);
+            });
         });
     });
 
