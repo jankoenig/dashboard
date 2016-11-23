@@ -19,13 +19,14 @@ describe("AuthForm", function () {
         // A form, two inputs and a button
         expect(wrapper.find("form")).to.have.length(1);
         expect(wrapper.find("FormInput")).to.have.length(3);
-        expect(wrapper.find("button")).to.have.length(3);
+        expect(wrapper.find("input")).to.have.length(1);
+        expect(wrapper.find("button")).to.have.length(2);
     });
     it("can be submitted", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow(<AuthForm onSubmit={onSubmit} />);
 
-        wrapper.find("button").first().simulate("click");
+        wrapper.find("form").first().simulate("submit");
         expect(onSubmit).to.have.been.called;
     });
     it("can sign up", function () {
@@ -37,9 +38,8 @@ describe("AuthForm", function () {
                                 confirmPassword ={"passwaord"}
                                 onSignUpWithEmail={onSignUpWithEmail}/>);
 
-        wrapper.find("button").at(1).simulate("click");
-        // wrapper.find("input").at(3).simulate("change", {confirmPassword: {value: "pass"}});
-        wrapper.find("button").at(1).simulate("click");
+        wrapper.find("button").at(0).simulate("click");
+        wrapper.find("button").at(0).simulate("click");
         expect(onSignUpWithEmail).to.have.been.called;
     });
      it("can not sign up wrong password", function () {
@@ -51,8 +51,8 @@ describe("AuthForm", function () {
                                 confirmPassword ={"passrd"}
                                 onSignUpWithEmail={onSignUpWithEmail}/>);
 
-        wrapper.find("button").at(1).simulate("click");
-        wrapper.find("button").at(1).simulate("click");
+        wrapper.find("button").at(0).simulate("click");
+        wrapper.find("button").at(0).simulate("click");
         expect(onSignUpWithEmail).to.have.been.called;
     });
      it("can not sign up wrong email", function () {
@@ -64,8 +64,8 @@ describe("AuthForm", function () {
                                 confirmPassword ={"password"}
                                 onSignUpWithEmail={onSignUpWithEmail}/>);
 
-        wrapper.find("button").at(1).simulate("click");
-        wrapper.find("button").at(1).simulate("click");
+        wrapper.find("button").at(0).simulate("click");
+        wrapper.find("button").at(0).simulate("click");
         expect(onSignUpWithEmail).to.have.been.called;
     });
     it("can be logged in with Github", function () {
