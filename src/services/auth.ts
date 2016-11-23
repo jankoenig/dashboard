@@ -20,9 +20,9 @@ namespace auth {
         let firstPromise: Promise<User>;
         if (browser.isMobileOrTablet()) {
             firstPromise = auth.signInWithRedirect(provider)
-                                .then(function (results: any) {
-                                    return auth.getRedirectResult();
-                                });
+                .then(function (results: any) {
+                    return auth.getRedirectResult();
+                });
         } else {
             firstPromise = auth.signInWithPopup(provider);
         }
@@ -90,27 +90,22 @@ namespace auth {
         }
     }
 
-    export function login(email: string, password: string, callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
-        auth.signInWithEmailAndPassword(email, password)
+    export function login(email: string, password: string, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): Promise<User> {
+        return auth.signInWithEmailAndPassword(email, password)
             .then(function (user: remoteservice.user.User) {
                 ReactGA.event({
                     category: "Authorization",
                     action: "Login With Email"
                 });
-                localStorage.setItem("user", JSON.stringify(new FirebaseUser(user)));
-                callback(true);
-            }).catch(function (error) {
-                console.error("Error logging In: " + error.message);
-                callback(false, error.message);
+                let modelUser: User = new FirebaseUser(user);
+                localStorage.setItem("user", JSON.stringify(modelUser));
+                return modelUser;
             });
     }
 
-    export function logout(callback: (success: boolean, error?: string) => void, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): void {
-        auth.signOut().then(function () {
+    export function logout(auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), localStorage: LocalStorage = new BrowserStorage()): Promise<any> {
+        return auth.signOut().then(function () {
             localStorage.removeItem("user");
-            callback(true);
-        }).catch(function (error) {
-            callback(false, error.message);
         });
     }
 

@@ -69,10 +69,16 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
   });
 }
 
-export function login(email: string, password: string, redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => void  {
+export function login(email: string, password: string, redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => void {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.login(email, password, internalCallback);
+      auth.login(email, password)
+        .then(function (user: User) {
+          internalCallback(true);
+        })
+        .catch(function (err: Error) {
+          internalCallback(false, err.message);
+        });
     });
   };
 }
@@ -80,10 +86,10 @@ export function login(email: string, password: string, redirectStrat?: SuccessCa
 export function loginWithGithub(redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => void {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.loginWithGithub().then((user: User) => {
-          internalCallback(true);
-      }).catch((err: Error) => {
-          internalCallback(false, err.message);
+      auth.loginWithGithub().then(function (user: User) {
+        internalCallback(true);
+      }).catch(function (err: Error) {
+        internalCallback(false, err.message);
       });
     });
   };
@@ -97,12 +103,15 @@ export function signUpWithEmail(email: string, password: string, confirmPassword
   };
 }
 
-export function logout() {
+export function logout(callback?: (success: boolean) => void) {
   return function (dispatch: Redux.Dispatch<void>) {
-    auth.logout(function (success) {
+    auth.logout().then(function (success) {
       if (success) {
         dispatch({ type: LOGOUT_USER });
         dispatch(push("/login"));
+      }
+      if (callback) {
+        callback(success);
       }
     });
   };
