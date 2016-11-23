@@ -80,17 +80,15 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         // Algorithm taken from https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
         // Modified to get around unit tests which don't have half this.
         let width: number, height: number;
-        console.info("CHECKING " + window);
         if (window) {
-            // console.info("IN WINDOW " + typeof(window) + " " + window);
             let w = window,
                 d = document,
                 dElement = d.documentElement,
-                body = d.getElementsByClassName("mdl-layout__content")[0];
-                width = w.innerWidth || dElement.clientWidth || body.clientWidth;
-                height = w.innerHeight || dElement.clientHeight || body.clientHeight;
+                body = d.getElementsByClassName(Grid.GRID_CLASS)[0];
+
+                width = w.innerWidth || dElement.clientWidth || (body ? body.clientWidth : 0);
+                height = w.innerHeight || dElement.clientHeight || (body ? body.clientHeight : 0);
         } else {
-            console.info("OUT OF WINDOW");
             // Unit tests
             width = 200;
             height = 200;

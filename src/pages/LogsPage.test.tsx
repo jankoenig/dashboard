@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { mount, ReactWrapper, shallow, ShallowWrapper } from "enzyme";
+import { mount, shallow, ShallowWrapper } from "enzyme";
 // tslint:disable:no-unused-variable
 import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
