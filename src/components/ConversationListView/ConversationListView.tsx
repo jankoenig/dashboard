@@ -80,7 +80,7 @@ export default class ConversationListView extends React.Component<ConversationLi
             conversation={conversation}
             onClick={this.onClick.bind(this)}
             active={this.isConversationActive(conversation)}
-            showInteractionOnActive={this.props.expandListItemWhenActive} />
+            showInteractionOnActive={this.props.expandListItemWhenActive} />;
     }
 
     render() {

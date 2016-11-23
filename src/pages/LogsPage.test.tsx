@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { mount, shallow, ShallowWrapper } from "enzyme";
+import { mount, ReactWrapper, shallow, ShallowWrapper } from "enzyme";
 // tslint:disable:no-unused-variable
 import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
@@ -19,10 +19,20 @@ import { LogsPage, LogsPageProps } from "./LogsPage";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("Logs Page", function () {
-    describe("componentDidMount", function () {
+class TestingWrappedEvent implements browser.WrappedEvent {
+    register() {
 
-        jsdom();
+    }
+    unregister() {
+
+    }
+}
+
+describe("Logs Page", function () {
+
+    jsdom();
+
+    describe("componentDidMount", function () {
 
         it("registers an onResize listener", function () {
 
@@ -39,11 +49,22 @@ describe("Logs Page", function () {
 
             onResize.restore();
         });
+
         it("when window gets smaller it forces an update", function () {
+            // No need for this to do anything as they won't be called. The resizeStub throws the event to the callback.
+            let wrappedEvent: browser.WrappedEvent = new TestingWrappedEvent();
+            wrappedEvent.register = sinon.stub();
+            wrappedEvent.unregister = sinon.stub();
+
+            // Utils stubs.  Not testing these so do whatever.
             let sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
-            let onResizeStub = sinon.stub(browser, "onResize").yields({ target: { innerWidth: 200, innerHeight: 800 } });
-            let forceUpdate = sinon.spy(React.Component.prototype, "forceUpdate");
+            let onResizeStub = sinon.stub(browser, "onResize")
+                .yields({ target: { innerWidth: 200, innerHeight: 800 } })
+                .returns(wrappedEvent);
+
+            let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
             let getLogs = sinon.spy();
+
             mount(
                 <LogsPage
                     logs={undefined}
@@ -51,16 +72,27 @@ describe("Logs Page", function () {
                     source={undefined} />
             );
 
-            expect(forceUpdate).to.have.been.calledOnce;
+            expect(wrappedEvent.register).to.have.been.calledOnce;
+            expect(updateDimensions).to.have.been.calledTwice; // Once for mounting and once for event thrown.
 
             sizeStub.restore();
             onResizeStub.restore();
-            forceUpdate.restore();
+            updateDimensions.restore();
         });
+
         it("when window gets larger it forces an update", function () {
+            // No need for this to do anything as they won't be called. The resizeStub throws the event to the callback.
+            let wrappedEvent: browser.WrappedEvent = new TestingWrappedEvent();
+            wrappedEvent.register = sinon.stub();
+            wrappedEvent.unregister = sinon.stub();
+
+            // Utils stubs.  Not testing these so do whatever.
             let sizeStub = sinon.stub(browser, "size").returns({ width: 200, height: 800 });
-            let onResizeStub = sinon.stub(browser, "onResize").yields({ target: { innerWidth: 800, innerHeight: 800 } });
-            let forceUpdate = sinon.spy(React.Component.prototype, "forceUpdate");
+            let onResizeStub = sinon.stub(browser, "onResize")
+                .yields({ target: { innerWidth: 800, innerHeight: 800 } })
+                .returns(wrappedEvent);
+
+            let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
             let getLogs = sinon.spy();
             mount(
                 <LogsPage
@@ -69,13 +101,15 @@ describe("Logs Page", function () {
                     source={undefined} />
             );
 
-            expect(forceUpdate).to.have.been.calledOnce;
+            expect(wrappedEvent.register).to.have.been.calledOnce;
+            expect(updateDimensions).to.have.been.calledTwice;
 
             sizeStub.restore();
             onResizeStub.restore();
-            forceUpdate.restore();
+            updateDimensions.restore();
         });
     });
+
     describe("without source", function () {
 
         // Set up some stubs
@@ -112,6 +146,7 @@ describe("Logs Page", function () {
             expect(wrapper.find("Grid")).to.have.length(1);
             expect(wrapper.find("ConversationListView")).to.have.length(1);
         });
+
         describe("componentWillReceiveProps", function () {
             it("sets the source and requests logs", function () {
                 wrapper.setProps({
@@ -124,6 +159,7 @@ describe("Logs Page", function () {
             });
         });
     });
+
     describe("with source", function () {
 
         // Set up some stubs

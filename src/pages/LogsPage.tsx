@@ -46,9 +46,10 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 
 export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
+    resizeEvent: browser.WrappedEvent;
+
     constructor(props: LogsPageProps) {
         super(props);
-
         this.state = {
             width: 0,
             height: 0,
@@ -64,21 +65,38 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     componentDidMount() {
-        window.addEventListener("resize", this.updateDimensions.bind(this));
+        console.info("adding event listener.");
+        this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
+        console.info("Got listener " + this.resizeEvent);
+        this.resizeEvent.register();
     }
 
     componentWillUnmount() {
-        window.removeEventListener("resize", this.updateDimensions.bind(this));
+        console.info("removing event listener.");
+        this.resizeEvent.unregister();
     }
 
     updateDimensions() {
         // Algorithm taken from https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
-        let w = window,
-            d = document,
-            documentElement = d.documentElement,
-            body = d.getElementsByTagName("mdl-layout__content")[0],
-            width = w.innerWidth || documentElement.clientWidth || body.clientWidth,
-            height = w.innerHeight || documentElement.clientHeight || body.clientHeight;
+        // Modified to get around unit tests which don't have half this.
+        let width: number, height: number;
+        console.info("CHECKING " + window);
+        if (window) {
+            // console.info("IN WINDOW " + typeof(window) + " " + window);
+            let w = window,
+                d = document,
+                dElement = d.documentElement,
+                body = d.getElementsByClassName("mdl-layout__content")[0];
+                width = w.innerWidth || dElement.clientWidth || body.clientWidth;
+                height = w.innerHeight || dElement.clientHeight || body.clientHeight;
+        } else {
+            console.info("OUT OF WINDOW");
+            // Unit tests
+            width = 200;
+            height = 200;
+        }
+
+        console.info("Updating dimensions " + width + " " + height);
 
         this.setState({
             width: width,

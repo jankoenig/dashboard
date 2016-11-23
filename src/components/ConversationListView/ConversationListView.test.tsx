@@ -23,7 +23,7 @@ describe("ConversationListView", function () {
             let onClick = sinon.spy();
             const wrapper = shallow(<ConversationListView conversations={conversations} onClick={onClick} />);
 
-            expect(wrapper.find("ConversationListViewItem")).to.have.length(2);
+            expect(wrapper.find("ReactList")).to.have.length(1);
             expect(wrapper.find("p")).to.have.length(0);
         });
     });
@@ -32,7 +32,7 @@ describe("ConversationListView", function () {
             let onClick = sinon.spy();
             const wrapper = shallow(<ConversationListView conversations={[]} onClick={onClick} />);
 
-            expect(wrapper.find("ConversationListViewItem")).to.have.length(0);
+            expect(wrapper.find("ReactList")).to.have.length(0);
             expect(wrapper.find("p")).to.have.length(1);
         });
     });

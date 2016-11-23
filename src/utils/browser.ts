@@ -1,5 +1,10 @@
 
 export namespace Browser {
+    export interface WrappedEvent {
+        register(): void;
+        unregister(): void;
+    }
+
     /**
      * Check if the browser is mobile or not
      * From: http://stackoverflow.com/a/11381730/1349766
@@ -49,10 +54,21 @@ export namespace Browser {
      * @export
      * @param {(event: UIEvent) => void} callback
      * @param {Window} [_window]
+     *
+     * @return A wrapped event in which you can register it or unregister it when the time comes.
     * */
-    export function onResize(callback: (event: UIEvent) => void, _window?: Window) {
-        _window = _window ? _window : window;
-        _window.addEventListener("resize", callback);
+    export function onResize(callback: (event: UIEvent) => void, _window?: Window): WrappedEvent {
+        return {
+            register() {
+                _window = _window ? _window : window;
+                _window.addEventListener("resize", callback);
+            },
+
+            unregister() {
+                _window = _window ? _window : window;
+                _window.removeEventListener("resize", callback);
+            }
+        };
     }
 
     /**
