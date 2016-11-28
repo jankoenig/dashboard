@@ -75,7 +75,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.updateDimensions();
     }
 
-    componentDidUnmount() {
+    componentWillUnmount() {
         this.resizeEvent.unregister();
     }
 
@@ -97,18 +97,12 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         // Modified to get around unit tests which don't have half this.
         let width: number, height: number, heightOffset: number;
         if (window) {
-            let w = window,
-                body = this.root.getElementsByClassName(Grid.GRID_CLASS)[0];
+            let windowDimens = browser.size();
+            let rect = this.root.getBoundingClientRect();
 
-            width = w.innerWidth || this.root.clientWidth || (body ? body.clientWidth : 0);
-            height = w.innerHeight || this.root.clientHeight || (body ? body.clientHeight : 0);
-
-            if (body) {
-                let rect = body.getBoundingClientRect();
-                heightOffset = rect.top;
-            } else {
-                heightOffset = 0;
-            }
+            width = windowDimens.width;
+            height = windowDimens.height;
+            heightOffset = rect.top;
         } else {
             // Unit tests
             width = 200;
