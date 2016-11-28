@@ -18,9 +18,9 @@ interface CellDimensions {
 }
 
 interface Dimensions {
-    width: number,
-    height: number,
-    cellDimens: CellDimensions
+    width: number;
+    height: number;
+    cellDimens: CellDimensions;
 }
 
 export interface LogsPageProps {
@@ -68,13 +68,10 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         };
     }
 
-    componentWillMount() {
-        this.updateDimensions();
-    }
-
     componentDidMount() {
         this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
         this.resizeEvent.register();
+        this.updateDimensions();
     }
 
     componentWillUnmount() {
@@ -82,6 +79,19 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     updateDimensions() {
+        let dimens: Dimensions = this.getDimensions();
+        if (this.shouldUpdate(dimens)) {
+            this.setState( {
+                lastDimens: dimens,
+                source: (this.state) ? this.state.source : undefined,
+                request: (this.state) ? this.state.request : undefined,
+                response: (this.state) ? this.state.response : undefined,
+                outputs: (this.state) ? this.state.outputs : undefined
+            });
+        }
+    }
+
+    getDimensions(): Dimensions {
         // Algorithm taken from https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
         // Modified to get around unit tests which don't have half this.
         let width: number, height: number, heightOffset: number;
@@ -95,12 +105,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             height = w.innerHeight || dElement.clientHeight || (body ? body.clientHeight : 0);
 
             if (body) {
-                let rect = dElement.getBoundingClientRect();
-                let rect2 = body.getBoundingClientRect();
-                console.info("LIST: Offset = " + body.clientLeft + " " + body.clientTop + " " + body.clientWidth + " " + body.clientHeight);
-                console.info("LIST: rect2 " + rect2.left + " " + rect2.top + " " + rect2.right + " " + rect2.bottom);
-                console.info("LIST: rect2 Dimen " + rect2.width + " " + rect2.height);
-                heightOffset = rect2.top;
+                let rect = body.getBoundingClientRect();
+                heightOffset = rect.top;
             } else {
                 heightOffset = 0;
             }
@@ -111,21 +117,20 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             heightOffset = 0;
         }
 
-        console.info("Final " + width + " " + height + " " + heightOffset);
-
-        this.setState({
-            lastDimens: {
+        return {
                 width: width,
                 height: height,
                 cellDimens: {
                     height: height - heightOffset,
                 }
-            },
-            source: (this.state) ? this.state.source : undefined,
-            request: (this.state) ? this.state.request : undefined,
-            response: (this.state) ? this.state.response : undefined,
-            outputs: (this.state) ? this.state.outputs : undefined
-        });
+            };
+    }
+
+    shouldUpdate(dimens: Dimensions): boolean {
+        let lastDimens = this.state.lastDimens;
+        return lastDimens.height !== dimens.height ||
+            dimens.width < browser.mobileWidthThreshold && lastDimens.width >= browser.mobileWidthThreshold ||
+            dimens.width >= browser.mobileWidthThreshold && lastDimens.width < browser.mobileWidthThreshold;
     }
 
     componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
@@ -152,7 +157,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     render() {
-        console.info("RENDER " + this.state.lastDimens.width + " " + this.state.lastDimens.height + " " + this.state.lastDimens.cellDimens.height);
         return (
             <Grid
                 noSpacing={true}>
