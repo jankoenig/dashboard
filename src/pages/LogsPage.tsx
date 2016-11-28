@@ -55,6 +55,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 
 export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
+    root: Element;
     resizeEvent: browser.WrappedEvent;
 
     constructor(props: LogsPageProps) {
@@ -74,14 +75,14 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.updateDimensions();
     }
 
-    componentWillUnmount() {
+    componentDidUnmount() {
         this.resizeEvent.unregister();
     }
 
     updateDimensions() {
         let dimens: Dimensions = this.getDimensions();
         if (this.shouldUpdate(dimens)) {
-            this.setState( {
+            this.setState({
                 lastDimens: dimens,
                 source: (this.state) ? this.state.source : undefined,
                 request: (this.state) ? this.state.request : undefined,
@@ -97,12 +98,10 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         let width: number, height: number, heightOffset: number;
         if (window) {
             let w = window,
-                d = document,
-                dElement = d.documentElement,
-                body = d.getElementsByClassName(Grid.GRID_CLASS)[0];
+                body = this.root.getElementsByClassName(Grid.GRID_CLASS)[0];
 
-            width = w.innerWidth || dElement.clientWidth || (body ? body.clientWidth : 0);
-            height = w.innerHeight || dElement.clientHeight || (body ? body.clientHeight : 0);
+            width = w.innerWidth || this.root.clientWidth || (body ? body.clientWidth : 0);
+            height = w.innerHeight || this.root.clientHeight || (body ? body.clientHeight : 0);
 
             if (body) {
                 let rect = body.getBoundingClientRect();
@@ -118,12 +117,12 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         }
 
         return {
-                width: width,
-                height: height,
-                cellDimens: {
-                    height: height - heightOffset,
-                }
-            };
+            width: width,
+            height: height,
+            cellDimens: {
+                height: height - heightOffset,
+            }
+        };
     }
 
     shouldUpdate(dimens: Dimensions): boolean {
@@ -156,31 +155,38 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         });
     }
 
+    onRootLayout(element: Element) {
+        this.root = element;
+    }
+
     render() {
         return (
-            <Grid
-                noSpacing={true}>
-                <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                    <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "auto" }}>
-                        <ConversationListView
-                            conversations={ConversationList.fromLogs(this.props.logs)}
-                            expandListItemWhenActive={browser.isMobileWidth()}
-                            onClick={this.onConversationClicked.bind(this)} />
-                    </div>
-                </Cell>
-                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
-                    {this.state.request ?
-                        (
-                            <Interaction
-                                request={this.state.request}
-                                response={this.state.response}
-                                outputs={this.state.outputs} />
-                        ) : (
-                            <h6> Select a log to view </h6>
-                        )
-                    }
-                </Cell>
-            </Grid >
+            <div
+                ref={ this.onRootLayout.bind(this) }>
+                <Grid
+                    noSpacing={true}>
+                    <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
+                        <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "auto" }}>
+                            <ConversationListView
+                                conversations={ConversationList.fromLogs(this.props.logs)}
+                                expandListItemWhenActive={browser.isMobileWidth()}
+                                onClick={this.onConversationClicked.bind(this)} />
+                        </div>
+                    </Cell>
+                    <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
+                        {this.state.request ?
+                            (
+                                <Interaction
+                                    request={this.state.request}
+                                    response={this.state.response}
+                                    outputs={this.state.outputs} />
+                            ) : (
+                                <h6> Select a log to view </h6>
+                            )
+                        }
+                    </Cell>
+                </Grid >
+            </div>
         );
     }
 }
