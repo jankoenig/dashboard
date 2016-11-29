@@ -14,6 +14,7 @@ import Output from "../models/output";
 import Source from "../models/source";
 import { State } from "../reducers";
 import browser from "../utils/browser";
+import { filter } from "../utils/promise-utils";
 
 interface CellDimensions {
     height: number;
@@ -155,10 +156,24 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.root = element;
     }
 
+    beginFilter(value: string) {
+        let startDate: Date = this.props.logs[25].timestamp;
+        let endDate: Date = this.props.logs[0].timestamp;
+        console.info("Start date = " + startDate);
+        console.info("End date " + endDate);
+        filter(this.props.logs, DateFilter(startDate, endDate))
+            .then(function(logs: Log[]) {
+                console.info("Found " + logs.length + " logs");
+            }).catch(function(err: Error) {
+                console.info("No logs found. " + err.message);
+            });
+    }
+
     render() {
         return (
             <div
                 ref={ this.onRootLayout.bind(this) }>
+                <FilterComponent onChange={this.beginFilter.bind(this)} />
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
@@ -193,23 +208,39 @@ export default connect(
 )(LogsPage);
 
 interface  FilterProps {
-    selections: string[];
+    onChange: (text: string) => void;
 }
 
 interface FilterState {
 
 }
 
-class Filter extends React.Component<FilterProps, FilterState> {
+class FilterComponent extends React.Component<FilterProps, FilterState> {
     constructor(props: FilterProps) {
         super(props);
         this.state = {
         };
     }
 
+    handleChange(event: any) {
+        console.info("This was found " + event.value);
+        this.props.onChange(event.value);
+    }
+
     render() {
         return (
-            <Select selections={this.props.selections} hint="Choose" />
+            <form action="#">
+                <input type="text" name="sort" onChange={this.handleChange.bind(this)}/>
+            </form>
         );
     }
+}
+
+function DateFilter(startDate: Date, endDate: Date): (item: Log) => boolean {
+    return function(item: Log): boolean {
+        let created = item.timestamp;
+        console.info(startDate + " " + created + " " + endDate);
+        console.info("Filtering " + created + " " + (startDate <= created) + " " + (created <= endDate));
+        return startDate <= created && created <= endDate;
+    };
 }
