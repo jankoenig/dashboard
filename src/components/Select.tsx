@@ -33,10 +33,11 @@ class Select extends React.Component<SelectProps, SelectState> {
         let list: React.ReactNode[] = [];
 
         for (let selection in this.props.selections) {
-            list.push(new Option({
-                value: selection.replace(/\s/, ""),
-                title: selection
-            }));
+            list.push((
+                        <Option value={selection.replace(/\s/, "") } title={ selection } />
+                    )
+                );
+
         }
 
         return (
