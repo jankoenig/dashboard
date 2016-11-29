@@ -18,7 +18,7 @@ let testHint = "TestHint";
 
 describe("Select", function () {
     describe("with text", function () {
-        it("renders correctly", function () {
+        it("base correctly", function () {
             const wrapper = shallow(<Select hint={testHint} selections={testSelections} />);
 
             const div = wrapper.find("div").first();
@@ -28,7 +28,9 @@ describe("Select", function () {
 
             expect(select.props().className).to.equal("mdl-select__input");
 
-            const options = select.find("option");
+            console.info("CHILDREN = " + select.children().length);
+
+            const options = wrapper.find("option");
 
             expect(options.length).to.equal(3);
 
