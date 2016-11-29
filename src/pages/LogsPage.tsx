@@ -13,6 +13,16 @@ import Source from "../models/source";
 import { State } from "../reducers";
 import browser from "../utils/browser";
 
+interface CellDimensions {
+    height: number;
+}
+
+interface Dimensions {
+    width: number;
+    height: number;
+    cellDimens: CellDimensions;
+}
+
 export interface LogsPageProps {
     logs: Log[];
     source: Source;
@@ -20,9 +30,8 @@ export interface LogsPageProps {
     params?: any;
 }
 
-export interface LogsPageState {
-    width: number;
-    height: number;
+interface LogsPageState {
+    lastDimens: Dimensions;
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
@@ -46,13 +55,13 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 
 export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
+    root: Element;
     resizeEvent: browser.WrappedEvent;
 
     constructor(props: LogsPageProps) {
         super(props);
         this.state = {
-            width: 0,
-            height: 0,
+            lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
             source: props.source,
             request: undefined,
             response: undefined,
@@ -60,13 +69,10 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         };
     }
 
-    componentWillMount() {
-        this.updateDimensions();
-    }
-
     componentDidMount() {
         this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
         this.resizeEvent.register();
+        this.updateDimensions();
     }
 
     componentWillUnmount() {
@@ -74,31 +80,50 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     updateDimensions() {
+        let dimens: Dimensions = this.getDimensions();
+        if (this.shouldUpdate(dimens)) {
+            this.setState({
+                lastDimens: dimens,
+                source: (this.state) ? this.state.source : undefined,
+                request: (this.state) ? this.state.request : undefined,
+                response: (this.state) ? this.state.response : undefined,
+                outputs: (this.state) ? this.state.outputs : undefined
+            });
+        }
+    }
+
+    getDimensions(): Dimensions {
         // Algorithm taken from https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
         // Modified to get around unit tests which don't have half this.
-        let width: number, height: number;
+        let width: number, height: number, heightOffset: number;
         if (window) {
-            let w = window,
-                d = document,
-                dElement = d.documentElement,
-                body = d.getElementsByClassName(Grid.GRID_CLASS)[0];
+            let windowDimens = browser.size();
+            let rect = this.root.getBoundingClientRect();
 
-                width = w.innerWidth || dElement.clientWidth || (body ? body.clientWidth : 0);
-                height = w.innerHeight || dElement.clientHeight || (body ? body.clientHeight : 0);
+            width = windowDimens.width;
+            height = windowDimens.height;
+            heightOffset = rect.top;
         } else {
             // Unit tests
             width = 200;
             height = 200;
+            heightOffset = 0;
         }
 
-        this.setState({
+        return {
             width: width,
             height: height,
-            source: (this.state) ? this.state.source : undefined,
-            request: (this.state) ? this.state.request : undefined,
-            response: (this.state) ? this.state.response : undefined,
-            outputs: (this.state) ? this.state.outputs : undefined
-        });
+            cellDimens: {
+                height: height - heightOffset,
+            }
+        };
+    }
+
+    shouldUpdate(dimens: Dimensions): boolean {
+        let lastDimens = this.state.lastDimens;
+        return lastDimens.height !== dimens.height ||
+            dimens.width < browser.mobileWidthThreshold && lastDimens.width >= browser.mobileWidthThreshold ||
+            dimens.width >= browser.mobileWidthThreshold && lastDimens.width < browser.mobileWidthThreshold;
     }
 
     componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
@@ -106,8 +131,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             this.props.getLogs(nextProps.source.secretKey);
             this.setState({
                 source: nextProps.source,
-                width: this.state.width,
-                height: this.state.height,
+                lastDimens: this.state.lastDimens,
                 request: this.state.request,
                 response: this.state.response,
                 outputs: this.state.outputs
@@ -117,40 +141,46 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
         this.setState({
-            width: this.state.width,
-            height: this.state.height,
-            source: this.state.source,
             request: conversation.request,
             response: conversation.response,
-            outputs: conversation.outputs
+            outputs: conversation.outputs,
+            lastDimens: this.state.lastDimens,
+            source: this.state.source,
         });
+    }
+
+    onRootLayout(element: Element) {
+        this.root = element;
     }
 
     render() {
         return (
-            <Grid
-                noSpacing={true}>
-                <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                    <div style={{ maxHeight: this.state.height, overflowY: "auto" }}>
-                        <ConversationListView
-                            conversations={ConversationList.fromLogs(this.props.logs)}
-                            expandListItemWhenActive={browser.isMobileWidth()}
-                            onClick={this.onConversationClicked.bind(this)} />
-                    </div>
-                </Cell>
-                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
-                    {this.state.request ?
-                        (
-                            <Interaction
-                                request={this.state.request}
-                                response={this.state.response}
-                                outputs={this.state.outputs} />
-                        ) : (
-                            <h6> Select a log to view </h6>
-                        )
-                    }
-                </Cell>
-            </Grid >
+            <div
+                ref={ this.onRootLayout.bind(this) }>
+                <Grid
+                    noSpacing={true}>
+                    <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
+                        <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll" }}>
+                            <ConversationListView
+                                conversations={ConversationList.fromLogs(this.props.logs)}
+                                expandListItemWhenActive={browser.isMobileWidth()}
+                                onClick={this.onConversationClicked.bind(this)} />
+                        </div>
+                    </Cell>
+                    <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
+                        {this.state.request ?
+                            (
+                                <Interaction
+                                    request={this.state.request}
+                                    response={this.state.response}
+                                    outputs={this.state.outputs} />
+                            ) : (
+                                <h6> Select a log to view </h6>
+                            )
+                        }
+                    </Cell>
+                </Grid >
+            </div>
         );
     }
 }
