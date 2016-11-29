@@ -160,7 +160,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                        <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "auto" }}>
+                        <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll" }}>
                             <ConversationListView
                                 conversations={ConversationList.fromLogs(this.props.logs)}
                                 expandListItemWhenActive={browser.isMobileWidth()}

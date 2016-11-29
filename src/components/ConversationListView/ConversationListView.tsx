@@ -28,13 +28,6 @@ export default class ConversationListView extends React.Component<ConversationLi
         };
     }
 
-    listStyle(): React.CSSProperties {
-        return {
-            marginLeft: "20px",
-            marginRight: "20px"
-        };
-    }
-
     onClick(conversation: Conversation, event: React.MouseEvent) {
         // depending on if we in a mobile mode or not,
         // we either only let one active at a time
@@ -83,7 +76,6 @@ export default class ConversationListView extends React.Component<ConversationLi
             <div>
                 {this.props.conversations.length > 0 ? (
                     <ReactList
-                        style={this.listStyle()}
                         itemRenderer={this.renderItem.bind(this)}
                         length={this.props.conversations.length}
                         pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
