@@ -5,6 +5,7 @@ import { getLogs } from "../actions/log";
 import { ConversationListView } from "../components/ConversationListView";
 import { Cell, Grid } from "../components/Grid";
 import Interaction from "../components/Interaction";
+import Select from "../components/Select";
 import Conversation from "../models/conversation";
 import ConversationList from "../models/conversation-list";
 import Log from "../models/log";
@@ -157,6 +158,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return (
             <div
                 ref={ this.onRootLayout.bind(this) }>
+                <Filter selections={["One", "Two", "Three"]}/>
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
@@ -189,3 +191,27 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(LogsPage);
+
+interface  FilterProps {
+    selections: string[];
+}
+
+interface FilterState {
+
+}
+
+class Filter extends React.Component<FilterProps, FilterState> {
+    constructor(props: FilterProps) {
+        super(props);
+        this.state = {
+        };
+    }
+
+    render() {
+        return (
+            <div>
+                <Select selections={this.props.selections} hint="Choose" />
+            </div>
+        );
+    }
+}
