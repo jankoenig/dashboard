@@ -1,9 +1,13 @@
 import * as objectAssign from "object-assign";
 import * as React from "react";
+// import { ReactList } from "react-list";
 
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";
+
+// TODO: Would be nice to get this to work with typescript
+let ReactList = require("react-list");
 
 export interface ConversationListViewProps {
     readonly conversations: ConversationList;
@@ -24,10 +28,10 @@ export default class ConversationListView extends React.Component<ConversationLi
         };
     }
 
-    style(): React.CSSProperties {
+    listStyle(): React.CSSProperties {
         return {
-            listStyle: "none",
-            paddingLeft: "0px"
+            marginLeft: "20px",
+            marginRight: "20px"
         };
     }
 
@@ -64,27 +68,27 @@ export default class ConversationListView extends React.Component<ConversationLi
         return this.state.activeConversations[conversation.id] ? true : false;
     }
 
+    renderItem(index: number, key: string): JSX.Element {
+        let conversation = this.props.conversations[index];
+        return <ConversationListViewItem
+            key={conversation.id}
+            conversation={conversation}
+            onClick={this.onClick.bind(this)}
+            active={this.isConversationActive(conversation)}
+            showInteractionOnActive={this.props.expandListItemWhenActive} />;
+    }
+
     render() {
-
-        let conversations: JSX.Element[] = [];
-
-        for (let conversation of this.props.conversations) {
-            conversations.push((
-                <ConversationListViewItem
-                    key={conversation.id}
-                    conversation={conversation}
-                    onClick={this.onClick.bind(this)}
-                    active={this.isConversationActive(conversation)}
-                    showInteractionOnActive={this.props.expandListItemWhenActive} />
-            ));
-        }
-
         return (
             <div>
-                {conversations.length > 0 ? (
-                    <ul style={this.style()}>
-                        {conversations}
-                    </ul>
+                {this.props.conversations.length > 0 ? (
+                    <ReactList
+                        style={this.listStyle()}
+                        itemRenderer={this.renderItem.bind(this)}
+                        length={this.props.conversations.length}
+                        pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
+                        type={"uniform"}
+                        useStaticSize={true} />
                 ) : (
                         <p> No available data </p>
                     )

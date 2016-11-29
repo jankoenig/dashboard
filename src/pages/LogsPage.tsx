@@ -13,6 +13,16 @@ import Source from "../models/source";
 import { State } from "../reducers";
 import browser from "../utils/browser";
 
+interface CellDimensions {
+    height: number;
+}
+
+interface Dimensions {
+    width: number;
+    height: number;
+    cellDimens: CellDimensions;
+}
+
 export interface LogsPageProps {
     logs: Log[];
     source: Source;
@@ -20,7 +30,8 @@ export interface LogsPageProps {
     params?: any;
 }
 
-export interface LogsPageState {
+interface LogsPageState {
+    lastDimens: Dimensions;
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
@@ -44,10 +55,13 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 
 export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
+    root: Element;
+    resizeEvent: browser.WrappedEvent;
+
     constructor(props: LogsPageProps) {
         super(props);
-
         this.state = {
+            lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
             source: props.source,
             request: undefined,
             response: undefined,
@@ -55,30 +69,61 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         };
     }
 
-    // Tracks the previous size for resize events
-    previousSize: { width: number, height: number } = { width: browser.size().width, height: browser.size().width };
-
     componentDidMount() {
-        browser.onResize((event) => {
+        this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
+        this.resizeEvent.register();
+        this.updateDimensions();
+    }
 
-            let target = event.target as Window;
+    componentWillUnmount() {
+        this.resizeEvent.unregister();
+    }
 
-            // The case where the browser got smaller
-            if (target.innerWidth < browser.mobileWidthThreshold && this.previousSize.width >= browser.mobileWidthThreshold) {
-                this.forceUpdate();
+    updateDimensions() {
+        let dimens: Dimensions = this.getDimensions();
+        if (this.shouldUpdate(dimens)) {
+            this.setState({
+                lastDimens: dimens,
+                source: (this.state) ? this.state.source : undefined,
+                request: (this.state) ? this.state.request : undefined,
+                response: (this.state) ? this.state.response : undefined,
+                outputs: (this.state) ? this.state.outputs : undefined
+            });
+        }
+    }
+
+    getDimensions(): Dimensions {
+        // Algorithm taken from https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
+        // Modified to get around unit tests which don't have half this.
+        let width: number, height: number, heightOffset: number;
+        if (window) {
+            let windowDimens = browser.size();
+            let rect = this.root.getBoundingClientRect();
+
+            width = windowDimens.width;
+            height = windowDimens.height;
+            heightOffset = rect.top;
+        } else {
+            // Unit tests
+            width = 200;
+            height = 200;
+            heightOffset = 0;
+        }
+
+        return {
+            width: width,
+            height: height,
+            cellDimens: {
+                height: height - heightOffset,
             }
+        };
+    }
 
-            // The case where the browser got bigger
-            if (target.innerWidth >= browser.mobileWidthThreshold && this.previousSize.width < browser.mobileWidthThreshold) {
-                this.forceUpdate();
-            }
-
-            // Update the previous size
-            this.previousSize = {
-                width: target.innerWidth,
-                height: target.innerHeight
-            };
-        });
+    shouldUpdate(dimens: Dimensions): boolean {
+        let lastDimens = this.state.lastDimens;
+        return lastDimens.height !== dimens.height ||
+            dimens.width < browser.mobileWidthThreshold && lastDimens.width >= browser.mobileWidthThreshold ||
+            dimens.width >= browser.mobileWidthThreshold && lastDimens.width < browser.mobileWidthThreshold;
     }
 
     componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
@@ -86,6 +131,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             this.props.getLogs(nextProps.source.secretKey);
             this.setState({
                 source: nextProps.source,
+                lastDimens: this.state.lastDimens,
                 request: this.state.request,
                 response: this.state.response,
                 outputs: this.state.outputs
@@ -95,50 +141,46 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
         this.setState({
-            source: this.state.source,
             request: conversation.request,
             response: conversation.response,
-            outputs: conversation.outputs
+            outputs: conversation.outputs,
+            lastDimens: this.state.lastDimens,
+            source: this.state.source,
         });
     }
 
-    getContentHeight() {
-        if (document.getElementsByClassName !== undefined) {
-            let mains = document.getElementsByClassName("mdl-layout__content");
-            if (mains.length > 0) {
-                let main: Element = mains.item(0);
-                return main.clientHeight;
-            }
-        }
-        // Return default height, this is when the page isn't fully rendered
-        //  or when we are unit testing
-        return 200;
+    onRootLayout(element: Element) {
+        this.root = element;
     }
 
     render() {
         return (
-            <Grid>
-                <Cell col={6} phone={4} tablet={4}>
-                    <div style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
-                        <ConversationListView
-                            conversations={ConversationList.fromLogs(this.props.logs)}
-                            expandListItemWhenActive={browser.isMobileWidth()}
-                            onClick={this.onConversationClicked.bind(this)} />
-                    </div>
-                </Cell>
-                <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.getContentHeight() - 30, overflowY: "scroll" }}>
-                    {this.state.request ?
-                        (
-                            <Interaction
-                                request={this.state.request}
-                                response={this.state.response}
-                                outputs={this.state.outputs} />
-                        ) : (
-                            <h6> Select a log to view </h6>
-                        )
-                    }
-                </Cell>
-            </Grid >
+            <div
+                ref={ this.onRootLayout.bind(this) }>
+                <Grid
+                    noSpacing={true}>
+                    <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
+                        <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "auto" }}>
+                            <ConversationListView
+                                conversations={ConversationList.fromLogs(this.props.logs)}
+                                expandListItemWhenActive={browser.isMobileWidth()}
+                                onClick={this.onConversationClicked.bind(this)} />
+                        </div>
+                    </Cell>
+                    <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
+                        {this.state.request ?
+                            (
+                                <Interaction
+                                    request={this.state.request}
+                                    response={this.state.response}
+                                    outputs={this.state.outputs} />
+                            ) : (
+                                <h6> Select a log to view </h6>
+                            )
+                        }
+                    </Cell>
+                </Grid >
+            </div>
         );
     }
 }

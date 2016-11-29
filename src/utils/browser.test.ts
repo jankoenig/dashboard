@@ -39,9 +39,6 @@ describe("Utils", function () {
         });
     });
     describe("onResize", function() {
-        it("thows an error on node.js if you don't pass in a window", function() {
-            expect(browser.onResize).to.throw(ReferenceError);
-        });
         it("sets up an event listener for the 'resize` event", function() {
             let registeredEvent: string;
             let registeredCallback: (event: UIEvent) => void;
@@ -51,16 +48,14 @@ describe("Utils", function () {
             }};
             let callback = function(event: UIEvent) { };
 
-            browser.onResize(callback, <Window>dummyWindow);
+            browser.onResize(callback, <Window>dummyWindow).register();
 
             expect(registeredEvent).to.equal("resize");
             expect(registeredCallback).to.equal(callback);
         });
     });
+
     describe("size", function() {
-        it("thows an error on node.js if you don't pass in a window", function() {
-            expect(browser.size).to.throw(ReferenceError);
-        });
         it("returns the correct size", function() {
             let dummyWindow = {innerWidth: 480, innerHeight: 1020};
             expect(browser.size(<Window>dummyWindow)).to.deep.equal({width: 480, height: 1020});

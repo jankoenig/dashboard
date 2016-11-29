@@ -10,8 +10,10 @@ export interface GridProps {
  */
 export default class Grid extends React.Component<GridProps, any> {
 
+    static GRID_CLASS = "mdl-grid";
+
     classes() {
-        return classNames("mdl-grid", {
+        return classNames(Grid.GRID_CLASS, {
             "mdl-grid--no-spacing": this.props.noSpacing
         });
     }
