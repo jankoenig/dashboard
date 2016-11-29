@@ -1,6 +1,9 @@
 import * as classNames from "classnames";
 import * as React from "react";
 
+import Button from "./Button";
+import { Menu, MenuItem } from "./Menu";
+
 export interface SelectProps {
     hint: string;
     selections: string[];
@@ -30,43 +33,76 @@ class Select extends React.Component<SelectProps, SelectState> {
         return classNames(SELECT_CLASS);
     }
 
+    get selectLabelStyle(): any {
+        return {
+            bottom: "0",
+            // color: rgba(0, 0, 0, 0.26),
+            fontSize: "16px",
+            left: "0",
+            right: "0",
+            pointerEvents: "none",
+            position: "absolute",
+            top: "24px",
+            width: "100%",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textAlign: "left"
+        };
+    }
+
     componentWillReceiveProps?(nextProps: SelectProps, nextContext: any): void {
         this.state.list = [];
 
         for (let selection in this.props.selections) {
             this.state.list.push((
-                <Option value={selection.replace(/\s/, "")} title={selection} />
+                <MenuItem>{selection}</MenuItem>
             ));
         }
     }
 
     render() {
         return (
-            <form action="#">
-                <div className={this.divClasses}>
-                    <select className={this.selectClasses} id="selection" name={this.props.hint}>
-                        {this.state.list}
-                    </select>
-                    <label class="mdl-select__label" for={this.props.hint}>{this.props.hint}</label>
-                </div>
-            </form>
+             <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                     <input className="mdl-textfield__input" type="text" id="check-selection" value="Belarus" tabIndex={-1} />
+                     <label htmlFor="check-selection">
+                         <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                     </label>
+                     <label htmlFor="check-selecttion" className="mdl-textfield__label">Country</label>
+                     <div className="mdl-menu__container is-upgraded">
+                         <div className="mdl-menu__outline mdl-menu--bottom-left"/>
+                         <ul htmlFor="check-selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                             <li className="mdl-menu__item" data-val="DE">Germany</li>
+                             <li className="mdl-menu__item" data-val="BY">Belarus</li>
+                             <li className="mdl-menu__item" data-val="RU">Russia</li>
+                         </ul>
+                     </div>
+                 </div>
         );
+
+
+            // <form action="#">
+                // <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                //     <input className="mdl-textfield__input" type="text" id="check-selection" value="Belarus" tabIndex={-1} />
+                //     <label htmlFor="check-selection">
+                //         <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                //     </label>
+                //     <label htmlFor="check-selection" className="mdl-textfield__label">Country</label>
+                //     <div className="mdl-menu__container is-upgraded" stye={{ height:"400px"}} >
+                //         <div className="mdl-menu__outline mdl-menu--bottom-left" style={{ heigh:"400px"}}/>
+                //         <ul htmlFor="check-selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu" data-upgraded=",MaterialMenu">
+                //             <li className="mdl-menu__item" data-val="DE">Germany</li>
+                //             <li className="mdl-menu__item" data-val="BY">Belarus</li>
+                //             <li className="mdl-menu__item" data-val="RU">Russia</li>
+                //         </ul>
+                //     </div>
+                // </div>
+            // </form>
+                    // <ul htmlFor="selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                    //     <li className="mdl-menu__item" data-val="DE">Germany</li>
+                    //     <li className="mdl-menu__item" data-val="BY">Belarus</li>
+                    //     <li className="mdl-menu__item" data-val="RU">Russia</li>
+                    // </ul>
     }
 }
 
 export default Select;
-
-interface OptionProps {
-    value: string;
-    title: string;
-}
-
-class Option extends React.Component<OptionProps, any> {
-
-    render() {
-        console.info("IN HERE");
-        return (
-            <option value={this.props.value}>{this.props.title}</option>
-        );
-    }
-}
