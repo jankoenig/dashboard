@@ -2,6 +2,7 @@ import * as chai from "chai";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
+import User from "../models/user";
 import { MemoryCacheStorage } from "../store/local-storage";
 import browser from "../utils/browser";
 import auth from "./auth";
@@ -66,158 +67,141 @@ describe("Auth ts not mocked", function () {
             utilsStub.restore();
         });
 
-        it("Tests a successful github login.", function (done: MochaDone) {
+        it("Tests a successful github login.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
             authService.signInWithRedirect = sinon.stub().returns(successRedirect);
             authService.getRedirectResult = sinon.stub().returns(successResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
-                expect(localStorage.length).to.equal(1);
-                expect(authService.signInWithRedirect).to.be.calledOnce;
-                expect(authService.getRedirectResult).to.be.calledOnce;
-                done();
-            }, authService, localStorage);
+            return auth.loginWithGithub(authService, localStorage)
+                .then(function (user: User) {
+                    expect(user).to.not.be.undefined;
+                    expect(localStorage.length).to.equal(1);
+                    expect(authService.signInWithRedirect).to.be.calledOnce;
+                    expect(authService.getRedirectResult).to.be.calledOnce;
+                });
         });
 
-        it("Tests a successful github login for pop-up condition.", function (done: MochaDone) {
+        it("Tests a successful github login for pop-up condition.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(false);
 
             authService.signInWithPopup = sinon.stub().returns(successResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
+            return auth.loginWithGithub(authService, localStorage).then(function (user: User) {
+                expect(user).to.not.be.undefined;
                 expect(localStorage.length).to.equal(1);
                 expect(authService.signInWithPopup).to.be.calledOnce;
-                done();
-            }, authService, localStorage);
+            });
         });
 
-        it("Tests an unsuccessful github login.", function (done: MochaDone) {
+        it("Tests an unsuccessful github login.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
             authService.getRedirectResult = sinon.stub().returns(unsuccessfulRedirect);
             authService.signInWithRedirect = sinon.stub().returns(unsuccessfulResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
+            return auth.loginWithGithub(authService, localStorage).catch(function (err: Error) {
+                expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithRedirect).to.be.calledOnce;
                 expect(authService.getRedirectResult).to.not.be.called;
-                done();
-            }, authService, localStorage);
+            });
         });
 
-        it("Tests a unsuccessful github login for pop-up condition.", function (done: MochaDone) {
+        it("Tests a unsuccessful github login for pop-up condition.", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(false);
 
             authService.signInWithPopup = sinon.stub().returns(unsuccessfulResult);
 
-            auth.loginWithGithub((success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
+            return auth.loginWithGithub(authService, localStorage).catch(function (err: Error) {
+                expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithPopup).to.be.calledOnce;
-                done();
-            }, authService, localStorage);
+            });
         });
     });
 
     describe("Login with email.", function () {
 
-        afterEach(function() {
+        afterEach(function () {
             localStorage.clear();
         });
 
-        it("Tests successful login.", function(done: MochaDone) {
+        it("Tests successful login.", function () {
             authService.signInWithEmailAndPassword = sinon.stub().returns(successResult);
 
             let username = "testuser@test.com";
             let password = "12345: The kind of password an idiot would have on his briefcase";
-            auth.login(username, password, (success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
+            return auth.login(username, password, authService, localStorage).then(function (user: User) {
+                expect(user).to.not.be.undefined;
                 expect(authService.signInWithEmailAndPassword).to.be.calledOnce;
                 expect(authService.signInWithEmailAndPassword).to.have.been.calledWith(username, password);
-                done();
-            }, authService, localStorage);
+            });
         });
 
-        it("Tests unsuccessful login.", function(done: MochaDone) {
+        it("Tests unsuccessful login.", function () {
             authService.signInWithEmailAndPassword = sinon.stub().returns(unsuccessfulResult);
 
             let username = "testuser@test.com";
             let password = "12345: The kind of password an idiot would have on his briefcase";
-            auth.login(username, password, (success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
+            return auth.login(username, password, authService, localStorage).catch(function (err: Error) {
+                expect(err).to.not.be.undefined;
                 expect(authService.signInWithEmailAndPassword).to.be.calledOnce;
                 expect(authService.signInWithEmailAndPassword).to.have.been.calledWith(username, password);
-                done();
-            }, authService, localStorage);
+            });
         });
     });
 
-    describe("Test logout.", function() {
+    describe("Test logout.", function () {
         let successPromise: Promise<any> = new Promise<any>((resolve, reject) => {
-            resolve("YAY");
+            resolve("Success callback per requirements of the test.");
         });
         let failPromise: Promise<any> = new Promise<any>((resolve, reject) => {
-            reject(new Error("NO"));
+            reject(new Error("Error thrown per requirements of the test."));
         });
 
-        beforeEach(function() {
+        beforeEach(function () {
             localStorage.setItem("user", JSON.stringify(user));
         });
 
-        it ("Tests a successful logout.", function(done: MochaDone) {
+        it("Tests a successful logout.", function () {
             authService.signOut = sinon.stub().returns(successPromise);
 
-            auth.logout((success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
+            return auth.logout(authService, localStorage).then(function () {
                 expect(localStorage.getItem("user")).to.be.null;
-                done();
-            }, authService, localStorage);
+            });
         });
 
-        it ("Tests a unsuccessful logout.", function(done: MochaDone) {
+        it("Tests a unsuccessful logout.", function () {
             authService.signOut = sinon.stub().returns(failPromise);
 
-            auth.logout((success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
+            return auth.logout(authService, localStorage).catch(function () {
                 expect(localStorage.getItem("user")).to.not.be.null;
-                done();
-            }, authService, localStorage);
+            });
         });
     });
 
-    describe("Test get user.", function() {
-        beforeEach(function() {
+    describe("Test get user.", function () {
+        beforeEach(function () {
             localStorage.clear();
         });
 
-        it ("Tests it gets the user from localStorage.", function() {
+        it("Tests it gets the user from localStorage.", function () {
             localStorage.setItem("user", JSON.stringify(user));
 
-            expect(auth.user(localStorage).displayName).equals(user.displayName);
+            return expect(auth.user(localStorage).displayName).equals(user.displayName);
         });
 
-        it ("Tests it returns undefined when user doesn't exist.", function() {
-            expect(auth.user(localStorage)).to.be.undefined;
+        it("Tests it returns undefined when user doesn't exist.", function () {
+            return expect(auth.user(localStorage)).to.be.undefined;
         });
     });
 
-    describe("Test \"sendResetPasswordEmail\".", function() {
+    describe("Test \"sendResetPasswordEmail\".", function () {
         let successPromise: Promise<any> = new Promise<any>((resolve, reject) => {
             resolve("YAY");
         });
@@ -225,34 +209,29 @@ describe("Auth ts not mocked", function () {
             reject(new Error("NO"));
         });
 
-        it ("Tests a successful response.", function(done: MochaDone) {
+        it("Tests a successful response.", function () {
             authService.sendPasswordResetEmail = sinon.stub().returns(successPromise);
 
             let username = "test@testdomain.com";
-            auth.sendResetPasswordEmail(username, (success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
+            return auth.sendResetPasswordEmail(username, authService).then(function () {
                 expect(authService.sendPasswordResetEmail).to.be.calledOnce;
                 expect(authService.sendPasswordResetEmail).to.be.calledWith(username);
-                done();
-            }, authService);
+            });
         });
 
-        it ("Tests a unsuccessful response.", function(done: MochaDone) {
+        it("Tests a unsuccessful response.", function () {
             authService.sendPasswordResetEmail = sinon.stub().returns(failPromise);
 
             let username = "test@testdomain.com";
-            auth.sendResetPasswordEmail(username, (success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
-                expect(authService.sendPasswordResetEmail).to.be.calledOnce;
-                expect(authService.sendPasswordResetEmail).to.be.calledWith(username);
-                done();
-            }, authService);
+            return auth.sendResetPasswordEmail(username, authService).catch(function (err: Error) {
+                    expect(err).to.not.be.undefined;
+                    expect(authService.sendPasswordResetEmail).to.be.calledOnce;
+                    expect(authService.sendPasswordResetEmail).to.be.calledWith(username);
+                });
         });
     });
 
-    describe("Tests \"signUpWithEmail\".", function() {
+    describe("Tests \"signUpWithEmail\".", function () {
         let userPromise = new Promise<remoteservice.user.User>((resolve, reject) => {
             resolve(user);
         });
@@ -261,56 +240,46 @@ describe("Auth ts not mocked", function () {
             reject(new Error("Error thrown per test requirement."));
         });
 
-        it("Tests passwords do not match.", function(done: MochaDone) {
-            auth.signUpWithEmail("firstemail@domain.com", "password", "secondPassword", (success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
-                done();
-            }, authService, localStorage);
+        it("Tests passwords do not match.", function () {
+            return auth.signUpWithEmail("firstemail@domain.com", "password", "secondPassword", authService, localStorage).catch(function(err: Error) {
+                expect(err).to.not.be.undefined;
+            });
         });
 
-        it("Tests password is too short.", function(done: MochaDone) {
-            auth.signUpWithEmail("firstemail@domain.com", "2", "2", (success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
-                done();
-            }, authService, localStorage);
+        it("Tests password is too short.", function () {
+            return auth.signUpWithEmail("firstemail@domain.com", "2", "2", authService, localStorage).catch(function(err: Error) {
+                expect(err).to.not.be.undefined;
+            });
         });
 
-        it("Tests email invalid.", function(done: MochaDone) {
-            auth.signUpWithEmail("firstemail", "1234567", "1234567", (success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
-                done();
-            }, authService, localStorage);
+        it("Tests email invalid.", function () {
+            return auth.signUpWithEmail("firstemail", "1234567", "1234567", authService, localStorage).catch(function(err: Error) {
+                expect(err).to.not.be.undefined;
+            });
         });
 
-        it("Tests a successful creation.", function(done: MochaDone) {
+        it("Tests a successful creation.", function () {
             authService.createUserWithEmailAndPassword = sinon.stub().returns(userPromise);
 
             let userName = "testEmail@domain.com";
             let password = "password";
-            auth.signUpWithEmail(userName, password, password, (success: boolean, error?: string) => {
-                expect(success).to.be.true;
-                expect(error).to.be.undefined;
+            return auth.signUpWithEmail(userName, password, password, authService, localStorage).then(function(user: User) {
+                expect(user).to.not.be.undefined;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledOnce;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledWith(userName, password);
-                done();
-            }, authService, localStorage);
+            });
         });
 
-        it("Tests a unsuccessful creation.", function(done: MochaDone) {
+        it("Tests a unsuccessful creation.", function () {
             authService.createUserWithEmailAndPassword = sinon.stub().returns(badPromise);
 
             let userName = "testEmail@domain.com";
             let password = "password";
-            auth.signUpWithEmail(userName, password, password, (success: boolean, error?: string) => {
-                expect(success).to.be.false;
-                expect(error).to.not.be.undefined;
+            return auth.signUpWithEmail(userName, password, password, authService, localStorage).catch(function(err: Error) {
+                expect(err).to.not.be.undefined;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledOnce;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledWith(userName, password);
-                done();
-            }, authService, localStorage);
+            });
         });
     });
 });

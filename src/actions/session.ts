@@ -55,7 +55,7 @@ class DefaultRedirectCallback extends ToPathCallback {
 
 function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallback = new DefaultRedirectCallback(), loginStrat: (callback: (success: boolean, error?: string) => void) => void) {
   dispatch(sendingRequest(true));
-  loginStrat(function (success, error) {
+  loginStrat((success, error) => {
     dispatch(sendingRequest(false));
     dispatch(setUser(auth.user()));
 
@@ -69,18 +69,28 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
   });
 }
 
-export function login(email: string, password: string, redirectStrat?: SuccessCallback) {
+export function login(email: string, password: string, redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => void {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.login(email, password, internalCallback);
+      auth.login(email, password)
+        .then(function (user: User) {
+          internalCallback(true);
+        })
+        .catch(function (err: Error) {
+          internalCallback(false, err.message);
+        });
     });
   };
 }
 
-export function loginWithGithub(redirectStrat?: SuccessCallback) {
+export function loginWithGithub(redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => void {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.loginWithGithub(internalCallback);
+      auth.loginWithGithub().then(function (user: User) {
+        internalCallback(true);
+      }).catch(function (err: Error) {
+        internalCallback(false, err.message);
+      });
     });
   };
 }
@@ -88,29 +98,42 @@ export function loginWithGithub(redirectStrat?: SuccessCallback) {
 export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) {
   return function (dispatch: Redux.Dispatch<any>) {
     loginMethod(dispatch, redirectStrat, function (internalCallback) {
-      auth.signUpWithEmail(email, password, confirmPassword, internalCallback);
+      auth.signUpWithEmail(email, password, confirmPassword).then(function () {
+        internalCallback(true);
+      }).catch(function (err: Error) {
+        internalCallback(false, err.message);
+      });
     });
   };
 }
 
-export function logout() {
+export function logout(callback?: (success: boolean) => void) {
   return function (dispatch: Redux.Dispatch<void>) {
-    auth.logout(function (success) {
+    auth.logout().then(function (success) {
       if (success) {
         dispatch({ type: LOGOUT_USER });
         dispatch(push("/login"));
+      }
+      if (callback) {
+        callback(success);
       }
     });
   };
 }
 
-export function resetPassword(email: string) {
+export function resetPassword(email: string, callback?: (success: boolean) => void) {
   return function (dispatch: Redux.Dispatch<void>) {
-    auth.sendResetPasswordEmail(email, function (success, error) {
-      if (success) {
-        dispatch(displaySnackbar("Check your inbox!"));
-      } else {
-        dispatch(authFormError(error));
+    auth.sendResetPasswordEmail(email).then(function () {
+      dispatch(displaySnackbar("Check your inbox!"));
+      console.info("SUCCESS");
+      if (callback) {
+        callback(true);
+      }
+    }).catch(function (error: Error) {
+      dispatch(authFormError(error.message));
+      console.info("FAIL");
+      if (callback) {
+        callback(false);
       }
     });
   };

@@ -13,6 +13,12 @@ const mockStore = configureMockStore(middlewares);
 
 let expect = chai.expect;
 
+let user = new User({
+    email: "test@test.com",
+    displayName: "TestyMcTestFace",
+    photoUrl: undefined
+});
+
 describe("Session.ts", function () {
     describe("Session Actions", function () {
         it("sets the user", function () {
@@ -28,14 +34,14 @@ describe("Session.ts", function () {
         });
     });
 
-    describe("ToPath callbacks", function() {
-        it ("Tests the toPath callback to ensure it goes to the appropriate location.", function() {
+    describe("ToPath callbacks", function () {
+        it("Tests the toPath callback to ensure it goes to the appropriate location.", function () {
             // The callback should replace the current page to the base page "/TestPath".
             let callback = new session.ToPathCallback("/TestPath");
             let initialState = {};
             let store = mockStore(initialState);
 
-            callback.loginSuccess(store.dispatch, new User({email: "email"}));
+            callback.loginSuccess(store.dispatch, new User({ email: "email" }));
 
             expect(store.getActions().length).to.equal(1);
 
@@ -45,14 +51,14 @@ describe("Session.ts", function () {
         });
     });
 
-    describe("Back callback", function() {
-        it ("Tests the Back method actually goes back to the previous age.", function() {
+    describe("Back callback", function () {
+        it("Tests the Back method actually goes back to the previous age.", function () {
             // The callback should perform a "back" option.
             let callback = new session.BackCallback();
             let initialState = {};
             let store = mockStore(initialState);
 
-            callback.loginSuccess(store.dispatch, new User({email: "email"}));
+            callback.loginSuccess(store.dispatch, new User({ email: "email" }));
 
             expect(store.getActions().length).to.equal(1);
 
@@ -61,253 +67,268 @@ describe("Session.ts", function () {
         });
     });
 
-    describe("Successful login With Github", function() {
+    describe("Successful login With Github", function () {
 
         let loginGithubStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
 
-        before("Stubbing auth namespace.", function() {
-            loginGithubStub = sinon.stub(auth, "loginWithGithub", (callback: (success: boolean, error?: string) => void) => {
-                callback(true, undefined);
-            });
+        before("Stubbing auth namespace.", function () {
+            loginGithubStub = sinon.stub(auth, "loginWithGithub").returns(new Promise<User>((resolve, reject) => {
+                resolve(user);
+            }));
 
             setUserStub = sinon.stub(auth, "user", () => {
                 return new User({ email: "testEmail" });
             });
         });
 
-        after(function() {
+        after(function () {
             loginGithubStub.restore();
             setUserStub.restore();
         });
 
-        it ("Tests the login flow works properly on a successful github login with a default login strategy.", function() {
+        it("Tests the login flow works properly on a successful github login with a default login strategy.", function (done: MochaDone) {
             verifySuccessLogin("/#welcome", (store: any) => {
                 session.loginWithGithub()(store.dispatch);
+                done();
             });
         });
 
-        it ("Tests the login flow works properly on successful github login with overridden login strategy.", function() {
+        it("Tests the login flow works properly on successful github login with overridden login strategy.", function (done: MochaDone) {
             verifySuccessLogin("/NextPath", (store: any) => {
                 session.loginWithGithub(new session.ToPathCallback("/NextPath"))(store.dispatch);
+                done();
             });
         });
     });
 
-    describe("Successful login with username and password", function() {
+    describe("Successful login with username and password", function () {
 
         let loginStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
 
-        before("Stubbing auth namespace.", function() {
-            loginStub = sinon.stub(auth, "login", (email: string, password: string, callback: (success: boolean, error?: string) => void) => {
-                callback(true, undefined);
-            });
+        before("Stubbing auth namespace.", function () {
+            loginStub = sinon.stub(auth, "login").returns(new Promise<User>((resolve, reject) => {
+                resolve(user);
+            }));
 
             setUserStub = sinon.stub(auth, "user", () => {
                 return new User({ email: "testEmail" });
             });
         });
 
-        after(function() {
+        after(function () {
             loginStub.restore();
             setUserStub.restore();
         });
 
-        it ("Tests the login flow works properly on a successful username and password login with a default login strategy.", function() {
+        it("Tests the login flow works properly on a successful username and password login with a default login strategy.", function (done: MochaDone) {
             verifySuccessLogin("/#welcome", (store: any) => {
                 session.login("testuser", "secretPassword")(store.dispatch);
+                done();
             });
         });
 
-        it ("Tests the login flow works properly on successful username and password login with overridden login strategy.", function() {
+        it("Tests the login flow works properly on successful username and password login with overridden login strategy.", function (done: MochaDone) {
             verifySuccessLogin("/NextPath", (store: any) => {
                 session.login("testuser", "secretPassword", new session.ToPathCallback("/NextPath"))(store.dispatch);
+                done();
             });
         });
     });
-    describe("Successful signUpWithEmail with username and password", function() {
+
+    describe("Successful signUpWithEmail with username and password", function () {
 
         let signUpWithEmail: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
 
-        before("Stubbing auth namespace.", function() {
-            signUpWithEmail = sinon.stub(auth, "signUpWithEmail", (email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void) => {
-                callback(true, undefined);
-            });
+        before("Stubbing auth namespace.", function () {
+            signUpWithEmail = sinon.stub(auth, "signUpWithEmail").returns(new Promise<any>((resolve, reject) => {
+                resolve(true);
+            }));
 
             setUserStub = sinon.stub(auth, "user", () => {
                 return new User({ email: "testEmail" });
             });
         });
 
-        after(function() {
+        after(function () {
             signUpWithEmail.restore();
             setUserStub.restore();
         });
 
-        it ("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function() {
+        it("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function (done: MochaDone) {
             verifySuccessLogin("/#welcome", (store: any) => {
                 session.signUpWithEmail("testuser", "secretPassword", "secretPassword")(store.dispatch);
+                done();
             });
         });
 
-        it ("Tests the signUpWithEmail flow works properly on successful username and password signUpWithEmail with overridden signUpWithEmail strategy.", function() {
+        it("Tests the signUpWithEmail flow works properly on successful username and password signUpWithEmail with overridden signUpWithEmail strategy.", function (done: MochaDone) {
             verifySuccessLogin("/NextPath", (store: any) => {
                 session.signUpWithEmail("testuser", "secretPassword", "secretPassword", new session.ToPathCallback("/NextPath"))(store.dispatch);
+                done();
             });
         });
     });
 
-        describe("Unsuccessful signUpWithEmail with username and password", function() {
+    describe("Unsuccessful signUpWithEmail with username and password", function () {
         let signUpWithEmail: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
 
-        before("Stubbing auth namespace.", function() {
-            signUpWithEmail = sinon.stub(auth, "signUpWithEmail", (email: string, password: string, confirmPassword: string, callback: (success: boolean, error?: string) => void) => {
-                callback(false, "signUpWithEmail error.");
-            });
+        before("Stubbing auth namespace.", function () {
+            signUpWithEmail = sinon.stub(auth, "signUpWithEmail").returns(new Promise<any>((resolve, reject) => {
+                reject(new Error("Error failed do to requirements of the test."));
+            }));
 
             setUserStub = sinon.stub(auth, "user", (): User => {
                 return undefined;
             });
         });
 
-        after(function() {
+        after(function () {
             signUpWithEmail.restore();
             setUserStub.restore();
         });
 
-        it ("Tests the login flow works properly on an unsuccessful signUpWithEmail attempt.", function() {
+        it("Tests the login flow works properly on an unsuccessful signUpWithEmail attempt.", function (done: MochaDone) {
             verifyUnsuccessfullLogin(() => {
                 session.signUpWithEmail("testAccount", "12345-", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
+                done();
             });
         });
     });
 
-    describe("Unsuccessful login with Github", function() {
+    describe("Unsuccessful login with Github", function () {
         let loginStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
 
-        before("Stubbing auth namespace.", function() {
-            loginStub = sinon.stub(auth, "login", (email: string, password: string, callback: (success: boolean, error?: string) => void) => {
-                callback(false, "Login error.");
-            });
+        before("Stubbing auth namespace.", function () {
+            loginStub = sinon.stub(auth, "login").returns(new Promise<any>((resolve, reject) => {
+                reject(new Error("Error failed do to requirements of the test."));
+            }));
 
             setUserStub = sinon.stub(auth, "user", (): User => {
                 return undefined;
             });
         });
 
-        after(function() {
+        after(function () {
             loginStub.restore();
             setUserStub.restore();
         });
 
-        it ("Tests the login flow works properly on an unsuccessful login attempt.", function() {
+        it("Tests the login flow works properly on an unsuccessful login attempt.", function (done: MochaDone) {
             verifyUnsuccessfullLogin(() => {
                 session.loginWithGithub();
+                done();
             });
         });
     });
 
-    describe("Unsuccessful login with username and password", function() {
+    describe("Unsuccessful login with username and password", function () {
         let loginStub: Sinon.SinonStub;
         let setUserStub: Sinon.SinonStub;
 
-        before("Stubbing auth namespace.", function() {
-            loginStub = sinon.stub(auth, "login", (email: string, password: string, callback: (success: boolean, error?: string) => void) => {
-                callback(false, "Login error.");
-            });
+        before("Stubbing auth namespace.", function () {
+            loginStub = sinon.stub(auth, "login").returns(new Promise<any>((resolve, reject) => {
+                reject(new Error("Error failed do to requirements of the test."));
+            }));
 
             setUserStub = sinon.stub(auth, "user", (): User => {
                 return undefined;
             });
         });
 
-        after(function() {
+        after(function () {
             loginStub.restore();
             setUserStub.restore();
         });
 
-        it ("Tests the login flow works properly on an unsuccessful login attempt.", function() {
+        it("Tests the login flow works properly on an unsuccessful login attempt.", function (done: MochaDone) {
             verifyUnsuccessfullLogin(() => {
                 session.login("testAccount@test.com", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
+                done();
             });
         });
     });
 
-    describe("Logout", function() {
+    describe("Logout", function () {
         let logoutStub: Sinon.SinonStub;
 
-        before("Stubbing auth logout.", function() {
-            logoutStub = sinon.stub(auth, "logout", (callback: (success: boolean, error?: string) => void) => {
-                callback(true);
-            });
+        before("Stubbing auth logout.", function () {
+            logoutStub = sinon.stub(auth, "logout").returns(new Promise<any>((resolve, reject) => {
+                resolve("Can be anything.");
+            }));
         });
 
-        after(function() {
+        after(function () {
             logoutStub.restore();
         });
 
-        it("Verifies a successful logout actions.", function() {
+        it("Verifies a successful logout actions.", function (done: MochaDone) {
             let initialState = {};
             let store = mockStore(initialState);
 
-            store.dispatch(session.logout());
+            store.dispatch(session.logout(function (success: boolean) {
+                expect(store.getActions().length).to.equal(2);
 
-            expect(store.getActions().length).to.equal(2);
-
-            let finalAction: any = store.getActions()[store.getActions().length - 1];
-            expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
-            expect(finalAction.payload.args[0]).to.equal("/login");
+                let finalAction: any = store.getActions()[store.getActions().length - 1];
+                expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
+                expect(finalAction.payload.args[0]).to.equal("/login");
+                done();
+            }));
         });
     });
 
-    describe("resetPassword", function() {
+    describe("resetPassword", function () {
 
         let sendResetPasswordEmailStub: Sinon.SinonStub;
-        let stubSuccess: boolean;
-        let stubError: string;
 
-        before(function() {
-            sendResetPasswordEmailStub = sinon.stub(auth, "sendResetPasswordEmail", (email: string, callback: (success: boolean, error?: string) => void) => {
-                callback(stubSuccess, stubError);
-            });
+        let successPromise = new Promise((resolve, reject) => {
+            resolve("Success");
         });
 
-        after(function() {
+        let failPromise = new Promise((resolve, reject) => {
+            reject(new Error("Failure do to requirements of the test."));
+        });
+
+        afterEach(function () {
             sendResetPasswordEmailStub.restore();
-            stubSuccess = false;
-            stubError = undefined;
         });
 
-        it("sets snackbar on success", function() {
+        it("sets snackbar on success", function (done: MochaDone) {
 
             let initialState = {};
             let store = mockStore(initialState);
-            stubSuccess = true;
 
-            store.dispatch(session.resetPassword("test@email.com"));
+            sendResetPasswordEmailStub = sinon.stub(auth, "sendResetPasswordEmail").returns(successPromise);
 
-            let actions: any[] = store.getActions();
-            expect(actions.length).to.equal(1);
-            expect(actions[0].type).to.equal(SET_SNACKBAR_MESSAGE);
-            expect(actions[0].message).to.equal("Check your inbox!");
+            store.dispatch(session.resetPassword("test@email.com", function (success: boolean) {
+                let actions: any[] = store.getActions();
+                expect(success).to.be.true;
+                expect(actions.length).to.equal(1);
+                expect(actions[0].type).to.equal(SET_SNACKBAR_MESSAGE);
+                expect(actions[0].message).to.equal("Check your inbox!");
+                done();
+            }));
         });
-        it("passes through the error on failure", function() {
+
+        it("passes through the error on failure", function (done: MochaDone) {
 
             let initialState = {};
             let store = mockStore(initialState);
-            stubSuccess = false;
-            stubError = "error";
 
-            store.dispatch(session.resetPassword("test@email.com"));
+            sendResetPasswordEmailStub = sinon.stub(auth, "sendResetPasswordEmail").returns(failPromise);
 
-            let actions: any[] = store.getActions();
-            expect(actions.length).to.equal(1);
-            expect(actions[0].type).to.equal(AUTH_FORM_ERROR);
-            expect(actions[0].error).to.equal("error");
+            store.dispatch(session.resetPassword("test@email.com", function (success: boolean) {
+                let actions: any[] = store.getActions();
+                expect(success).to.be.false;
+                expect(actions.length).to.equal(1);
+                expect(actions[0].type).to.equal(AUTH_FORM_ERROR);
+                expect(actions[0].error).to.equal("Failure do to requirements of the test.");
+                done();
+            }));
         });
     });
 
