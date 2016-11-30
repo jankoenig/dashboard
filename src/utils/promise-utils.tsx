@@ -4,19 +4,16 @@
  */
 export function filter<T>(items: T[], filter: (item: T, index: number) => boolean): Promise<T[]> {
     return new Promise<T[]>((resolve, reject) => {
-            if (!filter) {
-                resolve(items);
-                return;
-            }
-
             let resolvedItems: T[] = [];
-            let index = 0;
-            for (let i = 0; i < items.length; i++) {
-                let item = items[i];
-                if (filter(item, index)) {
-                    resolvedItems.push(item);
+            if (filter) {
+                for (let i = 0; i < items.length; i++) {
+                    let item = items[i];
+                    if (filter(item, i)) {
+                        resolvedItems.push(item);
+                    }
                 }
-                ++index;
+            } else {
+                resolvedItems = items;
             }
 
             if (resolvedItems.length > 0) {

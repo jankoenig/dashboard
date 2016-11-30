@@ -143,9 +143,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
-        this.state.request = conversation.request,
-        this.state.response = conversation.response,
-        this.state.outputs = conversation.outputs,
+        this.state.request = conversation.request;
+        this.state.response = conversation.response;
+        this.state.outputs = conversation.outputs;
         this.setState(this.state);
     }
 
@@ -154,13 +154,11 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     beginFilter(value: string) {
-        console.info("Looking for " + value);
         let startDate: Date = this.props.logs[10].timestamp;
         let endDate: Date = this.props.logs[0].timestamp;
         let filter = (value === undefined || value.length === 0) ? undefined : DateFilter(startDate, endDate);
         this.state.logs.filterOut(filter)
             .then((logs: Log[]) => {
-                console.info("Found " + logs.length);
                 this.state.request = undefined;
                 this.state.response = undefined;
                 this.state.outputs = undefined;
@@ -171,7 +169,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     render() {
         return (
             <div
-                ref={ this.onRootLayout.bind(this) }>
+                ref={this.onRootLayout.bind(this)}>
                 <FilterComponent onChange={this.beginFilter.bind(this)} />
                 <Grid
                     noSpacing={true}>
@@ -206,7 +204,7 @@ export default connect(
     mapDispatchToProps
 )(LogsPage);
 
-interface  FilterProps {
+interface FilterProps {
     onChange: (text: string) => void;
 }
 
@@ -229,7 +227,7 @@ class FilterComponent extends React.Component<FilterProps, FilterState> {
     render() {
         return (
             <form action="#">
-                <input type="text" name="sort" onChange={this.handleChange.bind(this)}/>
+                <input type="text" name="sort" onChange={this.handleChange.bind(this)} />
             </form>
         );
     }
@@ -278,7 +276,7 @@ class Logs {
 }
 
 function DateFilter(startDate: Date, endDate: Date): (item: Log) => boolean {
-    return function(item: Log): boolean {
+    return function (item: Log): boolean {
         let created = item.timestamp;
         console.info(startDate + " " + created + " " + endDate);
         console.info("Filtering " + created + " " + (startDate <= created) + " " + (created <= endDate));
