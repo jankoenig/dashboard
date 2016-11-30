@@ -35,10 +35,12 @@ export interface LogsPageProps {
 
 interface LogsPageState {
     lastDimens: Dimensions;
+    retrievingLogs: boolean;
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
     outputs: Output[];
+    logs: Logs;
 }
 
 function mapStateToProps(state: State.All) {
@@ -66,9 +68,11 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.state = {
             lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
             source: props.source,
+            retrievingLogs: false,
             request: undefined,
             response: undefined,
-            outputs: []
+            outputs: [],
+            logs: new Logs(props.logs),
         };
     }
 
@@ -85,13 +89,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     updateDimensions() {
         let dimens: Dimensions = this.getDimensions();
         if (this.shouldUpdate(dimens)) {
-            this.setState({
-                lastDimens: dimens,
-                source: (this.state) ? this.state.source : undefined,
-                request: (this.state) ? this.state.request : undefined,
-                response: (this.state) ? this.state.response : undefined,
-                outputs: (this.state) ? this.state.outputs : undefined
-            });
+            this.state.lastDimens = dimens;
+            this.setState(this.state);
         }
     }
 
@@ -130,26 +129,24 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
-        if (this.state.source === undefined && nextProps.source) {
+        console.info("RECEIVING PROPS " + this.state.logs.logs.length);
+        if (this.state.retrievingLogs) {
+            this.state.retrievingLogs = false;
+        } else {
+            console.info("SETTING EVERYTHING. " + ((nextProps.logs) ? nextProps.logs.length : 0));
             this.props.getLogs(nextProps.source.secretKey);
-            this.setState({
-                source: nextProps.source,
-                lastDimens: this.state.lastDimens,
-                request: this.state.request,
-                response: this.state.response,
-                outputs: this.state.outputs
-            });
+            this.state.retrievingLogs = true;
         }
+        this.state.logs.logs = nextProps.logs;
+        this.state.source = nextProps.source;
+        this.setState(this.state);
     }
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
-        this.setState({
-            request: conversation.request,
-            response: conversation.response,
-            outputs: conversation.outputs,
-            lastDimens: this.state.lastDimens,
-            source: this.state.source,
-        });
+        this.state.request = conversation.request,
+        this.state.response = conversation.response,
+        this.state.outputs = conversation.outputs,
+        this.setState(this.state);
     }
 
     onRootLayout(element: Element) {
@@ -157,15 +154,17 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     beginFilter(value: string) {
-        let startDate: Date = this.props.logs[25].timestamp;
+        console.info("Looking for " + value);
+        let startDate: Date = this.props.logs[10].timestamp;
         let endDate: Date = this.props.logs[0].timestamp;
-        console.info("Start date = " + startDate);
-        console.info("End date " + endDate);
-        filter(this.props.logs, DateFilter(startDate, endDate))
-            .then(function(logs: Log[]) {
-                console.info("Found " + logs.length + " logs");
-            }).catch(function(err: Error) {
-                console.info("No logs found. " + err.message);
+        let filter = (value === undefined || value.length === 0) ? undefined : DateFilter(startDate, endDate);
+        this.state.logs.filterOut(filter)
+            .then((logs: Log[]) => {
+                console.info("Found " + logs.length);
+                this.state.request = undefined;
+                this.state.response = undefined;
+                this.state.outputs = undefined;
+                this.setState(this.state);
             });
     }
 
@@ -179,7 +178,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
                         <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll" }}>
                             <ConversationListView
-                                conversations={ConversationList.fromLogs(this.props.logs)}
+                                conversations={ConversationList.fromLogs(this.state.logs.logs)}
                                 expandListItemWhenActive={browser.isMobileWidth()}
                                 onClick={this.onConversationClicked.bind(this)} />
                         </div>
@@ -223,8 +222,8 @@ class FilterComponent extends React.Component<FilterProps, FilterState> {
     }
 
     handleChange(event: any) {
-        console.info("This was found " + event.value);
-        this.props.onChange(event.value);
+        console.info("This was found " + event.target.value);
+        this.props.onChange(event.target.value);
     }
 
     render() {
@@ -233,6 +232,48 @@ class FilterComponent extends React.Component<FilterProps, FilterState> {
                 <input type="text" name="sort" onChange={this.handleChange.bind(this)}/>
             </form>
         );
+    }
+}
+
+class Logs {
+    allLogs: Log[];
+    shownLogs: Log[];
+    filter?: (item: Log) => boolean;
+
+    constructor(logs: Log[]) {
+        this.allLogs = this.shownLogs = (logs) ? logs : [];
+    }
+
+    get logs(): Log[] {
+        console.info("Returning " + this.shownLogs.length);
+        return this.shownLogs;
+    }
+
+    get length(): number {
+        return this.shownLogs.length;
+    }
+
+    set logs(logs: Log[]) {
+        this.allLogs = (logs) ? logs : [];
+        if (this.filter) {
+            this.filterOut(this.filter);
+        } else {
+            this.shownLogs = this.allLogs;
+        }
+    }
+
+    filterOut(useFilter: (item: Log) => boolean): Promise<Log[]> {
+        this.filter = useFilter;
+        return filter(this.allLogs, this.filter)
+            .then((logs: Log[]) => {
+                console.info("Found " + logs.length + " logs");
+                this.shownLogs = logs;
+                return this.shownLogs;
+            }).catch((err: Error) => {
+                console.info("No logs found. " + err.message);
+                this.shownLogs = [];
+                return this.shownLogs;
+            });
     }
 }
 
