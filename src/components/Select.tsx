@@ -63,13 +63,13 @@ class Select extends React.Component<SelectProps, SelectState> {
     render() {
         return (
         <form action="#">
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
                 <input className="mdl-textfield__input" type="text" id="check-selection" value="Select" readOnly tabIndex={-1} />
                 <label htmlFor="check-selection">
                     <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 </label>
                 <label htmlFor="check-selection" className="mdl-textfield__label">Country</label>
-                <ul htmlFor="check-selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu getmdl-select__fullwidth">
+                <ul htmlFor="check-selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu">
                     <li className="mdl-menu__item" data-val="DE">Germany</li>
                     <li className="mdl-menu__item" data-val="BY">Belarus</li>
                     <li className="mdl-menu__item" data-val="RU">Russia</li>

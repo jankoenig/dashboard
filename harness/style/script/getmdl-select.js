@@ -2,10 +2,14 @@
     // TODO: Minify when done developing
     'use strict';
 
+    console.info("RUNNING SCRIPT");
+
     window.addEventListener('load', function () {
+        console.info("EVENT LOADED");
         getmdlSelect.init('.getmdl-select');
         document.addEventListener("DOMNodeInserted", function (ev) {
             if (ev.relatedNode.querySelectorAll(".getmdl-select").length > 0) {
+                console.info(" SIZE " + ev.relatedNode.querySelectorAll(".getmdl-select").length);
                 componentHandler.upgradeDom();
             }
         }, false);
@@ -23,6 +27,7 @@
             //show menu on mouse down or mouse up
             input.onkeydown = function (event) {
                 if (event.keyCode == 38 || event.keyCode == 40) {
+                    console.info("SHOWLING");
                     menu['MaterialMenu'].show();
                 }
             };
@@ -30,12 +35,14 @@
             //return focus to input
             menu.onkeydown = function (event) {
                 if (event.keyCode == 13) {
+                    console.info("FOCUSING");
                     input.focus();
                 }
             };
 
             [].forEach.call(list, function (li) {
                 li.onclick = function () {
+                    console.info("LICKSLING");
                     input.value = li.textContent;
                     dropdown.MaterialTextfield.change(li.textContent); // handles css class changes
                     setTimeout( function() {
@@ -56,8 +63,11 @@
             });
         },
         init: function (selector) {
+            console.info("INITTING " + selector);
             var dropdowns = document.querySelectorAll(selector);
+            console.info("DROPDOWNS = " + (dropdowns) ? dropdowns.length : "undefined");
             [].forEach.call(dropdowns, function (i) {
+                console.info("ADDING LISTENERS");
                 getmdlSelect.addEventListeners(i);
             });
         }
