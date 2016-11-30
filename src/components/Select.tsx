@@ -62,8 +62,9 @@ class Select extends React.Component<SelectProps, SelectState> {
 
     render() {
         return (
-            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select">
-                <input className="mdl-textfield__input" type="text" id="check-selection" value="Belarus" tabIndex={-1} />
+        <form action="#">
+            <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
+                <input className="mdl-textfield__input" type="text" id="check-selection" value="Select" readOnly tabIndex={-1} />
                 <label htmlFor="check-selection">
                     <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 </label>
@@ -72,33 +73,19 @@ class Select extends React.Component<SelectProps, SelectState> {
                     <li className="mdl-menu__item" data-val="DE">Germany</li>
                     <li className="mdl-menu__item" data-val="BY">Belarus</li>
                     <li className="mdl-menu__item" data-val="RU">Russia</li>
+                    <li className="mdl-menu__item" data-val="AA">Germany</li>
+                    <li className="mdl-menu__item" data-val="BB">Belarus</li>
+                    <li className="mdl-menu__item" data-val="CC">Russia</li>
+                    <li className="mdl-menu__item" data-val="DD">Germany</li>
+                    <li className="mdl-menu__item" data-val="EE">Belarus</li>
+                    <li className="mdl-menu__item" data-val="FF">Russia</li>
+                    <li className="mdl-menu__item" data-val="GG">Germany</li>
+                    <li className="mdl-menu__item" data-val="HH">Belarus</li>
+                    <li className="mdl-menu__item" data-val="RU">Russia</li>
                 </ul>
             </div>
+        </form>
         );
-
-
-        // <form action="#">
-        // <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height">
-        //     <input className="mdl-textfield__input" type="text" id="check-selection" value="Belarus" tabIndex={-1} />
-        //     <label htmlFor="check-selection">
-        //         <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
-        //     </label>
-        //     <label htmlFor="check-selection" className="mdl-textfield__label">Country</label>
-        //     <div className="mdl-menu__container is-upgraded" stye={{ height:"400px"}} >
-        //         <div className="mdl-menu__outline mdl-menu--bottom-left" style={{ heigh:"400px"}}/>
-        //         <ul htmlFor="check-selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu" data-upgraded=",MaterialMenu">
-        //             <li className="mdl-menu__item" data-val="DE">Germany</li>
-        //             <li className="mdl-menu__item" data-val="BY">Belarus</li>
-        //             <li className="mdl-menu__item" data-val="RU">Russia</li>
-        //         </ul>
-        //     </div>
-        // </div>
-        // </form>
-        // <ul htmlFor="selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-        //     <li className="mdl-menu__item" data-val="DE">Germany</li>
-        //     <li className="mdl-menu__item" data-val="BY">Belarus</li>
-        //     <li className="mdl-menu__item" data-val="RU">Russia</li>
-        // </ul>
     }
 }
 

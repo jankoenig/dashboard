@@ -226,9 +226,7 @@ class FilterComponent extends React.Component<FilterProps, FilterState> {
 
     render() {
         return (
-            <form action="#">
-                <input type="text" name="sort" onChange={this.handleChange.bind(this)} />
-            </form>
+            <Select hint="Choose..." selections={["Once", "Two", "Three", "Four", "Five"]} />
         );
     }
 }
