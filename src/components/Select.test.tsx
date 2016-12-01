@@ -25,7 +25,7 @@ let adapter: SelectAdapter<string> = {
         return testSelections[index];
     },
 
-    getTitle(item: string, index: number): string {
+    getTitle(index: number): string {
         return testSelections[index];
     }
 }
@@ -47,9 +47,9 @@ describe("Select", function () {
 
             expect(options.length).to.equal(adapter.getCount());
 
-            // expect(options.at(0).childAt(0)).to.equal(adapter.getTitle(0));
-            // expect(options.at(1).props().value).to.equal(adapter.getItem(1));
-            // expect(options.at(2).props().value).to.equal(adapter.getItem(2));
+            expect(options.at(0).text).to.equal(adapter.getTitle(0));
+            expect(options.at(1).text).to.equal(adapter.getItem(1));
+            expect(options.at(2).text).to.equal(adapter.getItem(2));
         });
     });
 });

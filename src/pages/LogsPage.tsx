@@ -129,11 +129,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
-        console.info("RECEIVING PROPS " + this.state.logs.logs.length);
         if (this.state.retrievingLogs) {
             this.state.retrievingLogs = false;
         } else {
-            console.info("SETTING EVERYTHING. " + ((nextProps.logs) ? nextProps.logs.length : 0));
             this.props.getLogs(nextProps.source.secretKey);
             this.state.retrievingLogs = true;
         }
@@ -220,7 +218,6 @@ class FilterComponent extends React.Component<FilterProps, FilterState> implemen
     }
 
     handleChange(event: any) {
-        console.info("This was found " + event.target.value);
         this.props.onChange(event.target.value);
     }
 
@@ -231,8 +228,9 @@ class FilterComponent extends React.Component<FilterProps, FilterState> implemen
         return index;
     };
 
-    getTitle(item: number, index: number): string {
-        switch(item) {
+    getTitle(index: number): string {
+        let item = this.getItem(index);
+        switch (item) {
             case 0:
                 return "Zero";
             case 1:
@@ -268,7 +266,6 @@ class Logs {
     }
 
     get logs(): Log[] {
-        console.info("Returning " + this.shownLogs.length);
         return this.shownLogs;
     }
 
@@ -289,11 +286,9 @@ class Logs {
         this.filter = useFilter;
         return filter(this.allLogs, this.filter)
             .then((logs: Log[]) => {
-                console.info("Found " + logs.length + " logs");
                 this.shownLogs = logs;
                 return this.shownLogs;
             }).catch((err: Error) => {
-                console.info("No logs found. " + err.message);
                 this.shownLogs = [];
                 return this.shownLogs;
             });
@@ -303,8 +298,6 @@ class Logs {
 function DateFilter(startDate: Date, endDate: Date): (item: Log) => boolean {
     return function (item: Log): boolean {
         let created = item.timestamp;
-        console.info(startDate + " " + created + " " + endDate);
-        console.info("Filtering " + created + " " + (startDate <= created) + " " + (created <= endDate));
         return startDate <= created && created <= endDate;
     };
 }

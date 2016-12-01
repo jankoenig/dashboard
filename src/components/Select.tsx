@@ -7,7 +7,7 @@ import { Menu, MenuItem } from "./Menu";
 export interface SelectAdapter<T> {
     getCount(): number;
     getItem(index: number): T;
-    getTitle(item: T, index: number): string;
+    getTitle(index: number): string;
 }
 
 export interface SelectProps<T> {
@@ -21,6 +21,8 @@ interface SelectState {
 
 export class Select extends React.Component<SelectProps<any>, SelectState> {
 
+    inputRef: Element;
+
     constructor(props: SelectProps<any>) {
         super(props);
         this.state = {
@@ -33,18 +35,38 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
 
         let maxCount = this.props.adapter.getCount();
         for (let count = 0; count < maxCount; ++count) {
-            let item = this.props.adapter.getItem(count);
-            let title = this.props.adapter.getTitle(item, count);
+            let title = this.props.adapter.getTitle(count);
             this.state.list.push((
                 <li className="mdl-menu__item" key={count}>{title}</li>
             ));
         }
     }
 
+    componentDidMount() {
+        // The input dom of the getmdl-select dispatches an "onchange" event on each selection.
+        this.inputRef.addEventListener("onchange", this.handleChange.bind(this));
+    }
+
+    componentWillUnmount() {
+        console.info("UNBINDING");
+        this.inputRef.removeEventListener("onchange", this.handleChange);
+    }
+
+    handleChange(obj: any) {
+        console.info("CHANGEIAOENFIOSEVN " + obj.detail.index);
+    }
+
+    handleRefBind(input: Element) {
+        console.info("BINDING " + input);
+        if (input) {
+            this.inputRef = input;
+        }
+    }
+
     render() {
         return (
             <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
-                <input className="mdl-textfield__input" type="text" id="check-selection" value="Select" readOnly tabIndex={-1} />
+                <input ref={this.handleRefBind.bind(this)} className="mdl-textfield__input" type="text" id="check-selection" value="Select" readOnly tabIndex={-1} />
                 <label htmlFor="check-selection">
                     <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 </label>
