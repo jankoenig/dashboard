@@ -2,9 +2,6 @@
     // TODO: Minify when done developing
     'use strict';
 
-    console.info("RUNNING SCRIPT");
-    console.info("OBservering");
-
     window.addEventListener('load', function () {
         getmdlSelect.init('.getmdl-select');
 
