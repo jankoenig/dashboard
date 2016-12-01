@@ -2,10 +2,11 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { getLogs } from "../actions/log";
+import { ComponentSelector, SelectableComponent } from "../components/ComponentSelector";
 import { ConversationListView } from "../components/ConversationListView";
+import { FormInput } from "../components/FormInput";
 import { Cell, Grid } from "../components/Grid";
 import Interaction from "../components/Interaction";
-import { Menu, MenuItem } from "../components/Menu";
 import { Select, SelectAdapter, SelectListener } from "../components/Select";
 import Conversation from "../models/conversation";
 import ConversationList from "../models/conversation-list";
@@ -62,9 +63,13 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     root: Element;
     resizeEvent: browser.WrappedEvent;
+    filterComponents: SelectableComponent[];
 
     constructor(props: LogsPageProps) {
         super(props);
+        this.filterComponents = [];
+        this.filterComponents.push(new NoFilterComponent());
+        this.filterComponents.push(new IDFilterComponent());
         this.state = {
             lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
             source: props.source,
@@ -168,7 +173,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return (
             <div
                 ref={this.onRootLayout.bind(this)}>
-                <FilterComponent onChange={this.beginFilter.bind(this)} />
+                <FilterComponent />
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
@@ -201,64 +206,6 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(LogsPage);
-
-interface FilterProps {
-    onChange: (text: string) => void;
-}
-
-interface FilterState {
-
-}
-
-class FilterComponent extends React.Component<FilterProps, FilterState> implements SelectAdapter<number>, SelectListener<number> {
-    constructor(props: FilterProps) {
-        super(props);
-        this.state = {
-        };
-    }
-
-    handleChange(event: any) {
-        this.props.onChange(event.target.value);
-    }
-
-    getCount(): number {
-        return 5;
-    }
-    getItem(index: number): number {
-        return index;
-    };
-
-    getTitle(index: number): string {
-        let item = this.getItem(index);
-        switch (item) {
-            case 0:
-                return "Zero";
-            case 1:
-                return "One";
-            case 2:
-                return "Two";
-            case 3:
-                return "Three";
-            case 4:
-                return "Four";
-            case 5:
-                return "Five";
-
-            default:
-                return "None";
-        }
-    }
-
-    onSelected(item: number, index: number) {
-        console.info("item " + item + " selected at " + index);
-    }
-
-    render() {
-        return (
-            <Select hint="Choose..." adapter={this} selectListener={this} />
-        );
-    }
-}
 
 class Logs {
     allLogs: Log[];
@@ -321,5 +268,91 @@ class DateFilter implements FilterType<Log> {
             let created = item.timestamp;
             return this.startDate <= created && created <= this.endDate;
         };
+    }
+}
+
+class NoFilterComponent implements SelectableComponent {
+    get title(): string {
+        return "Filter...";
+    }
+
+    get component(): JSX.Element {
+        return (<div/>);
+    }
+}
+
+class IDFilterComponent implements SelectableComponent {
+    get title(): string {
+        return "ID";
+    }
+
+    get component(): JSX.Element {
+        return (<FormInput label={this.title} type="text" value="" onChange={(text)=> console.info("WOOO")} />);
+    }
+}
+
+class FilterComponent extends React.Component<any, any> implements SelectAdapter<number>, SelectListener<number> {
+    constructor(props: any) {
+        super(props);
+        this.state = {
+        };
+    }
+
+    getCount(): number {
+        return 15;
+    }
+    getItem(index: number): number {
+        return index;
+    };
+
+    getTitle(index: number): string {
+        let item = this.getItem(index);
+        switch (item) {
+            case 0:
+                return "Zero";
+            case 1:
+                return "One";
+            case 2:
+                return "Two";
+            case 3:
+                return "Three";
+            case 4:
+                return "Four";
+            case 5:
+                return "Five";
+            case 6:
+                return "Six";
+            case 7:
+                return "Seven";
+            case 8:
+                return "Eight";
+            case 9:
+                return "Nine";
+            case 10:
+                return "Ten";
+            case 11:
+                return "Eleven";
+            case 12:
+                return "Doce";
+            case 13:
+                return "Trece";
+            case 14:
+                return "Catorce";
+            case 15:
+                return "Quince";
+
+            default:
+                return "None";
+        }
+    }
+
+    onSelected(item: number, index: number) {
+        console.info("item " + item + " selected at " + index);
+    }
+
+    render() {
+        return (
+            <Select hint="Choose..." adapter={this} selectListener={this} />
+        );
     }
 }
