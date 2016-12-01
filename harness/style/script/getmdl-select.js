@@ -6,31 +6,22 @@
     console.info("OBservering");
 
     window.addEventListener('load', function () {
-        console.info("EVENT LOADED");
         getmdlSelect.init('.getmdl-select');
 
-        // create an observer instance
-        var observer = new MutationObserver(function (mutations) {
-            console.info("FOUND MUTATIONS");
-            mutations.forEach(function (mutation) {
-                console.info("TYPE " + mutation.type);
-                var dropdowns = mutation.target.querySelectorAll(".getmdl-select");
-                console.info("Found " + dropdowns.length + " dropdowns");
+        // Configuring observer to listen for additions and subtractions in entire tree.
+        // We want to know when a ".getmdl-select" node has been added/remove so we can set/unset the event listeners.
+        var config = { childList: true, subtree: true }
 
+        // Observer instance will listen for adding the selector class.
+        var observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                var dropdowns = mutation.target.querySelectorAll(".getmdl-select");
                 [].forEach.call(dropdowns, function (i) {
                     getmdlSelect.addEventListeners(i);
                 });
                 componentHandler.upgradeDom();
             });
         });
-
-        console.info("Observer created.");
-
-        // Configuring observer to listen for additions and subtractions in entire tree.
-        // We want to know when a ".getmdl-select" node has been added/remove so we can set/unset the event listeners.
-        var config = { childList: true, subtree: true }
-
-        console.info("Config created. " + document);
 
         // pass in the target node, as well as the observer options
         observer.observe(document, config);
@@ -40,6 +31,10 @@
         defaultValue: {
             width: 300
         },
+
+        /**
+         * Adds the event listeners for all events in a dropdown select menu.
+         */
         addEventListeners: function (dropdown) {
             var input = dropdown.querySelector('input');
             var list = dropdown.querySelectorAll('li');
@@ -48,7 +43,6 @@
             //show menu on mouse down or mouse up
             input.onkeydown = function (event) {
                 if (event.keyCode == 38 || event.keyCode == 40) {
-                    console.info("SHOWLING");
                     menu['MaterialMenu'].show();
                 }
             };
@@ -56,14 +50,12 @@
             //return focus to input
             menu.onkeydown = function (event) {
                 if (event.keyCode == 13) {
-                    console.info("FOCUSING");
                     input.focus();
                 }
             };
 
             [].forEach.call(list, function (li) {
                 li.onclick = function () {
-                    console.info("LICKSLING");
                     input.value = li.textContent;
                     dropdown.MaterialTextfield.change(li.textContent); // handles css class changes
                     setTimeout(function () {
@@ -83,14 +75,13 @@
                 };
             });
         },
+
+        /**
+         * On first load, sets up the listeners for all selectors that may already exist.
+         */
         init: function (selector) {
-            console.info("INITTING " + selector);
             var dropdowns = document.querySelectorAll(selector);
-            var div = document.querySelectorAll("div");
-            console.info("DROPDOWNS = " + (dropdowns) ? dropdowns.length : "undefined");
-            console.info("DIVS = " + div.length);
             [].forEach.call(dropdowns, function (i) {
-                console.info("ADDING LISTENERS");
                 getmdlSelect.addEventListeners(i);
             });
         }
