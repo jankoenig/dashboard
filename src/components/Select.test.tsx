@@ -1,10 +1,14 @@
 import * as chai from "chai";
-import { shallow } from "enzyme";
+import { mount, shallow } from "enzyme";
 // tslint:disable:no-unused-variable
 import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
+import * as sinon from "sinon";
+import * as sinonChai from "sinon-chai";
 
-import { Select, SelectAdapter } from "./Select";
+import { Select, SelectAdapter, SelectListener } from "./Select";
+
+let jsdom = require("mocha-jsdom");
 
 let expect = chai.expect;
 
@@ -28,12 +32,27 @@ let adapter: SelectAdapter<string> = {
     getTitle(index: number): string {
         return testSelections[index];
     }
+};
+
+class Listener implements SelectListener<any> {
+    onSelected(item: any, index: number) { }
 }
 
 describe("Select", function () {
+
+    jsdom();
+
     describe("with text", function () {
+
+        let changeListeningStub: SelectListener<any>;
+
+        before(function() {
+            changeListeningStub = new Listener();
+            changeListeningStub.onSelected = sinon.stub();
+        });
+
         it("base correctly", function () {
-            const wrapper = shallow(<Select hint={testHint} adapter={adapter} />);
+            const wrapper = mount(<Select hint={testHint} adapter={adapter} selectListener={changeListeningStub}/>);
 
             const div = wrapper.find("div").first();
             const select = wrapper.find("ul").first();
@@ -41,15 +60,9 @@ describe("Select", function () {
             expect(div).to.not.be.undefined;
             expect(select).to.not.be.undefined;
 
-            console.info("CHILDREN = " + select.children().length);
-
-            const options = wrapper.find("li");
+            const options = select.find("li");
 
             expect(options.length).to.equal(adapter.getCount());
-
-            expect(options.at(0).text).to.equal(adapter.getTitle(0));
-            expect(options.at(1).text).to.equal(adapter.getItem(1));
-            expect(options.at(2).text).to.equal(adapter.getItem(2));
         });
     });
 });

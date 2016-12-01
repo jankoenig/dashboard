@@ -10,9 +10,14 @@ export interface SelectAdapter<T> {
     getTitle(index: number): string;
 }
 
+export interface SelectListener<T> {
+    onSelected(item: T, index: number): void;
+}
+
 export interface SelectProps<T> {
     hint: string;
     adapter: SelectAdapter<T>;
+    selectListener: SelectListener<T>;
 }
 
 interface SelectState {
@@ -22,20 +27,26 @@ interface SelectState {
 export class Select extends React.Component<SelectProps<any>, SelectState> {
 
     inputRef: Element;
+    boundChangeListener: any;
 
     constructor(props: SelectProps<any>) {
         super(props);
         this.state = {
             list: []
         };
+        this.setAdapter(props);
     }
 
-    componentWillReceiveProps?(nextProps: SelectProps<any>, nextContext: any): void {
+    componentWillReceiveProps(nextProps: SelectProps<any>, nextContext: any): void {
+        this.setAdapter(nextProps);
+    }
+
+    setAdapter(props: SelectProps<any>) {
         this.state.list = [];
 
-        let maxCount = this.props.adapter.getCount();
+        let maxCount = props.adapter.getCount();
         for (let count = 0; count < maxCount; ++count) {
-            let title = this.props.adapter.getTitle(count);
+            let title = props.adapter.getTitle(count);
             this.state.list.push((
                 <li className="mdl-menu__item" key={count}>{title}</li>
             ));
@@ -43,21 +54,24 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     }
 
     componentDidMount() {
+        console.info("MOUNT");
         // The input dom of the getmdl-select dispatches an "onchange" event on each selection.
-        this.inputRef.addEventListener("onchange", this.handleChange.bind(this));
+        this.boundChangeListener = this.handleChange.bind(this);
+        this.inputRef.addEventListener("onchange", this.boundChangeListener);
     }
 
     componentWillUnmount() {
-        console.info("UNBINDING");
-        this.inputRef.removeEventListener("onchange", this.handleChange);
+        this.inputRef.removeEventListener("onchange", this.boundChangeListener);
     }
 
     handleChange(obj: any) {
-        console.info("CHANGEIAOENFIOSEVN " + obj.detail.index);
+        let index = obj.detail.index;
+        let item = this.props.adapter.getItem(index);
+        this.props.selectListener.onSelected(index, item);
     }
 
     handleRefBind(input: Element) {
-        console.info("BINDING " + input);
+        console.info("BIND");
         if (input) {
             this.inputRef = input;
         }

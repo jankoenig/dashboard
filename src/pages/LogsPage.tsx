@@ -6,7 +6,7 @@ import { ConversationListView } from "../components/ConversationListView";
 import { Cell, Grid } from "../components/Grid";
 import Interaction from "../components/Interaction";
 import { Menu, MenuItem } from "../components/Menu";
-import { Select, SelectAdapter } from "../components/Select";
+import { Select, SelectAdapter, SelectListener } from "../components/Select";
 import Conversation from "../models/conversation";
 import ConversationList from "../models/conversation-list";
 import Log from "../models/log";
@@ -152,16 +152,16 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     beginFilter(value: string) {
-        let startDate: Date = this.props.logs[10].timestamp;
-        let endDate: Date = this.props.logs[0].timestamp;
-        let filter = (value === undefined || value.length === 0) ? undefined : DateFilter(startDate, endDate);
-        this.state.logs.filterOut(filter)
-            .then((logs: Log[]) => {
-                this.state.request = undefined;
-                this.state.response = undefined;
-                this.state.outputs = undefined;
-                this.setState(this.state);
-            });
+        // let startDate: Date = this.props.logs[10].timestamp;
+        // let endDate: Date = this.props.logs[0].timestamp;
+        // let filter = (value === undefined || value.length === 0) ? undefined : DateFilter(startDate, endDate);
+        // this.state.logs.filterOut(filter)
+        //     .then((logs: Log[]) => {
+        //         this.state.request = undefined;
+        //         this.state.response = undefined;
+        //         this.state.outputs = undefined;
+        //         this.setState(this.state);
+        //     });
     }
 
     render() {
@@ -210,7 +210,7 @@ interface FilterState {
 
 }
 
-class FilterComponent extends React.Component<FilterProps, FilterState> implements SelectAdapter<number> {
+class FilterComponent extends React.Component<FilterProps, FilterState> implements SelectAdapter<number>, SelectListener<number> {
     constructor(props: FilterProps) {
         super(props);
         this.state = {
@@ -249,9 +249,13 @@ class FilterComponent extends React.Component<FilterProps, FilterState> implemen
         }
     }
 
+    onSelected(item: number, index: number) {
+        console.info("item " + item + " selected at " + index);
+    }
+
     render() {
         return (
-            <Select hint="Choose..." adapter={this} />
+            <Select hint="Choose..." adapter={this} selectListener={this} />
         );
     }
 }
@@ -295,9 +299,27 @@ class Logs {
     }
 }
 
-function DateFilter(startDate: Date, endDate: Date): (item: Log) => boolean {
-    return function (item: Log): boolean {
-        let created = item.timestamp;
-        return startDate <= created && created <= endDate;
-    };
+interface FilterType<T> {
+    type: string;
+    filter: (item: T) => boolean;
+}
+
+class DateFilter implements FilterType<Log> {
+    startDate: Date;
+    endDate: Date;
+
+    constructor() {
+        this.startDate = this.endDate = new Date();
+    }
+
+    get type(): string {
+        return "Date";
+    }
+
+    get filter(): (item: Log) => boolean {
+        return function (item: Log): boolean {
+            let created = item.timestamp;
+            return this.startDate <= created && created <= this.endDate;
+        };
+    }
 }
