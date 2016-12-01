@@ -4,7 +4,7 @@ import { shallow } from "enzyme";
 import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
 
-import Select from "./Select";
+import { Select, SelectAdapter } from "./Select";
 
 let expect = chai.expect;
 
@@ -16,27 +16,40 @@ let testSelections = [
 
 let testHint = "TestHint";
 
+let adapter: SelectAdapter<string> = {
+    getCount(): number {
+        return testSelections.length;
+    },
+
+    getItem(index: number): string {
+        return testSelections[index];
+    },
+
+    getTitle(item: string, index: number): string {
+        return testSelections[index];
+    }
+}
+
 describe("Select", function () {
     describe("with text", function () {
         it("base correctly", function () {
-            const wrapper = shallow(<Select hint={testHint} selections={testSelections} />);
+            const wrapper = shallow(<Select hint={testHint} adapter={adapter} />);
 
             const div = wrapper.find("div").first();
-            const select = wrapper.find("select").first();
+            const select = wrapper.find("ul").first();
 
-            expect(div.props().className).to.equal("mdl-select mdl-js-select mdl-select--floating-label");
-
-            expect(select.props().className).to.equal("mdl-select__input");
+            expect(div).to.not.be.undefined;
+            expect(select).to.not.be.undefined;
 
             console.info("CHILDREN = " + select.children().length);
 
-            const options = wrapper.find("option");
+            const options = wrapper.find("li");
 
-            expect(options.length).to.equal(3);
+            expect(options.length).to.equal(adapter.getCount());
 
-            expect(options.at(0).props().value).to.equal("Selection1");
-            expect(options.at(1).props().value).to.equal("Selection2");
-            expect(options.at(2).props().value).to.equal("Selection3");
+            // expect(options.at(0).childAt(0)).to.equal(adapter.getTitle(0));
+            // expect(options.at(1).props().value).to.equal(adapter.getItem(1));
+            // expect(options.at(2).props().value).to.equal(adapter.getItem(2));
         });
     });
 });

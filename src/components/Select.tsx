@@ -4,65 +4,45 @@ import * as React from "react";
 import Button from "./Button";
 import { Menu, MenuItem } from "./Menu";
 
-export interface SelectProps {
+export interface SelectAdapter<T> {
+    getCount(): number;
+    getItem(index: number): T;
+    getTitle(item: T, index: number): string;
+}
+
+export interface SelectProps<T> {
     hint: string;
-    selections: string[];
+    adapter: SelectAdapter<T>;
 }
 
 interface SelectState {
     list: React.ReactNode[];
 }
 
-const DIV_CLASSES: string = "mdl-select mdl-js-select mdl-select--floating-label";
-const SELECT_CLASS: string = "mdl-select__input";
+export class Select extends React.Component<SelectProps<any>, SelectState> {
 
-class Select extends React.Component<SelectProps, SelectState> {
-
-    constructor(props: SelectProps) {
+    constructor(props: SelectProps<any>) {
         super(props);
         this.state = {
             list: []
         };
     }
 
-    get divClasses(): string {
-        return classNames(DIV_CLASSES);
-    }
-
-    get selectClasses(): string {
-        return classNames(SELECT_CLASS);
-    }
-
-    get selectLabelStyle(): any {
-        return {
-            bottom: "0",
-            // color: rgba(0, 0, 0, 0.26),
-            fontSize: "16px",
-            left: "0",
-            right: "0",
-            pointerEvents: "none",
-            position: "absolute",
-            top: "24px",
-            width: "100%",
-            overflow: "hidden",
-            whiteSpace: "nowrap",
-            textAlign: "left"
-        };
-    }
-
-    componentWillReceiveProps?(nextProps: SelectProps, nextContext: any): void {
+    componentWillReceiveProps?(nextProps: SelectProps<any>, nextContext: any): void {
         this.state.list = [];
 
-        for (let selection in this.props.selections) {
+        let maxCount = this.props.adapter.getCount();
+        for (let count = 0; count < maxCount; ++count) {
+            let item = this.props.adapter.getItem(count);
+            let title = this.props.adapter.getTitle(item, count);
             this.state.list.push((
-                <MenuItem>{selection}</MenuItem>
+                <li className="mdl-menu__item" key={count}>{title}</li>
             ));
         }
     }
 
     render() {
         return (
-        <form action="#">
             <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
                 <input className="mdl-textfield__input" type="text" id="check-selection" value="Select" readOnly tabIndex={-1} />
                 <label htmlFor="check-selection">
@@ -70,21 +50,9 @@ class Select extends React.Component<SelectProps, SelectState> {
                 </label>
                 <label htmlFor="check-selection" className="mdl-textfield__label">Country</label>
                 <ul htmlFor="check-selection" className="mdl-menu mdl-menu--bottom-left mdl-js-menu">
-                    <li className="mdl-menu__item" data-val="DE">Germany</li>
-                    <li className="mdl-menu__item" data-val="BY">Belarus</li>
-                    <li className="mdl-menu__item" data-val="RU">Russia</li>
-                    <li className="mdl-menu__item" data-val="AA">Germany</li>
-                    <li className="mdl-menu__item" data-val="BB">Belarus</li>
-                    <li className="mdl-menu__item" data-val="CC">Russia</li>
-                    <li className="mdl-menu__item" data-val="DD">Germany</li>
-                    <li className="mdl-menu__item" data-val="EE">Belarus</li>
-                    <li className="mdl-menu__item" data-val="FF">Russia</li>
-                    <li className="mdl-menu__item" data-val="GG">Germany</li>
-                    <li className="mdl-menu__item" data-val="HH">Belarus</li>
-                    <li className="mdl-menu__item" data-val="RU">Russia</li>
+                    {this.state.list}
                 </ul>
             </div>
-        </form>
         );
     }
 }

@@ -6,7 +6,7 @@ import { ConversationListView } from "../components/ConversationListView";
 import { Cell, Grid } from "../components/Grid";
 import Interaction from "../components/Interaction";
 import { Menu, MenuItem } from "../components/Menu";
-import Select from "../components/Select";
+import { Select, SelectAdapter } from "../components/Select";
 import Conversation from "../models/conversation";
 import ConversationList from "../models/conversation-list";
 import Log from "../models/log";
@@ -212,7 +212,7 @@ interface FilterState {
 
 }
 
-class FilterComponent extends React.Component<FilterProps, FilterState> {
+class FilterComponent extends React.Component<FilterProps, FilterState> implements SelectAdapter<number> {
     constructor(props: FilterProps) {
         super(props);
         this.state = {
@@ -224,9 +224,36 @@ class FilterComponent extends React.Component<FilterProps, FilterState> {
         this.props.onChange(event.target.value);
     }
 
+    getCount(): number {
+        return 5;
+    }
+    getItem(index: number): number {
+        return index;
+    };
+
+    getTitle(item: number, index: number): string {
+        switch(item) {
+            case 0:
+                return "Zero";
+            case 1:
+                return "One";
+            case 2:
+                return "Two";
+            case 3:
+                return "Three";
+            case 4:
+                return "Four";
+            case 5:
+                return "Five";
+
+            default:
+                return "None";
+        }
+    }
+
     render() {
         return (
-            <Select hint="Choose..." selections={["Once", "Two", "Three", "Four", "Five"]} />
+            <Select hint="Choose..." adapter={this} />
         );
     }
 }
