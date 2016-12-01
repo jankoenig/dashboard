@@ -68,7 +68,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     constructor(props: LogsPageProps) {
         super(props);
         this.filterComponents = [];
-        this.filterComponents.push(new NoFilterComponent());
         this.filterComponents.push(new IDFilterComponent());
         this.state = {
             lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
@@ -173,7 +172,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return (
             <div
                 ref={this.onRootLayout.bind(this)}>
-                <FilterComponent />
+                <ComponentSelector components={this.filterComponents} />
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
@@ -271,16 +270,6 @@ class DateFilter implements FilterType<Log> {
     }
 }
 
-class NoFilterComponent implements SelectableComponent {
-    get title(): string {
-        return "Filter...";
-    }
-
-    get component(): JSX.Element {
-        return (<div/>);
-    }
-}
-
 class IDFilterComponent implements SelectableComponent {
     get title(): string {
         return "ID";
@@ -288,71 +277,5 @@ class IDFilterComponent implements SelectableComponent {
 
     get component(): JSX.Element {
         return (<FormInput label={this.title} type="text" value="" onChange={(text)=> console.info("WOOO")} />);
-    }
-}
-
-class FilterComponent extends React.Component<any, any> implements SelectAdapter<number>, SelectListener<number> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-        };
-    }
-
-    getCount(): number {
-        return 15;
-    }
-    getItem(index: number): number {
-        return index;
-    };
-
-    getTitle(index: number): string {
-        let item = this.getItem(index);
-        switch (item) {
-            case 0:
-                return "Zero";
-            case 1:
-                return "One";
-            case 2:
-                return "Two";
-            case 3:
-                return "Three";
-            case 4:
-                return "Four";
-            case 5:
-                return "Five";
-            case 6:
-                return "Six";
-            case 7:
-                return "Seven";
-            case 8:
-                return "Eight";
-            case 9:
-                return "Nine";
-            case 10:
-                return "Ten";
-            case 11:
-                return "Eleven";
-            case 12:
-                return "Doce";
-            case 13:
-                return "Trece";
-            case 14:
-                return "Catorce";
-            case 15:
-                return "Quince";
-
-            default:
-                return "None";
-        }
-    }
-
-    onSelected(item: number, index: number) {
-        console.info("item " + item + " selected at " + index);
-    }
-
-    render() {
-        return (
-            <Select hint="Choose..." adapter={this} selectListener={this} />
-        );
     }
 }

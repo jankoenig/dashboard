@@ -36,6 +36,7 @@ let adapter: SelectAdapter<string> = {
 
 class Listener implements SelectListener<any> {
     onSelected(item: any, index: number) { }
+    onUnselected() { }
 }
 
 describe("Select", function () {
@@ -48,7 +49,8 @@ describe("Select", function () {
 
         before(function() {
             changeListeningStub = new Listener();
-            changeListeningStub.onSelected = sinon.stub();
+            changeListeningStub.onSelected = sinon.spy();
+            changeListeningStub.onUnselected = sinon.spy();
         });
 
         it("base correctly", function () {

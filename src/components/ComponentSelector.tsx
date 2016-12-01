@@ -19,14 +19,12 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
 
     constructor(props: ComponentSelectorProps) {
         super(props);
-        this.state = {
-            selectedComponent: props.components[0]
-        };
+        this.state = { };
     }
 
     componentWillReceiveProps(nextProps: ComponentSelectorProps, context: any) {
         // Going to reset the state back to 0.
-        this.state.selectedComponent = nextProps.components[0];
+        this.state.selectedComponent = undefined;
         this.setState(this.state);
     }
 
@@ -43,13 +41,19 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
     }
 
     onSelected(item: SelectableComponent, index: number): void {
-        console.info("SELECTING " + item.title + " AT " + index);
+        console.info("SELECTED " + item.title);
         this.state.selectedComponent = item;
         this.setState(this.state);
     }
 
+    onUnselected() {
+        console.info("UNSELECTED");
+        this.state.selectedComponent = undefined;
+        this.setState(this.state);
+    }
+
     render() {
-        let component: JSX.Element = this.state.selectedComponent.component || (<div/>);
+        let component: JSX.Element = (this.state.selectedComponent) ? this.state.selectedComponent.component : (<div/>);
 
         return (
             <div>
