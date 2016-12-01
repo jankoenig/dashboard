@@ -3,20 +3,41 @@
     'use strict';
 
     console.info("RUNNING SCRIPT");
+    console.info("OBservering");
 
     window.addEventListener('load', function () {
         console.info("EVENT LOADED");
         getmdlSelect.init('.getmdl-select');
-        document.addEventListener("DOMNodeInserted", function (ev) {
-            if (ev.relatedNode.querySelectorAll(".getmdl-select").length > 0) {
-                console.info(" SIZE " + ev.relatedNode.querySelectorAll(".getmdl-select").length);
+
+        // create an observer instance
+        var observer = new MutationObserver(function (mutations) {
+            console.info("FOUND MUTATIONS");
+            mutations.forEach(function (mutation) {
+                console.info("TYPE " + mutation.type);
+                var dropdowns = mutation.target.querySelectorAll(".getmdl-select");
+                console.info("Found " + dropdowns.length + " dropdowns");
+
+                [].forEach.call(dropdowns, function (i) {
+                    getmdlSelect.addEventListeners(i);
+                });
                 componentHandler.upgradeDom();
-            }
-        }, false);
+            });
+        });
+
+        console.info("Observer created.");
+
+        // Configuring observer to listen for additions and subtractions in entire tree.
+        // We want to know when a ".getmdl-select" node has been added/remove so we can set/unset the event listeners.
+        var config = { childList: true, subtree: true }
+
+        console.info("Config created. " + document);
+
+        // pass in the target node, as well as the observer options
+        observer.observe(document, config);
     });
 
     var getmdlSelect = {
-        defaultValue : {
+        defaultValue: {
             width: 300
         },
         addEventListeners: function (dropdown) {
@@ -45,9 +66,9 @@
                     console.info("LICKSLING");
                     input.value = li.textContent;
                     dropdown.MaterialTextfield.change(li.textContent); // handles css class changes
-                    setTimeout( function() {
+                    setTimeout(function () {
                         dropdown.MaterialTextfield.updateClasses_(); //update css class
-                    }, 250 );
+                    }, 250);
 
                     // update input with the "id" value
                     input.dataset.val = li.dataset.val || '';
@@ -65,7 +86,9 @@
         init: function (selector) {
             console.info("INITTING " + selector);
             var dropdowns = document.querySelectorAll(selector);
+            var div = document.querySelectorAll("div");
             console.info("DROPDOWNS = " + (dropdowns) ? dropdowns.length : "undefined");
+            console.info("DIVS = " + div.length);
             [].forEach.call(dropdowns, function (i) {
                 console.info("ADDING LISTENERS");
                 getmdlSelect.addEventListeners(i);
