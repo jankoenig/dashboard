@@ -232,6 +232,6 @@ class SingleSelectSelectableComponent<T> implements SelectableComponent {
     }
 
     get component(): JSX.Element {
-        return (<Select autoFocus={true} hint={this.hint} adapter={this.adapter} onSelected={this.onSelected.bind(this)} />);
+        return (<Select hint={this.hint} adapter={this.adapter} onSelected={this.onSelected.bind(this)} />);
     }
 }
