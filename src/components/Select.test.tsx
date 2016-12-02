@@ -1,12 +1,11 @@
 import * as chai from "chai";
-import { mount, shallow } from "enzyme";
+import { mount } from "enzyme";
 // tslint:disable:no-unused-variable
 import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
 import * as sinon from "sinon";
-import * as sinonChai from "sinon-chai";
 
-import { Select, SelectAdapter, SelectListener } from "./Select";
+import { Select, SelectAdapter } from "./Select";
 
 let jsdom = require("mocha-jsdom");
 
@@ -34,27 +33,27 @@ let adapter: SelectAdapter<string> = {
     }
 };
 
-class Listener implements SelectListener<any> {
-    onSelected(item: any, index: number) { }
-    onUnselected() { }
-}
-
 describe("Select", function () {
 
     jsdom();
 
     describe("with text", function () {
 
-        let changeListeningStub: SelectListener<any>;
+        let onSelected: Sinon.SinonStub;
+        let onUnselected: Sinon.SinonStub;
 
-        before(function() {
-            changeListeningStub = new Listener();
-            changeListeningStub.onSelected = sinon.spy();
-            changeListeningStub.onUnselected = sinon.spy();
+        before(function () {
+            onSelected = sinon.stub();
+            onUnselected = sinon.stub();
+        });
+
+        beforeEach(function () {
+            onSelected.reset();
+            onUnselected.reset();
         });
 
         it("base correctly", function () {
-            const wrapper = mount(<Select hint={testHint} adapter={adapter} selectListener={changeListeningStub}/>);
+            const wrapper = mount(<Select hint={testHint} adapter={adapter} onSelected={onSelected} onUnselected={onUnselected} />);
 
             const div = wrapper.find("div").first();
             const select = wrapper.find("ul").first();

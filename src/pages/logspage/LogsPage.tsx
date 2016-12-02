@@ -1,20 +1,20 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { getLogs } from "../actions/log";
-import { ComponentSelector, SelectableComponent } from "../components/ComponentSelector";
-import { ConversationListView } from "../components/ConversationListView";
-import { FormInput } from "../components/FormInput";
-import { Cell, Grid } from "../components/Grid";
-import Interaction from "../components/Interaction";
-import Conversation from "../models/conversation";
-import ConversationList from "../models/conversation-list";
-import Log from "../models/log";
-import Output from "../models/output";
-import Source from "../models/source";
-import { State } from "../reducers";
-import browser from "../utils/browser";
-import { filter } from "../utils/promise-utils";
+import { getLogs } from "../../actions/log";
+import { ConversationListView } from "../../components/ConversationListView";
+import { Cell, Grid } from "../../components/Grid";
+import Interaction from "../../components/Interaction";
+import Conversation from "../../models/conversation";
+import ConversationList from "../../models/conversation-list";
+import Log from "../../models/log";
+import Output from "../../models/output";
+import Source from "../../models/source";
+import { State } from "../../reducers";
+import browser from "../../utils/browser";
+import { filter } from "../../utils/promise-utils";
+
+import { FilterType, LogsFilterComponent } from "./LogsFilterComponent";
 
 interface CellDimensions {
     height: number;
@@ -62,12 +62,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     root: Element;
     resizeEvent: browser.WrappedEvent;
-    filterComponents: SelectableComponent[];
 
     constructor(props: LogsPageProps) {
         super(props);
-        this.filterComponents = [];
-        this.filterComponents.push(new IDFilterComponent());
         this.state = {
             lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
             source: props.source,
@@ -167,11 +164,23 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         //     });
     }
 
+    onFilter(filterType?: FilterType) {
+        let filter = (filterType) ? filterType.filter : undefined;
+        console.info("FILTER " + filter);
+        this.state.logs.filterOut(filter)
+            .then((logs: Log[]) => {
+                this.state.request = undefined;
+                this.state.response = undefined;
+                this.state.outputs = undefined;
+                this.setState(this.state);
+            });
+    }
+
     render() {
         return (
             <div
                 ref={this.onRootLayout.bind(this)}>
-                <ComponentSelector components={this.filterComponents} />
+                <LogsFilterComponent onFilter={this.onFilter.bind(this)}/>
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
@@ -238,49 +247,9 @@ class Logs {
                 this.shownLogs = logs;
                 return this.shownLogs;
             }).catch((err: Error) => {
+                console.info("ERROR " + err.message);
                 this.shownLogs = [];
                 return this.shownLogs;
             });
-    }
-}
-
-interface FilterType<T> {
-    type: string;
-    filter: (item: T) => boolean;
-}
-
-class DateFilter implements FilterType<Log> {
-    startDate: Date;
-    endDate: Date;
-
-    constructor() {
-        this.startDate = this.endDate = new Date();
-    }
-
-    get type(): string {
-        return "Date";
-    }
-
-    get filter(): (item: Log) => boolean {
-        return function (item: Log): boolean {
-            let created = item.timestamp;
-            return this.startDate <= created && created <= this.endDate;
-        };
-    }
-}
-
-class IDFilterComponent implements SelectableComponent {
-
-    input: FormInput;
-
-    get title(): string {
-        return "ID";
-    }
-
-    get component(): JSX.Element {
-        return (<FormInput ref={this.handleBind.bind(this)} autoFocus={true} label={this.title} type="text" value="" />);
-    }
-
-    handleBind(input: FormInput) {
     }
 }

@@ -59,11 +59,6 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         });
     }
 
-    componentWillReceiveProps(nextProps: FormInputProps, context: any) {
-        this.state.currentValue = nextProps.value;
-        this.setState(this.state);
-    }
-
     componentDidMount() {
         if (this.props.autoFocus) {
             this.input.focus();

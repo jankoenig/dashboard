@@ -6,15 +6,11 @@ export interface SelectAdapter<T> {
     getTitle(index: number): string;
 }
 
-export interface SelectListener<T> {
-    onSelected(item: T, index: number): void;
-    onUnselected(): void;
-}
-
 export interface SelectProps<T> {
     hint: string;
     adapter: SelectAdapter<T>;
-    selectListener: SelectListener<T>;
+    onSelected(item: T, index: number): void;
+    onUnselected(): void;
 }
 
 interface SelectState {
@@ -95,11 +91,11 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
 
     handleChange(index: number) {
         if (index === 0) {
-            this.props.selectListener.onUnselected();
+            this.props.onUnselected();
         } else {
             let realIndex = index - 1;
             let item = this.props.adapter.getItem(realIndex);
-            this.props.selectListener.onSelected(item, realIndex);
+            this.props.onSelected(item, realIndex);
         }
     }
 

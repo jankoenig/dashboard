@@ -9,13 +9,15 @@ export interface SelectableComponent {
 
 export interface ComponentSelectorProps {
     components: SelectableComponent[];
+    onSelected: (index: number, component: SelectableComponent) => void;
+    onUnselected: () => void;
 }
 
 interface ComponentSelectorState {
     selectedComponent?: SelectableComponent;
 }
 
-export class ComponentSelector extends React.Component<ComponentSelectorProps, ComponentSelectorState> implements Select.SelectAdapter<SelectableComponent>, Select.SelectListener<any> {
+export class ComponentSelector extends React.Component<ComponentSelectorProps, ComponentSelectorState> implements Select.SelectAdapter<SelectableComponent> {
 
     constructor(props: ComponentSelectorProps) {
         super(props);
@@ -24,8 +26,8 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
 
     componentWillReceiveProps(nextProps: ComponentSelectorProps, context: any) {
         // Going to reset the state back to 0.
-        this.state.selectedComponent = undefined;
-        this.setState(this.state);
+        // this.state.selectedComponent = undefined;
+        // this.setState(this.state);
     }
 
     getCount(): number {
@@ -43,19 +45,20 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
     onSelected(item: SelectableComponent, index: number): void {
         this.state.selectedComponent = item;
         this.setState(this.state);
+        this.props.onSelected(index, this.state.selectedComponent);
     }
 
     onUnselected() {
         this.state.selectedComponent = undefined;
         this.setState(this.state);
+        this.props.onUnselected();
     }
 
     render() {
         let component: JSX.Element = (this.state.selectedComponent) ? this.state.selectedComponent.component : (<div/>);
-
         return (
             <div>
-                <Select.Select hint={"Choose"} adapter={this} selectListener={this} />
+                <Select.Select hint={"Choose"} adapter={this} onSelected={this.onSelected.bind(this)} onUnselected={this.onUnselected.bind(this)} />
                 {component}
             </div>
         );

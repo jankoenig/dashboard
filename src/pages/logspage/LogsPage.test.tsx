@@ -7,12 +7,12 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 let jsdom = require("mocha-jsdom");
 
-import Conversation from "../models/conversation";
-import Log from "../models/log";
-import Output from "../models/output";
-import Source from "../models/source";
-import browser from "../utils/browser";
-import { dummyLogs, dummyOutputs } from "../utils/test";
+import Conversation from "../../models/conversation";
+import Log from "../../models/log";
+import Output from "../../models/output";
+import Source from "../../models/source";
+import browser from "../../utils/browser";
+import { dummyLogs, dummyOutputs } from "../../utils/test";
 import { LogsPage, LogsPageProps } from "./LogsPage";
 
 // Setup chai with sinon-chai
