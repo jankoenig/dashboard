@@ -278,7 +278,7 @@ class IDFilterComponent implements SelectableComponent {
     }
 
     get component(): JSX.Element {
-        return (<FormInput ref={this.handleBind.bind(this)} autoFocus={true} label={this.title} type="text" value="" onChange={(text)=> console.info("WOOO " + text.type)} />);
+        return (<FormInput ref={this.handleBind.bind(this)} autoFocus={true} label={this.title} type="text" value="" />);
     }
 
     handleBind(input: FormInput) {

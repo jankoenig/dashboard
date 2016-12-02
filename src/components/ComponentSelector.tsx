@@ -46,7 +46,6 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
     }
 
     onUnselected() {
-        console.info("UNSELECTED");
         this.state.selectedComponent = undefined;
         this.setState(this.state);
     }

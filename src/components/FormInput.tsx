@@ -1,6 +1,5 @@
 import * as classNames from "classnames";
 import * as React from "react";
-import * as DOM from "react-dom";
 
 import StringUtil from "../utils/string";
 import MDLComponent from "./MDLComponent";
@@ -26,10 +25,10 @@ export interface ErrorHandler {
 interface FormInputProps {
     label: string;
     type: "text" | "password";
+    value: string;
     autoFocus?: boolean;
     floatingLabel?: boolean;
-    onChange: (event: React.FormEvent) => any;
-    value: string;
+    onChange?: (event: React.FormEvent) => any;
     style?: React.CSSProperties;
     readOnly?: boolean;
     autoComplete?: "off" | "on" ;
@@ -38,6 +37,7 @@ interface FormInputProps {
 }
 
 interface FormState {
+    currentValue: string;
     errorMsg?: string;
 }
 
@@ -45,9 +45,10 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
     input?: HTMLElement;
 
-    constructor() {
-        super();
+    constructor(props: FormInputProps) {
+        super(props);
         this.state = {
+            currentValue: props.value,
             errorMsg: undefined
         };
     }
@@ -58,9 +59,13 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         });
     }
 
+    componentWillReceiveProps(nextProps: FormInputProps, context: any) {
+        this.state.currentValue = nextProps.value;
+        this.setState(this.state);
+    }
+
     componentDidMount() {
         if (this.props.autoFocus) {
-            console.info("FOCUSING");
             this.input.focus();
         }
     }
@@ -71,14 +76,18 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
     onFormChange(event: React.FormEvent) {
         let errorMsg: string = undefined;
+        let target = event.target as HTMLSelectElement;
         if (this.props.error !== undefined) {
-            let target = event.target as HTMLSelectElement;
             errorMsg = this.props.error.errorMessage(target.value);
         }
-        this.setState({
-            errorMsg: errorMsg
-        });
-        this.props.onChange(event);
+
+        this.state.errorMsg = errorMsg;
+        this.state.currentValue = target.value;
+        this.setState(this.state);
+
+        if (this.props.onChange) {
+            this.props.onChange(event);
+        }
     }
 
     handleInputBind(input: HTMLElement) {
@@ -102,7 +111,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     className="mdl-textfield__input"
                     type={this.props.type}
                     id={StringUtil.stringToCamelCase(this.props.label)}
-                    value={this.props.value}
+                    value={this.state.currentValue}
                     pattern={pattern}
                     onChange={this.onFormChange.bind(this)}
                     readOnly={this.props.readOnly}/>
