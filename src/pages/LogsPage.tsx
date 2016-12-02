@@ -7,7 +7,6 @@ import { ConversationListView } from "../components/ConversationListView";
 import { FormInput } from "../components/FormInput";
 import { Cell, Grid } from "../components/Grid";
 import Interaction from "../components/Interaction";
-import { Select, SelectAdapter, SelectListener } from "../components/Select";
 import Conversation from "../models/conversation";
 import ConversationList from "../models/conversation-list";
 import Log from "../models/log";
@@ -271,11 +270,17 @@ class DateFilter implements FilterType<Log> {
 }
 
 class IDFilterComponent implements SelectableComponent {
+
+    input: FormInput;
+
     get title(): string {
         return "ID";
     }
 
     get component(): JSX.Element {
-        return (<FormInput label={this.title} type="text" value="" onChange={(text)=> console.info("WOOO")} />);
+        return (<FormInput ref={this.handleBind.bind(this)} autoFocus={true} label={this.title} type="text" value="" onChange={(text)=> console.info("WOOO " + text.type)} />);
+    }
+
+    handleBind(input: FormInput) {
     }
 }

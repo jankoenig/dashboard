@@ -41,7 +41,6 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
     }
 
     onSelected(item: SelectableComponent, index: number): void {
-        console.info("SELECTED " + item.title);
         this.state.selectedComponent = item;
         this.setState(this.state);
     }

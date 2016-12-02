@@ -1,5 +1,6 @@
 import * as classNames from "classnames";
 import * as React from "react";
+import * as DOM from "react-dom";
 
 import StringUtil from "../utils/string";
 import MDLComponent from "./MDLComponent";
@@ -25,6 +26,7 @@ export interface ErrorHandler {
 interface FormInputProps {
     label: string;
     type: "text" | "password";
+    autoFocus?: boolean;
     floatingLabel?: boolean;
     onChange: (event: React.FormEvent) => any;
     value: string;
@@ -41,6 +43,8 @@ interface FormState {
 
 export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
+    input?: HTMLElement;
+
     constructor() {
         super();
         this.state = {
@@ -52,6 +56,17 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         return classNames("mdl-textfield mdl-js-textfield", {
             "mdl-textfield--floating-label": this.props.floatingLabel
         });
+    }
+
+    componentDidMount() {
+        if (this.props.autoFocus) {
+            console.info("FOCUSING");
+            this.input.focus();
+        }
+    }
+
+    componentWillUnmount() {
+        this.input = undefined;
     }
 
     onFormChange(event: React.FormEvent) {
@@ -66,6 +81,10 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         this.props.onChange(event);
     }
 
+    handleInputBind(input: HTMLElement) {
+        this.input = input;
+    }
+
     render() {
         let pattern: string = undefined;
         if (this.props.error !== undefined) {
@@ -78,6 +97,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                 style={this.props.style}
                 hidden={this.props.hidden}>
                 <input
+                    ref={this.handleInputBind.bind(this)}
                     autoComplete={this.props.autoComplete ? this.props.autoComplete : "off"}
                     className="mdl-textfield__input"
                     type={this.props.type}
