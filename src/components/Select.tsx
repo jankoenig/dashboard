@@ -9,8 +9,8 @@ export interface SelectAdapter<T> {
 export interface SelectProps<T> {
     hint: string;
     adapter: SelectAdapter<T>;
-    onSelected(item: T, index: number): void;
-    onUnselected(): void;
+    onSelected?(item: T, index: number): void;
+    onUnselected?(): void;
 }
 
 interface SelectState {
@@ -91,11 +91,15 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
 
     handleChange(index: number) {
         if (index === 0) {
-            this.props.onUnselected();
+            if (this.props.onUnselected) {
+                this.props.onUnselected();
+            }
         } else {
             let realIndex = index - 1;
             let item = this.props.adapter.getItem(realIndex);
-            this.props.onSelected(item, realIndex);
+            if (this.props.onSelected) {
+                this.props.onSelected(item, realIndex);
+            }
         }
     }
 
@@ -136,21 +140,21 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     }
 
     clickFunction(index: number) {
-            return (ev: React.SyntheticEvent) => {
-                let li = this.liList[index];
-                let useValue = (index === 0) ? undefined : li.textContent; // First node is "unselected";
-                this.inputRef.nodeValue = useValue;
-                (this.dropdownRef as any).MaterialTextfield.change(useValue); // handles css class changes
-                setTimeout(() => {
-                    (this.dropdownRef as any).MaterialTextfield.updateClasses_(); // update css class
-                }, 250);
+        return (ev: React.SyntheticEvent) => {
+            let li = this.liList[index];
+            let useValue = (index === 0) ? undefined : li.textContent; // First node is "unselected";
+            this.inputRef.nodeValue = useValue;
+            (this.dropdownRef as any).MaterialTextfield.change(useValue); // handles css class changes
+            setTimeout(() => {
+                (this.dropdownRef as any).MaterialTextfield.updateClasses_(); // update css class
+            }, 250);
 
-                // update input with the "id" value
-                // TODO: This existed in the original code from where this was stolen, but seems to break things. Figure out why.
-                // this.inputRef.id = li.id || "";
-                this.handleChange(index);
-            };
-        }
+            // update input with the "id" value
+            // TODO: This existed in the original code from where this was stolen, but seems to break things. Figure out why.
+            // this.inputRef.id = li.id || "";
+            this.handleChange(index);
+        };
+    }
 
     render() {
         return (

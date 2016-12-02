@@ -1,7 +1,10 @@
 import * as React from "react";
 
+import { LOG_LEVELS } from "../../constants";
+
 import { ComponentSelector, SelectableComponent } from "../../components/ComponentSelector";
 import { FormInput } from "../../components/FormInput";
+import { Select, SelectAdapter } from "../../components/Select";
 
 import Log from "../../models/log";
 
@@ -27,6 +30,7 @@ export class LogsFilterComponent extends React.Component<LogsFilterComponentProp
         super(props);
         this.filterComponents = [];
         this.filterComponents.push(new IDFilterComponent(this.props.onFilter));
+        this.filterComponents.push(new TypeFilterComponent(this.props.onFilter));
 
         this.selectableComponents = [];
         for (let fc of this.filterComponents) {
@@ -93,6 +97,25 @@ class IDFilter implements FilterType {
     }
 }
 
+class TypeFilter implements FilterType {
+    logType?: string;
+
+    constructor() {
+        this.logType = undefined;
+    }
+
+    get type(): string {
+        return "Log Type";
+    }
+
+    get filter(): (item: Log) => boolean {
+        let type = this.type;
+        return function(item: Log): boolean {
+            return type === undefined || item.log_type.match(type).length > 0;
+        };
+    }
+}
+
 abstract class FilterComponent {
 
     onFilter: (type: FilterType) => void;
@@ -113,12 +136,11 @@ class IDFilterComponent extends FilterComponent {
 
     filter: IDFilter;
     input: FormInput;
-    comp: SelectableComponent;
 
     constructor(onFilter: (type: FilterType) => void) {
         super(onFilter);
         this.filter = new IDFilter();
-        this.comp = new SingleSelectableComponent("ID", this.handleChange.bind(this));
+        this.comp = new SingleInputSelectableComponent("ID", this.handleChange.bind(this));
     }
 
     handleChange(value: string) {
@@ -131,7 +153,46 @@ class IDFilterComponent extends FilterComponent {
     }
 }
 
-class SingleSelectableComponent implements SelectableComponent {
+class TypeFilterComponent extends FilterComponent implements SelectAdapter<LOG_LEVELS> {
+
+    types: LOG_LEVELS[];
+    filter: TypeFilter;
+    input: FormInput;
+
+    constructor(onFilter: (type: FilterType) => void) {
+        super(onFilter);
+        this.types = [];
+        this.types.push("INFO");
+        this.types.push("DEBUG");
+        this.types.push("WARN");
+        this.types.push("ERROR");
+        this.filter = new TypeFilter();
+        this.comp = new SingleSelectSelectableComponent<string>("Type", this, this.onSelected.bind(this));
+    }
+
+    getCount(): number {
+        return this.types.length;
+    }
+
+    getItem(index: number): LOG_LEVELS {
+        return this.types[index];
+    }
+
+    getTitle(index: number): string {
+        return this.types[index];
+    }
+
+    filterType(): FilterType {
+        return this.filter;
+    }
+
+    onSelected(item: LOG_LEVELS) {
+        this.filter.logType = item;
+        this.startFilter();
+    }
+}
+
+class SingleInputSelectableComponent implements SelectableComponent {
 
     title: string;
     onChange: (input: string) => void;
@@ -143,12 +204,34 @@ class SingleSelectableComponent implements SelectableComponent {
 
     handleChange(formEvent: React.FormEvent) {
         let target = formEvent.target as HTMLSelectElement;
-        console.info("TARGET " + target.value);
         this.onChange(target.value);
     }
 
     get component(): JSX.Element {
-        console.info("GETTING COMPONENT");
         return (<FormInput autoFocus={true} label={this.title} type="text" value="" onChange={this.handleChange.bind(this)} />);
+    }
+}
+
+class SingleSelectSelectableComponent<T> implements SelectableComponent {
+    hint: string;
+    adapter: SelectAdapter<T>;
+    selectListener: (item?: T) => void;
+
+    constructor(hint: string, adapter: SelectAdapter<T>, onSelected: (item?: T) => void) {
+        this.hint = hint;
+        this.adapter = adapter;
+        this.selectListener = onSelected;
+    }
+
+    onSelected(item: T, index: number) {
+        this.selectListener(item);
+    }
+
+    get title(): string {
+        return this.hint;
+    }
+
+    get component(): JSX.Element {
+        return (<Select autoFocus={true} hint={this.hint} adapter={this.adapter} onSelected={this.onSelected.bind(this)} />);
     }
 }
