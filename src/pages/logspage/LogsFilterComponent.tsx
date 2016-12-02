@@ -7,8 +7,6 @@ import { FormInput } from "../../components/FormInput";
 import { Select, SelectAdapter } from "../../components/Select";
 import { LOG_LEVELS } from "../../constants";
 
-import Log from "../../models/log";
-
 export interface LogsFilterComponentProps {
     onFilter: (filter?: Filters.FilterType) => void;
 }

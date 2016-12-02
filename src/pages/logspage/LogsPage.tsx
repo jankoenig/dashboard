@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { getLogs } from "../../actions/log";
 import { ConversationListView } from "../../components/ConversationListView";
+import { FilterableConversationList } from "./FilterableConversationList";
 import { Cell, Grid } from "../../components/Grid";
 import Interaction from "../../components/Interaction";
 import Conversation from "../../models/conversation";
@@ -41,7 +42,6 @@ interface LogsPageState {
     request: Log | undefined;
     response: Log | undefined;
     outputs: Output[];
-    logs: Logs;
 }
 
 function mapStateToProps(state: State.All) {
@@ -72,8 +72,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             retrievingLogs: false,
             request: undefined,
             response: undefined,
-            outputs: [],
-            logs: new Logs(props.logs),
+            outputs: []
         };
     }
 
@@ -136,12 +135,11 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             this.props.getLogs(nextProps.source.secretKey);
             this.state.retrievingLogs = true;
         }
-        this.state.logs.logs = nextProps.logs;
         this.state.source = nextProps.source;
         this.setState(this.state);
     }
 
-    onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
+    onConversationClicked(conversation: Conversation) {
         this.state.request = conversation.request;
         this.state.response = conversation.response;
         this.state.outputs = conversation.outputs;
@@ -152,44 +150,18 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.root = element;
     }
 
-    beginFilter(value: string) {
-        // let startDate: Date = this.props.logs[10].timestamp;
-        // let endDate: Date = this.props.logs[0].timestamp;
-        // let filter = (value === undefined || value.length === 0) ? undefined : DateFilter(startDate, endDate);
-        // this.state.logs.filterOut(filter)
-        //     .then((logs: Log[]) => {
-        //         this.state.request = undefined;
-        //         this.state.response = undefined;
-        //         this.state.outputs = undefined;
-        //         this.setState(this.state);
-        //     });
-    }
-
-    onFilter(filterType?: FilterType) {
-        let filter = (filterType) ? filterType.filter : undefined;
-        console.info("FILTER " + filter);
-        this.state.logs.filterOut(filter)
-            .then((logs: Log[]) => {
-                this.state.request = undefined;
-                this.state.response = undefined;
-                this.state.outputs = undefined;
-                this.setState(this.state);
-            });
-    }
-
     render() {
         return (
             <div
                 ref={this.onRootLayout.bind(this)}>
-                <LogsFilterComponent onFilter={this.onFilter.bind(this)}/>
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                        <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll" }}>
-                            <ConversationListView
-                                conversations={ConversationList.fromLogs(this.state.logs.logs)}
-                                expandListItemWhenActive={browser.isMobileWidth()}
-                                onClick={this.onConversationClicked.bind(this)} />
+                        <div style={{ height: this.state.lastDimens.cellDimens.height, overflowY: "scroll" }} >
+                            <FilterableConversationList
+                                listHeight={this.state.lastDimens.cellDimens.height}
+                                conversations={ConversationList.fromLogs(this.props.logs)}
+                                onShowConversation={this.onConversationClicked.bind(this)} />
                         </div>
                     </Cell>
                     <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
@@ -214,43 +186,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(LogsPage);
-
-class Logs {
-    allLogs: Log[];
-    shownLogs: Log[];
-    filter?: (item: Log) => boolean;
-
-    constructor(logs: Log[]) {
-        this.allLogs = this.shownLogs = (logs) ? logs : [];
-    }
-
-    get logs(): Log[] {
-        return this.shownLogs;
-    }
-
-    get length(): number {
-        return this.shownLogs.length;
-    }
-
-    set logs(logs: Log[]) {
-        this.allLogs = (logs) ? logs : [];
-        if (this.filter) {
-            this.filterOut(this.filter);
-        } else {
-            this.shownLogs = this.allLogs;
-        }
-    }
-
-    filterOut(useFilter: (item: Log) => boolean): Promise<Log[]> {
-        this.filter = useFilter;
-        return filter(this.allLogs, this.filter)
-            .then((logs: Log[]) => {
-                this.shownLogs = logs;
-                return this.shownLogs;
-            }).catch((err: Error) => {
-                console.info("ERROR " + err.message);
-                this.shownLogs = [];
-                return this.shownLogs;
-            });
-    }
-}

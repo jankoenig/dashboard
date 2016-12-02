@@ -1,9 +1,9 @@
 
-import Log from "../../models/log";
+import Conversation from "../../models/Conversation";
 
 export interface FilterType {
     type: string;
-    filter: (item: Log) => boolean;
+    filter: (item: Conversation) => boolean;
 }
 
 export class TypeFilter implements FilterType {
@@ -17,14 +17,13 @@ export class TypeFilter implements FilterType {
         return "Log Type";
     }
 
-    get filter(): (item: Log) => boolean {
+    get filter(): (item: Conversation) => boolean {
         let type = this.logType;
-        return function(item: Log): boolean {
+        return function(item: Conversation): boolean {
             if (!type || type.trim() === "") {
                 return true;
             }
-            let match = item.log_type.match(type);
-            return match && match.length > 0;
+            return item.hasType(type);
         };
     }
 }
@@ -40,9 +39,9 @@ export class IDFilter implements FilterType {
         return "ID";
     }
 
-    get filter(): (item: Log) => boolean {
+    get filter(): (item: Conversation) => boolean {
         let id = this.id;
-        return function (item: Log): boolean {
+        return function (item: Conversation): boolean {
             let matches = item.id.match("^.*" + id + ".*$");
             return id.length === 0 || (matches && matches.length > 0);
         };
@@ -61,8 +60,8 @@ export class DateFilter implements FilterType {
         return "Date";
     }
 
-    get filter(): (item: Log) => boolean {
-        return function (item: Log): boolean {
+    get filter(): (item: Conversation) => boolean {
+        return function (item: Conversation): boolean {
             let created = item.timestamp;
             return this.startDate <= created && created <= this.endDate;
         };

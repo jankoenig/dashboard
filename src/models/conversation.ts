@@ -1,3 +1,5 @@
+import { LOG_LEVELS } from "../constants";
+
 import Color from "../utils/color";
 import Log from "./log";
 import Output from "./output";
@@ -92,6 +94,16 @@ export default class Conversation implements ConversationProperties {
         return requestType;
     }
 
+    get responseType(): string | undefined {
+        let responseType: string;
+
+        if (this.response.payload.request) {
+            responseType = this.response.payload.type;
+        }
+
+        return responseType;
+    }
+
     get intent(): string | undefined {
         if (this.request.payload.request && this.request.payload.request.intent) {
             return this.request.payload.request.intent.name;
@@ -105,15 +117,16 @@ export default class Conversation implements ConversationProperties {
     }
 
     get hasError(): boolean {
-        let hasError = false;
+        return this.hasType("ERROR");
+    }
 
+    hasType(type: string): boolean {
         for (let output of this.outputs) {
-            if (output.level === "ERROR") {
-                hasError = true;
+            if (output.level === type) {
+                return true;
             }
         }
-
-        return hasError;
+        return false;
     }
 }
 
