@@ -1,20 +1,16 @@
 import * as React from "react";
 
-import { LOG_LEVELS } from "../../constants";
+import * as Filters from "./Filters";
 
 import { ComponentSelector, SelectableComponent } from "../../components/ComponentSelector";
 import { FormInput } from "../../components/FormInput";
 import { Select, SelectAdapter } from "../../components/Select";
+import { LOG_LEVELS } from "../../constants";
 
 import Log from "../../models/log";
 
 export interface LogsFilterComponentProps {
-    onFilter: (filter?: FilterType) => void;
-}
-
-export interface FilterType {
-    type: string;
-    filter: (item: Log) => boolean;
+    onFilter: (filter?: Filters.FilterType) => void;
 }
 
 interface LogsFilterComponentState {
@@ -54,78 +50,16 @@ export class LogsFilterComponent extends React.Component<LogsFilterComponentProp
 
 export default LogsFilterComponent;
 
-class DateFilter implements FilterType {
-    startDate: Date;
-    endDate: Date;
-
-    constructor() {
-        this.startDate = this.endDate = new Date();
-    }
-
-    get type(): string {
-        return "Date";
-    }
-
-    get filter(): (item: Log) => boolean {
-        return function (item: Log): boolean {
-            let created = item.timestamp;
-            return this.startDate <= created && created <= this.endDate;
-        };
-    }
-}
-
-class IDFilter implements FilterType {
-    id: string;
-
-    constructor() {
-        this.id = "";
-    }
-
-    get type(): string {
-        return "ID";
-    }
-
-    get filter(): (item: Log) => boolean {
-        let id = this.id;
-        return function (item: Log): boolean {
-            console.info("Checking " + ((item) ? item.id : "undefined") + " with " + id);
-            let matches = item.id.match("^.*" + id + ".*$");
-            console.info("Matches " + matches);
-            let bool = id.length === 0 || (matches && matches.length > 0);
-            return bool;
-        };
-    }
-}
-
-class TypeFilter implements FilterType {
-    logType?: string;
-
-    constructor() {
-        this.logType = undefined;
-    }
-
-    get type(): string {
-        return "Log Type";
-    }
-
-    get filter(): (item: Log) => boolean {
-        let type = this.type;
-        return function(item: Log): boolean {
-            return type === undefined || item.log_type.match(type).length > 0;
-        };
-    }
-}
-
 abstract class FilterComponent {
 
-    onFilter: (type: FilterType) => void;
+    onFilter: (type: Filters.FilterType) => void;
     comp: SelectableComponent;
 
-    constructor(onFilter: (type: FilterType) => void) {
+    constructor(onFilter: (type: Filters.FilterType) => void) {
         this.onFilter = onFilter;
     }
 
-    abstract filterType(): FilterType;
+    abstract filterType(): Filters.FilterType;
 
     startFilter() {
         this.onFilter(this.filterType());
@@ -134,12 +68,12 @@ abstract class FilterComponent {
 
 class IDFilterComponent extends FilterComponent {
 
-    filter: IDFilter;
+    filter: Filters.IDFilter;
     input: FormInput;
 
-    constructor(onFilter: (type: FilterType) => void) {
+    constructor(onFilter: (type: Filters.FilterType) => void) {
         super(onFilter);
-        this.filter = new IDFilter();
+        this.filter = new Filters.IDFilter();
         this.comp = new SingleInputSelectableComponent("ID", this.handleChange.bind(this));
     }
 
@@ -148,7 +82,7 @@ class IDFilterComponent extends FilterComponent {
         this.startFilter();
     }
 
-    filterType(): FilterType {
+    filterType(): Filters.FilterType {
         return this.filter;
     }
 }
@@ -156,17 +90,17 @@ class IDFilterComponent extends FilterComponent {
 class TypeFilterComponent extends FilterComponent implements SelectAdapter<LOG_LEVELS> {
 
     types: LOG_LEVELS[];
-    filter: TypeFilter;
+    filter: Filters.TypeFilter;
     input: FormInput;
 
-    constructor(onFilter: (type: FilterType) => void) {
+    constructor(onFilter: (type: Filters.FilterType) => void) {
         super(onFilter);
         this.types = [];
         this.types.push("INFO");
         this.types.push("DEBUG");
         this.types.push("WARN");
         this.types.push("ERROR");
-        this.filter = new TypeFilter();
+        this.filter = new Filters.TypeFilter();
         this.comp = new SingleSelectSelectableComponent<string>("Type", this, this.onSelected.bind(this));
     }
 
@@ -182,7 +116,7 @@ class TypeFilterComponent extends FilterComponent implements SelectAdapter<LOG_L
         return this.types[index];
     }
 
-    filterType(): FilterType {
+    filterType(): Filters.FilterType {
         return this.filter;
     }
 

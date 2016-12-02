@@ -14,7 +14,8 @@ import { State } from "../../reducers";
 import browser from "../../utils/browser";
 import { filter } from "../../utils/promise-utils";
 
-import { FilterType, LogsFilterComponent } from "./LogsFilterComponent";
+import { FilterType } from "./Filters";
+import { LogsFilterComponent } from "./LogsFilterComponent";
 
 interface CellDimensions {
     height: number;
