@@ -31,7 +31,7 @@ export class SourceListPage extends React.Component<SourceListPageProps, any> {
         for (let source of this.props.sources) {
             listItems.push((
                 <li key={source.id} className="mdl-list__item">
-                    <Link to={"/skills/" + source.id + "/logs"}>{source.name}</Link>
+                    <Link to={"/skills/" + source.id}>{source.name}</Link>
                     <span style={{ textAlign: "center", marginLeft: "10px", fontSize: "12px" }}>
                         Created {moment(source.created).format("MMM Do, YYYY")}
                     </span>

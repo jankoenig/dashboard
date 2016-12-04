@@ -19,6 +19,7 @@ import LogsPage from "./pages/LogsPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SourceListPage from "./pages/SourceListPage";
+import SourcePage from "./pages/SourcePage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
@@ -107,8 +108,9 @@ let render = function () {
                     <IndexRoute component={HomePage} />
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
-                    <Route path="/skill/:sourceId"  onEnter={setSource} onLeave={removeSource} >
-                        <Route path="/skills/:sourceId/logs" component={LogsPage}/>
+                    <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
+                        <IndexRoute component={SourcePage} />
+                        <Route path="/skills/:sourceId/logs" component={LogsPage} />
                     </Route>
                     <Route path="*" component={NotFoundPage} />
                 </Route>
