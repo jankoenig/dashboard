@@ -1,5 +1,3 @@
-import { LOG_LEVELS } from "../constants";
-
 import Color from "../utils/color";
 import Log from "./log";
 import Output from "./output";

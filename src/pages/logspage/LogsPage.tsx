@@ -2,8 +2,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import { getLogs } from "../../actions/log";
-import { ConversationListView } from "../../components/ConversationListView";
-import { FilterableConversationList } from "./FilterableConversationList";
 import { Cell, Grid } from "../../components/Grid";
 import Interaction from "../../components/Interaction";
 import Conversation from "../../models/conversation";
@@ -13,10 +11,7 @@ import Output from "../../models/output";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import browser from "../../utils/browser";
-import { filter } from "../../utils/promise-utils";
-
-import { FilterType } from "./Filters";
-import { LogsFilterComponent } from "./LogsFilterComponent";
+import { FilterableConversationList } from "./FilterableConversationList";
 
 interface CellDimensions {
     height: number;
