@@ -112,6 +112,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             heightOffset = 0;
         }
 
+        console.info("CELL DIMENS " + (height - heightOffset) + " MY HEIGHT " + height);
+
         return {
             width: width,
             height: height,
@@ -157,9 +159,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                        <div style={{ height: this.state.lastDimens.cellDimens.height, overflowY: "scroll" }} >
+                        <div>
                             <FilterableConversationList
-                                listHeight={this.state.lastDimens.cellDimens.height}
+                                height={this.state.lastDimens.cellDimens.height}
                                 conversations={ConversationList.fromLogs(this.props.logs)}
                                 onShowConversation={this.onConversationClicked.bind(this)} />
                         </div>

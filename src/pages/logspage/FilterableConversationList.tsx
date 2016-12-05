@@ -12,30 +12,44 @@ import { LogsFilterComponent } from "./LogsFilterComponent";
 
 
 export interface FilterableConversationListProps {
-    listHeight?: number;
+    height: number;
     conversations: ConversationList;
     onShowConversation: (conversation: Conversation) => void;
 }
 
+interface Dimensions {
+    width: number;
+    height: number;
+}
+
 interface FilterableConversationListState {
     shownConversations: ConversationList;
+    listHeight: number;
 }
 
 export class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
 
+    root: HTMLElement;
+    filterDiv: HTMLElement;
     lastFilterType: FilterType;
 
     constructor(props: FilterableConversationListProps) {
         super(props);
-        console.info("Length + " + props.conversations.length);
+
         this.state = {
-            shownConversations: props.conversations
+            shownConversations: props.conversations,
+            listHeight: props.height
         };
     }
 
     componentWillReceiveProps(nextProps: FilterableConversationListProps, nextContext: any): void {
         this.state.shownConversations = nextProps.conversations;
         this.internalFilter(nextProps.conversations, this.lastFilterType);
+        let newHeight = nextProps.height - this.getFilterComponentHeight();
+        if (newHeight !== this.state.listHeight) {
+            this.state.listHeight = newHeight;
+            this.setState(this.state);
+        }
     }
 
     onFilter(filterType: FilterType) {
@@ -48,28 +62,48 @@ export class FilterableConversationList extends React.Component<FilterableConver
         let me = this;
         filter(list, filterToUse)
             .then(function (items: ConversationList) {
-                console.info("FOUND items.length " + items.length);
                 me.state.shownConversations = items;
                 me.setState(me.state);
             }).catch(function (err: Error) {
-                console.info("NOTHING FOUND " + err.message);
                 me.state.shownConversations = [];
                 me.setState(me.state);
             });
+    }
+
+    getFilterComponentHeight(): number {
+        if (this.filterDiv) {
+            let filterRect = this.filterDiv.getBoundingClientRect();
+            return filterRect.height;
+        } else {
+            return 200;
+        }
     }
 
     onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
         this.props.onShowConversation(conversation);
     }
 
+    handleRoot(root: HTMLElement) {
+        this.root = root;
+    }
+
+    handleFilterDiv(filterDiv: HTMLElement) {
+        this.filterDiv = filterDiv;
+    }
+
     render() {
+        let listHeight = this.state.listHeight;
         return (
-            <div>
-                <LogsFilterComponent onFilter={this.onFilter.bind(this)} />
+            <div ref={this.handleRoot.bind(this)} style= {{ overflowY: "hidden" }}>
+                <div ref={this.handleFilterDiv.bind(this)} >
+                    <LogsFilterComponent onFilter={this.onFilter.bind(this)} />
+                </div>
+                <div style={{ maxHeight: listHeight, overflowY: "scroll" }}>
                     <ConversationListView
                         conversations={this.state.shownConversations}
                         expandListItemWhenActive={browser.isMobileWidth()}
                         onClick={this.onConversationClicked.bind(this)} />
+                </div>
             </div>
         );
     }
