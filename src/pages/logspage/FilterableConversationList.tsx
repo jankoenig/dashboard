@@ -83,6 +83,10 @@ export class FilterableConversationList extends React.Component<FilterableConver
         this.props.onShowConversation(conversation);
     }
 
+    onEmpty(): JSX.Element {
+        return (<p> No available data </p> );
+    }
+
     handleRoot(root: HTMLElement) {
         this.root = root;
     }
@@ -99,16 +103,12 @@ export class FilterableConversationList extends React.Component<FilterableConver
                     <LogsFilterComponent onFilter={this.onFilter.bind(this)} />
                 </div>
                 <div>
-                    {this.props.conversations.length > 0 ? (
-                        <ConversationListView
-                            height={listHeight}
-                            conversations={this.state.shownConversations}
-                            expandListItemWhenActive={browser.isMobileWidth()}
-                            onClick={this.onConversationClicked.bind(this)} />
-                    ) : (
-                            <p> No available data </p>
-                        )
-                    }
+                    <ConversationListView
+                        height={listHeight}
+                        conversations={this.state.shownConversations}
+                        expandListItemWhenActive={browser.isMobileWidth()}
+                        onClick={this.onConversationClicked.bind(this)}
+                        onEmpty={this.onEmpty.bind(this)} />
                 </div>
             </div>
         );
