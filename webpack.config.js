@@ -6,14 +6,18 @@ module.exports = {
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "scripts/dashboard.js",
+    filename: "scripts/",
   },
   // Enable sourcemaps for debugging webpack's output.
   devtool: "source-map",
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+    extensions: ["", ".scss", ".css", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+    modulesDirectories: [
+      'node_modules',
+      path.resolve(__dirname, './node_modules')
+    ]
   },
 
   module: {
@@ -26,8 +30,16 @@ module.exports = {
       {
         test: /\.css$/,
         loader: "typings-for-css-modules?modules"
+      },
+      {
+        test: /\.scss$/,
+        loaders: ["style-loader", "css-loader", "sass-loader"]
       }
     ],
+
+    sassLoader: {
+      data: '@import "' + path.resolve(__dirname, 'theme/_theme.scss') + '";'
+    },
 
     preLoaders: [
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.

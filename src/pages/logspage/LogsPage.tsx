@@ -107,8 +107,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             heightOffset = 0;
         }
 
-        console.info("CELL DIMENS " + (height - heightOffset) + " MY HEIGHT " + height);
-
         return {
             width: width,
             height: height,
