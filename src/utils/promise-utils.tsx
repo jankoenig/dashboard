@@ -6,7 +6,6 @@ export function filter<T>(items: T[], filter: (item: T, index: number) => boolea
     return new Promise<T[]>((resolve, reject) => {
             let resolvedItems: T[] = [];
             if (filter) {
-                console.info("FILTERING");
                 for (let i = 0; i < items.length; i++) {
                     let item = items[i];
                     if (filter(item, i)) {
@@ -14,16 +13,12 @@ export function filter<T>(items: T[], filter: (item: T, index: number) => boolea
                     }
                 }
             } else {
-                console.info("NOPE");
                 resolvedItems = items;
             }
 
-            console.info("FINAL LENGTH " + resolvedItems.length);
             if (resolvedItems.length > 0) {
-                console.info("RESOLVING");
                 resolve(resolvedItems);
             } else {
-                console.info("REJECTING");
                 reject(Error("No items found in the collection."));
             }
         });

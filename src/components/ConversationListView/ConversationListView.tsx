@@ -72,12 +72,6 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     render() {
-        // let style: any = {
-        //     overflowY: "scroll"
-        // };
-
-        // style["height"] = "100%";
-
         return (
             <div>
                 {this.props.conversations.length > 0 ? (
