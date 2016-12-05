@@ -98,8 +98,9 @@ export class FilterableConversationList extends React.Component<FilterableConver
                 <div ref={this.handleFilterDiv.bind(this)} >
                     <LogsFilterComponent onFilter={this.onFilter.bind(this)} />
                 </div>
-                <div style={{ maxHeight: listHeight, overflowY: "scroll" }}>
+                <div>
                     <ConversationListView
+                        height={listHeight}
                         conversations={this.state.shownConversations}
                         expandListItemWhenActive={browser.isMobileWidth()}
                         onClick={this.onConversationClicked.bind(this)} />
