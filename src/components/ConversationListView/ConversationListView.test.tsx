@@ -21,7 +21,7 @@ describe("ConversationListView", function () {
             let logs = dummyLogs(4);
             let conversations = ConversationList.fromLogs(logs);
             let onClick = sinon.spy();
-            const wrapper = shallow(<ConversationListView conversations={conversations} onClick={onClick} />);
+            const wrapper = shallow(<ConversationListView height={200} conversations={conversations} onClick={onClick} />);
 
             expect(wrapper.find("ReactList")).to.have.length(1);
             expect(wrapper.find("p")).to.have.length(0);
@@ -30,7 +30,7 @@ describe("ConversationListView", function () {
     describe("without logs", function () {
         it("renders correctly", function () {
             let onClick = sinon.spy();
-            const wrapper = shallow(<ConversationListView conversations={[]} onClick={onClick} />);
+            const wrapper = shallow(<ConversationListView height={200} conversations={[]} onClick={onClick} />);
 
             expect(wrapper.find("ReactList")).to.have.length(0);
             expect(wrapper.find("p")).to.have.length(1);
@@ -53,6 +53,7 @@ describe("ConversationListView", function () {
 
                 wrapper = mount(
                     <ConversationListView
+                        height={200}
                         conversations={conversations}
                         onClick={onClick}
                         expandListItemWhenActive={true} />
@@ -96,6 +97,7 @@ describe("ConversationListView", function () {
 
                 wrapper = mount(
                     <ConversationListView
+                        height={200}
                         conversations={conversations}
                         onClick={onClick} />
                 );
