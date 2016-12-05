@@ -16,24 +16,41 @@ chai.use(sinonChai);
 let expect = chai.expect;
 
 describe("ConversationListView", function () {
+
+    let noLogsRenderer: Sinon.SinonStub;
+
+    beforeEach(function() {
+        noLogsRenderer = sinon.stub().returns((<p> No Logs Found </p>));
+    });
+
     describe("with logs", function () {
+        beforeEach(function() {
+            noLogsRenderer.reset();
+        });
+
         it("renders correctly", function () {
             let logs = dummyLogs(4);
             let conversations = ConversationList.fromLogs(logs);
             let onClick = sinon.spy();
-            const wrapper = shallow(<ConversationListView height={200} conversations={conversations} onClick={onClick} />);
+            const wrapper = shallow(<ConversationListView height={200} conversations={conversations} onClick={onClick} onEmpty={noLogsRenderer} />);
 
             expect(wrapper.find("ReactList")).to.have.length(1);
             expect(wrapper.find("p")).to.have.length(0);
         });
     });
     describe("without logs", function () {
+
+        beforeEach(function() {
+            noLogsRenderer.reset();
+        });
+
         it("renders correctly", function () {
             let onClick = sinon.spy();
-            const wrapper = shallow(<ConversationListView height={200} conversations={[]} onClick={onClick} />);
+            const wrapper = shallow(<ConversationListView height={200} conversations={[]} onClick={onClick} onEmpty={noLogsRenderer}/>);
 
             expect(wrapper.find("ReactList")).to.have.length(0);
             expect(wrapper.find("p")).to.have.length(1);
+            expect(noLogsRenderer).to.be.calledOnce;
         });
     });
     describe("property expandListItemWhenActive", function () {
@@ -50,13 +67,15 @@ describe("ConversationListView", function () {
 
             beforeEach(function () {
                 onClick = sinon.spy();
+                noLogsRenderer.reset();
 
                 wrapper = mount(
                     <ConversationListView
                         height={200}
                         conversations={conversations}
                         onClick={onClick}
-                        expandListItemWhenActive={true} />
+                        expandListItemWhenActive={true}
+                        onEmpty={noLogsRenderer} />
                 );
 
                 expect(wrapper.find("ConversationListViewItem")).to.have.length(2);

@@ -63,7 +63,8 @@ describe("Select", function () {
 
             const options = select.find("li");
 
-            expect(options.length).to.equal(adapter.getCount());
+            // There is the "none selected" item that increases it by 1.
+            expect(options.length).to.equal(adapter.getCount() + 1);
         });
     });
 });

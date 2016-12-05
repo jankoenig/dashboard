@@ -144,7 +144,7 @@ describe("Logs Page", function () {
 
         it("should render correctly", function () {
             expect(wrapper.find("Grid")).to.have.length(1);
-            expect(wrapper.find("ConversationListView")).to.have.length(1);
+            expect(wrapper.find("FilterableConversationList")).to.have.length(1);
         });
 
         describe("componentWillReceiveProps", function () {
@@ -249,7 +249,7 @@ describe("Logs Page", function () {
                     params={params} />);
             });
             it("Checks the state is proper after a user click.", function () {
-                wrapper.find("ConversationListView").simulate("click", convo);
+                wrapper.find("FilterableConversationList").simulate("showConversation", convo);
 
                 expect(wrapper.state().request).to.equal(logs[0]);
                 expect(wrapper.state().response).to.equal(logs[1]);
