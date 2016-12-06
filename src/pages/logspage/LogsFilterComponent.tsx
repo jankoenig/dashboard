@@ -162,7 +162,7 @@ class DateComponent implements SelectableComponent {
     }
 
     handleChange(item: string, value: Date) {
-        // Right now these down allow time so going to assume the beginning and the end of whatever day it's at.
+        // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
         if (item === "startDate") {
             this.startDate = value;
             this.startDate.setHours(0, 0, 0, 0);
