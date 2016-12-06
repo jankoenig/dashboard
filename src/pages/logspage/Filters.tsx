@@ -1,3 +1,4 @@
+import * as moment from "moment";
 
 import Conversation from "../../models/Conversation";
 
@@ -49,11 +50,11 @@ export class IDFilter implements FilterType {
 }
 
 export class DateFilter implements FilterType {
-    startDate: Date;
-    endDate: Date;
+    startDate: moment.Moment;
+    endDate: moment.Moment;
 
     constructor() {
-        this.startDate = this.endDate = new Date();
+        this.startDate = this.endDate = moment();
     }
 
     get type(): string {
@@ -61,9 +62,13 @@ export class DateFilter implements FilterType {
     }
 
     get filter(): (item: Conversation) => boolean {
+        let startDate = this.startDate;
+        let endDate = this.endDate;
         return function (item: Conversation): boolean {
-            let created = item.timestamp;
-            return this.startDate <= created && created <= this.endDate;
+            let created = moment(item.timestamp);
+            let afterStart = startDate === undefined || created.isSameOrAfter(startDate);
+            let beforeEnd = endDate === undefined || created.isSameOrBefore(endDate);
+            return afterStart && beforeEnd;
         };
     }
 }

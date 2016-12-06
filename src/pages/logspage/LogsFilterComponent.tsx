@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
@@ -127,12 +128,18 @@ class TypeFilterComponent extends FilterComponent implements SelectAdapter<LOG_L
 }
 
 class DateFilterComponent extends FilterComponent {
-    filter: Filters.FilterType;
+    filter: Filters.DateFilter;
 
     constructor(onFilter: (type: Filters.FilterType) => void) {
         super(onFilter);
         this.filter = new Filters.DateFilter();
-        this.comp = new DateComponent("Date");
+        this.comp = new DateComponent("Date", this.onChange.bind(this));
+    }
+
+    onChange(startDate: Date, endDate: Date) {
+        this.filter.startDate = moment(startDate);
+        this.filter.endDate = moment(endDate);
+        this.startFilter();
     }
 
     filterType(): Filters.FilterType {
@@ -142,17 +149,32 @@ class DateFilterComponent extends FilterComponent {
 
 class DateComponent implements SelectableComponent {
     title: string;
+    format: string;
+    startDate: Date;
+    endDate: Date;
+    onChange: (startDate: Date, endDate: Date) => void;
 
-    constructor(title: string) {
+    constructor(title: string, onChange: (startDate: Date, endDate: Date) => void, startDate: Date = undefined, endDate: Date = new Date()) {
         this.title = title;
+        this.onChange = onChange;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    handleChange(item: DatePicker, value: any) {
-        console.info("Date picked " + value);
+    handleChange(item: string, value: Date) {
+        if (item === "startDate") {
+            this.startDate = value;
+        } else if (item === "endDate") {
+            this.endDate = value;
+        }
+        this.onChange(this.startDate, this.endDate);
     }
 
     get component(): JSX.Element {
-        return (<DatePicker label="First" onChange={this.handleChange.bind(this)} />);
+        return (<div>
+                    <DatePicker label="Start" onChange={this.handleChange.bind(this, "startDate")} value={this.startDate} />
+                    <DatePicker label="End" onChange={this.handleChange.bind(this, "endDate")} value={this.endDate} />
+                </div>);
     }
 }
 
