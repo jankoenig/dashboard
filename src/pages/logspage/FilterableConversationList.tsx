@@ -24,7 +24,6 @@ interface Dimensions {
 
 interface FilterableConversationListState {
     shownConversations: ConversationList;
-    listHeight: number;
 }
 
 export class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
@@ -38,18 +37,12 @@ export class FilterableConversationList extends React.Component<FilterableConver
 
         this.state = {
             shownConversations: props.conversations,
-            listHeight: props.height
         };
     }
 
     componentWillReceiveProps(nextProps: FilterableConversationListProps, nextContext: any): void {
         this.state.shownConversations = nextProps.conversations;
         this.internalFilter(nextProps.conversations, this.lastFilterType);
-        let newHeight = nextProps.height - this.getFilterComponentHeight();
-        if (newHeight !== this.state.listHeight) {
-            this.state.listHeight = newHeight;
-            this.setState(this.state);
-        }
     }
 
     onFilter(filterType: FilterType) {
@@ -96,7 +89,7 @@ export class FilterableConversationList extends React.Component<FilterableConver
     }
 
     render() {
-        let listHeight = this.state.listHeight;
+        let listHeight = this.props.height - this.getFilterComponentHeight();
         return (
             <div ref={this.handleRoot.bind(this)} style={{ overflowY: "hidden" }}>
                 <div ref={this.handleFilterDiv.bind(this)} >
