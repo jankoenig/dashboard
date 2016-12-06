@@ -18,7 +18,7 @@ describe("Header", function () {
         it("renders correctly", function () {
             const wrapper = shallow(<Header titles={["title"]} />);
             expect(wrapper.find("span").text()).to.have.equal("title");
-            expect(wrapper.find("ul")).to.have.length(1);
+            expect(wrapper.find("Select")).to.have.length(0);
         });
     });
 
@@ -27,7 +27,7 @@ describe("Header", function () {
             const wrapper = shallow(<Header titles={["title1", "title2"]} />);
             expect(wrapper.find("span")).to.have.length(0);
             // There should be a munu which lists the titles.
-            expect(wrapper.find("ul")).to.have.length(1);
+            expect(wrapper.find("Select")).to.have.length(1);
         });
     });
 });
