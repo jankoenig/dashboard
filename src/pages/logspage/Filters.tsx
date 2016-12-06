@@ -1,6 +1,6 @@
 import * as moment from "moment";
 
-import Conversation from "../../models/Conversation";
+import Conversation from "../../models/conversation";
 
 export interface FilterType {
     type: string;
