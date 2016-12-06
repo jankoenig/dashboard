@@ -40,7 +40,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
       if (this.props.titles.length === 1) {
         title = (<span className="mdl-layout-title">{this.state.selectedTitle}</span>);
       } else {
-        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint={this.state.selectedTitle}/>);
+        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" />);
       }
     }
 
