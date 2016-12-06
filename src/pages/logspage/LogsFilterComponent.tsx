@@ -25,19 +25,24 @@ export class LogsFilterComponent extends React.Component<LogsFilterComponentProp
     constructor(props: LogsFilterComponentProps) {
         super(props);
         this.filterComponents = [];
+        this.filterComponents.push(undefined);
         this.filterComponents.push(new IDFilterComponent(this.props.onFilter));
         this.filterComponents.push(new TypeFilterComponent(this.props.onFilter));
         this.filterComponents.push(new DateFilterComponent(this.props.onFilter));
 
         this.selectableComponents = [];
         for (let fc of this.filterComponents) {
-            this.selectableComponents.push(fc.comp);
+            this.selectableComponents.push((fc) ? fc.comp : undefined);
         }
     }
 
     onSelected(index: number, component: SelectableComponent) {
         let filtComp = this.filterComponents[index];
-        filtComp.startFilter();
+        if (filtComp) {
+            filtComp.startFilter();
+        } else {
+            this.props.onFilter(undefined);
+        }
     }
 
     onUnselected() {
@@ -45,7 +50,7 @@ export class LogsFilterComponent extends React.Component<LogsFilterComponentProp
     }
 
     render() {
-        return (<ComponentSelector components={this.selectableComponents} onSelected={this.onSelected.bind(this)} onUnselected={this.onUnselected.bind(this)} />);
+        return (<ComponentSelector components={this.selectableComponents} onSelected={this.onSelected.bind(this)} />);
     }
 }
 
@@ -97,6 +102,7 @@ class TypeFilterComponent extends FilterComponent implements SelectAdapter<LOG_L
     constructor(onFilter: (type: Filters.FilterType) => void) {
         super(onFilter);
         this.types = [];
+        this.types.push(undefined);
         this.types.push("INFO");
         this.types.push("DEBUG");
         this.types.push("WARN");

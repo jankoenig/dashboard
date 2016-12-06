@@ -92,7 +92,7 @@ class Dashboard extends React.Component<DashboardProps, any> {
       <Layout drawer={true} header={true}>
         <Header
           className={this.headerClasses()}
-          title={this.props.currentSource ? this.props.currentSource.name : undefined} >
+          titles={this.props.currentSource ? [ this.props.currentSource.name , "Name1", "Name2", "Name3" ] : undefined} >
           <UserControl
             login={this.props.login}
             logout={this.props.logout}

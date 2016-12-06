@@ -12,6 +12,7 @@ let jsdom = require("mocha-jsdom");
 let expect = chai.expect;
 
 let testSelections = [
+    undefined,
     "Selection 1",
     "Selection 2",
     "Selection 3"
@@ -53,7 +54,7 @@ describe("Select", function () {
         });
 
         it("base correctly", function () {
-            const wrapper = mount(<Select hint={testHint} adapter={adapter} onSelected={onSelected} onUnselected={onUnselected} />);
+            const wrapper = mount(<Select hint={testHint} adapter={adapter} onSelected={onSelected} />);
 
             const div = wrapper.find("div").first();
             const select = wrapper.find("ul").first();
@@ -64,7 +65,7 @@ describe("Select", function () {
             const options = select.find("li");
 
             // There is the "none selected" item that increases it by 1.
-            expect(options.length).to.equal(adapter.getCount() + 1);
+            expect(options.length).to.equal(adapter.getCount());
         });
     });
 });

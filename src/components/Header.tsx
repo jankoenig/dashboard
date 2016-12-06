@@ -3,23 +3,51 @@ import * as React from "react";
 
 import Button from "./Button";
 import { Menu, MenuItem } from "./Menu";
+import { Select, SelectAdapter } from "./Select";
 
 interface HeaderProps {
-  title?: string;
+  titles?: string[];
   className?: string;
+  onTitleSelect?: (index: number, title: string) => void;
 }
 
-export default class Header extends React.Component<HeaderProps, any> {
+interface HeaderState {
+  selectedTitle: string;
+}
+
+export default class Header extends React.Component<HeaderProps, HeaderState> {
+
+  constructor(props: HeaderProps) {
+    super(props);
+    this.state = {
+      selectedTitle: (props.titles) ? props.titles[0] : undefined
+    };
+  }
+
+  componentWillReceiveProps(nextProps: HeaderProps, ctx: any) {
+    // Starting over with title since we're brand new
+    this.state.selectedTitle = (nextProps.titles) ? nextProps.titles[0] : undefined;
+    this.setState(this.state);
+  }
 
   classes() {
     return classNames(this.props.className, "mdl-layout__header");
   }
 
   render() {
+    let title: JSX.Element = undefined;
+    if (this.state.selectedTitle) {
+      if (this.props.titles.length === 1) {
+        title = (<span className="mdl-layout-title">{this.state.selectedTitle}</span>);
+      } else {
+        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint={this.state.selectedTitle}/>);
+      }
+    }
+
     return (
       <header className={this.classes()}>
         <div className="mdl-layout__header-row">
-          {this.props.title ? (<span className="mdl-layout-title">{this.props.title}</span>) : (undefined)}
+          {title}
           <div className="mdl-layout-spacer" />
           {this.props.children}
           <Button id="support">
@@ -69,4 +97,25 @@ export default class Header extends React.Component<HeaderProps, any> {
         </div>
       </header>);
   }
+}
+
+class TitlesAdapter implements SelectAdapter<string> {
+
+    titles: string[];
+
+    constructor(titles: string[]) {
+      this.titles = titles;
+    }
+
+    getCount(): number {
+      return this.titles.length;
+    };
+
+    getItem(index: number): string {
+      return this.titles[index];
+    };
+
+    getTitle(index: number): string {
+      return this.titles[index];
+    }
 }

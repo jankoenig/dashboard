@@ -10,7 +10,6 @@ export interface SelectProps<T> {
     hint: string;
     adapter: SelectAdapter<T>;
     onSelected?(item: T, index: number): void;
-    onUnselected?(): void;
 }
 
 interface SelectState {
@@ -54,15 +53,10 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
         this.state.list = [];
         this.liList = [];
 
-        let clickFunction = this.clickFunction(0).bind(this);
-        this.state.list.push((
-            <li ref={this.handleLiBind.bind(this)} className="mdl-menu__item" key={"unselectedItem0"} onClick={clickFunction}>{this.props.hint}</li>
-        ));
-
         // Then fill in the rest.
-        let maxCount = props.adapter.getCount() + 1;
-        for (let count = 1; count < maxCount; ++count) {
-            let title = props.adapter.getTitle(count - 1) || this.props.hint;
+        let maxCount = props.adapter.getCount();
+        for (let count = 0; count < maxCount; ++count) {
+            let title = props.adapter.getTitle(count) || this.props.hint;
             let clickFunction = this.clickFunction(count).bind(this);
             let key = this.normalizeTitle(title) + count;
             this.state.list.push((
@@ -90,16 +84,9 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     }
 
     handleChange(index: number) {
-        if (index === 0) {
-            if (this.props.onUnselected) {
-                this.props.onUnselected();
-            }
-        } else {
-            let realIndex = index - 1;
-            let item = this.props.adapter.getItem(realIndex);
-            if (this.props.onSelected) {
-                this.props.onSelected(item, realIndex);
-            }
+        let item = this.props.adapter.getItem(index);
+        if (this.props.onSelected) {
+            this.props.onSelected(item, index);
         }
     }
 
@@ -141,8 +128,7 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
 
     clickFunction(index: number) {
         return (ev: React.SyntheticEvent) => {
-            let li = this.liList[index];
-            let useValue = (index === 0) ? undefined : li.textContent; // First node is "unselected";
+            let useValue = this.props.adapter.getTitle(index);
             this.inputRef.nodeValue = useValue;
             (this.dropdownRef as any).MaterialTextfield.change(useValue); // handles css class changes
             setTimeout(() => {
