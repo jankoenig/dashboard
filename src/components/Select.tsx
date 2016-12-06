@@ -9,11 +9,13 @@ export interface SelectAdapter<T> {
 export interface SelectProps<T> {
     hint: string;
     adapter: SelectAdapter<T>;
+    defaultIndex?: number;
     onSelected?(item: T, index: number): void;
 }
 
 interface SelectState {
     list: React.ReactNode[];
+    lastSelectedIndex: number;
 }
 
 /**
@@ -38,7 +40,8 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
         Select.count++;
 
         this.state = {
-            list: []
+            list: [],
+            lastSelectedIndex: this.props.defaultIndex || 0
         };
         this.setAdapter(props);
 
@@ -129,7 +132,7 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     clickFunction(index: number) {
         return (ev: React.SyntheticEvent) => {
             let useValue = this.props.adapter.getTitle(index);
-            this.inputRef.nodeValue = useValue;
+            // this.inputRef.nodeValue = useValue;
             (this.dropdownRef as any).MaterialTextfield.change(useValue); // handles css class changes
             setTimeout(() => {
                 (this.dropdownRef as any).MaterialTextfield.updateClasses_(); // update css class
@@ -139,13 +142,21 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
             // TODO: This existed in the original code from where this was stolen, but seems to break things. Figure out why.
             // this.inputRef.id = li.id || "";
             this.handleChange(index);
+
+
+            this.state.lastSelectedIndex = index;
+            this.setState(this.state);
         };
     }
 
     render() {
+        // You have to do this way or else you get some weird warning with React about going from controlled to uncontrolled states.
+        let useValue = this.props.adapter.getTitle(this.state.lastSelectedIndex);
+        useValue = useValue || "";
+
         return (
             <div ref={this.handleDropdownBind.bind(this)} className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
-                <input ref={this.handleRefBind.bind(this)} className="mdl-textfield__input" type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
+                <input ref={this.handleRefBind.bind(this)} value={useValue} className="mdl-textfield__input" type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
                 <label htmlFor={this.id}>
                     <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 </label>
