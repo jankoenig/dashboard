@@ -1,10 +1,7 @@
 import * as classNames from "classnames";
 import * as React from "react";
 
-import { Button } from "react-toolbox/lib/button";
-import { DatePicker } from "react-toolbox/lib/date_picker";
-
-// import Button from "./Button";
+import Button from "./Button";
 import { Menu, MenuItem } from "./Menu";
 
 interface HeaderProps {
@@ -18,10 +15,6 @@ export default class Header extends React.Component<HeaderProps, any> {
     return classNames(this.props.className, "mdl-layout__header");
   }
 
-  handleChange() {
-
-  }
-
   render() {
     return (
       <header className={this.classes()}>
@@ -29,7 +22,7 @@ export default class Header extends React.Component<HeaderProps, any> {
           {this.props.title ? (<span className="mdl-layout-title">{this.props.title}</span>) : (undefined)}
           <div className="mdl-layout-spacer" />
           {this.props.children}
-          <Button label="support">
+          <Button id="support">
             <i
               className="material-icons"
               role="presentation">help_outline
