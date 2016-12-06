@@ -25,8 +25,6 @@ export default class Header extends React.Component<HeaderProps, any> {
   render() {
     return (
       <header className={this.classes()}>
-      <DatePicker label="First" onChange={this.handleChange.bind(this)} />
-      <Button icon="bookmark" label="Bookmark" accent />
         <div className="mdl-layout__header-row">
           {this.props.title ? (<span className="mdl-layout-title">{this.props.title}</span>) : (undefined)}
           <div className="mdl-layout-spacer" />
