@@ -54,8 +54,9 @@ export class DateFilter implements FilterType {
     startDate: moment.Moment;
     endDate: moment.Moment;
 
-    constructor() {
-        this.startDate = this.endDate = moment();
+    constructor(startDate?: Date, endDate?: Date) {
+        this.startDate = (startDate) ? moment(startDate) : undefined;
+        this.endDate = (endDate) ? moment(endDate) : undefined;
     }
 
     get type(): string {
@@ -66,10 +67,13 @@ export class DateFilter implements FilterType {
         let startDate = this.startDate;
         let endDate = this.endDate;
         return function (item: Conversation): boolean {
-            let created = moment(item.timestamp);
-            let afterStart = startDate === undefined || created.isSameOrAfter(startDate);
-            let beforeEnd = endDate === undefined || created.isSameOrBefore(endDate);
-            return afterStart && beforeEnd;
+            if (item) {
+                let created = moment(item.timestamp);
+                let afterStart = startDate === undefined || created.isSameOrAfter(startDate);
+                let beforeEnd = endDate === undefined || created.isSameOrBefore(endDate);
+                return afterStart && beforeEnd;
+            }
+            return false;
         };
     }
 }

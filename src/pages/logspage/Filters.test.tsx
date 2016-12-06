@@ -186,4 +186,64 @@ describe("Filters.tsx", function() {
             expect(filter.filter(undefined)).to.be.false;
         });
     });
+
+    describe("DateFilter", function() {
+        let convo: Conversation;
+
+        before(function() {
+            requestProps.timestamp.setFullYear(2016, 12, 15);
+            responseProps.timestamp.setFullYear(2016, 12, 15);
+            convo = new Conversation({
+                request: new Log(requestProps),
+                response: new Log(responseProps)
+            });
+        });
+
+        it("Tests the type attribute is not undefined.", function() {
+            let filter = new Filters.DateFilter(new Date());
+            expect(filter.type).to.not.be.undefined;
+            expect(filter.type).to.not.be.null;
+        });
+
+        it("Tests the filter attribute is not undefined.", function() {
+            let filter = new Filters.DateFilter(new Date());
+            expect(filter.filter).to.not.be.undefined;
+            expect(filter.filter).to.not.be.null;
+        });
+
+        it("Tests the filter will return true if between the start and end date.", function() {
+            let filter = new Filters.DateFilter(new Date(2016, 12, 14), new Date(2016, 12, 16));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it("Tests the filter will return true if the convo happens after the start date with undefined end.", function() {
+            let filter = new Filters.DateFilter(new Date(2016, 12, 14));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it("Tests the filter will return true if the convo happens before the end date with undefined end.", function() {
+            let filter = new Filters.DateFilter(undefined, new Date(2016, 12, 16));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it("Tests the filter will return false if the convo happens before the start date with undefined end.", function() {
+            let filter = new Filters.DateFilter(new Date(2016, 12, 16));
+            expect(filter.filter(convo)).to.be.false;
+        });
+
+        it("Tests the filter will return false if the convo happens before the end date with undefined start.", function() {
+            let filter = new Filters.DateFilter(undefined, new Date(2016, 12, 14));
+            expect(filter.filter(convo)).to.be.false;
+        });
+
+        it("Tests the filter will return true if no start or end are defined.", function() {
+            let filter = new Filters.DateFilter();
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it("Tests the filter will return false if between the start and end date.", function() {
+            let filter = new Filters.DateFilter(new Date(2016, 12, 14), new Date(2016, 12, 16));
+            expect(filter.filter(undefined)).to.be.false;
+        });
+    });
 });
