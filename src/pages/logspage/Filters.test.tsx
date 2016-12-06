@@ -245,5 +245,22 @@ describe("Filters.tsx", function() {
             let filter = new Filters.DateFilter(new Date(2016, 12, 14), new Date(2016, 12, 16));
             expect(filter.filter(undefined)).to.be.false;
         });
+
+        it ("Tests the date filter will return true if the start date is equal to the start date.", function() {
+            let filter = new Filters.DateFilter(new Date(requestProps.timestamp));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests the date filter will return true if the start date is equal to the end date.", function() {
+            let filter = new Filters.DateFilter(undefined, new Date(requestProps.timestamp));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests the date filter will return true if the start date is equal to the end date.", function() {
+            let startDate = new Date(2016, 12, 15, 0, 0, 0);
+            let endDate = new Date(2016, 12, 15, 23, 59, 59);
+            let filter = new Filters.DateFilter(startDate, endDate);
+            expect(filter.filter(convo)).to.be.true;
+        });
     });
 });
