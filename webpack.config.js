@@ -13,7 +13,11 @@ module.exports = {
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+    extensions: ["", ".scss", ".css", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+    modulesDirectories: [
+      'node_modules',
+      path.resolve(__dirname, './node_modules')
+    ]
   },
 
   module: {
@@ -26,8 +30,16 @@ module.exports = {
       {
         test: /\.css$/,
         loader: "typings-for-css-modules?modules"
+      },
+      {
+        test: /\.(scss|css)$/,
+        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
       }
     ],
+
+    sassLoader: {
+      data: '@import "' + path.resolve(__dirname, 'theme/_theme.scss') + '";'
+    },
 
     preLoaders: [
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
@@ -42,13 +54,4 @@ module.exports = {
     new ExtractTextPlugin("style.css", { allChunks: true })// ,
     // Not ready for this yet // new webpack.optimize.UglifyJsPlugin()
   ],
-
-  // When importing a module whose path matches one of the following, just
-  // assume a corresponding global variable exists and use that instead.
-  // This is important because it allows us to avoid bundling all of our
-  // dependencies, which allows browsers to cache those libraries between builds.
-  externals: {
-    "react": "React",
-    "react-dom": "ReactDOM"
-  }
 }

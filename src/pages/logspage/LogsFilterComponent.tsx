@@ -1,4 +1,5 @@
 import * as React from "react";
+import DatePicker from "react-toolbox/lib/date_picker";
 
 import * as Filters from "./Filters";
 
@@ -25,6 +26,7 @@ export class LogsFilterComponent extends React.Component<LogsFilterComponentProp
         this.filterComponents = [];
         this.filterComponents.push(new IDFilterComponent(this.props.onFilter));
         this.filterComponents.push(new TypeFilterComponent(this.props.onFilter));
+        this.filterComponents.push(new DateFilterComponent(this.props.onFilter));
 
         this.selectableComponents = [];
         for (let fc of this.filterComponents) {
@@ -121,6 +123,36 @@ class TypeFilterComponent extends FilterComponent implements SelectAdapter<LOG_L
     onSelected(item: LOG_LEVELS) {
         this.filter.logType = item;
         this.startFilter();
+    }
+}
+
+class DateFilterComponent extends FilterComponent {
+    filter: Filters.FilterType;
+
+    constructor(onFilter: (type: Filters.FilterType) => void) {
+        super(onFilter);
+        this.filter = new Filters.DateFilter();
+        this.comp = new DateComponent("Date");
+    }
+
+    filterType(): Filters.FilterType {
+        return this.filter;
+    }
+}
+
+class DateComponent implements SelectableComponent {
+    title: string;
+
+    constructor(title: string) {
+        this.title = title;
+    }
+
+    handleChange(item: DatePicker, value: any) {
+        console.info("Date picked " + value);
+    }
+
+    get component(): JSX.Element {
+        return (<DatePicker label="First" onChange={this.handleChange.bind(this)} />);
     }
 }
 
