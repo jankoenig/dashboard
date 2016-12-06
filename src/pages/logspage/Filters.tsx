@@ -1,6 +1,7 @@
 import * as moment from "moment";
 
 import Conversation from "../../models/conversation";
+import StringUtils from "../../utils/string";
 
 export interface FilterType {
     type: string;
@@ -10,8 +11,8 @@ export interface FilterType {
 export class TypeFilter implements FilterType {
     logType?: string;
 
-    constructor() {
-        this.logType = undefined;
+    constructor(type?: string) {
+        this.logType = type;
     }
 
     get type(): string {
@@ -21,10 +22,10 @@ export class TypeFilter implements FilterType {
     get filter(): (item: Conversation) => boolean {
         let type = this.logType;
         return function(item: Conversation): boolean {
-            if (!type || type.trim() === "") {
+            if (type === undefined || type.trim() === "") {
                 return true;
             }
-            return item.hasType(type);
+            return item !== undefined && item.hasLogType(type);
         };
     }
 }
@@ -32,8 +33,8 @@ export class TypeFilter implements FilterType {
 export class IDFilter implements FilterType {
     id: string;
 
-    constructor() {
-        this.id = "";
+    constructor(id?: string) {
+        this.id = id;
     }
 
     get type(): string {
@@ -41,10 +42,10 @@ export class IDFilter implements FilterType {
     }
 
     get filter(): (item: Conversation) => boolean {
-        let id = this.id;
+        let id = (this.id) ? StringUtils.regexEscape(this.id) : "";
+        let regex = new RegExp("^.*" + id + ".*$", "g");
         return function (item: Conversation): boolean {
-            let matches = item.id.match("^.*" + id + ".*$");
-            return id.length === 0 || (matches && matches.length > 0);
+            return item !== undefined && id !== undefined && regex.test(item.id);
         };
     }
 }

@@ -115,10 +115,15 @@ export default class Conversation implements ConversationProperties {
     }
 
     get hasError(): boolean {
-        return this.hasType("ERROR");
+        return this.hasOutputType("ERROR");
     }
 
-    hasType(type: string): boolean {
+    hasLogType(type: string): boolean {
+        return (this.request && this.request.log_type === type) ||
+               (this.response && this.response.log_type === type);
+    }
+
+    hasOutputType(type: string): boolean {
         for (let output of this.outputs) {
             if (output.level === type) {
                 return true;
