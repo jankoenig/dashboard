@@ -47,6 +47,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "fetch-mock": "^5.5.0",
     "firebase": "^3.5.2",
+    "ignore-styles": "^5.0.1",
     "immutability-helper": "^2.0.0",
     "istanbul": "^0.4.5",
     "jsdom": "^9.8.3",
