@@ -197,7 +197,7 @@ class SingleInputSelectableComponent implements SelectableComponent {
     }
 
     get component(): JSX.Element {
-        return (<FormInput label={this.title} type="text" value="" onChange={this.handleChange.bind(this)} />);
+        return (<FormInput label={this.title} type="text" value="" onChange={this.handleChange.bind(this)} autoFocus={true} />);
     }
 }
 

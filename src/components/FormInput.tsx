@@ -43,8 +43,6 @@ interface FormState {
 
 export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
-    input?: HTMLElement;
-
     constructor(props: FormInputProps) {
         super(props);
         this.state = {
@@ -57,16 +55,6 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         return classNames("mdl-textfield mdl-js-textfield", {
             "mdl-textfield--floating-label": this.props.floatingLabel
         });
-    }
-
-    componentDidMount() {
-        if (this.props.autoFocus) {
-            this.input.focus();
-        }
-    }
-
-    componentWillUnmount() {
-        this.input = undefined;
     }
 
     onFormChange(event: React.FormEvent) {
@@ -85,23 +73,20 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         }
     }
 
-    handleInputBind(input: HTMLElement) {
-        this.input = input;
-    }
-
     render() {
         let pattern: string = undefined;
         if (this.props.error !== undefined) {
             pattern = this.props.error.regex.source;
         }
 
+        let autoFocus: boolean = this.props.autoFocus || false;
         return (
             <div
                 className={this.classes()}
                 style={this.props.style}
                 hidden={this.props.hidden}>
                 <input
-                    ref={this.handleInputBind.bind(this)}
+                    autoFocus={autoFocus}
                     autoComplete={this.props.autoComplete ? this.props.autoComplete : "off"}
                     className="mdl-textfield__input"
                     type={this.props.type}
