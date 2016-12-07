@@ -190,20 +190,23 @@ class DateComponent implements SelectableComponent {
 class SingleInputSelectableComponent implements SelectableComponent {
 
     title: string;
+    value: string;
     onChange: (input: string) => void;
 
     constructor(title: string, onChange: (input: string) => void) {
         this.title = title;
+        this.value = "";
         this.onChange = onChange;
     }
 
     handleChange(formEvent: React.FormEvent) {
         let target = formEvent.target as HTMLSelectElement;
-        this.onChange(target.value);
+        this.value = target.value;
+        this.onChange(this.value);
     }
 
     get component(): JSX.Element {
-        return (<FormInput label={this.title} type="text" value="" onChange={this.handleChange.bind(this)} autoFocus={true} />);
+        return (<FormInput label={this.title} type="text" value={this.value} onChange={this.handleChange.bind(this)} autoFocus={true} />);
     }
 }
 

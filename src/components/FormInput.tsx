@@ -37,7 +37,6 @@ interface FormInputProps {
 }
 
 interface FormState {
-    currentValue: string;
     errorMsg?: string;
 }
 
@@ -46,7 +45,6 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
     constructor(props: FormInputProps) {
         super(props);
         this.state = {
-            currentValue: props.value,
             errorMsg: undefined
         };
     }
@@ -65,7 +63,6 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         }
 
         this.state.errorMsg = errorMsg;
-        this.state.currentValue = target.value;
         this.setState(this.state);
 
         if (this.props.onChange) {
@@ -91,7 +88,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     className="mdl-textfield__input"
                     type={this.props.type}
                     id={StringUtil.stringToCamelCase(this.props.label)}
-                    value={this.state.currentValue}
+                    value={this.props.value}
                     pattern={pattern}
                     onChange={this.onFormChange.bind(this)}
                     readOnly={this.props.readOnly}/>
