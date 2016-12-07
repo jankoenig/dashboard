@@ -111,6 +111,16 @@ describe("Select", function () {
             options.at(0).simulate("click");
 
             expect(input.props().value).to.equal("Preselection");
+
+            testSelections.shift();
+        });
+
+        it ("Tests the default index property.", function() {
+            const wrapper = mount(<Select hint={testHint} adapter={adapter} onSelected={onSelected} defaultIndex={2} />);
+
+            const input = wrapper.find("input").first();
+
+            expect(input.props().value).to.equal("Selection 2");
         });
     });
 });
