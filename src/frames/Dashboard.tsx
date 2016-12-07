@@ -94,10 +94,8 @@ class Dashboard extends React.Component<DashboardProps, any> {
   }
 
   handleSelectedSource(title: string, index: number) {
-    console.info("SELECTING " + index + " " + title);
     let source = this.getSource(title);
     if (source) {
-      console.info("SETTING");
       this.props.setSource(source);
     }
   }
