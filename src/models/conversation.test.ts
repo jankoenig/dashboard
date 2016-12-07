@@ -186,5 +186,71 @@ describe("Conversation", function () {
             expect(conversation.userColors.fill).to.equal("#bf0fff");
             expect(conversation.userColors.background).to.equal("#4fff0f");
         });
+
+        it ("returns the appropriate request type.", function() {
+            let request = new Log({
+                payload: {
+                    session: {
+                        user: {
+                            userId: "ZZZZZZ"
+                        }
+                    },
+                    request: {
+                        type: "DEBUG"
+                    }
+                },
+                log_type: "DEBUG",
+                source: "source",
+                transaction_id: "transaction_id",
+                timestamp: new Date(),
+                tags: [],
+                id: ""
+            });
+            let response = responseLog;
+            let output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            expect(conversation.requestType).to.equal("DEBUG");
+        });
+
+        it ("returns the appropriate request type.", function() {
+            let request = new Log({
+                payload: {
+                    session: {
+                        user: {
+                            userId: "ZZZZZZ"
+                        },
+                    },
+                    request: {
+                        type: "DEBUG"
+                    }
+                },
+                log_type: "DEBUG",
+                source: "source",
+                transaction_id: "transaction_id",
+                timestamp: new Date(),
+                tags: [],
+                id: ""
+            });
+            let response = responseLog;
+            let output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            expect(conversation.responseType).to.equal("INFO");
+        });
     });
 });

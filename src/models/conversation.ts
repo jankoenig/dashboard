@@ -95,7 +95,7 @@ export default class Conversation implements ConversationProperties {
     get responseType(): string | undefined {
         let responseType: string;
 
-        if (this.response.payload.request) {
+        if (this.response.payload) {
             responseType = this.response.payload.type;
         }
 
