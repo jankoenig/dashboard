@@ -8,7 +8,7 @@ import { Select, SelectAdapter } from "./Select";
 interface HeaderProps {
   titles?: string[];
   className?: string;
-  onTitleSelect?: (index: number, title: string) => void;
+  onTitleSelect?: (title: string, index: number) => void;
 }
 
 interface HeaderState {
@@ -30,6 +30,13 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState(this.state);
   }
 
+  handleTitleSelect(title: string, index: number) {
+    console.info("SELECTED " + title + " " + index);
+    if (this.props.onTitleSelect) {
+      this.props.onTitleSelect(title, index);
+    }
+  }
+
   classes() {
     return classNames(this.props.className, "mdl-layout__header");
   }
@@ -40,7 +47,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
       if (this.props.titles.length === 1) {
         title = (<span className="mdl-layout-title">{this.state.selectedTitle}</span>);
       } else {
-        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" />);
+        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)}/>);
       }
     }
 
