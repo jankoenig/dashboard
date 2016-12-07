@@ -6,32 +6,18 @@ import { Menu, MenuItem } from "./Menu";
 import { Select, SelectAdapter } from "./Select";
 
 interface HeaderProps {
+  selectedIndex?: number;
   titles?: string[];
   className?: string;
   onTitleSelect?: (title: string, index: number) => void;
 }
 
 interface HeaderState {
-  selectedTitle: string;
 }
 
 export default class Header extends React.Component<HeaderProps, HeaderState> {
 
-  constructor(props: HeaderProps) {
-    super(props);
-    this.state = {
-      selectedTitle: (props.titles) ? props.titles[0] : undefined
-    };
-  }
-
-  componentWillReceiveProps(nextProps: HeaderProps, ctx: any) {
-    // Starting over with title since we're brand new
-    this.state.selectedTitle = (nextProps.titles) ? nextProps.titles[0] : undefined;
-    this.setState(this.state);
-  }
-
   handleTitleSelect(title: string, index: number) {
-    console.info("SELECTED " + title + " " + index);
     if (this.props.onTitleSelect) {
       this.props.onTitleSelect(title, index);
     }
@@ -43,11 +29,12 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
 
   render() {
     let title: JSX.Element = undefined;
-    if (this.state.selectedTitle) {
+    if (this.props.titles && this.props.titles.length > 0) {
       if (this.props.titles.length === 1) {
-        title = (<span className="mdl-layout-title">{this.state.selectedTitle}</span>);
+        title = (<span className="mdl-layout-title">{this.props.titles[0]}</span>);
       } else {
-        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)}/>);
+        let index = this.props.selectedIndex || 0;
+        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index}/>);
       }
     }
 
@@ -108,21 +95,21 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
 
 class TitlesAdapter implements SelectAdapter<string> {
 
-    titles: string[];
+  titles: string[];
 
-    constructor(titles: string[]) {
-      this.titles = titles;
-    }
+  constructor(titles: string[]) {
+    this.titles = titles;
+  }
 
-    getCount(): number {
-      return this.titles.length;
-    };
+  getCount(): number {
+    return this.titles.length;
+  };
 
-    getItem(index: number): string {
-      return this.titles[index];
-    };
+  getItem(index: number): string {
+    return this.titles[index];
+  };
 
-    getTitle(index: number): string {
-      return this.titles[index];
-    }
+  getTitle(index: number): string {
+    return this.titles[index];
+  }
 }

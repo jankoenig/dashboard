@@ -52,5 +52,13 @@ describe("Header", function () {
             expect(onHandled).to.be.calledWithExactly("title4", 3);
             expect(onHandled).to.be.calledWithExactly("title5", 4);
         });
+
+        it("tests the selectd index", function() {
+            const onHandled = sinon.spy();
+            const wrapper = shallow(<Header titles={["title1", "title2", "title3", "title4"]} onTitleSelect={onHandled} selectedIndex={2}/>);
+            let select = wrapper.find("Select");
+
+            expect((select.props() as any).defaultIndex).to.equal(2);
+        });
     });
 });
