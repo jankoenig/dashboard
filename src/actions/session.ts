@@ -125,13 +125,11 @@ export function resetPassword(email: string, callback?: (success: boolean) => vo
   return function (dispatch: Redux.Dispatch<void>) {
     auth.sendResetPasswordEmail(email).then(function () {
       dispatch(displaySnackbar("Check your inbox!"));
-      console.info("SUCCESS");
       if (callback) {
         callback(true);
       }
     }).catch(function (error: Error) {
       dispatch(authFormError(error.message));
-      console.info("FAIL");
       if (callback) {
         callback(false);
       }
