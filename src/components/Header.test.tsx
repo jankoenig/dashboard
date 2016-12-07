@@ -7,6 +7,7 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import Header from "./Header";
+import { SelectAdapter, SelectProps } from "./Select";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -26,15 +27,15 @@ describe("Header", function () {
         });
     });
 
-    describe("with multiple titles", function() {
-        it("renders correctly", function() {
+    describe("with multiple titles", function () {
+        it("renders correctly", function () {
             const wrapper = shallow(<Header titles={["title1", "title2"]} />);
             expect(wrapper.find("span")).to.have.length(0);
             // There should be a munu which lists the titles.
             expect(wrapper.find("Select")).to.have.length(1);
         });
 
-        it("tests that the titles are selectable", function() {
+        it("tests that the titles are selectable", function () {
             const onHandled = sinon.spy();
             const wrapper = shallow(<Header titles={["title1", "title2", "title3", "title4"]} onTitleSelect={onHandled} />);
             let select = wrapper.find("Select");
@@ -53,12 +54,26 @@ describe("Header", function () {
             expect(onHandled).to.be.calledWithExactly("title5", 4);
         });
 
-        it("tests the selectd index", function() {
+        it("tests the selectd index", function () {
             const onHandled = sinon.spy();
-            const wrapper = shallow(<Header titles={["title1", "title2", "title3", "title4"]} onTitleSelect={onHandled} selectedIndex={2}/>);
+            const wrapper = shallow(<Header titles={["title1", "title2", "title3", "title4"]} onTitleSelect={onHandled} selectedIndex={2} />);
             let select = wrapper.find("Select");
 
             expect((select.props() as any).defaultIndex).to.equal(2);
+        });
+
+        it("tests the selector adapter.", function () {
+            const titles = ["title1", "title2", "title3", "title4"];
+            const wrapper = shallow(<Header titles={titles} />);
+            let select = wrapper.find("Select");
+
+            let adapter: SelectAdapter<string> = (select.props() as SelectProps<string>).adapter;
+
+            expect(adapter.getCount()).to.equal(4);
+            for (let i = 0; i < titles.length; i++) {
+                expect(adapter.getItem(i)).to.equal(titles[i]);
+                expect(adapter.getTitle(i)).to.equal(titles[i]);
+            }
         });
     });
 });
