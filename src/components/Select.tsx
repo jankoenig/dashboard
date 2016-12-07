@@ -118,8 +118,11 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     }
 
     handleInputKeyDown(ev: KeyboardEvent) {
+        console.info("KEY INPUT " + ev.charCode);
         if (ev.charCode === 38 || ev.charCode === 40) {
+            console.info("SHOWING");
             (this.menuRef as any)["MaterialMenu"].show();
+            console.info("SHOWN");
         }
     }
 
@@ -132,17 +135,20 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     clickFunction(index: number) {
         return (ev: React.SyntheticEvent) => {
             let useValue = this.props.adapter.getTitle(index);
-            // this.inputRef.nodeValue = useValue;
-            (this.dropdownRef as any).MaterialTextfield.change(useValue); // handles css class changes
-            setTimeout(() => {
-                (this.dropdownRef as any).MaterialTextfield.updateClasses_(); // update css class
-            }, 250);
+            // "MaterialTextField" is part of the `getmdl` library.  It's registered asyncronously apparently so it's no reliably there in unit tests.
+            // Source: https://code.getmdl.io/1.2.1/material.min.js
+            let dropdown: any = this.dropdownRef;
+            if (dropdown.MaterialTextField) {
+                dropdown.MaterialTextfield.change(useValue); // handles css class changes
+                setTimeout(() => {
+                    dropdown.MaterialTextfield.updateClasses_(); // update css class
+                }, 250);
+            }
 
             // update input with the "id" value
             // TODO: This existed in the original code from where this was stolen, but seems to break things. Figure out why.
             // this.inputRef.id = li.id || "";
             this.handleChange(index);
-
 
             this.state.lastSelectedIndex = index;
             this.setState(this.state);
