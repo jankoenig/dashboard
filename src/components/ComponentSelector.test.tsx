@@ -5,7 +5,6 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 // tslint:enable:no-unused-variable
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
-// let jsdom = require("mocha-jsdom");
 
 import { ComponentSelector, SelectableComponent } from "./ComponentSelector";
 import { Select } from "./Select";
@@ -38,7 +37,6 @@ let comp5: SelectableComponent = {
 let comps: SelectableComponent[] = [ comp1, comp2, comp3, comp4, comp5 ];
 
 describe("ComponentSelector.tsx", function() {
-    // jsdom();
 
     it("Renders correctly", function() {
         let wrapper = shallow(<ComponentSelector components={comps} onSelected={sinon.stub()} />);
