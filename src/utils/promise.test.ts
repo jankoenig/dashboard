@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import * as Utils from "./promise-utils";
+import * as Utils from "./promise";
 
 describe("Promise Utils", function () {
     describe("filter", function () {
