@@ -5,7 +5,7 @@ import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 
 import browser from "../../utils/browser";
-import { filter } from "../../utils/promise-utils";
+import { filter } from "../../utils/promise";
 
 import { FilterType } from "./Filters";
 import { LogsFilterComponent } from "./LogsFilterComponent";
