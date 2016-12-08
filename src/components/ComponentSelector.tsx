@@ -53,7 +53,9 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
         return (
             <div>
                 <Select.Select hint={"Choose"} adapter={this} onSelected={this.onSelected.bind(this)} />
-                {component}
+                <div className="sel-comp-container">
+                    {component}
+                </div>
             </div>
         );
     }
