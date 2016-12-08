@@ -9,12 +9,13 @@ export interface SelectAdapter<T> {
 export interface SelectProps<T> {
     hint: string;
     adapter: SelectAdapter<T>;
+    defaultIndex?: number;
     onSelected?(item: T, index: number): void;
-    onUnselected?(): void;
 }
 
 interface SelectState {
     list: React.ReactNode[];
+    lastSelectedIndex: number;
 }
 
 /**
@@ -39,7 +40,8 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
         Select.count++;
 
         this.state = {
-            list: []
+            list: [],
+            lastSelectedIndex: this.props.defaultIndex || 0
         };
         this.setAdapter(props);
 
@@ -54,15 +56,10 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
         this.state.list = [];
         this.liList = [];
 
-        let clickFunction = this.clickFunction(0).bind(this);
-        this.state.list.push((
-            <li ref={this.handleLiBind.bind(this)} className="mdl-menu__item" key={"unselectedItem0"} onClick={clickFunction}>{this.props.hint}</li>
-        ));
-
         // Then fill in the rest.
-        let maxCount = props.adapter.getCount() + 1;
-        for (let count = 1; count < maxCount; ++count) {
-            let title = props.adapter.getTitle(count - 1) || this.props.hint;
+        let maxCount = props.adapter.getCount();
+        for (let count = 0; count < maxCount; ++count) {
+            let title = props.adapter.getTitle(count) || this.props.hint;
             let clickFunction = this.clickFunction(count).bind(this);
             let key = this.normalizeTitle(title) + count;
             this.state.list.push((
@@ -90,16 +87,9 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     }
 
     handleChange(index: number) {
-        if (index === 0) {
-            if (this.props.onUnselected) {
-                this.props.onUnselected();
-            }
-        } else {
-            let realIndex = index - 1;
-            let item = this.props.adapter.getItem(realIndex);
-            if (this.props.onSelected) {
-                this.props.onSelected(item, realIndex);
-            }
+        let item = this.props.adapter.getItem(index);
+        if (this.props.onSelected) {
+            this.props.onSelected(item, index);
         }
     }
 
@@ -141,25 +131,35 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
 
     clickFunction(index: number) {
         return (ev: React.SyntheticEvent) => {
-            let li = this.liList[index];
-            let useValue = (index === 0) ? undefined : li.textContent; // First node is "unselected";
-            this.inputRef.nodeValue = useValue;
-            (this.dropdownRef as any).MaterialTextfield.change(useValue); // handles css class changes
-            setTimeout(() => {
-                (this.dropdownRef as any).MaterialTextfield.updateClasses_(); // update css class
-            }, 250);
+            let useValue = this.props.adapter.getTitle(index);
+            // "MaterialTextfield" is part of the `getmdl` library.  It's registered asyncronously apparently so it's no reliably there in unit tests.
+            // Source: https://code.getmdl.io/1.2.1/material.min.js
+            let dropdown: any = this.dropdownRef;
+            if (dropdown.MaterialTextfield !== undefined) {
+                dropdown.MaterialTextfield.change(useValue); // handles css class changes
+                setTimeout(() => {
+                    dropdown.MaterialTextfield.updateClasses_(); // update css class to remove focus
+                }, 250);
+            }
 
             // update input with the "id" value
             // TODO: This existed in the original code from where this was stolen, but seems to break things. Figure out why.
             // this.inputRef.id = li.id || "";
             this.handleChange(index);
+
+            this.state.lastSelectedIndex = index;
+            this.setState(this.state);
         };
     }
 
     render() {
+        // You have to do this way or else you get some weird warning with React about going from controlled to uncontrolled states.
+        let useValue = this.props.adapter.getTitle(this.state.lastSelectedIndex);
+        useValue = useValue || "";
+
         return (
             <div ref={this.handleDropdownBind.bind(this)} className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
-                <input ref={this.handleRefBind.bind(this)} className="mdl-textfield__input" type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
+                <input ref={this.handleRefBind.bind(this)} value={useValue} className="mdl-textfield__input" type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
                 <label htmlFor={this.id}>
                     <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 </label>

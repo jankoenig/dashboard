@@ -25,19 +25,24 @@ export class LogsFilterComponent extends React.Component<LogsFilterComponentProp
     constructor(props: LogsFilterComponentProps) {
         super(props);
         this.filterComponents = [];
+        this.filterComponents.push(undefined);
         this.filterComponents.push(new IDFilterComponent(this.props.onFilter));
         this.filterComponents.push(new TypeFilterComponent(this.props.onFilter));
         this.filterComponents.push(new DateFilterComponent(this.props.onFilter));
 
         this.selectableComponents = [];
         for (let fc of this.filterComponents) {
-            this.selectableComponents.push(fc.comp);
+            this.selectableComponents.push((fc) ? fc.comp : undefined);
         }
     }
 
     onSelected(index: number, component: SelectableComponent) {
         let filtComp = this.filterComponents[index];
-        filtComp.startFilter();
+        if (filtComp) {
+            filtComp.startFilter();
+        } else {
+            this.props.onFilter(undefined);
+        }
     }
 
     onUnselected() {
@@ -45,7 +50,7 @@ export class LogsFilterComponent extends React.Component<LogsFilterComponentProp
     }
 
     render() {
-        return (<ComponentSelector components={this.selectableComponents} onSelected={this.onSelected.bind(this)} onUnselected={this.onUnselected.bind(this)} />);
+        return (<ComponentSelector components={this.selectableComponents} onSelected={this.onSelected.bind(this)} />);
     }
 }
 
@@ -97,6 +102,7 @@ class TypeFilterComponent extends FilterComponent implements SelectAdapter<LOG_L
     constructor(onFilter: (type: Filters.FilterType) => void) {
         super(onFilter);
         this.types = [];
+        this.types.push(undefined);
         this.types.push("INFO");
         this.types.push("DEBUG");
         this.types.push("WARN");
@@ -184,20 +190,23 @@ class DateComponent implements SelectableComponent {
 class SingleInputSelectableComponent implements SelectableComponent {
 
     title: string;
+    value: string;
     onChange: (input: string) => void;
 
     constructor(title: string, onChange: (input: string) => void) {
         this.title = title;
+        this.value = "";
         this.onChange = onChange;
     }
 
     handleChange(formEvent: React.FormEvent) {
         let target = formEvent.target as HTMLSelectElement;
-        this.onChange(target.value);
+        this.value = target.value;
+        this.onChange(this.value);
     }
 
     get component(): JSX.Element {
-        return (<FormInput label={this.title} type="text" value="" onChange={this.handleChange.bind(this)} autoFocus={true} />);
+        return (<FormInput label={this.title} type="text" value={this.value} onChange={this.handleChange.bind(this)} autoFocus={true} />);
     }
 }
 

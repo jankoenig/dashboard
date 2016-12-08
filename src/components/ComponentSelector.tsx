@@ -10,7 +10,6 @@ export interface SelectableComponent {
 export interface ComponentSelectorProps {
     components: SelectableComponent[];
     onSelected: (index: number, component: SelectableComponent) => void;
-    onUnselected: () => void;
 }
 
 interface ComponentSelectorState {
@@ -39,7 +38,8 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
     }
 
     getTitle(index: number): string {
-        return this.props.components[index].title;
+        let comp = this.props.components[index];
+        return (comp) ? comp.title : undefined;
     }
 
     onSelected(item: SelectableComponent, index: number): void {
@@ -48,18 +48,14 @@ export class ComponentSelector extends React.Component<ComponentSelectorProps, C
         this.props.onSelected(index, this.state.selectedComponent);
     }
 
-    onUnselected() {
-        this.state.selectedComponent = undefined;
-        this.setState(this.state);
-        this.props.onUnselected();
-    }
-
     render() {
         let component: JSX.Element = (this.state.selectedComponent) ? this.state.selectedComponent.component : (<div/>);
         return (
             <div>
-                <Select.Select hint={"Choose"} adapter={this} onSelected={this.onSelected.bind(this)} onUnselected={this.onUnselected.bind(this)} />
-                {component}
+                <Select.Select hint={"Choose"} adapter={this} onSelected={this.onSelected.bind(this)} />
+                <div className="sel-comp-container">
+                    {component}
+                </div>
             </div>
         );
     }

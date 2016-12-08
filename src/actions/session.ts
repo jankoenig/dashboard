@@ -109,13 +109,15 @@ export function signUpWithEmail(email: string, password: string, confirmPassword
 
 export function logout(callback?: (success: boolean) => void) {
   return function (dispatch: Redux.Dispatch<void>) {
-    auth.logout().then(function (success) {
-      if (success) {
-        dispatch({ type: LOGOUT_USER });
-        dispatch(push("/login"));
-      }
+    auth.logout().then(function () {
+      dispatch({ type: LOGOUT_USER });
+      dispatch(push("/login"));
       if (callback) {
-        callback(success);
+        callback(true);
+      }
+    }).catch(function (err: Error) {
+      if (callback) {
+        callback(false);
       }
     });
   };
@@ -125,13 +127,11 @@ export function resetPassword(email: string, callback?: (success: boolean) => vo
   return function (dispatch: Redux.Dispatch<void>) {
     auth.sendResetPasswordEmail(email).then(function () {
       dispatch(displaySnackbar("Check your inbox!"));
-      console.info("SUCCESS");
       if (callback) {
         callback(true);
       }
     }).catch(function (error: Error) {
       dispatch(authFormError(error.message));
-      console.info("FAIL");
       if (callback) {
         callback(false);
       }
