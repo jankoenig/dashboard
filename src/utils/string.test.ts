@@ -46,4 +46,14 @@ describe("String", function () {
             expect(utils.randomString.bind(utils, -5)).to.throw(Error);
         });
     });
+
+    describe("Tests the regex escape method.", function() {
+        it ("Tests it returns the same string without regex in it.", function() {
+            expect(utils.regexEscape("No Regex String")).to.equal("No Regex String");
+        });
+
+        it ("Tests the regex is removed from the string.", function() {
+            expect(utils.regexEscape("^.*(Regex String)[a-zA-Z]*.*?$")).to.equal("\\^\\.\\*\\(Regex String\\)\\[a\\-zA\\-Z\\]\\*\\.\\*\\?\\$");
+        });
+    });
 });

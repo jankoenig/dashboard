@@ -14,6 +14,7 @@ export default class Header extends React.Component<HeaderProps, any> {
   classes() {
     return classNames(this.props.className, "mdl-layout__header");
   }
+
   render() {
     return (
       <header className={this.classes()}>

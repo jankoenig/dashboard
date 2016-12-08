@@ -148,6 +148,7 @@ export const requestIntentLog: Log = new Log({
 export const responseLog: Log = new Log({
     payload: {
         "version": "1.0",
+        "type": "INFO",
         "response": {
             "outputSpeech": {
                 "type": "SSML",

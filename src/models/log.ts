@@ -12,7 +12,7 @@ export interface LogProperties {
     id: string;
 }
 
-export default class Log implements LogProperties {
+export class Log implements LogProperties {
     readonly payload: string | any;
     readonly stack: string;
     readonly log_type: LOG_LEVELS;
@@ -33,3 +33,5 @@ export default class Log implements LogProperties {
         this.id = props.id;
     }
 }
+
+export default Log;

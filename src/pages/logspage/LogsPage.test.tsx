@@ -7,12 +7,12 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 let jsdom = require("mocha-jsdom");
 
-import Conversation from "../models/conversation";
-import Log from "../models/log";
-import Output from "../models/output";
-import Source from "../models/source";
-import browser from "../utils/browser";
-import { dummyLogs, dummyOutputs } from "../utils/test";
+import Conversation from "../../models/conversation";
+import Log from "../../models/log";
+import Output from "../../models/output";
+import Source from "../../models/source";
+import browser from "../../utils/browser";
+import { dummyLogs, dummyOutputs } from "../../utils/test";
 import { LogsPage, LogsPageProps } from "./LogsPage";
 
 // Setup chai with sinon-chai
@@ -144,7 +144,7 @@ describe("Logs Page", function () {
 
         it("should render correctly", function () {
             expect(wrapper.find("Grid")).to.have.length(1);
-            expect(wrapper.find("ConversationListView")).to.have.length(1);
+            expect(wrapper.find("FilterableConversationList")).to.have.length(1);
         });
 
         describe("componentWillReceiveProps", function () {
@@ -249,7 +249,7 @@ describe("Logs Page", function () {
                     params={params} />);
             });
             it("Checks the state is proper after a user click.", function () {
-                wrapper.find("ConversationListView").simulate("click", convo);
+                wrapper.find("FilterableConversationList").simulate("showConversation", convo);
 
                 expect(wrapper.state().request).to.equal(logs[0]);
                 expect(wrapper.state().response).to.equal(logs[1]);

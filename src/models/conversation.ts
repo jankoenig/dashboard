@@ -82,7 +82,7 @@ export default class Conversation implements ConversationProperties {
         return colors;
     }
 
-    get requestType(): string | undefined {
+    get requestPayloadType(): string | undefined {
         let requestType: string;
 
         if (this.request.payload.request) {
@@ -105,15 +105,21 @@ export default class Conversation implements ConversationProperties {
     }
 
     get hasError(): boolean {
-        let hasError = false;
+        return this.hasOutputType("ERROR");
+    }
 
+    hasLogType(type: string): boolean {
+        return (this.request.log_type === type) ||
+               (this.response.log_type === type);
+    }
+
+    hasOutputType(type: string): boolean {
         for (let output of this.outputs) {
-            if (output.level === "ERROR") {
-                hasError = true;
+            if (output.level === type) {
+                return true;
             }
         }
-
-        return hasError;
+        return false;
     }
 }
 
