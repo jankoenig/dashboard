@@ -35,7 +35,7 @@ let comp5: SelectableComponent = {
     component: (<div className="comp4"><div/><div/><div/><div/></div>)
 };
 
-let comps: SelectableComponent[] = [comp1, comp2, comp3, comp4, comp5];
+let comps: SelectableComponent[] = [ comp1, comp2, comp3, comp4, comp5 ];
 
 describe("ComponentSelector.tsx", function() {
     // jsdom();
@@ -64,17 +64,27 @@ describe("ComponentSelector.tsx", function() {
             // expect(container.find(".comp1").length).to.equal(1);
             // I have no idea why enzyme won't find the classname ".comp1", but it won't.
             // Got tired of fighting it, so searching for the number of divs in the component.  It's stupid, I know.
-            expect(container.children.length).to.equal(1);
+            expect(container.find("div").length).to.equal(2); // The container and the element inside.
         });
 
-        // it("Tests the selection chooses the correct component", function() {
-        //     let wrapper = shallow(<ComponentSelector components={comps} onSelected={onSelected} />);
-        //     let selector = wrapper.find(Select).first();
-        //     let container = wrapper.find(".sel-comp-container").first();
+        it("Tests the selection chooses the correct component", function() {
+            let wrapper = shallow(<ComponentSelector components={comps} onSelected={onSelected} />);
+            let selector = wrapper.find(Select).first();
 
-        //     selector.simulate("selected", {item: comp2, index: 1});
+            selector.simulate("selected", comp4, 3);
 
-        //     expect(container.children.length).to.equal(2);
-        // });
+            let container = wrapper.find(".sel-comp-container").first();
+            expect(container.find("div").length).to.equal(5);
+        });
+
+        it("Tests the callback is called on a change.", function() {
+            let wrapper = shallow(<ComponentSelector components={comps} onSelected={onSelected} />);
+            let selector = wrapper.find(Select).first();
+
+            selector.simulate("selected", comp4, 3);
+
+            expect(onSelected).to.be.calledOnce;
+            expect(onSelected).to.be.calledWith(3, comp4);
+        });
     });
 });
