@@ -25,9 +25,10 @@ export interface ErrorHandler {
 interface FormInputProps {
     label: string;
     type: "text" | "password";
-    floatingLabel?: boolean;
-    onChange: (event: React.FormEvent) => any;
     value: string;
+    autoFocus?: boolean;
+    floatingLabel?: boolean;
+    onChange?: (event: React.FormEvent) => any;
     style?: React.CSSProperties;
     readOnly?: boolean;
     autoComplete?: "off" | "on" ;
@@ -41,8 +42,8 @@ interface FormState {
 
 export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
-    constructor() {
-        super();
+    constructor(props: FormInputProps) {
+        super(props);
         this.state = {
             errorMsg: undefined
         };
@@ -56,14 +57,17 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
 
     onFormChange(event: React.FormEvent) {
         let errorMsg: string = undefined;
+        let target = event.target as HTMLSelectElement;
         if (this.props.error !== undefined) {
-            let target = event.target as HTMLSelectElement;
             errorMsg = this.props.error.errorMessage(target.value);
         }
-        this.setState({
-            errorMsg: errorMsg
-        });
-        this.props.onChange(event);
+
+        this.state.errorMsg = errorMsg;
+        this.setState(this.state);
+
+        if (this.props.onChange) {
+            this.props.onChange(event);
+        }
     }
 
     render() {
@@ -72,12 +76,14 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
             pattern = this.props.error.regex.source;
         }
 
+        let autoFocus: boolean = this.props.autoFocus || false;
         return (
             <div
                 className={this.classes()}
                 style={this.props.style}
                 hidden={this.props.hidden}>
                 <input
+                    autoFocus={autoFocus}
                     autoComplete={this.props.autoComplete ? this.props.autoComplete : "off"}
                     className="mdl-textfield__input"
                     type={this.props.type}

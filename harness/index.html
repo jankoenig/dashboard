@@ -1,51 +1,58 @@
 <!doctype html>
 <html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bst dashboard demo</title>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>bst dashboard demo</title>
 
-    <!-- Disable tap highlight on IE -->
-    <meta name="msapplication-tap-highlight" content="no">
+  <!-- Disable tap highlight on IE -->
+  <meta name="msapplication-tap-highlight" content="no">
 
-    <!-- Web Application Manifest -->
-    <link rel="manifest" href="/manifest.json">
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="/manifest.json">
 
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Web Starter Kit">
-    <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Web Starter Kit">
+  <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
 
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Web Starter Kit">
-    <link rel="apple-touch-icon" href="/images/touch/apple-touch-icon.png">
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Web Starter Kit">
+  <link rel="apple-touch-icon" href="/images/touch/apple-touch-icon.png">
 
-    <!-- Tile icon for Win8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="/images/touch/mstile-150x150.png">
-    <meta name="msapplication-TileColor" content="#2F3BA2">
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="/images/touch/mstile-150x150.png">
+  <meta name="msapplication-TileColor" content="#2F3BA2">
 
-    <!-- Color the status bar on mobile devices -->
-    <meta name="theme-color" content="#2F3BA2">
+  <!-- Color the status bar on mobile devices -->
+  <meta name="theme-color" content="#2F3BA2">
 
-    <!-- Dashboard Required Dependencies -->
-    <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.grey-red.min.css" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
-  </head>
-  <body>
-    <!-- This is where the dashboard will be injected -->
-    <div id="dashboard"></div>
+  <!-- Dashboard Required Dependencies -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
 
-    <!-- Dashboard Required Dependencies -->
-    <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
-    <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
-    <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
-    <!-- Import the dashboard dependency -->
-    <script src="/scripts/dashboard.js"></script>
+  <link rel="stylesheet" href="/style/css/final.css">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/style/script/getmdl-select.js"></script>
 
-  </body>
+</head>
+<body>
+  <!-- This is where the dashboard will be injected -->
+  <div id="dashboard"></div>
+
+  <!-- Dashboard Required Dependencies -->
+  <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
+  <script src="https://unpkg.com/react-dom@15.3.2/dist/react-dom.js"></script>
+  <!-- Import the dashboard dependency -->
+  <script src="/scripts/dashboard.js"></script>
+</body>
+
 </html>

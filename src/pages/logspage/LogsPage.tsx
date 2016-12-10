@@ -1,17 +1,17 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { getLogs } from "../actions/log";
-import { ConversationListView } from "../components/ConversationListView";
-import { Cell, Grid } from "../components/Grid";
-import Interaction from "../components/Interaction";
-import Conversation from "../models/conversation";
-import ConversationList from "../models/conversation-list";
-import Log from "../models/log";
-import Output from "../models/output";
-import Source from "../models/source";
-import { State } from "../reducers";
-import browser from "../utils/browser";
+import { getLogs } from "../../actions/log";
+import { Cell, Grid } from "../../components/Grid";
+import Interaction from "../../components/Interaction";
+import Conversation from "../../models/conversation";
+import ConversationList from "../../models/conversation-list";
+import Log from "../../models/log";
+import Output from "../../models/output";
+import Source from "../../models/source";
+import { State } from "../../reducers";
+import browser from "../../utils/browser";
+import { FilterableConversationList } from "./FilterableConversationList";
 
 interface CellDimensions {
     height: number;
@@ -32,6 +32,7 @@ export interface LogsPageProps {
 
 interface LogsPageState {
     lastDimens: Dimensions;
+    retrievingLogs: boolean;
     source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
@@ -63,6 +64,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.state = {
             lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
             source: props.source,
+            retrievingLogs: false,
             request: undefined,
             response: undefined,
             outputs: []
@@ -82,13 +84,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     updateDimensions() {
         let dimens: Dimensions = this.getDimensions();
         if (this.shouldUpdate(dimens)) {
-            this.setState({
-                lastDimens: dimens,
-                source: (this.state) ? this.state.source : undefined,
-                request: (this.state) ? this.state.request : undefined,
-                response: (this.state) ? this.state.response : undefined,
-                outputs: (this.state) ? this.state.outputs : undefined
-            });
+            this.state.lastDimens = dimens;
+            this.setState(this.state);
         }
     }
 
@@ -127,26 +124,21 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
-        if (this.state.source === undefined && nextProps.source) {
+        if (this.state.retrievingLogs) {
+            this.state.retrievingLogs = false;
+        } else {
             this.props.getLogs(nextProps.source.secretKey);
-            this.setState({
-                source: nextProps.source,
-                lastDimens: this.state.lastDimens,
-                request: this.state.request,
-                response: this.state.response,
-                outputs: this.state.outputs
-            });
+            this.state.retrievingLogs = true;
         }
+        this.state.source = nextProps.source;
+        this.setState(this.state);
     }
 
-    onConversationClicked(conversation: Conversation, event: React.MouseEvent) {
-        this.setState({
-            request: conversation.request,
-            response: conversation.response,
-            outputs: conversation.outputs,
-            lastDimens: this.state.lastDimens,
-            source: this.state.source,
-        });
+    onConversationClicked(conversation: Conversation) {
+        this.state.request = conversation.request;
+        this.state.response = conversation.response;
+        this.state.outputs = conversation.outputs;
+        this.setState(this.state);
     }
 
     onRootLayout(element: Element) {
@@ -156,16 +148,14 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     render() {
         return (
             <div
-                ref={ this.onRootLayout.bind(this) }>
+                ref={this.onRootLayout.bind(this)}>
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                        <div style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll" }}>
-                            <ConversationListView
-                                conversations={ConversationList.fromLogs(this.props.logs)}
-                                expandListItemWhenActive={browser.isMobileWidth()}
-                                onClick={this.onConversationClicked.bind(this)} />
-                        </div>
+                        <FilterableConversationList
+                            height={this.state.lastDimens.cellDimens.height}
+                            conversations={ConversationList.fromLogs(this.props.logs)}
+                            onShowConversation={this.onConversationClicked.bind(this)} />
                     </Cell>
                     <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
                         {this.state.request ?

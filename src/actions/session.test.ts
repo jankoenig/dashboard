@@ -256,13 +256,13 @@ describe("Session.ts", function () {
     describe("Logout", function () {
         let logoutStub: Sinon.SinonStub;
 
-        before("Stubbing auth logout.", function () {
+        beforeEach("Stubbing auth logout.", function () {
             logoutStub = sinon.stub(auth, "logout").returns(new Promise<any>((resolve, reject) => {
                 resolve("Can be anything.");
             }));
         });
 
-        after(function () {
+        afterEach(function () {
             logoutStub.restore();
         });
 
@@ -271,11 +271,28 @@ describe("Session.ts", function () {
             let store = mockStore(initialState);
 
             store.dispatch(session.logout(function (success: boolean) {
+                expect(success).to.be.true;
                 expect(store.getActions().length).to.equal(2);
 
                 let finalAction: any = store.getActions()[store.getActions().length - 1];
                 expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
                 expect(finalAction.payload.args[0]).to.equal("/login");
+                done();
+            }));
+        });
+
+        it("Verifies an unsuccessful logout action.", function(done: MochaDone) {
+            logoutStub.restore();
+            logoutStub = sinon.stub(auth, "logout").returns(new Promise<any>((resolve, reject) => {
+                reject(new Error("Error per requirement of the test."));
+            }));
+            let initialState = {};
+            let store = mockStore(initialState);
+
+            store.dispatch(session.logout(function (success: boolean) {
+                expect(success).to.be.false;
+                expect(store.getActions().length).to.equal(0);
+                logoutStub.restore();
                 done();
             }));
         });

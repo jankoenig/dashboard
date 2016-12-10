@@ -16,6 +16,13 @@ export namespace String {
         });
     }
 
+    /**
+     * When dealing with user input, it is important to excape out all possible regex inside of it
+     * so it doesn't get used.  This method will do it.
+     */
+    export function regexEscape(str: string) {
+        return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+    }
 
     /**
      * Converts a string to a slug for use in a URL path.

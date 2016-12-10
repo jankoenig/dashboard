@@ -86,7 +86,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
                             </div>
                         ) : undefined}
                         <span>
-                            {this.props.conversation.requestType}
+                            {this.props.conversation.requestPayloadType}
                             {this.props.conversation.intent ? (
                                 <span> - {this.props.conversation.intent} </span>
                             ) : undefined}

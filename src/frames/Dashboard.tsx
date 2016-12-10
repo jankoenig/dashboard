@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 
 import { logout } from "../actions/session";
-import { getSources } from "../actions/source";
+import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
 import Drawer from "../components/Drawer";
 import Header from "../components/Header";
@@ -30,16 +30,19 @@ interface MDLElement extends Element {
 interface DashboardProps {
   user: User;
   currentSource: Source;
+  sources: Source[];
   login: () => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
+  setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   location: Location;
 }
 
 function mapStateToProps(state: State.All) {
   return {
     user: state.session.user,
-    currentSource: state.source.currentSource
+    currentSource: state.source.currentSource,
+    sources: state.source.sources
   };
 }
 
@@ -53,6 +56,9 @@ function mapDispatchToProps(dispatch: any) {
     },
     getSources: function () {
       return dispatch(getSources());
+    },
+    setSource: function(source: Source) {
+      return dispatch(setCurrentSource(source));
     }
   };
 }
@@ -87,12 +93,41 @@ class Dashboard extends React.Component<DashboardProps, any> {
     }
   }
 
+  handleSelectedSource(title: string, index: number) {
+    let source = this.getSource(title);
+    if (source) {
+      this.props.setSource(source);
+    }
+  }
+
+  titles(): string[] {
+    let titles: string[] = [];
+    let sources = this.props.sources;
+    let count = sources.length;
+    for (let i = 0; i < count; ++i) {
+      titles.push(sources[i].name);
+    }
+    return titles;
+  }
+
+  getSource(title: string): Source {
+    let sources = this.props.sources;
+    let count = sources.length;
+    for (let i = 0; i < count; ++i) {
+      if (sources[i].name === title) {
+        return sources[i];
+      }
+    }
+    return undefined;
+  }
+
   render() {
     return (
       <Layout drawer={true} header={true}>
         <Header
           className={this.headerClasses()}
-          title={this.props.currentSource ? this.props.currentSource.name : undefined} >
+          titles={this.props.currentSource ? this.titles() : undefined}
+          onTitleSelect={this.handleSelectedSource.bind(this)}>
           <UserControl
             login={this.props.login}
             logout={this.props.logout}

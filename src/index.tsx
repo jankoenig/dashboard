@@ -15,7 +15,7 @@ import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
-import LogsPage from "./pages/LogsPage";
+import LogsPage from "./pages/logspage/LogsPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SourceListPage from "./pages/SourceListPage";

@@ -10,9 +10,11 @@ import ConversationListViewItem from "./ConversationListViewItem";
 let ReactList = require("react-list");
 
 export interface ConversationListViewProps {
+    readonly height: number;
     readonly conversations: ConversationList;
     readonly expandListItemWhenActive?: boolean;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
+    readonly onEmpty?: () => JSX.Element;
 }
 
 export interface ConversationListViewState {
@@ -72,19 +74,21 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     render() {
-        return (
-            <div>
-                {this.props.conversations.length > 0 ? (
+        let emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div/>);
+
+        let listElement = (
                     <ReactList
                         itemRenderer={this.renderItem.bind(this)}
                         length={this.props.conversations.length}
-                        pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
-                        type={"uniform"}
-                        useStaticSize={true} />
-                ) : (
-                        <p> No available data </p>
-                    )
-                }
+                        type={"simple"} /> // "uniform" with "useState = true" is more efficient rendering, but it won't expand the list for some reason (even though it's supposed to).
+                    // pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
+                    // type={"uniform"}
+                    // useStaticSize={true} />
+                );
+
+        return (
+            <div style={{ "height": this.props.height, "overflowY": "scroll" }}>
+                { this.props.conversations.length > 0 ?  listElement : emptyElement }
             </div>
         );
     }
