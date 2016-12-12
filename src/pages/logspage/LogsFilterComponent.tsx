@@ -180,9 +180,10 @@ class DateComponent implements SelectableComponent {
     }
 
     get component(): JSX.Element {
+        let today = new Date();
         return (<div>
-                    <DatePicker label="Start" onChange={this.handleChange.bind(this, "startDate")} value={this.startDate} />
-                    <DatePicker label="End" onChange={this.handleChange.bind(this, "endDate")} value={this.endDate} />
+                    <DatePicker label="Start" maxDate={today} onChange={this.handleChange.bind(this, "startDate")} value={this.startDate} />
+                    <DatePicker label="End" maxDate={today} onChange={this.handleChange.bind(this, "endDate")} value={this.endDate} />
                 </div>);
     }
 }
