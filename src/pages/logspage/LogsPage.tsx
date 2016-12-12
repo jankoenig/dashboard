@@ -12,6 +12,7 @@ import Source from "../../models/source";
 import { State } from "../../reducers";
 import browser from "../../utils/browser";
 import { FilterableConversationList } from "./FilterableConversationList";
+import { FilterBar } from "./FilterBar";
 
 interface CellDimensions {
     height: number;
@@ -149,6 +150,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return (
             <div
                 ref={this.onRootLayout.bind(this)}>
+                <FilterBar />
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>

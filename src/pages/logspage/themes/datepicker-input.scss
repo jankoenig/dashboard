@@ -1,11 +1,32 @@
+.inputElement {
+    &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
+        ~ .label:not(.fixed) {
+            color: rgba(255, 255, 255, 0.3);
+            top: 10px;
+            left: 2px;
+            font-size: 0.9rem;
+        }
+    }
+}
+
 .input:not(.disabled) > .inputElement {
     font-size: 16px;
+    border-bottom: 1px solid rgb(255, 255, 255);
+    font-size: 1.3rem;
+    color: rgb(255, 255, 255);
+    padding: 0px;
 }
 
 .label {
-    font-size: 0.8rem;
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.3);
+    top: 25px;
+    left: 5px;
 }
 
 .title {
-    font-size: 0.8rem
+    font-size: 1.3rem;
+    color: rgb(255, 255, 255);
+    top: 25px;
+    left: 5px;
 }
