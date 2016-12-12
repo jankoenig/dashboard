@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
@@ -15,7 +16,9 @@ export interface FilterProps {
 }
 
 interface FilterState {
-
+    startDate?: Date;
+    endDate?: Date;
+    selectedType?: FilterType;
 }
 
 interface FilterType {
@@ -53,13 +56,29 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         types.push(undefined);
         types.push({ type: "INFO", title: "Info" });
         types.push({ type: "DEBUG", title: "Debug" });
-        types.push({ type: "WARN", title: "Warning"});
-        types.push({ type: "ERROR", title: "Error"});
+        types.push({ type: "WARN", title: "Warning" });
+        types.push({ type: "ERROR", title: "Error" });
         this.filterAdapter = new FilterTypeAdapter(types);
+
+        this.state = {};
+    }
+
+    handleChange(item: string, value: Date) {
+        // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
+        if (item === "startDate") {
+            this.state.startDate = value;
+            this.state.startDate.setHours(0, 0, 0, 0);
+        } else if (item === "endDate") {
+            this.state.endDate = value;
+            this.state.endDate.setHours(23, 59, 59, 999);
+        }
+        this.setState(this.state);
     }
 
     render(): JSX.Element {
         let today = new Date();
+        let startHandleChange = this.handleChange.bind(this, "startDate");
+        let endHandleChange = this.handleChange.bind(this, "endDate");
 
         return (<div style={{ backgroundColor: "#243036", paddingLeft: "16px", paddingRight: "16px" }}>
             <div style={{ float: "left" }} >
@@ -67,13 +86,13 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
             </div>
             <div style={{ float: "right" }} >
                 <div style={{ float: "left" }} >
-                    <DatePicker theme={DatePickerTheme} label="Start Date" maxDate={today} />
+                    <DatePicker theme={DatePickerTheme} label="Start Date" maxDate={today} value={this.state.startDate} onChange={startHandleChange} />
                 </div>
                 <div style={{ float: "left" }} >
                     <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", marginRight: "10px", marginLeft: "10px" }}>-</p>
                 </div>
                 <div style={{ float: "right" }} >
-                    <DatePicker theme={DatePickerTheme} label="End Date" maxDate={today} value={today} />
+                    <DatePicker theme={DatePickerTheme} label="End Date" maxDate={today} value={this.state.endDate} onChange={endHandleChange} />
                 </div>
             </div>
             <div style={{ clear: "both" }} />
