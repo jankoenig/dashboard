@@ -7,6 +7,19 @@ import { Select, SelectAdapter } from "../../components/Select";
 
 const DatePickerTheme = require("./themes/datepicker-input");
 
+const SelectInputStyle = {
+    "color": "rgb(255, 255, 255)",
+    "border-bottom": "1px solid rgb(255, 255, 255)"
+};
+
+const SelectLabelStyle = {
+    "color": "rgba(255, 255, 255, 0.3)"
+};
+
+const SelectIconStyle = {
+    "color": "rgb(255, 255, 255)"
+};
+
 export interface FilterProps {
     onFilter: (filter: FilterType) => void;
 }
@@ -99,7 +112,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
 
         return (<div style={{ backgroundColor: "#243036", paddingLeft: "16px", paddingRight: "16px" }}>
             <div style={{ float: "left" }} >
-                <Select adapter={this.filterAdapter} hint={"Filter Type"} onSelected={typeHandleChange} />
+                <Select inputStyle={SelectInputStyle} labelStyle={SelectLabelStyle} iconStyle={SelectIconStyle} adapter={this.filterAdapter} hint={"Filter Type"} onSelected={typeHandleChange} />
             </div>
             <div style={{ float: "right" }} >
                 <div style={{ float: "left" }} >
