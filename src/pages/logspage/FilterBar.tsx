@@ -114,14 +114,12 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
             <div style={{ float: "left" }} >
                 <Select inputStyle={SelectInputStyle} labelStyle={SelectLabelStyle} iconStyle={SelectIconStyle} adapter={this.filterAdapter} hint={"Filter Type"} onSelected={typeHandleChange} />
             </div>
-            <div style={{ float: "right" }} >
-                <div style={{ float: "left" }} >
+            <div style={{ float: "right", display: "block" }} >
+                <div style={{ float: "left", display: "inline-block" }} >
                     <DatePicker theme={DatePickerTheme} label="Start Date" maxDate={today} value={this.state.startDate} onChange={startHandleChange} />
                 </div>
-                <div style={{ float: "left" }} >
-                    <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", marginRight: "10px", marginLeft: "10px" }}>-</p>
-                </div>
-                <div style={{ float: "right" }} >
+                <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto 10px", display: "inline-block" }}>-</p>
+                <div style={{ float: "right", display: "inline-block" }} >
                     <DatePicker theme={DatePickerTheme} label="End Date" maxDate={today} value={this.state.endDate} onChange={endHandleChange} />
                 </div>
             </div>
