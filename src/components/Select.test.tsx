@@ -96,7 +96,7 @@ describe("Select", function () {
 
             options.at(0).simulate("click");
 
-            expect(input.props().value).to.equal("");
+            expect(input.props().value).to.be.undefined;
         });
 
         it ("Tests the input defaults to the first item.", function() {

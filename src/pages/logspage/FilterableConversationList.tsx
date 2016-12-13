@@ -8,8 +8,6 @@ import browser from "../../utils/browser";
 import { filter } from "../../utils/promise";
 
 import { FilterType } from "./Filters";
-import { LogsFilterComponent } from "./LogsFilterComponent";
-
 
 export interface FilterableConversationListProps {
     height: number;
