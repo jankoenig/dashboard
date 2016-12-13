@@ -26,7 +26,69 @@ let responseProps: LogProperties = {
     id: "LogID0987654321"
 };
 
+class SuccessFilter implements Filters.FilterType {
+    type: "Success";
+    get filter(): (item: Conversation) => boolean {
+        return function(item: Conversation): boolean {
+            return true;
+        };
+    }
+}
+
+class FailFilter implements Filters.FilterType {
+    type: "Fail";
+    get filter(): (item: Conversation) => boolean {
+        return function(item: Conversation): boolean {
+            return false;
+        };
+    }
+}
+
 describe("Filters.tsx", function() {
+
+    describe("CompositeFilter", function() {
+        it ("Tests type attribute is not undefined", function() {
+            let filter = new Filters.CompositeFilter([]);
+            expect(filter.type).to.not.be.undefined;
+            expect(filter.type).to.not.be.null;
+        });
+
+        it ("Tests filter attribute is not undefined", function() {
+            let filter = new Filters.CompositeFilter([]);
+            expect(filter.filter).to.not.be.undefined;
+            expect(filter.filter).to.not.be.null;
+        });
+
+        it ("Tests it returns true with empty filters.", function() {
+            let filter = new Filters.CompositeFilter([]);
+            let convo = new Conversation({
+                request: new Log(requestProps),
+                response: new Log(responseProps)
+            });
+
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests it returns true with only true filters.", function() {
+            let filter = new Filters.CompositeFilter([new SuccessFilter(), new SuccessFilter(), new SuccessFilter()]);
+            let convo = new Conversation({
+                request: new Log(requestProps),
+                response: new Log(responseProps)
+            });
+
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests it returns false with one failing filter.", function() {
+            let filter = new Filters.CompositeFilter([new SuccessFilter(), new FailFilter(), new SuccessFilter()]);
+            let convo = new Conversation({
+                request: new Log(requestProps),
+                response: new Log(responseProps)
+            });
+
+            expect(filter.filter(convo)).to.be.false;
+        });
+    });
 
     describe("TypeFilter", function() {
         it ("Tests type attribute is not undefined", function() {

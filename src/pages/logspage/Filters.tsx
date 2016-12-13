@@ -8,6 +8,32 @@ export interface FilterType {
     filter: (item: Conversation) => boolean;
 }
 
+export class CompositeFilter implements FilterType {
+    filters: FilterType[];
+
+    constructor(filters: FilterType[]) {
+        this.filters = filters;
+    }
+
+    get type(): string {
+        return "Composite";
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        let filters = this.filters;
+        return function(item: Conversation): boolean {
+            console.info("CHECKING " + item.id + " " + item.hasLogType("DEBUG"));
+            for (let filter of filters) {
+                console.info("GOING IN TO " + filter.type);
+                if (!filter.filter(item)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
+}
+
 export class TypeFilter implements FilterType {
     logType?: string;
 

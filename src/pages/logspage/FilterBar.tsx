@@ -1,35 +1,32 @@
-import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
-import * as Filters from "./Filters";
+import { CompositeFilter, DateFilter, FilterType, TypeFilter } from "./Filters";
 
-import { ComponentSelector, SelectableComponent } from "../../components/ComponentSelector";
-import { FormInput } from "../../components/FormInput";
 import { Select, SelectAdapter } from "../../components/Select";
-import { LOG_LEVELS } from "../../constants";
 
 const DatePickerTheme = require("./themes/datepicker-input");
 
 export interface FilterProps {
-
+    onFilter: (filter: FilterType) => void;
 }
 
 interface FilterState {
     startDate?: Date;
     endDate?: Date;
-    selectedType?: FilterType;
+    selectedType?: ConvoType;
+    filterMap: any;
 }
 
-interface FilterType {
+interface ConvoType {
     type: string;
     title: string;
 }
 
-class FilterTypeAdapter implements SelectAdapter<FilterType> {
-    filterTypes: FilterType[];
+class ConvoTypeAdapter implements SelectAdapter<ConvoType> {
+    filterTypes: ConvoType[];
 
-    constructor(types: FilterType[]) {
+    constructor(types: ConvoType[]) {
         this.filterTypes = types;
     }
 
@@ -37,7 +34,7 @@ class FilterTypeAdapter implements SelectAdapter<FilterType> {
         return this.filterTypes.length;
     }
 
-    getItem(index: number): FilterType {
+    getItem(index: number): ConvoType {
         return this.filterTypes[index];
     };
 
@@ -48,22 +45,24 @@ class FilterTypeAdapter implements SelectAdapter<FilterType> {
 }
 
 export class FilterBar extends React.Component<FilterProps, FilterState> {
-    filterAdapter: FilterTypeAdapter;
+    filterAdapter: ConvoTypeAdapter;
 
     constructor(props: FilterProps) {
         super(props);
-        let types: FilterType[] = [];
+        let types: ConvoType[] = [];
         types.push(undefined);
         types.push({ type: "INFO", title: "Info" });
         types.push({ type: "DEBUG", title: "Debug" });
         types.push({ type: "WARN", title: "Warning" });
         types.push({ type: "ERROR", title: "Error" });
-        this.filterAdapter = new FilterTypeAdapter(types);
+        this.filterAdapter = new ConvoTypeAdapter(types);
 
-        this.state = {};
+        this.state = {
+            filterMap: {}
+        };
     }
 
-    handleChange(item: string, value: Date) {
+    handleDateChange(item: string, value: Date) {
         // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
         if (item === "startDate") {
             this.state.startDate = value;
@@ -73,16 +72,34 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
             this.state.endDate.setHours(23, 59, 59, 999);
         }
         this.setState(this.state);
+        this.newFilter(new DateFilter(this.state.startDate, this.state.endDate));
+    }
+
+    handleTypeSelectChange(value: ConvoType) {
+        let type = (value) ? value.type : undefined;
+        console.info("TYPE " + type);
+
+        this.state.selectedType = value;
+        this.setState(this.state);
+        this.newFilter(new TypeFilter(type));
+    }
+
+    newFilter(filter: FilterType) {
+        this.state.filterMap[filter.type] = filter;
+        let filterMap = this.state.filterMap;
+        let filters = Object.keys(this.state.filterMap).map( function(key) { return filterMap[key]; } );
+        this.props.onFilter(new CompositeFilter(filters));
     }
 
     render(): JSX.Element {
         let today = new Date();
-        let startHandleChange = this.handleChange.bind(this, "startDate");
-        let endHandleChange = this.handleChange.bind(this, "endDate");
+        let typeHandleChange = this.handleTypeSelectChange.bind(this);
+        let startHandleChange = this.handleDateChange.bind(this, "startDate");
+        let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
         return (<div style={{ backgroundColor: "#243036", paddingLeft: "16px", paddingRight: "16px" }}>
             <div style={{ float: "left" }} >
-                <Select adapter={this.filterAdapter} hint={"Filter Type"} />
+                <Select adapter={this.filterAdapter} hint={"Filter Type"} onSelected={typeHandleChange} />
             </div>
             <div style={{ float: "right" }} >
                 <div style={{ float: "left" }} >

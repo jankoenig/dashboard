@@ -13,6 +13,7 @@ import { State } from "../../reducers";
 import browser from "../../utils/browser";
 import { FilterableConversationList } from "./FilterableConversationList";
 import { FilterBar } from "./FilterBar";
+import { FilterType } from "./Filters";
 
 interface CellDimensions {
     height: number;
@@ -38,6 +39,7 @@ interface LogsPageState {
     request: Log | undefined;
     response: Log | undefined;
     outputs: Output[];
+    filter?: FilterType;
 }
 
 function mapStateToProps(state: State.All) {
@@ -146,17 +148,23 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.root = element;
     }
 
+    handleFilter(filter: FilterType) {
+        this.state.filter = filter;
+        this.setState(this.state);
+    }
+
     render() {
         return (
             <div
                 ref={this.onRootLayout.bind(this)}>
-                <FilterBar />
+                <FilterBar onFilter={this.handleFilter.bind(this)} />
                 <Grid
                     noSpacing={true}>
                     <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
                         <FilterableConversationList
                             height={this.state.lastDimens.cellDimens.height}
                             conversations={ConversationList.fromLogs(this.props.logs)}
+                            filter={this.state.filter}
                             onShowConversation={this.onConversationClicked.bind(this)} />
                     </Cell>
                     <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
