@@ -9,7 +9,7 @@ const DatePickerTheme = require("./themes/datepicker-input");
 
 const SelectInputStyle = {
     "color": "rgb(255, 255, 255)",
-    "border-bottom": "1px solid rgb(255, 255, 255)"
+    "borderBottom": "1px solid rgb(255, 255, 255)"
 };
 
 const SelectLabelStyle = {
