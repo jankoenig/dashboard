@@ -102,6 +102,11 @@ export default class ConversationListViewItem extends React.Component<Conversati
                                 error
                             </Pill>
                         ) : undefined}
+                        {this.props.conversation.hasCrash ? (
+                            <Pill>
+                                crash
+                            </Pill>
+                        ) : undefined }
                     </span>
                 </li>
                 {this.props.showInteractionOnActive && this.props.active ? (

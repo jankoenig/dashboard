@@ -7,11 +7,14 @@ export interface OutputProperties {
     timestamp: Date;
     transaction_id: string;
     id: string;
+    stack?: string;
 }
 
 export default class Output implements OutputProperties {
 
     readonly message: string;
+
+    readonly stack: string;
 
     readonly level: LOG_LEVELS;
 
@@ -38,11 +41,13 @@ export default class Output implements OutputProperties {
         this.timestamp = props.timestamp;
         this.transaction_id = props.transaction_id;
         this.id = props.id;
+        this.stack = props.stack;
     }
 
     static fromLog(log: Log): Output {
         return new Output({
             message: log.payload,
+            stack: log.stack,
             level: log.log_type,
             timestamp: log.timestamp,
             transaction_id: log.transaction_id,

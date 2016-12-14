@@ -14,6 +14,11 @@ class ConversationList extends Array<Conversation> {
         if (logs) {
             for (let log of logs) {
 
+                if (log.stack) {
+                    console.log("stack!");
+                    console.log(log);
+                }
+
                 // First make sure the map has an object there
                 if (!conversationMap[log.transaction_id]) {
                     conversationMap[log.transaction_id] = { request: undefined, response: undefined, outputs: [] };
@@ -34,6 +39,7 @@ class ConversationList extends Array<Conversation> {
 
             // convert to an array
             conversations = Object.keys(conversationMap).map(function (key) {
+
                 return new Conversation(conversationMap[key]);
             });
         }

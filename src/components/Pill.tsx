@@ -8,7 +8,8 @@ export default class Pill extends React.Component<any, any> {
             padding: "5px",
             borderRadius: "5px",
             color: "#eeeeee",
-            fontSize: "10px"
+            fontSize: "10px",
+            margin: "5px"
         };
     }
     render() {

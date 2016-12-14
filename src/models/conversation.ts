@@ -1,6 +1,7 @@
 import Color from "../utils/color";
 import Log from "./log";
 import Output from "./output";
+import StackTrace from "./stack-trace";
 
 export interface ConversationProperties {
     request: Log;
@@ -15,6 +16,8 @@ export default class Conversation implements ConversationProperties {
     readonly response: Log;
 
     readonly outputs: Output[];
+
+    readonly stackTraces: StackTrace[];
 
     constructor(props: ConversationProperties) {
         this.request = props.request;
@@ -107,6 +110,17 @@ export default class Conversation implements ConversationProperties {
     get hasError(): boolean {
         return this.hasOutputType("ERROR");
     }
+
+    get hasCrash(): boolean {
+        for (let output of this.outputs) {
+            if (output.stack) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     hasLogType(type: string): boolean {
         return (this.request.log_type === type) ||
