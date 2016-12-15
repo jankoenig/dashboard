@@ -7,7 +7,7 @@
   "scripts": {
     "postinstall": "typings install",
     "clean": "node scripts/clean.js",
-    "lint": "tslint 'src/**/*.{ts,tsx}'",
+    "lint": "tslint 'src/**/*.{ts,tsx}' -e **/*.scss.d.ts",
     "pretest": "tsc && npm run lint",
     "test": "mocha 'src/**/*.test.js' --require ignore-styles",
     "nolinttest": "tsc && mocha 'src/**/*.test.js' --require ignore-styles",

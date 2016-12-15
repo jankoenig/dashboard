@@ -57,7 +57,7 @@
         ],
         "no-null-keyword": true,
         "switch-default": true,
-        "ordered-imports": true,
+        "ordered-imports": [true],
         "jsx-no-lambda": true,
         "jsx-alignment": false,
         "jsx-no-multiline-js": false

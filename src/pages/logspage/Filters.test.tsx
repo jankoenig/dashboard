@@ -1,3 +1,4 @@
+import { dummyOutputs } from "../../utils/test";
 import { expect } from "chai";
 
 import Conversation from "../../models/conversation";
@@ -90,62 +91,32 @@ describe("Filters.tsx", function() {
         });
     });
 
-    describe("TypeFilter", function() {
+    describe("LogLevelFilter", function() {
         it ("Tests type attribute is not undefined", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
+            let filter = new Filters.LogLevelFilter("DEBUG");
             expect(filter.type).to.not.be.undefined;
             expect(filter.type).to.not.be.null;
         });
 
         it ("Tests filter attribute is not undefined", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
+            let filter = new Filters.LogLevelFilter("DEBUG");
             expect(filter.filter).to.not.be.undefined;
         });
 
         it ("Tests the filter will return true with a positive response.", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
+            let filter = new Filters.LogLevelFilter("DEBUG");
 
             let convo = new Conversation({
                 request: new Log(requestProps),
-                response: new Log(responseProps)
-            });
-
-            expect(filter.filter(convo)).to.be.true;
-        });
-
-        it ("Tests the filter will return true when only the request is correct.", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
-
-            requestProps.log_type = "DEBUG";
-            responseProps.log_type = "INFO";
-
-            let convo = new Conversation({
-                request: new Log(requestProps),
-                response: new Log(responseProps)
-            });
-
-            expect(filter.filter(convo)).to.be.true;
-        });
-
-        it ("Tests the filter will return true when only the response is correct.", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
-
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "DEBUG";
-
-            let convo = new Conversation({
-                request: new Log(requestProps),
-                response: new Log(responseProps)
+                response: new Log(responseProps),
+                outputs: dummyOutputs(6)
             });
 
             expect(filter.filter(convo)).to.be.true;
         });
 
         it ("Tests the filter will return false when neither log is correct.", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
-
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "INFO";
+            let filter = new Filters.LogLevelFilter("DEBUG");
 
             let convo = new Conversation({
                 request: new Log(requestProps),
@@ -156,10 +127,7 @@ describe("Filters.tsx", function() {
         });
 
         it ("Tests the filter will return true when searching for undefined log type.", function() {
-            let filter = new Filters.TypeFilter(undefined);
-
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "INFO";
+            let filter = new Filters.LogLevelFilter(undefined);
 
             let convo = new Conversation({
                 request: new Log(requestProps),
@@ -170,10 +138,7 @@ describe("Filters.tsx", function() {
         });
 
         it ("Tests the filter will return true when searching for empty log type.", function() {
-            let filter = new Filters.TypeFilter("");
-
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "INFO";
+            let filter = new Filters.LogLevelFilter("");
 
             let convo = new Conversation({
                 request: new Log(requestProps),
@@ -184,7 +149,7 @@ describe("Filters.tsx", function() {
         });
 
         it ("Tests the filter will return false when given an empty conversation.", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
+            let filter = new Filters.LogLevelFilter("DEBUG");
 
             expect(filter.filter(undefined)).to.be.false;
         });
