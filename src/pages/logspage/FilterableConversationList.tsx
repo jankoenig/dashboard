@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import ERROR from "../../constants/error";
+
 import { ConversationListView } from "../../components/ConversationListView";
 import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
@@ -53,6 +55,10 @@ export class FilterableConversationList extends React.Component<FilterableConver
                 me.state.shownConversations = items;
                 me.setState(me.state);
             }).catch(function (err: Error) {
+                // only print out errors that are NOT the no items found error
+                if (err.message !== ERROR.FILTER.NO_ITEMS_FOUND) {
+                    console.error(err);
+                }
                 me.state.shownConversations = [];
                 me.setState(me.state);
             });

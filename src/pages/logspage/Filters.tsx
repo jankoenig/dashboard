@@ -22,9 +22,8 @@ export class CompositeFilter implements FilterType {
     get filter(): (item: Conversation) => boolean {
         let filters = this.filters;
         return function(item: Conversation): boolean {
-            console.info("CHECKING " + item.id + " " + item.hasLogType("DEBUG"));
             for (let filter of filters) {
-                console.info("GOING IN TO " + filter.type);
+                console.log("filtering by " + filter.type + " for item " + item.id);
                 if (!filter.filter(item)) {
                     return false;
                 }
@@ -51,7 +50,7 @@ export class TypeFilter implements FilterType {
             if (type === undefined || type.trim() === "") {
                 return true;
             }
-            return item !== undefined && item.hasLogType(type);
+            return item !== undefined && item.hasOutputType(type);
         };
     }
 }

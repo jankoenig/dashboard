@@ -86,7 +86,7 @@ export class Interaction extends React.Component<InteractionProps, any> {
             <div>
                 <h6>REQUEST</h6>
                 {this.getTree(this.props.request)}
-                <h6>CONSOLE</h6>
+                <h6>LOGS</h6>
                 <OutputList outputs={this.props.outputs} />
                 <h6>RESPONSE</h6>
                 {this.getTree(this.props.response)}

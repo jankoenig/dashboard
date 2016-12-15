@@ -1,3 +1,4 @@
+import { dummyOutputs } from "../../utils/test";
 import { expect } from "chai";
 
 import Conversation from "../../models/conversation";
@@ -107,35 +108,8 @@ describe("Filters.tsx", function() {
 
             let convo = new Conversation({
                 request: new Log(requestProps),
-                response: new Log(responseProps)
-            });
-
-            expect(filter.filter(convo)).to.be.true;
-        });
-
-        it ("Tests the filter will return true when only the request is correct.", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
-
-            requestProps.log_type = "DEBUG";
-            responseProps.log_type = "INFO";
-
-            let convo = new Conversation({
-                request: new Log(requestProps),
-                response: new Log(responseProps)
-            });
-
-            expect(filter.filter(convo)).to.be.true;
-        });
-
-        it ("Tests the filter will return true when only the response is correct.", function() {
-            let filter = new Filters.TypeFilter("DEBUG");
-
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "DEBUG";
-
-            let convo = new Conversation({
-                request: new Log(requestProps),
-                response: new Log(responseProps)
+                response: new Log(responseProps),
+                outputs: dummyOutputs(6)
             });
 
             expect(filter.filter(convo)).to.be.true;
@@ -143,9 +117,6 @@ describe("Filters.tsx", function() {
 
         it ("Tests the filter will return false when neither log is correct.", function() {
             let filter = new Filters.TypeFilter("DEBUG");
-
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "INFO";
 
             let convo = new Conversation({
                 request: new Log(requestProps),
@@ -158,9 +129,6 @@ describe("Filters.tsx", function() {
         it ("Tests the filter will return true when searching for undefined log type.", function() {
             let filter = new Filters.TypeFilter(undefined);
 
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "INFO";
-
             let convo = new Conversation({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
@@ -171,9 +139,6 @@ describe("Filters.tsx", function() {
 
         it ("Tests the filter will return true when searching for empty log type.", function() {
             let filter = new Filters.TypeFilter("");
-
-            requestProps.log_type = "INFO";
-            responseProps.log_type = "INFO";
 
             let convo = new Conversation({
                 request: new Log(requestProps),

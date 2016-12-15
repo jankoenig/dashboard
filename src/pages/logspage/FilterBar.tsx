@@ -63,7 +63,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     constructor(props: FilterProps) {
         super(props);
         let types: ConvoType[] = [];
-        types.push(undefined);
+        types.push({ type: "", title: "All Logs"});
         types.push({ type: "INFO", title: "Info" });
         types.push({ type: "DEBUG", title: "Debug" });
         types.push({ type: "WARN", title: "Warning" });
@@ -90,7 +90,6 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
 
     handleTypeSelectChange(value: ConvoType) {
         let type = (value) ? value.type : undefined;
-        console.info("TYPE " + type);
 
         this.state.selectedType = value;
         this.setState(this.state);
@@ -112,7 +111,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
 
         return (<div style={{ backgroundColor: "#243036", paddingLeft: "16px", paddingRight: "16px" }}>
             <div style={{ float: "left", width: "120px" }} >
-                <Select inputStyle={SelectInputStyle} labelStyle={SelectLabelStyle} iconStyle={SelectIconStyle} adapter={this.filterAdapter} hint={"Filter Type"} onSelected={typeHandleChange} />
+                <Select inputStyle={SelectInputStyle} labelStyle={SelectLabelStyle} iconStyle={SelectIconStyle} adapter={this.filterAdapter} hint={"Log Level"} onSelected={typeHandleChange} />
             </div>
             <div style={{ float: "right", display: "block" }} >
                 <div style={{ float: "left", display: "inline-block" }} >
