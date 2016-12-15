@@ -1,7 +1,7 @@
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
-import { CompositeFilter, DateFilter, FilterType, TypeFilter } from "./Filters";
+import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
 
 import { Select, SelectAdapter } from "../../components/Select";
 
@@ -93,7 +93,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
 
         this.state.selectedType = value;
         this.setState(this.state);
-        this.newFilter(new TypeFilter(type));
+        this.newFilter(new LogLevelFilter(type));
     }
 
     newFilter(filter: FilterType) {

@@ -32,7 +32,7 @@ export class CompositeFilter implements FilterType {
     }
 }
 
-export class TypeFilter implements FilterType {
+export class LogLevelFilter implements FilterType {
     logType?: string;
 
     constructor(type?: string) {
@@ -40,7 +40,7 @@ export class TypeFilter implements FilterType {
     }
 
     get type(): string {
-        return "Log Type";
+        return "Log Level";
     }
 
     get filter(): (item: Conversation) => boolean {
