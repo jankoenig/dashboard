@@ -1,15 +1,17 @@
 import Log from "./log";
 import StackTraceElement, { javaScriptStackTraceRegex } from "./stack-trace-element";
 
-import String from "../utils/string";
-
 interface StackTraceProperties {
+    timestamp: Date;
     raw: string;
     message: string;
     elements: StackTraceElement[];
 }
 
 export default class StackTrace implements StackTraceProperties {
+
+    readonly timestamp: Date;
+
     readonly raw: string;
 
     readonly message: string;
@@ -21,6 +23,7 @@ export default class StackTrace implements StackTraceProperties {
     }
 
     constructor(props: StackTraceProperties) {
+        this.timestamp = props.timestamp;
         this.raw = props.raw;
         this.message = props.message;
         this.elements = props.elements;
@@ -33,27 +36,19 @@ export default class StackTrace implements StackTraceProperties {
         if (log.stack) {
 
             let props = {
+                timestamp: log.timestamp,
                 raw: log.stack,
                 message: log.payload,
                 elements: new Array<StackTraceElement>()
             };
 
-            // Clean the stack a little by removing surrounding quotes, if they exist
-            let cleanStack = props.raw;
-            if (cleanStack.charAt(0) === '"' && cleanStack.charAt(cleanStack.length - 2) === '"') {
-                cleanStack = String.setCharAt(cleanStack, 0, "");
-                cleanStack = String.setCharAt(cleanStack, cleanStack.length - 2, "");
-            }
-
             // Split by new line.
-            let lines = cleanStack.split("\n");
+            let lines = props.raw.split("\n");
 
             // Check to see if it is a JavaScript trace
             if (javaScriptStackTraceRegex.exec(props.raw)) {
-                // It is a JavaScript stack trace,
-                // use the first element as the message
-                props.message = lines[0];
-                // then remove it
+                // If it is remove the first index of the array
+                // because it is the same as the payload
                 lines.splice(0, 1);
             }
 

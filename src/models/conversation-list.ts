@@ -1,6 +1,7 @@
 import Conversation, {ConversationProperties} from "./conversation";
 import Log from "./log";
 import Output from "./output";
+import StackTrace from "./stack-trace";
 
 export type ConversationMap = { [id: string]: ConversationProperties }
 
@@ -14,14 +15,9 @@ class ConversationList extends Array<Conversation> {
         if (logs) {
             for (let log of logs) {
 
-                if (log.stack) {
-                    console.log("stack!");
-                    console.log(log);
-                }
-
                 // First make sure the map has an object there
                 if (!conversationMap[log.transaction_id]) {
-                    conversationMap[log.transaction_id] = { request: undefined, response: undefined, outputs: [] };
+                    conversationMap[log.transaction_id] = { request: undefined, response: undefined, outputs: [], stackTraces: [] };
                 }
 
                 if (log.tags && log.tags.indexOf("request") > -1) {
@@ -33,13 +29,21 @@ class ConversationList extends Array<Conversation> {
                 }
 
                 if (typeof log.payload === "string") {
-                    conversationMap[log.transaction_id].outputs.push(Output.fromLog(log));
+
+                    if (log.stack) {
+                        // We got one with a stack, parse it as a stack-trace
+                        console.log("adding stack");
+                        console.log(StackTrace.fromLog(log));
+                        conversationMap[log.transaction_id].stackTraces.push(StackTrace.fromLog(log));
+                    } else {
+                        // No stack, just a normal output
+                        conversationMap[log.transaction_id].outputs.push(Output.fromLog(log));
+                    }
                 }
             }
 
             // convert to an array
             conversations = Object.keys(conversationMap).map(function (key) {
-
                 return new Conversation(conversationMap[key]);
             });
         }

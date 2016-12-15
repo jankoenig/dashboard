@@ -12,11 +12,13 @@ describe("StackTrace", function () {
     describe("constructor", function () {
         it("sets the properties", function () {
             let stackTrace = new StackTrace({
+                timestamp: new Date(),
                 raw: "raw",
                 message: "message",
                 elements: []
             });
 
+            expect(stackTrace.timestamp).to.be.not.be.undefined;
             expect(stackTrace.raw).to.equal("raw");
             expect(stackTrace.message).to.equal("message");
             expect(stackTrace.elements).to.have.length(0);
@@ -56,7 +58,7 @@ describe("StackTrace", function () {
             let log = new Log({
                 stack: jsStackTrace,
                 timestamp: new Date(),
-                payload: "Crash Message",
+                payload: "ReferenceError: opinion is not defined",
                 log_type: "ERROR",
                 source: "source",
                 transaction_id: "transaction_id",

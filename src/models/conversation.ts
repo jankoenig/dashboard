@@ -7,6 +7,7 @@ export interface ConversationProperties {
     request: Log;
     response: Log;
     outputs?: Output[];
+    stackTraces?: StackTrace[];
 }
 
 export default class Conversation implements ConversationProperties {
@@ -23,6 +24,7 @@ export default class Conversation implements ConversationProperties {
         this.request = props.request;
         this.response = props.response;
         this.outputs = props.outputs ? props.outputs.slice() : [];
+        this.stackTraces = props.stackTraces ? props.stackTraces.slice() : [];
     }
 
     get id(): string {
@@ -112,13 +114,7 @@ export default class Conversation implements ConversationProperties {
     }
 
     get hasCrash(): boolean {
-        for (let output of this.outputs) {
-            if (output.stack) {
-                return true;
-            }
-        }
-
-        return false;
+        return this.stackTraces.length > 0;
     }
 
     hasOutputType(type: string): boolean {
