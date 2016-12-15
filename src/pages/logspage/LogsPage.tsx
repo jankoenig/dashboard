@@ -129,9 +129,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
         if (this.state.retrievingLogs) {
             this.state.retrievingLogs = false;
-        } else {
-            console.log("componentWillReceive");
-            console.log(nextProps);
+        } else if (nextProps.source) {
             this.props.getLogs(nextProps.source.secretKey);
             this.state.retrievingLogs = true;
         }
