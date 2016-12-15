@@ -155,32 +155,33 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     render() {
         return (
-            <div
-                ref={this.onRootLayout.bind(this)}>
+            <span>
                 <FilterBar onFilter={this.handleFilter.bind(this)} />
-                <Grid
-                    noSpacing={true}>
-                    <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                        <FilterableConversationList
-                            height={this.state.lastDimens.cellDimens.height}
-                            conversations={ConversationList.fromLogs(this.props.logs)}
-                            filter={this.state.filter}
-                            onShowConversation={this.onConversationClicked.bind(this)} />
-                    </Cell>
-                    <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
-                        {this.state.request ?
-                            (
-                                <Interaction
-                                    request={this.state.request}
-                                    response={this.state.response}
-                                    outputs={this.state.outputs} />
-                            ) : (
-                                <h6> Select a log to view </h6>
-                            )
-                        }
-                    </Cell>
-                </Grid >
-            </div>
+                <div ref={this.onRootLayout.bind(this)}>
+                    <Grid
+                        noSpacing={true}>
+                        <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
+                            <FilterableConversationList
+                                height={this.state.lastDimens.cellDimens.height}
+                                conversations={ConversationList.fromLogs(this.props.logs)}
+                                filter={this.state.filter}
+                                onShowConversation={this.onConversationClicked.bind(this)} />
+                        </Cell>
+                        <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
+                            {this.state.request ?
+                                (
+                                    <Interaction
+                                        request={this.state.request}
+                                        response={this.state.response}
+                                        outputs={this.state.outputs} />
+                                ) : (
+                                    <h6> Select a log to view </h6>
+                                )
+                            }
+                        </Cell>
+                    </Grid >
+                </div>
+            </span>
         );
     }
 }
