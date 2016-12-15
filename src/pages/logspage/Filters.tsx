@@ -23,7 +23,6 @@ export class CompositeFilter implements FilterType {
         let filters = this.filters;
         return function(item: Conversation): boolean {
             for (let filter of filters) {
-                console.log("filtering by " + filter.type + " for item " + item.id);
                 if (!filter.filter(item)) {
                     return false;
                 }
