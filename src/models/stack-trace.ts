@@ -1,5 +1,7 @@
 import Log from "./log";
-import StackTraceElement from "./stack-trace-element";
+import StackTraceElement, { javaScriptStackTraceRegex } from "./stack-trace-element";
+
+import String from "../utils/string";
 
 interface StackTraceProperties {
     raw: string;
@@ -36,8 +38,24 @@ export default class StackTrace implements StackTraceProperties {
                 elements: new Array<StackTraceElement>()
             };
 
+            // Clean the stack a little by removing surrounding quotes, if they exist
+            let cleanStack = props.raw;
+            if (cleanStack.charAt(0) === '"' && cleanStack.charAt(cleanStack.length - 2) === '"') {
+                cleanStack = String.setCharAt(cleanStack, 0, "");
+                cleanStack = String.setCharAt(cleanStack, cleanStack.length - 2, "");
+            }
+
             // Split by new line.
-            let lines = log.stack.split("\n");
+            let lines = cleanStack.split("\n");
+
+            // Check to see if it is a JavaScript trace
+            if (javaScriptStackTraceRegex.exec(props.raw)) {
+                // It is a JavaScript stack trace,
+                // use the first element as the message
+                props.message = lines[0];
+                // then remove it
+                lines.splice(0, 1);
+            }
 
             for (let line of lines) {
                 if (line.length > 0) {

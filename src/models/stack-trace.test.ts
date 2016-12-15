@@ -1,15 +1,14 @@
+import { expect } from "chai";
 let fs = require("fs");
 let path = require("path");
 
 const javaStackTrace = fs.readFileSync(path.resolve(__dirname, "../assets/test/example-java-stack-trace.txt"), "utf8");
 const jsStackTrace = fs.readFileSync(path.resolve(__dirname, "../assets/test/example-javascript-stack-trace.txt"), "utf8");
 
-import { expect } from "chai";
-
 import Log from "./log";
 import StackTrace from "./stack-trace";
 
-describe.only("StackTrace", function () {
+describe("StackTrace", function () {
     describe("constructor", function () {
         it("sets the properties", function () {
             let stackTrace = new StackTrace({
@@ -78,8 +77,8 @@ describe.only("StackTrace", function () {
             });
             it("parses the correct top element", function () {
                 let top = stackTrace.top;
-                expect(top.line).to.equal(47);
-                expect(top.class).to.equal("");
+                expect(top.line).to.equal(52);
+                expect(top.file).to.equal("index.js");
             });
         });
     });

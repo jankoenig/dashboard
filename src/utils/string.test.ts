@@ -22,7 +22,6 @@ describe("String", function () {
             expect(utils.stringToCamelCase("")).to.equal("");
         });
     });
-
     describe("converts to a slug", function() {
         it("a string with one word", function() {
             expect(utils.stringToSlug("String")).to.equal("string");
@@ -36,7 +35,6 @@ describe("String", function () {
             expect(utils.stringToSlug("groß word")).to.equal("gros-word");
         });
     });
-
     describe("Tests the random string generator", function() {
         it ("Tries to get a random string", function() {
             expect(utils.randomString(5).length).to.equal(5);
@@ -46,7 +44,6 @@ describe("String", function () {
             expect(utils.randomString.bind(utils, -5)).to.throw(Error);
         });
     });
-
     describe("Tests the regex escape method.", function() {
         it ("Tests it returns the same string without regex in it.", function() {
             expect(utils.regexEscape("No Regex String")).to.equal("No Regex String");
@@ -54,6 +51,14 @@ describe("String", function () {
 
         it ("Tests the regex is removed from the string.", function() {
             expect(utils.regexEscape("^.*(Regex String)[a-zA-Z]*.*?$")).to.equal("\\^\\.\\*\\(Regex String\\)\\[a\\-zA\\-Z\\]\\*\\.\\*\\?\\$");
+        });
+    });
+    describe("sets character at index", function() {
+        it("replaces the correct character", function() {
+            expect(utils.setCharAt("foo", 0, "b")).to.equal("boo");
+        });
+        it("returns the original string with the index is out of bound", function() {
+            expect(utils.setCharAt("foo", 15, "b")).to.equal("foo");
         });
     });
 });
