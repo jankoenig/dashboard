@@ -1,7 +1,7 @@
 import * as classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { push, replace } from "react-router-redux";
 
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
@@ -35,6 +35,7 @@ interface DashboardProps {
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
+  goToSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   location: Location;
 }
 
@@ -59,6 +60,9 @@ function mapDispatchToProps(dispatch: any) {
     },
     setSource: function(source: Source) {
       return dispatch(setCurrentSource(source));
+    },
+    goToSource: function(source: Source) {
+      return dispatch(replace("/skills/" + source.id + "/logs"));
     }
   };
 }
@@ -97,6 +101,7 @@ class Dashboard extends React.Component<DashboardProps, any> {
     let source = this.getSource(title);
     if (source) {
       this.props.setSource(source);
+      this.props.goToSource(source);
     }
   }
 
@@ -126,6 +131,7 @@ class Dashboard extends React.Component<DashboardProps, any> {
       <Layout drawer={true} header={true}>
         <Header
           className={this.headerClasses()}
+          selectedIndex={this.props.currentSource ? this.titles().indexOf(this.props.currentSource.name) : undefined}
           titles={this.props.currentSource ? this.titles() : undefined}
           onTitleSelect={this.handleSelectedSource.bind(this)}>
           <UserControl

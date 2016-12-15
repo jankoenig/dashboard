@@ -8,7 +8,31 @@ export interface FilterType {
     filter: (item: Conversation) => boolean;
 }
 
-export class TypeFilter implements FilterType {
+export class CompositeFilter implements FilterType {
+    filters: FilterType[];
+
+    constructor(filters: FilterType[]) {
+        this.filters = filters;
+    }
+
+    get type(): string {
+        return "Composite";
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        let filters = this.filters;
+        return function(item: Conversation): boolean {
+            for (let filter of filters) {
+                if (!filter.filter(item)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+    }
+}
+
+export class LogLevelFilter implements FilterType {
     logType?: string;
 
     constructor(type?: string) {
@@ -16,7 +40,7 @@ export class TypeFilter implements FilterType {
     }
 
     get type(): string {
-        return "Log Type";
+        return "Log Level";
     }
 
     get filter(): (item: Conversation) => boolean {
@@ -25,7 +49,7 @@ export class TypeFilter implements FilterType {
             if (type === undefined || type.trim() === "") {
                 return true;
             }
-            return item !== undefined && item.hasLogType(type);
+            return item !== undefined && item.hasOutputType(type);
         };
     }
 }
