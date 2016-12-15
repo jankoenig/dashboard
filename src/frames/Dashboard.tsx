@@ -131,6 +131,7 @@ class Dashboard extends React.Component<DashboardProps, any> {
       <Layout drawer={true} header={true}>
         <Header
           className={this.headerClasses()}
+          selectedIndex={this.props.currentSource ? this.titles().indexOf(this.props.currentSource.name) : undefined}
           titles={this.props.currentSource ? this.titles() : undefined}
           onTitleSelect={this.handleSelectedSource.bind(this)}>
           <UserControl

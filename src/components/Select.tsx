@@ -10,6 +10,9 @@ export interface SelectProps<T> {
     hint: string;
     adapter: SelectAdapter<T>;
     defaultIndex?: number;
+    inputStyle?: React.CSSProperties;
+    labelStyle?: React.CSSProperties;
+    iconStyle?: React.CSSProperties;
     onSelected?(item: T, index: number): void;
 }
 
@@ -155,15 +158,14 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     render() {
         // You have to do this way or else you get some weird warning with React about going from controlled to uncontrolled states.
         let useValue = this.props.adapter.getTitle(this.state.lastSelectedIndex);
-        useValue = useValue || "";
 
         return (
             <div ref={this.handleDropdownBind.bind(this)} className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
-                <input ref={this.handleRefBind.bind(this)} value={useValue} className="mdl-textfield__input" type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
+                <input ref={this.handleRefBind.bind(this)} style={this.props.inputStyle} value={useValue} className="mdl-textfield__input" type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
                 <label htmlFor={this.id}>
-                    <i className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                    <i style={this.props.iconStyle} className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
                 </label>
-                <label htmlFor={this.id} className="mdl-textfield__label">{this.props.hint}</label>
+                <label htmlFor={this.id} style={this.props.labelStyle} className="mdl-textfield__label">{this.props.hint}</label>
                 <ul ref={this.handleMenuBind.bind(this)} onKeyDown={this.handleMenuKeyDown.bind(this)} htmlFor={this.id} className="mdl-menu mdl-menu--bottom-left mdl-js-menu">
                     {this.state.list}
                 </ul>

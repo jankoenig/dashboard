@@ -5,7 +5,8 @@
         "**/.DS_Store": true,
         "**/*.js.map": true,
         "**/*.js": { "when": "$(basename).ts"},
-        "**/*?.js": { "when": "$(basename).tsx"}
+        "**/*?.js": { "when": "$(basename).tsx"},
+        "**/*.scss.d.ts": { "when": "$(basename).scss"}
     },
     "files.autoSave": "onFocusChange",
     "files.trimTrailingWhitespace": true,

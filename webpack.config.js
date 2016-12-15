@@ -28,12 +28,8 @@ module.exports = {
         loader: "ts-loader"
       },
       {
-        test: /\.css$/,
-        loader: "typings-for-css-modules?modules"
-      },
-      {
         test: /\.(scss|css)$/,
-        loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
+        loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
       }
     ],
 
