@@ -105,7 +105,7 @@ let render = function () {
                     <IndexRoute component={LoginPage} />
                 </Route>
                 <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                    <IndexRoute component={HomePage} />
+                    <IndexRoute component={SourceListPage} />
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
