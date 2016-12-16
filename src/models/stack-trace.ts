@@ -2,6 +2,7 @@ import Log from "./log";
 import StackTraceElement, { javaScriptStackTraceRegex } from "./stack-trace-element";
 
 interface StackTraceProperties {
+    id: string;
     timestamp: Date;
     raw: string;
     message: string;
@@ -9,6 +10,8 @@ interface StackTraceProperties {
 }
 
 export default class StackTrace implements StackTraceProperties {
+
+    readonly id: string;
 
     readonly timestamp: Date;
 
@@ -23,6 +26,7 @@ export default class StackTrace implements StackTraceProperties {
     }
 
     constructor(props: StackTraceProperties) {
+        this.id = props.id;
         this.timestamp = props.timestamp;
         this.raw = props.raw;
         this.message = props.message;
@@ -36,6 +40,7 @@ export default class StackTrace implements StackTraceProperties {
         if (log.stack) {
 
             let props = {
+                id: log.id,
                 timestamp: log.timestamp,
                 raw: log.stack,
                 message: log.payload,

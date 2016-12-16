@@ -9,6 +9,7 @@ import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
 import Output from "../../models/output";
 import Source from "../../models/source";
+import StackTrace from "../../models/stack-trace";
 import { State } from "../../reducers";
 import browser from "../../utils/browser";
 import { FilterableConversationList } from "./FilterableConversationList";
@@ -39,6 +40,7 @@ interface LogsPageState {
     request: Log | undefined;
     response: Log | undefined;
     outputs: Output[];
+    stackTraces: StackTrace[];
     filter?: FilterType;
 }
 
@@ -70,7 +72,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             retrievingLogs: false,
             request: undefined,
             response: undefined,
-            outputs: []
+            outputs: [],
+            stackTraces: []
         };
     }
 
@@ -141,6 +144,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.state.request = conversation.request;
         this.state.response = conversation.response;
         this.state.outputs = conversation.outputs;
+        this.state.stackTraces = conversation.stackTraces;
         this.setState(this.state);
     }
 
@@ -173,7 +177,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                                     <Interaction
                                         request={this.state.request}
                                         response={this.state.response}
-                                        outputs={this.state.outputs} />
+                                        outputs={this.state.outputs}
+                                        stackTraces={this.state.stackTraces} />
                                 ) : (
                                     <h6> Select a log to view </h6>
                                 )

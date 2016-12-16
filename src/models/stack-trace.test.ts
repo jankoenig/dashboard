@@ -12,6 +12,7 @@ describe("StackTrace", function () {
     describe("constructor", function () {
         it("sets the properties", function () {
             let stackTrace = new StackTrace({
+                id: "id",
                 timestamp: new Date(),
                 raw: "raw",
                 message: "message",

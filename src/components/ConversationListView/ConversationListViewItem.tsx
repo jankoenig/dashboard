@@ -114,7 +114,8 @@ export default class ConversationListViewItem extends React.Component<Conversati
                         <Interaction
                             request={this.props.conversation.request}
                             response={this.props.conversation.response}
-                            outputs={this.props.conversation.outputs} />
+                            outputs={this.props.conversation.outputs}
+                            stackTraces={this.props.conversation.stackTraces}/>
                         <Button
                             primary={true}
                             ripple={true}

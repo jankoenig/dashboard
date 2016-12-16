@@ -1,10 +1,13 @@
 import * as React from "react";
 
 import Output from "../../models/output";
+import StackTrace from "../../models/stack-trace";
 import OutputListItem from "./OutputListItem";
+import StackTraceListItem from "./StackTraceListItem";
 
 interface OutputListProps {
     outputs: Output[];
+    stackTraces: StackTrace[];
 }
 
 export default class OutputList extends React.Component<OutputListProps, any> {
@@ -30,9 +33,15 @@ export default class OutputList extends React.Component<OutputListProps, any> {
         let outputs: JSX.Element[] = [];
 
         for (let output of this.props.outputs) {
-            outputs.push((
+            outputs.push(
                 <OutputListItem key={output.id} output={output} />
-            ));
+            );
+        }
+
+        for (let stackTrace of this.props.stackTraces) {
+            outputs.push(
+                <StackTraceListItem key={stackTrace.id} stackTrace={stackTrace} />
+            );
         }
 
         let output: JSX.Element = (<span> No outputs </span>);

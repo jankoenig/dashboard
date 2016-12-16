@@ -21,7 +21,8 @@ describe("Logs Page", function () {
             <Interaction
             request={logs[0]}
             response={logs[1]}
-            outputs={outputs}/>
+            outputs={outputs}
+            stackTraces={[]}/>
         );
 
         expect(wrapper.find("JSONTree")).to.have.length(2);

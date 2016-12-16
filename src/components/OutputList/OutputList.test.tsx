@@ -21,7 +21,7 @@ describe("OutputList", function() {
         });
         let outputs = [output];
 
-        const wrapper = shallow(<OutputList outputs={outputs} />);
+        const wrapper = shallow(<OutputList outputs={outputs} stackTraces={[]} />);
 
         expect(wrapper.find("ul")).to.have.length(1);
         expect(wrapper.find("OutputListItem")).to.have.length(1);

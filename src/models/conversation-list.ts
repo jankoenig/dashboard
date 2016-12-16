@@ -32,8 +32,6 @@ class ConversationList extends Array<Conversation> {
 
                     if (log.stack) {
                         // We got one with a stack, parse it as a stack-trace
-                        console.log("adding stack");
-                        console.log(StackTrace.fromLog(log));
                         conversationMap[log.transaction_id].stackTraces.push(StackTrace.fromLog(log));
                     } else {
                         // No stack, just a normal output
