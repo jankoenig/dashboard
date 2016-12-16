@@ -30,18 +30,27 @@ export default class OutputList extends React.Component<OutputListProps, any> {
 
     render() {
 
+        let combined: (StackTrace | Output)[] = [];
+        combined = combined.concat(this.props.outputs);
+        combined = combined.concat(this.props.stackTraces);
+
+        // Now sort by timestamp
+        combined.sort(function (a, b) {
+            return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+        });
+
         let outputs: JSX.Element[] = [];
 
-        for (let output of this.props.outputs) {
-            outputs.push(
-                <OutputListItem key={output.id} output={output} />
-            );
-        }
-
-        for (let stackTrace of this.props.stackTraces) {
-            outputs.push(
-                <StackTraceListItem key={stackTrace.id} stackTrace={stackTrace} />
-            );
+        for (let listItem of combined) {
+            if (listItem instanceof Output) {
+                outputs.push(
+                    <OutputListItem key={listItem.id} output={listItem} />
+                );
+            } else if (listItem instanceof StackTrace) {
+                outputs.push(
+                    <StackTraceListItem key={listItem.id} stackTrace={listItem} />
+                );
+            }
         }
 
         let output: JSX.Element = (<span> No outputs </span>);
@@ -55,6 +64,5 @@ export default class OutputList extends React.Component<OutputListProps, any> {
         }
 
         return output;
-
     }
 }
