@@ -13,7 +13,6 @@ import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
 import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/logspage/LogsPage";
 import NewSourcePage from "./pages/NewSourcePage";

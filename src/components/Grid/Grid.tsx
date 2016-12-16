@@ -3,6 +3,7 @@ import * as React from "react";
 
 export interface GridProps {
     noSpacing?: boolean;
+    style?: React.CSSProperties;
 }
 
 /**
@@ -19,7 +20,7 @@ export default class Grid extends React.Component<GridProps, any> {
     }
     render() {
         return (
-            <div className={this.classes()}>
+            <div className={this.classes()} style={this.props.style}>
                 {this.props.children}
             </div>
         );
