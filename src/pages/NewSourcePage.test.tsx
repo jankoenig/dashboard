@@ -56,6 +56,28 @@ describe("New Source Page", function () {
         expect(wrapper.find("CodeForm")).to.have.length(1);
     });
 
+    it("Tests the \"goBack\" feature is handled appropriately.", function() {
+        const newSource = sinon.spy();
+        const goToLogs = sinon.spy();
+        const wrapper = shallow(
+            <NewSourcePage
+                newSource={newSource}
+                goToLogs={goToLogs}
+                sources={[]} />
+        );
+
+        wrapper.setState({
+            source: completeSource
+        });
+
+        wrapper.find("CodeForm").simulate("goBack");
+
+        wrapper.update();
+
+        expect(wrapper.find("CodeForm")).to.have.length(0);
+        expect(wrapper.find("NewSkillForm")).to.have.length(1);
+    });
+
     describe("Successful source creation handling.", function () {
 
         let createSourceMock: Sinon.SinonStub;
