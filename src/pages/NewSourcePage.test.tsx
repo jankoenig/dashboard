@@ -14,13 +14,12 @@ let expect = chai.expect;
 
 describe("New Source Page", function () {
     it("should render correctly", function () {
-        const createSource = sinon.spy();
+        const newSource = sinon.spy();
+        const goToLogs = sinon.spy();
         const wrapper = shallow(
             <NewSourcePage
-                createSource={createSource}
-                error={undefined}
-                newSource={undefined}
-                sourceRequest={false}
+                newSource={newSource}
+                goToLogs={goToLogs}
                 sources = {[]}/>
         );
         expect(wrapper.find("SourceForm")).to.have.length(1);

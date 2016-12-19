@@ -1,21 +1,14 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router";
+import { goBack, push, RouterAction } from "react-router-redux";
 
-import { createSource } from "../actions/source";
+import { createSourceSuccess, CreateSourceSuccess } from "../actions/source";
 import Button from "../components/Button";
 import { Cell, Grid } from "../components/Grid";
 import { NameRule, SourceForm } from "../components/SourceForm";
 import Source from "../models/source";
 import { State } from "../reducers";
-
-interface NewSourceProps {
-    createSource: (source: Source) => Redux.ThunkAction<any, any, any>;
-    newSource: Source | undefined;
-    error: Error | undefined;
-    sourceRequest: boolean;
-    sources: Source[];
-}
+import service from "../services/source";
 
 /**
  * Validator class for the SourceForm.  Exported for direct testing.
@@ -27,31 +20,77 @@ export class SourceNameRule implements NameRule {
     }
 }
 
+interface NewSourceProps {
+    newSource: (source: Source) => CreateSourceSuccess;
+    goToLogs: (source: Source) => RouterAction;
+    sources: Source[];
+}
+
+interface NewSourceState {
+    source: Source | undefined;
+    error: Error | undefined;
+};
+
 function mapStateToProps(state: State.All) {
     return {
-        newSource: state.source.newSource,
-        error: state.source.error,
-        sourceRequest: state.source.sourceRequest,
         sources: state.source.sources
     };
 }
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        createSource: function (source: Source) {
-            return dispatch(createSource(source));
+        newSource: function(source: Source): CreateSourceSuccess {
+            return dispatch(createSourceSuccess(source));
+        },
+
+        goToLogs: function (source: Source): RouterAction {
+            return dispatch(push("/skills/" + source + "/logs"));
         }
     };
 }
 
-export class NewSourcePage extends React.Component<NewSourceProps, any> {
+export class NewSourcePage extends React.Component<NewSourceProps, NewSourceState> {
+
+    constructor(props: NewSourceProps) {
+        super(props);
+        this.state = {
+            source: undefined,
+            error: undefined
+        };
+    }
 
     createSource(source: Source) {
-        this.props.createSource(source);
+        return service.createSource(source)
+        .then((newSource: Source) => {
+            console.info("NEW SSOURCE " + newSource.secretKey);
+            this.props.newSource(newSource);
+            this.setState({
+                source: newSource,
+                error: undefined
+            });
+        }).catch((err: Error) => {
+            console.info("ERROR CREATING");
+            this.setState({
+                source: undefined,
+                error: new Error("Unable to create source at this time.")
+            });
+        });
+    }
+
+    goToLogs() {
+        console.info("GOING TO LOGS " + this.state.source);
+        this.props.goToLogs(this.state.source);
+    }
+
+    goBack() {
+        this.setState({
+            source: undefined,
+            error: undefined
+        });
     }
 
     render() {
-        let createSource = this.props.newSource === undefined;
+        let createSource = this.state.source === undefined;
 
         let header = (this.props.sources.length === 0) ? (
             <Grid>
@@ -63,8 +102,8 @@ export class NewSourcePage extends React.Component<NewSourceProps, any> {
         ) : (<div />);
 
         let bottomHalf = (createSource) ?
-                    (<NewSkillForm createSource={this.createSource.bind(this)} />) :
-                    (<CodeForm source={this.props.newSource} />);
+            (<NewSkillForm createSource={this.createSource.bind(this)} />) :
+            (<CodeForm source={this.state.source} goToLogs={this.goToLogs.bind(this)} goBack={this.goBack.bind(this)} />);
 
         return (
             <div>
@@ -82,13 +121,10 @@ export default connect(
 
 interface NewSkillProps {
     createSource: (source: Source) => Redux.ThunkAction<any, any, any>;
+    error?: Error;
 }
 
-interface NewSkillState {
-    error: Error;
-}
-
-class NewSkillForm extends React.Component<NewSkillProps, NewSkillState> {
+class NewSkillForm extends React.Component<NewSkillProps, any> {
 
     render(): JSX.Element {
         return (
@@ -102,6 +138,7 @@ class NewSkillForm extends React.Component<NewSkillProps, NewSkillState> {
                 <Cell col={12}>
                     <SourceForm
                         createSource={this.props.createSource}
+                        error={this.props.error}
                         nameRule={new SourceNameRule()} />
                 </Cell>
             </Grid>
@@ -111,6 +148,8 @@ class NewSkillForm extends React.Component<NewSkillProps, NewSkillState> {
 
 interface CodeFormProps {
     source: Source | undefined;
+    goToLogs: (source: Source) => void;
+    goBack: () => void;
 }
 
 interface CodeFormState {
@@ -128,9 +167,15 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
     }
 
     componentWillReceiveProps(nextProps: CodeFormProps, context: any) {
-        this.setState({...this.state, ...{
-            secretKey: CodeForm.codeSecretKey(nextProps.source)
-        }});
+        this.setState({
+            ...this.state, ...{
+                secretKey: CodeForm.codeSecretKey(nextProps.source)
+            }
+        });
+    }
+
+    goToLogs() {
+        this.props.goToLogs(this.props.source);
     }
 
     codeStyle(): React.CSSProperties {
@@ -164,10 +209,14 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
                         `}</pre>
                 </Cell>
                 {(this.props.source) ?
-                    (<Cell col={12}>
-                        <Button accent={true} raised={true}><Link style={{ color: "white", textDecoration: "none" }} to={"/skills/" + this.props.source + "/logs"}>Next: Check for Logs</Link></Button>
-                    </Cell>)
-                : (<div />)}
+                    (<div><Cell col={12}>
+                        <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
+                    </Cell>
+                        <Cell col={12}>
+                            <Button raised={true} onClick={this.props.goBack}>Create Another</Button>
+                        </Cell>
+                    </div>)
+                    : (<div />)}
             </Grid>
         );
     }
