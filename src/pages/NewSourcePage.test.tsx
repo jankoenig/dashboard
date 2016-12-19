@@ -22,7 +22,7 @@ describe("New Source Page", function () {
                 goToLogs={goToLogs}
                 sources = {[]}/>
         );
-        expect(wrapper.find("SourceForm")).to.have.length(1);
+        expect(wrapper.find("NewSkillForm")).to.have.length(1);
     });
 
     describe("Tests that ensure the validator function only allows passwords within the rules.", function() {
