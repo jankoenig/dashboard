@@ -62,14 +62,12 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
     createSource(source: Source) {
         return service.createSource(source)
         .then((newSource: Source) => {
-            console.info("NEW SSOURCE " + newSource.secretKey);
             this.props.newSource(newSource);
             this.setState({
                 source: newSource,
                 error: undefined
             });
         }).catch((err: Error) => {
-            console.info("ERROR CREATING");
             this.setState({
                 source: undefined,
                 error: new Error("Unable to create source at this time.")
@@ -78,7 +76,6 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
     }
 
     goToLogs() {
-        console.info("GOING TO LOGS " + this.state.source);
         this.props.goToLogs(this.state.source);
     }
 
@@ -91,7 +88,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
 
     render() {
         let createSource = this.state.source === undefined;
-        console.info("RENDER " + createSource);
+
         let header = (this.props.sources.length === 0) ? (
             <Grid>
                 <Cell col={12}>
