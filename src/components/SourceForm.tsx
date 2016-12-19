@@ -13,7 +13,6 @@ interface SourceFormProps {
     uuid?: string;
     error?: Error;
     creatingSource?: boolean;
-    disable?: boolean;
     onChange?: (event: React.FormEvent) => any;
     nameRule: NameRule;
     createSource: (source: Source) => void;
@@ -73,8 +72,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                         label={"Name"}
                         floatingLabel={true}
                         autoComplete={"off"}
-                        error={this.props.nameRule}
-                        readOnly={this.props.disable} />
+                        error={this.props.nameRule} />
                     <FormInput style={this.textFieldStyleOverrides()}
                         type={"text"}
                         value={this.state.source ? this.state.source.secretKey : ""}
@@ -86,10 +84,8 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                 </form>
                 {!this.props.error ? (
                     <p> {this.props.error } </p>
-                ) : undefined }
-                {!this.props.disable ? (
-                    <Button colored={true} ripple={true} raised={true} onClick={this.onClick.bind(this)}>Create Skill</Button>
-                ) : undefined}
+                ) : <div/> }
+                <Button colored={true} ripple={true} raised={true} onClick={this.onClick.bind(this)}>Create Skill</Button>
             </div>
         );
     }

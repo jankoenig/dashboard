@@ -6,25 +6,50 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
+import { Source } from "../models/source";
 import { NewSourcePage, SourceNameRule } from "./NewSourcePage";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
 
+let source: Source = new Source({
+    secretKey: "ABCD1234",
+    name: "TestSource",
+    id: "TestSourceId",
+    created: new Date()
+});
+
 describe("New Source Page", function () {
     it("should render correctly", function () {
-        const createSource = sinon.spy();
+        const newSource = sinon.spy();
+        const goToLogs = sinon.spy();
         const wrapper = shallow(
             <NewSourcePage
-                createSource={createSource}
-                error={undefined}
-                newSource={undefined}
-                sourceRequest={false}
+                newSource={newSource}
+                goToLogs={goToLogs}
                 sources = {[]}/>
         );
-        expect(wrapper.find("SourceForm")).to.have.length(1);
+        expect(wrapper.find("NewSkillForm")).to.have.length(1);
     });
+
+    it("should render correctly with new state.", function () {
+        const newSource = sinon.spy();
+        const goToLogs = sinon.spy();
+        const wrapper = shallow(
+            <NewSourcePage
+                newSource={newSource}
+                goToLogs={goToLogs}
+                sources = {[]}/>
+        );
+
+        wrapper.setState({
+            source: source
+        });
+
+        expect(wrapper.find("CodeForm")).to.have.length(1);
+    });
+
 
     describe("Tests that ensure the validator function only allows passwords within the rules.", function() {
 
