@@ -1,6 +1,8 @@
 import { expect } from "chai";
 import * as fetchMock from "fetch-mock";
 
+import LogQuery from "../models/log-query";
+import Source from "../models/source";
 import { dummyLogs } from "../utils/test";
 import log from "./log";
 
@@ -19,31 +21,20 @@ describe("log service", function () {
 
         it("retreives logs", function (done) {
             let startTime = new Date();
-            log.getLogs({ source: "happy_xapp", startTime: startTime }).then(function (logs) {
+            let source = new Source({
+                name: "happy xapp",
+                secretKey: "happy_xapp"
+            });
+
+            let logQuery = new LogQuery({
+                source: source,
+                startTime: startTime
+            });
+
+            log.getLogs(logQuery).then(function (logs) {
                 expect(logs).to.have.length(2);
                 done();
             });
-        });
-    });
-
-    describe("queryBuilder", function () {
-        it("builds a query for a source", function () {
-            let query = log.queryBuilder({ source: "source", startTime: new Date() });
-            expect(query).to.contain("source=source");
-            expect(query).to.contain("start_time=");
-            expect(query).to.not.contain("end_time=");
-        });
-        it("builds a query with source, start time and end time", function () {
-
-            let startTime = new Date(new Date().getTime() - 50000);
-            let endTime = new Date();
-            let source = "source";
-
-            let query = log.queryBuilder({ source: source, startTime: startTime, endTime: endTime });
-            let expectedQuery = "source=" + source +
-                "&start_time=" + startTime.toISOString() +
-                "&end_time=" + endTime.toISOString();
-            expect(query).to.equal(expectedQuery);
         });
     });
 });

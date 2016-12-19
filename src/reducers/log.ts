@@ -4,7 +4,10 @@ import { FetchLogsRequestAction, SetLogsAction} from "../actions/log";
 import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 
+
+
 export type LogState = {
+    logMap?: {[sourceId: string]: Log[]};
     logs?: Log[];
     error?: string;
     isLoading: boolean;

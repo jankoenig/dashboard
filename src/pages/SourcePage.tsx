@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
-import { VictoryPie } from "victory";
+import { VictoryChart, VictoryGroup, VictoryLine, VictoryPie, VictoryScatter } from "victory";
 
 import { Cell, Grid } from "../components/Grid";
 import Log from "../models/log";
@@ -26,6 +26,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 }
 
 export class SourcePage extends React.Component<SourcePageProps, any> {
+
     render() {
         console.log(this.props.logs);
         return (
@@ -45,6 +46,14 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
                 </Grid>
                 <Grid>
                     <Cell col={4}> <VictoryPie /> </Cell>
+                    <Cell col={4}>
+                        <VictoryChart>
+                            <VictoryGroup>
+                                <VictoryLine />
+                                <VictoryScatter />
+                            </VictoryGroup>
+                        </VictoryChart>
+                    </Cell>
                 </Grid>
             </span>
         );

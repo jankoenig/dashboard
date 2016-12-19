@@ -1,22 +1,40 @@
 import DateUtil from "../utils/date";
 
+import Source from "./source";
+
 export interface LogQueryProperties {
-    startDate?: Date;
-    endDate?: Date;
-    source: string;
+    startTime?: Date;
+    endTime?: Date;
+    source: Source;
 }
 
 export default class LogQuery implements LogQueryProperties {
 
-    readonly source: string;
+    readonly source: Source;
 
-    readonly startDate: Date;
+    readonly startTime: Date;
 
-    readonly endDate: Date;
+    readonly endTime: Date;
+
+    get queryString(): string {
+
+        let queryString: string = "";
+
+        queryString += "source=" + this.source.secretKey;
+
+        queryString += "&start_time=" + this.startTime.toISOString();
+
+        if (this.endTime) {
+            queryString += "&end_time=" + this.endTime.toISOString();
+        }
+
+        return queryString;
+
+    }
 
     constructor(props: LogQueryProperties) {
         this.source = props.source;
-        this.startDate = props.startDate ? props.startDate : DateUtil.daysAgo(1);
-        this.endDate = props.endDate;
+        this.startTime = props.startTime ? props.startTime : DateUtil.daysAgo(1);
+        this.endTime = props.endTime;
     }
 }

@@ -29,7 +29,7 @@ interface Dimensions {
 export interface LogsPageProps {
     logs: Log[];
     source: Source;
-    getLogs: (source: string) => (dispatch: Redux.Dispatch<any>) => void;
+    getLogs: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
     params?: any;
 }
 
@@ -53,7 +53,7 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        getLogs: function (source: string) {
+        getLogs: function (source: Source) {
             dispatch(getLogs(source));
         }
     };
@@ -133,7 +133,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         if (this.state.retrievingLogs) {
             this.state.retrievingLogs = false;
         } else if (nextProps.source) {
-            this.props.getLogs(nextProps.source.secretKey);
+            this.props.getLogs(nextProps.source);
             this.state.retrievingLogs = true;
         }
         this.state.source = nextProps.source;

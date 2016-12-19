@@ -1,33 +1,14 @@
 import "isomorphic-fetch";
 
 import Log from "../models/log";
+import LogQuery from "../models/log-query";
 
 export namespace log {
 
-    export interface Query {
-        source: string;
-        startTime: Date;
-        endTime?: Date;
-    }
-
-    export function queryBuilder(query: Query) {
-        let queryString: string = "";
-
-        queryString += "source=" + query.source;
-
-        queryString += "&start_time=" + query.startTime.toISOString();
-
-        if (query.endTime) {
-            queryString += "&end_time=" + query.endTime.toISOString();
-        }
-
-        return queryString;
-    }
-
-    export function getLogs(query: Query): Promise<Log[]> {
+    export function getLogs(query: LogQuery): Promise<Log[]> {
 
         let baseUrl = "https://logless.bespoken.tools/v1";
-        let url = baseUrl + "/query?" + log.queryBuilder(query);
+        let url = baseUrl + "/query?" + query.queryString;
 
         return fetch(url).then(function (response) {
             return response.json();
@@ -43,7 +24,6 @@ export namespace log {
             return logs;
         });
     }
-
 }
 
 export default log;

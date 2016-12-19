@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import { fetchLogsRequest, setLogs } from "../actions/log";
+import Source from "../models/source";
 import { dummyLogs } from "../utils/test";
 import { log } from "./log";
 
@@ -23,7 +24,12 @@ describe("Log Reducer", function () {
                 isLoading: true
             };
 
-            let action = setLogs(dummyLogs(4));
+            let source = new Source({
+                name: "name",
+                secretKey: "secret"
+            });
+
+            let action = setLogs(source, dummyLogs(4));
             let newState = log(state, action);
 
             expect(newState.logs).to.exist;
