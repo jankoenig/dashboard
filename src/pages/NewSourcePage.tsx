@@ -91,7 +91,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
 
     render() {
         let createSource = this.state.source === undefined;
-
+        console.info("RENDER " + createSource);
         let header = (this.props.sources.length === 0) ? (
             <Grid>
                 <Cell col={12}>
