@@ -22,6 +22,13 @@ export type FetchLogsRequestAction = {
     type: FETCH_LOGS_REQUEST
 }
 
+
+/**
+ * A Log Request was initiated.  Used primarily by the UI to show a network process has started.
+ *
+ * @export
+ * @returns
+ */
 export function fetchLogsRequest() {
     return {
         type: FETCH_LOGS_REQUEST
