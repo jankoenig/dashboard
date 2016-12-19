@@ -78,6 +78,25 @@ describe("New Source Page", function () {
         expect(wrapper.find("NewSkillForm")).to.have.length(1);
     });
 
+    it("Tests the \"GoToLogs\" is approrpiatley called on event.", function() {
+        const newSource = sinon.spy();
+        const goToLogs = sinon.spy();
+        const wrapper = shallow(
+            <NewSourcePage
+                newSource={newSource}
+                goToLogs={goToLogs}
+                sources={[]} />
+        );
+
+        wrapper.setState({
+            source: completeSource
+        });
+
+        wrapper.find("CodeForm").simulate("goToLogs");
+
+        expect(goToLogs).to.be.calledOnce;
+    });
+
     describe("Successful source creation handling.", function () {
 
         let createSourceMock: Sinon.SinonStub;
