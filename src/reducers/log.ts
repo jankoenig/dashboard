@@ -24,7 +24,10 @@ export function log(state: LogState = INITIAL_STATE, action: LogAction ): LogSta
         case FETCH_LOGS_REQUEST:
             return objectAssign({}, state, { isLoading: true });
         case SET_LOGS:
-            return objectAssign({}, state, { logs: action.logs });
+            // Create a new logMap
+            let logMap = objectAssign({}, state.logMap, { [action.source.id] : action.logs} );
+            // Create a new state with the new logMap
+            return objectAssign({}, state, { logMap: logMap, logs: action.logs });
         default:
             return state;
     }

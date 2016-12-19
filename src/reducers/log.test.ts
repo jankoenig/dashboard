@@ -26,6 +26,7 @@ describe("Log Reducer", function () {
 
             let source = new Source({
                 name: "name",
+                id: "name-id",
                 secretKey: "secret"
             });
 
@@ -34,6 +35,8 @@ describe("Log Reducer", function () {
 
             expect(newState.logs).to.exist;
             expect(newState.logs).to.have.length(4);
+            expect(newState.logMap[source.id]).to.have.length(4);
+
             // Make sure the existing state is not modified
             expect(newState.isLoading).to.equal(state.isLoading);
         });
