@@ -5,6 +5,7 @@ export default class NotFoundPage extends React.Component<any, any> {
         return (
             <div>
                 <h2>404</h2>
-            </div>);
+            </div>
+        );
     }
 }

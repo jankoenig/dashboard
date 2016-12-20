@@ -8,7 +8,7 @@ export type LogState = {
     logs?: Log[];
     error?: string;
     isLoading: boolean;
-}
+};
 
 const INITIAL_STATE: LogState = {
     isLoading: false

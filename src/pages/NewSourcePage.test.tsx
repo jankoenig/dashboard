@@ -24,24 +24,24 @@ describe("New Source Page", function () {
     it("should render correctly", function () {
         const newSource = sinon.spy();
         const goToLogs = sinon.spy();
-        const wrapper = shallow(
+        const wrapper = shallow((
             <NewSourcePage
                 newSource={newSource}
                 goToLogs={goToLogs}
                 sources = {[]}/>
-        );
+        ));
         expect(wrapper.find("NewSkillForm")).to.have.length(1);
     });
 
     it("should render correctly with new state.", function () {
         const newSource = sinon.spy();
         const goToLogs = sinon.spy();
-        const wrapper = shallow(
+        const wrapper = shallow((
             <NewSourcePage
                 newSource={newSource}
                 goToLogs={goToLogs}
                 sources = {[]}/>
-        );
+        ));
 
         wrapper.setState({
             source: source

@@ -16,7 +16,7 @@ export namespace State {
     routing: any,
     session: SessionState,
     source: SourceState;
-  }
+  };
 }
 
 const appReducer = combineReducers<State.All>({

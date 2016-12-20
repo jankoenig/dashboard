@@ -12,7 +12,7 @@ export type SourceState = {
     readonly currentSource?: Source;
     readonly sources: Source[];
     readonly error?: Error;
-}
+};
 
 const INITIAL_STATE: SourceState = {
     sources: []

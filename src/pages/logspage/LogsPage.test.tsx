@@ -38,12 +38,12 @@ describe("Logs Page", function () {
 
             let onResize = sinon.spy(browser, "onResize");
             let getLogs = sinon.spy();
-            mount(
+            mount((
                 <LogsPage
                     logs={undefined}
                     getLogs={getLogs}
                     source={undefined} />
-            );
+            ));
 
             expect(onResize).to.have.been.calledOnce;
 
@@ -65,12 +65,12 @@ describe("Logs Page", function () {
             let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
             let getLogs = sinon.spy();
 
-            mount(
+            mount((
                 <LogsPage
                     logs={undefined}
                     getLogs={getLogs}
                     source={undefined} />
-            );
+            ));
 
             expect(wrappedEvent.register).to.have.been.calledOnce;
             expect(updateDimensions).to.have.been.calledTwice; // Once for mounting and once for event thrown.
@@ -94,12 +94,12 @@ describe("Logs Page", function () {
 
             let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
             let getLogs = sinon.spy();
-            mount(
+            mount((
                 <LogsPage
                     logs={undefined}
                     getLogs={getLogs}
                     source={undefined} />
-            );
+            ));
 
             expect(wrappedEvent.register).to.have.been.calledOnce;
             expect(updateDimensions).to.have.been.calledTwice;
@@ -127,12 +127,12 @@ describe("Logs Page", function () {
             sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
             getLogs = sinon.spy();
-            wrapper = shallow(
+            wrapper = shallow((
                 <LogsPage
                     logs={undefined}
                     getLogs={getLogs}
                     source={undefined} />
-            );
+            ));
         });
 
         afterEach(function () {
@@ -187,13 +187,13 @@ describe("Logs Page", function () {
                 let params = {
                     sourceSlug: "name"
                 };
-                const wrapper = shallow(
+                const wrapper = shallow((
                     <LogsPage
                         logs={logs}
                         getLogs={getLogs}
                         source={source}
                         params={params} />
-                );
+                ));
 
                 expect(wrapper.find("JSONTree")).to.have.length(0);
             });
@@ -212,13 +212,13 @@ describe("Logs Page", function () {
                 let params = {
                     sourceSlug: "name"
                 };
-                const wrapper = shallow(
+                const wrapper = shallow((
                     <LogsPage
                         logs={logs}
                         getLogs={getLogs}
                         source={source}
                         params={params} />
-                );
+                ));
 
                 expect(wrapper.find("JSONTree")).to.have.length(0);
             });
@@ -242,11 +242,13 @@ describe("Logs Page", function () {
                 onResizeStub = sinon.stub(browser, "onResize");
                 sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
-                wrapper = shallow(<LogsPage
-                    logs={logs}
-                    getLogs={getLogs}
-                    source={source}
-                    params={params} />);
+                wrapper = shallow((
+                    <LogsPage
+                        logs={logs}
+                        getLogs={getLogs}
+                        source={source}
+                        params={params} />
+                ));
             });
             it("Checks the state is proper after a user click.", function () {
                 wrapper.find("FilterableConversationList").simulate("showConversation", convo);
