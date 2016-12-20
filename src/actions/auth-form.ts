@@ -4,7 +4,7 @@ export type AuthFormChanged = {
     type: AUTH_FORM_CHANGED,
     field: string,
     value: string
-}
+};
 
 export function authFormChanged(field: string, value: string): AuthFormChanged {
     return {
@@ -17,7 +17,7 @@ export function authFormChanged(field: string, value: string): AuthFormChanged {
 export type AuthFormError = {
     type: AUTH_FORM_ERROR,
     error: string;
-}
+};
 
 export function authFormError(error: string): AuthFormError {
     return {

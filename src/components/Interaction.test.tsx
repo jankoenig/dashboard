@@ -17,13 +17,13 @@ describe("Logs Page", function () {
         const logs = dummyLogs(2);
         const outputs = dummyOutputs(2);
 
-        const wrapper = shallow(
+        const wrapper = shallow((
             <Interaction
-            request={logs[0]}
-            response={logs[1]}
-            outputs={outputs}
-            stackTraces={[]}/>
-        );
+                request={logs[0]}
+                response={logs[1]}
+                outputs={outputs}
+                stackTraces={[]} />
+        ));
 
         expect(wrapper.find("JSONTree")).to.have.length(2);
     });

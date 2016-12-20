@@ -8,7 +8,7 @@ export type AuthFormState = {
     readonly password?: string;
     readonly confirmPassword?: string;
     readonly error?: string;
-}
+};
 
 const INITIAL_STATE: AuthFormState = {
     email: "",

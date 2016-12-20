@@ -14,16 +14,6 @@ import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
 
-/**
- * Extend the Element object with the MaterialLayout.toggleDrawer function
- * so we can close the drawer
- */
-interface MDLElement extends Element {
-    MaterialLayout: {
-      toggleDrawer: () => void;
-    };
-}
-
 interface DashboardProps {
   user: User;
   currentSource: Source;

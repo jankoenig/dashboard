@@ -20,8 +20,8 @@ interface TestNameRule extends SourceForm.NameRule {
 
 describe("SourceForm", function () {
 
-    it("Renders properly", function() {
-        let createSource = function(source: Source) {
+    it("Renders properly", function () {
+        let createSource = function (source: Source) {
             console.info("Creating source.");
         };
         let validator: SourceForm.NameRule = {
@@ -32,57 +32,59 @@ describe("SourceForm", function () {
             }
         };
 
-        let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
-                            disable={false}
-                            nameRule={validator}/>);
+        let wrapper = shallow((
+            <SourceForm.SourceForm createSource={createSource}
+                nameRule={validator} />
+        ));
 
         expect(wrapper.find("FormInput").length).to.equal(2);
     });
 
-    describe("Validator", function() {
+    describe("Validator", function () {
         let positiveValidator: TestNameRule;
         let threeLengthValidator: TestNameRule;
         let noNumberValidator: TestNameRule;
         let createSource: Sinon.SinonSpy;
 
-        beforeEach(function() {
+        beforeEach(function () {
             positiveValidator = {
                 regex: undefined,
-                errorMessage: sinon.spy(function(name: string): string {
+                errorMessage: sinon.spy(function (name: string): string {
                     return "Hopefully you'll never see this since it'll always be positive.";
                 })
             };
 
             threeLengthValidator = {
                 regex: /^\w{3}$/,
-                errorMessage: sinon.spy(function(name: string): string {
+                errorMessage: sinon.spy(function (name: string): string {
                     return "The value " + name + " is less than three characters.";
                 })
             };
 
             noNumberValidator = {
                 regex: /^[a-zA-Z]+$/,
-                errorMessage: sinon.spy(function(name: string): string {
+                errorMessage: sinon.spy(function (name: string): string {
                     return "The value " + name + " contains a number.";
                 })
             };
 
-            createSource = sinon.spy(function(source: Source) {
+            createSource = sinon.spy(function (source: Source) {
                 console.info("Creating source");
             });
         });
 
-        afterEach(function() {
+        afterEach(function () {
             positiveValidator.errorMessage.reset();
             threeLengthValidator.errorMessage.reset();
             noNumberValidator.errorMessage.reset();
             createSource.reset();
         });
 
-        it ("Checks that forms are empty at start.", function() {
-            let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
-                            disable={false}
-                            nameRule={positiveValidator}/>);
+        it("Checks that forms are empty at start.", function () {
+            let wrapper = shallow((
+                <SourceForm.SourceForm createSource={createSource}
+                    nameRule={positiveValidator} />
+            ));
 
             let formInputs = wrapper.find("FormInput");
 
@@ -94,23 +96,24 @@ describe("SourceForm", function () {
             expect(keyForm.props().value).to.equal("");
         });
 
-        it ("Checks that the source is nulled when validator goes from true to false.", function() {
-            let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
-                            disable={false}
-                            nameRule={noNumberValidator}/>);
+        it("Checks that the source is nulled when validator goes from true to false.", function () {
+            let wrapper = shallow((
+                <SourceForm.SourceForm createSource={createSource}
+                    nameRule={noNumberValidator} />
+            ));
 
             let formInputs = wrapper.find("FormInput");
             let nameForm = formInputs.at(0);
 
-            nameForm.simulate("change", {target: {value: "ABCD"}});
+            nameForm.simulate("change", { target: { value: "ABCD" } });
 
             expect(wrapper.state().source).to.not.be.undefined;
 
-            nameForm.simulate("change", {target: {value: "ABCD1"}});
+            nameForm.simulate("change", { target: { value: "ABCD1" } });
 
             expect(wrapper.state().source).to.be.undefined;
 
-            nameForm.simulate("change", {target: {value: "ABCDE"}});
+            nameForm.simulate("change", { target: { value: "ABCDE" } });
 
             expect(wrapper.state().source).to.not.be.undefined;
         });

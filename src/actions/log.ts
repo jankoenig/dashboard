@@ -8,7 +8,7 @@ export type SetLogsAction = {
     type: SET_LOGS,
     query: LogQuery,
     logs: Log[]
-}
+};
 
 export function setLogs(query: LogQuery, logs: Log[]): SetLogsAction {
     return {
@@ -20,7 +20,7 @@ export function setLogs(query: LogQuery, logs: Log[]): SetLogsAction {
 
 export type FetchLogsRequestAction = {
     type: FETCH_LOGS_REQUEST
-}
+};
 
 
 /**

@@ -8,14 +8,14 @@ export type SessionState = {
   readonly user?: User,
   readonly hasError: boolean,
   readonly isLoading: boolean
-}
+};
 
 const INITIAL_STATE: SessionState = {
   hasError: false,
   isLoading: false
 };
 
-type SessionStateAction = SetUser | {type: ""}
+type SessionStateAction = SetUser | {type: ""};
 
 export function session(state: SessionState = INITIAL_STATE, action: SessionStateAction): SessionState {
 

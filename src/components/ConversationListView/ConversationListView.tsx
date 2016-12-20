@@ -65,30 +65,32 @@ export default class ConversationListView extends React.Component<ConversationLi
 
     renderItem(index: number, key: string): JSX.Element {
         let conversation = this.props.conversations[index];
-        return <ConversationListViewItem
-            key={conversation.id}
-            conversation={conversation}
-            onClick={this.onClick.bind(this)}
-            active={this.isConversationActive(conversation)}
-            showInteractionOnActive={this.props.expandListItemWhenActive} />;
+        return (
+            <ConversationListViewItem
+                key={conversation.id}
+                conversation={conversation}
+                onClick={this.onClick.bind(this)}
+                active={this.isConversationActive(conversation)}
+                showInteractionOnActive={this.props.expandListItemWhenActive} />
+        );
     }
 
     render() {
-        let emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div/>);
+        let emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div />);
 
         let listElement = (
-                    <ReactList
-                        itemRenderer={this.renderItem.bind(this)}
-                        length={this.props.conversations.length}
-                        type={"simple"} /> // "uniform" with "useState = true" is more efficient rendering, but it won't expand the list for some reason (even though it's supposed to).
-                    // pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
-                    // type={"uniform"}
-                    // useStaticSize={true} />
-                );
+            <ReactList
+                itemRenderer={this.renderItem.bind(this)}
+                length={this.props.conversations.length}
+                type={"simple"} /> // "uniform" with "useState = true" is more efficient rendering, but it won't expand the list for some reason (even though it's supposed to).
+            // pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
+            // type={"uniform"}
+            // useStaticSize={true} />
+        );
 
         return (
             <div style={{ "height": this.props.height, "overflowY": "scroll" }}>
-                { this.props.conversations.length > 0 ?  listElement : emptyElement }
+                {this.props.conversations.length > 0 ? listElement : emptyElement}
             </div>
         );
     }

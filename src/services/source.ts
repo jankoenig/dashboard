@@ -1,9 +1,9 @@
-import StringUtil from "../utils/string";
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
 import * as objectAssign from "object-assign";
 
 import { Source } from "../models/source";
+import StringUtil from "../utils/string";
 import { remoteservice  } from "./remote-service";
 
 export namespace source {

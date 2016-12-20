@@ -6,13 +6,13 @@ export namespace Color {
         r: number;
         g: number;
         b: number;
-    }
+    };
 
     export type HSV = {
         hue: number;
         saturation: number;
         value: number;
-    }
+    };
 
     /**
      * Converts a hex color to RGB

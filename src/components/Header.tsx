@@ -95,7 +95,8 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             </MenuItem>
           </Menu>
         </div>
-      </header>);
+      </header>
+    );
   }
 }
 

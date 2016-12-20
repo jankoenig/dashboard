@@ -63,7 +63,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     constructor(props: FilterProps) {
         super(props);
         let types: ConvoType[] = [];
-        types.push({ type: "", title: "All Logs"});
+        types.push({ type: "", title: "All Logs" });
         types.push({ type: "INFO", title: "Info" });
         types.push({ type: "DEBUG", title: "Debug" });
         types.push({ type: "WARN", title: "Warning" });
@@ -99,7 +99,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     newFilter(filter: FilterType) {
         this.state.filterMap[filter.type] = filter;
         let filterMap = this.state.filterMap;
-        let filters = Object.keys(this.state.filterMap).map( function(key) { return filterMap[key]; } );
+        let filters = Object.keys(this.state.filterMap).map(function (key) { return filterMap[key]; });
         this.props.onFilter(new CompositeFilter(filters));
     }
 
@@ -109,20 +109,22 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
-        return (<div style={{ backgroundColor: "#243036", paddingLeft: "16px", paddingRight: "16px" }}>
-            <div style={{ float: "left", width: "120px" }} >
-                <Select inputStyle={SelectInputStyle} labelStyle={SelectLabelStyle} iconStyle={SelectIconStyle} adapter={this.filterAdapter} hint={"Log Level"} onSelected={typeHandleChange} />
-            </div>
-            <div style={{ float: "right", display: "block" }} >
-                <div style={{ float: "left", display: "inline-block" }} >
-                    <DatePicker theme={DatePickerTheme} label="Start Date" maxDate={today} value={this.state.startDate} onChange={startHandleChange} />
+        return (
+            <div style={{ backgroundColor: "#243036", paddingLeft: "16px", paddingRight: "16px" }}>
+                <div style={{ float: "left", width: "120px" }} >
+                    <Select inputStyle={SelectInputStyle} labelStyle={SelectLabelStyle} iconStyle={SelectIconStyle} adapter={this.filterAdapter} hint={"Log Level"} onSelected={typeHandleChange} />
                 </div>
-                <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto 10px", marginTop: "20px", display: "inline-block" }}>-</p>
-                <div style={{ float: "right", display: "inline-block" }} >
-                    <DatePicker theme={DatePickerTheme} label="End Date" maxDate={today} value={this.state.endDate} onChange={endHandleChange} />
+                <div style={{ float: "right", display: "block" }} >
+                    <div style={{ float: "left", display: "inline-block" }} >
+                        <DatePicker theme={DatePickerTheme} label="Start Date" maxDate={today} value={this.state.startDate} onChange={startHandleChange} />
+                    </div>
+                    <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto 10px", marginTop: "20px", display: "inline-block" }}>-</p>
+                    <div style={{ float: "right", display: "inline-block" }} >
+                        <DatePicker theme={DatePickerTheme} label="End Date" maxDate={today} value={this.state.endDate} onChange={endHandleChange} />
+                    </div>
                 </div>
+                <div style={{ clear: "both" }} />
             </div>
-            <div style={{ clear: "both" }} />
-        </div>);
+        );
     }
 }

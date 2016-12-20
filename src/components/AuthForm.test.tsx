@@ -32,11 +32,13 @@ describe("AuthForm", function () {
     it("can sign up", function () {
         const onSignUpWithEmail = sinon.spy();
         const onSubmit = sinon.spy();
-        const wrapper = shallow(<AuthForm onSubmit={onSubmit}
+        const wrapper = shallow((
+            <AuthForm onSubmit={onSubmit}
                                 email={"test@test.email"}
                                 password ={"passwaord"}
                                 confirmPassword ={"passwaord"}
-                                onSignUpWithEmail={onSignUpWithEmail}/>);
+                                onSignUpWithEmail={onSignUpWithEmail} />
+        ));
 
         wrapper.find("button").at(0).simulate("click");
         wrapper.find("button").at(0).simulate("click");
@@ -45,11 +47,13 @@ describe("AuthForm", function () {
      it("can not sign up wrong password", function () {
         const onSignUpWithEmail = sinon.spy();
         const onSubmit = sinon.spy();
-        const wrapper = shallow(<AuthForm onSubmit={onSubmit}
+        const wrapper = shallow((
+            <AuthForm onSubmit={onSubmit}
                                 email={"test@test.email"}
                                 password ={"passwaord"}
                                 confirmPassword ={"passrd"}
-                                onSignUpWithEmail={onSignUpWithEmail}/>);
+                                onSignUpWithEmail={onSignUpWithEmail} />
+        ));
 
         wrapper.find("button").at(0).simulate("click");
         wrapper.find("button").at(0).simulate("click");
@@ -58,11 +62,13 @@ describe("AuthForm", function () {
      it("can not sign up wrong email", function () {
         const onSignUpWithEmail = sinon.spy();
         const onSubmit = sinon.spy();
-        const wrapper = shallow(<AuthForm onSubmit={onSubmit}
+        const wrapper = shallow((
+        <AuthForm onSubmit={onSubmit}
                                 email={"testl"}
                                 password ={"password"}
                                 confirmPassword ={"password"}
-                                onSignUpWithEmail={onSignUpWithEmail}/>);
+                                onSignUpWithEmail={onSignUpWithEmail} />
+        ));
 
         wrapper.find("button").at(0).simulate("click");
         wrapper.find("button").at(0).simulate("click");
@@ -71,11 +77,11 @@ describe("AuthForm", function () {
     it("can be logged in with Github", function () {
         const onSubmit = sinon.spy();
         const onLoginWithGithub = sinon.spy();
-        const wrapper = shallow(
+        const wrapper = shallow((
             <AuthForm
                 onSubmit={onSubmit}
                 onLoginWithGithub={onLoginWithGithub} />
-        );
+        ));
 
         wrapper.find("button").last().simulate("click");
         expect(onLoginWithGithub).to.have.been.called;

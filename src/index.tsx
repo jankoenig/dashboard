@@ -78,7 +78,7 @@ let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFu
     }
 };
 
-let onUpdate = function() {
+let onUpdate = function () {
     ReactGA.pageview(window.location.pathname);
 };
 
@@ -97,7 +97,7 @@ let removeSource = function() {
 };
 
 let render = function () {
-    ReactDOM.render(
+    ReactDOM.render((
         <Provider store={store}>
             <Router history={history} onUpdate={onUpdate}>
                 <Route path="/login" component={Login}>
@@ -114,7 +114,8 @@ let render = function () {
                     <Route path="*" component={NotFoundPage} />
                 </Route>
             </Router>
-        </Provider>,
+        </Provider>
+    ),
         document.getElementById("dashboard")
     );
 };

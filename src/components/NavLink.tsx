@@ -25,7 +25,7 @@ export default class NavLink extends React.Component<NavLinkProps, any> {
     return (
       <Link
         to={this.props.path}
-        className={ this.classes() }>
+        className={this.classes()}>
         {this.props.icon ? (
           <i
             style={this.iconStyle()}

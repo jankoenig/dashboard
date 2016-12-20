@@ -45,8 +45,8 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                 <Grid>
                     <h4> Summary </h4>
                 </Grid>
-                { summary }
+                {summary}
             </div>
         );
-}
+    }
 }

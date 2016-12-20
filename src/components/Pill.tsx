@@ -8,7 +8,7 @@ interface PillProps {
     onClick?: (event: React.MouseEvent) => void;
 }
 
-export default class Pill extends React.Component<any, any> {
+export default class Pill extends React.Component<PillProps, any> {
 
     style(): React.CSSProperties {
         return objectAssign({}, {

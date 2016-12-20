@@ -9,14 +9,14 @@ export type LogMap = {
     [sourceId: string]: {
         logs: Log[], query: LogQuery
     }
-}
+};
 
 export type LogState = {
     logMap?: LogMap;
     logs?: Log[];
     error?: string;
     isLoading: boolean;
-}
+};
 
 const INITIAL_STATE: LogState = {
     isLoading: false

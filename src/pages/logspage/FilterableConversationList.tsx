@@ -18,11 +18,6 @@ export interface FilterableConversationListProps {
     filter?: FilterType;
 }
 
-interface Dimensions {
-    width: number;
-    height: number;
-}
-
 interface FilterableConversationListState {
     shownConversations: ConversationList;
     lastFilterType: FilterType;

@@ -93,7 +93,8 @@ export class Interaction extends React.Component<InteractionProps, any> {
                 <OutputList outputs={this.props.outputs} stackTraces={this.props.stackTraces} />
                 <h6>RESPONSE</h6>
                 {this.getTree(this.props.response)}
-            </div>);
+            </div>
+        );
     }
 }
 

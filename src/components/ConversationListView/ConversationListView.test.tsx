@@ -69,14 +69,14 @@ describe("ConversationListView", function () {
                 onClick = sinon.spy();
                 noLogsRenderer.reset();
 
-                wrapper = mount(
+                wrapper = mount((
                     <ConversationListView
                         height={200}
                         conversations={conversations}
                         onClick={onClick}
                         expandListItemWhenActive={true}
                         onEmpty={noLogsRenderer} />
-                );
+                ));
 
                 expect(wrapper.find("ConversationListViewItem")).to.have.length(2);
                 expect(wrapper.find("Interaction")).to.have.length(0);
@@ -114,12 +114,12 @@ describe("ConversationListView", function () {
             beforeEach(function () {
                 onClick = sinon.spy();
 
-                wrapper = mount(
+                wrapper = mount((
                     <ConversationListView
                         height={200}
                         conversations={conversations}
                         onClick={onClick} />
-                );
+                ));
 
                 expect(wrapper.find("ConversationListViewItem")).to.have.length(2);
                 expect(wrapper.find("Interaction")).to.have.length(0);

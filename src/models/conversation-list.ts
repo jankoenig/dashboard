@@ -3,7 +3,9 @@ import Log from "./log";
 import Output from "./output";
 import StackTrace from "./stack-trace";
 
-export type ConversationMap = { [id: string]: ConversationProperties }
+export type ConversationMap = {
+    [id: string]: ConversationProperties
+};
 
 class ConversationList extends Array<Conversation> {
 

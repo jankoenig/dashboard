@@ -21,7 +21,7 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
 
         for (let stackTraceElement of this.props.stackTrace.elements) {
             stackTraceElements.push(
-                <p style={ {margin: "0px 0px 0px 5px", fontSize: "12px", lineHeight: "14px" }}>{ stackTraceElement.raw }</p>
+                <p style={{margin: "0px 0px 0px 5px", fontSize: "12px", lineHeight: "14px" }}>{stackTraceElement.raw}</p>
             );
         }
 
@@ -36,7 +36,7 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
                 <span style={{paddingLeft: "10px", color: "#EEEEEE"}}>
                     {this.props.stackTrace.message}
                 </span>
-                { stackTraceElements }
+                {stackTraceElements}
             </li>
         );
     }
