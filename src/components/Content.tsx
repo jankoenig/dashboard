@@ -9,12 +9,14 @@ export default class Content extends React.Component<any, any> {
     }
 
     classes() {
-      return classNames("mdl-layout__content", this.props.classNames);
+        return classNames("mdl-layout__content", this.props.classNames);
     }
 
     render() {
-        return <main style={ this.props.style } className={ this.classes() }>
-                  { this.props.children }
-               </main>;
+        return (
+            <main style={this.props.style} className={this.classes()}>
+                {this.props.children}
+            </main>
+        );
     }
 }

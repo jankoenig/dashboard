@@ -69,13 +69,15 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
                             className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-pull-right"
                             onClick={this.onRegister.bind(this)}>
                             Sign Up
-                    </button>) : undefined}
+                        </button>
+                    ) : undefined}
                     {this.state.isConfirmPasswordVisible ? (
                         <button
                             className="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect mdl-pull-right"
                             onClick={this.props.onSignUpWithEmail}>
                             Submit
-                    </button>) : undefined}
+                        </button>
+                    ) : undefined}
                 </div>
                 <div className="mdl-card__actions clearfix">
                     <button
