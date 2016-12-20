@@ -39,7 +39,7 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        newSource: function(source: Source): CreateSourceSuccess {
+        newSource: function (source: Source): CreateSourceSuccess {
             return dispatch(createSourceSuccess(source));
         },
 
@@ -61,18 +61,18 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
 
     createSource(source: Source) {
         return service.createSource(source)
-        .then((newSource: Source) => {
-            this.props.newSource(newSource);
-            this.setState({
-                source: newSource,
-                error: undefined
+            .then((newSource: Source) => {
+                this.props.newSource(newSource);
+                this.setState({
+                    source: newSource,
+                    error: undefined
+                });
+            }).catch((err: Error) => {
+                this.setState({
+                    source: undefined,
+                    error: new Error("Unable to create source at this time.")
+                });
             });
-        }).catch((err: Error) => {
-            this.setState({
-                source: undefined,
-                error: new Error("Unable to create source at this time.")
-            });
-        });
     }
 
     goToLogs() {
@@ -206,13 +206,16 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
                         `}</pre>
                 </Cell>
                 {(this.props.source) ?
-                    (<div><Cell col={12}>
-                        <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
-                    </Cell>
-                        <Cell col={12}>
-                            <Button raised={true} onClick={this.props.onGoBack}>Create Another</Button>
-                        </Cell>
-                    </div>)
+                    (
+                        <div>
+                            <Cell col={12}>
+                                <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
+                            </Cell>
+                            <Cell col={12}>
+                                <Button raised={true} onClick={this.props.onGoBack}>Create Another</Button>
+                            </Cell>
+                        </div>
+                    )
                     : (<div />)}
             </Grid>
         );

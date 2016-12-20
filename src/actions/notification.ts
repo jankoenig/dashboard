@@ -3,7 +3,7 @@ import { SET_SNACKBAR_MESSAGE } from "../constants";
 export type SetSnackbarMessage = {
     type: SET_SNACKBAR_MESSAGE,
     message: string | undefined
-}
+};
 
 export function setSnackbarMessage(message: string | undefined) {
     return {

@@ -5,7 +5,7 @@ import { SET_SNACKBAR_MESSAGE } from "../constants";
 
 export type NotificationState = {
     snackBarMessage?: string;
-}
+};
 
 const INITIAL_STATE: NotificationState = {/* empty initial state */};
 

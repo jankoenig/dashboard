@@ -9,7 +9,7 @@ import service from "../services/source";
 export type SetCurrentSource = {
     type: SET_CURRENT_SOURCE,
     source: Source
-}
+};
 
 export function setCurrentSource(source: Source): SetCurrentSource {
     return {
@@ -21,7 +21,7 @@ export function setCurrentSource(source: Source): SetCurrentSource {
 export type SetSources = {
     type: SET_SOURCES,
     sources: Source[]
-}
+};
 
 export function setSources(sources: Source[]): SetSources {
     return {
@@ -58,7 +58,7 @@ export function getSources(): Redux.ThunkAction<any, any, any> {
 export type CreateSourceSuccess = {
     type: CREATE_SOURCE_SUCCESS;
     source: Source;
-}
+};
 
 export function createSourceSuccess(source: Source): CreateSourceSuccess {
     return {

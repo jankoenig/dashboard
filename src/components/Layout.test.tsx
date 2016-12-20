@@ -26,11 +26,12 @@ describe("Layout", function() {
 
     describe("with children", function() {
         beforeEach(() => {
-            wrapper = shallow(
+            wrapper = shallow((
                 <Layout>
                     <h2>Header</h2>
                     <Drawer title="Drawer"/>
-                </Layout>);
+                </Layout>
+            ));
         });
         it("should render the children", function() {
           expect(wrapper.type()).to.equal("div");

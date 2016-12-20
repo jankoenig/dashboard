@@ -1,8 +1,8 @@
-import { dummyOutputs } from "../../utils/test";
 import { expect } from "chai";
 
 import Conversation from "../../models/conversation";
 import { Log, LogProperties } from "../../models/log";
+import { dummyOutputs } from "../../utils/test";
 import * as Filters from "./Filters";
 
 let requestProps: LogProperties = {

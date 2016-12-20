@@ -23,7 +23,7 @@ export default class UserControl extends React.Component<UserProps, any> {
         <Button id="userControl">
           {this.props.user && this.props.user.photoUrl ? (
             <img
-              style={{ borderRadius: "50%" } /** Border Radius provides the circle */}
+              style={{ borderRadius: "50%" }} /** Border Radius provides the circle */
               width="32"
               height="32"
               src={this.props.user.photoUrl}

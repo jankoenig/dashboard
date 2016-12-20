@@ -2,7 +2,7 @@ import * as React from "react";
 
 import Source from "../models/source";
 import Button from "./Button";
-import {ErrorHandler, FormInput} from "./FormInput";
+import { ErrorHandler, FormInput } from "./FormInput";
 
 export interface NameRule extends ErrorHandler {
     // Passing up the ErrorHandler interface so our parents don't have to know about it.
@@ -83,8 +83,8 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                         readOnly={true} />
                 </form>
                 {!this.props.error ? (
-                    <p> {this.props.error } </p>
-                ) : <div/> }
+                    <p> {this.props.error} </p>
+                ) : <div />}
                 <Button colored={true} ripple={true} raised={true} onClick={this.onClick.bind(this)}>Create Skill</Button>
             </div>
         );

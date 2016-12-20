@@ -16,7 +16,7 @@ export function sendingRequest(sending: boolean) {
 export type SetUser = {
   type: SET_USER,
   user: User | undefined
-}
+};
 
 export function setUser(user: User | undefined): SetUser {
   return {

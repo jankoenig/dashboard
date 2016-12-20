@@ -14,9 +14,10 @@ export default class Drawer extends React.Component<DrawerProps, any> {
 
     render() {
         return (
-            <div className={ this.classes() }>
-                { this.props.title ? <header className="mdl-layout-title">{this.props.title}</header> : undefined }
-                { this.props.children }
-            </div>);
+            <div className={this.classes()}>
+                {this.props.title ? <header className="mdl-layout-title">{this.props.title}</header> : undefined}
+                {this.props.children}
+            </div>
+        );
     }
 }

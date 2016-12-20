@@ -1,5 +1,6 @@
-import Skill from "./skill";
 import { expect } from "chai";
+
+import Skill from "./skill";
 
 describe("Skill", function() {
     describe("constructor", function() {

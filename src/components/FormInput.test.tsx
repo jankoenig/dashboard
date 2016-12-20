@@ -16,14 +16,14 @@ describe("FormInput", function () {
     it("should render correctly", function () {
         let value = "value";
         const onChange = sinon.spy();
-        const wrapper = shallow(
+        const wrapper = shallow((
             <Form.FormInput
                 type={"text"}
                 label={"Label"}
                 value={value}
                 onChange={onChange}
                 />
-        );
+        ));
 
         expect(wrapper.type()).to.equal("div");
         expect(wrapper.props().className).to.equal("mdl-textfield mdl-js-textfield");
@@ -45,14 +45,14 @@ describe("FormInput", function () {
     describe("Checks the onChange gets routed to our method.", function() {
         let value = "value";
         const onChange = sinon.spy();
-        const wrapper = shallow(
+        const wrapper = shallow((
             <Form.FormInput
                 type={"text"}
                 label={"Label"}
                 value={value}
                 onChange={onChange}
                 />
-        );
+        ));
 
         wrapper.find("input").simulate("change", {target: {value: "A"}});
 
@@ -63,7 +63,7 @@ describe("FormInput", function () {
         it("renders correctly", function () {
             let value = "value";
             const onChange = sinon.spy();
-            const wrapper = shallow(
+            const wrapper = shallow((
                 <Form.FormInput
                     type={"text"}
                     label={"Label"}
@@ -71,7 +71,7 @@ describe("FormInput", function () {
                     onChange={onChange}
                     floatingLabel={true}
                     />
-            );
+            ));
 
             expect(wrapper.type()).to.equal("div");
             expect(wrapper.props().className).to.equal("mdl-textfield mdl-js-textfield mdl-textfield--floating-label");
@@ -81,7 +81,7 @@ describe("FormInput", function () {
         it("renders correctly", function () {
             let value = "value";
             const onChange = sinon.spy();
-            const wrapper = shallow(
+            const wrapper = shallow((
                 <Form.FormInput
                     type={"text"}
                     label={"Label"}
@@ -90,7 +90,7 @@ describe("FormInput", function () {
                     floatingLabel={true}
                     style={{ display: "none" }}
                     />
-            );
+            ));
 
             expect(wrapper.type()).to.equal("div");
             expect(wrapper.props().style).to.eql({ display: "none" });
@@ -101,7 +101,7 @@ describe("FormInput", function () {
         it("renders correctly", function () {
             let value = "value";
             const onChange = sinon.spy();
-            const wrapper = shallow(
+            const wrapper = shallow((
                 <Form.FormInput
                     type={"text"}
                     label={"Label"}
@@ -109,7 +109,7 @@ describe("FormInput", function () {
                     onChange={onChange}
                     autoComplete={"on"}
                     />
-            );
+            ));
 
             let input = wrapper.find("input");
             expect(input.props().autoComplete).to.equal("on");
@@ -119,7 +119,7 @@ describe("FormInput", function () {
         it("renders correctly", function () {
             let value = "value";
             const onChange = sinon.spy();
-            const wrapper = shallow(
+            const wrapper = shallow((
                 <Form.FormInput
                     type={"text"}
                     label={"Label"}
@@ -127,7 +127,7 @@ describe("FormInput", function () {
                     onChange={onChange}
                     readOnly={true}
                     />
-            );
+            ));
 
             let input = wrapper.find("input");
             expect(input.props().readOnly).to.equal(true);
@@ -139,7 +139,7 @@ describe("FormInput", function () {
             let value = "value";
 
             const onChange = sinon.spy();
-            const wrapper = shallow(
+            const wrapper = shallow((
                 <Form.FormInput
                     type={"text"}
                     label={"Label"}
@@ -147,7 +147,7 @@ describe("FormInput", function () {
                     onChange={onChange}
                     readOnly={true}
                     />
-            );
+            ));
 
             let input = wrapper.find("input");
             expect(input.props().pattern).is.undefined;
@@ -163,7 +163,7 @@ describe("FormInput", function () {
             };
 
             const onChange = sinon.spy();
-            const wrapper = shallow(
+            const wrapper = shallow((
                 <Form.FormInput
                     type={"text"}
                     label={"Label"}
@@ -172,7 +172,7 @@ describe("FormInput", function () {
                     readOnly={true}
                     error={error}
                     />
-            );
+            ));
 
             let input = wrapper.find("input");
             expect(input.props().pattern).is.equal(error.regex.source);
@@ -188,7 +188,7 @@ describe("FormInput", function () {
             };
 
             const onChange = sinon.spy();
-            const wrapper = shallow(
+            const wrapper = shallow((
                 <Form.FormInput
                     type={"text"}
                     label={"Label"}
@@ -197,7 +197,7 @@ describe("FormInput", function () {
                     readOnly={true}
                     error={error}
                     />
-            );
+            ));
 
             wrapper.find("input").simulate("change", {target: {value: "A"}});
 

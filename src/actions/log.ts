@@ -5,7 +5,7 @@ import service from "../services/log";
 export type SetLogsAction = {
     type: SET_LOGS,
     logs: Log[]
-}
+};
 
 export function setLogs(logs: Log[]): SetLogsAction {
     return {
@@ -16,7 +16,7 @@ export function setLogs(logs: Log[]): SetLogsAction {
 
 export type FetchLogsRequestAction = {
     type: FETCH_LOGS_REQUEST
-}
+};
 
 export function fetchLogsRequest() {
     return {

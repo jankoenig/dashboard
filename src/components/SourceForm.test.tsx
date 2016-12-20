@@ -32,8 +32,10 @@ describe("SourceForm", function () {
             }
         };
 
-        let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
-            nameRule={validator} />);
+        let wrapper = shallow((
+            <SourceForm.SourceForm createSource={createSource}
+                nameRule={validator} />
+        ));
 
         expect(wrapper.find("FormInput").length).to.equal(2);
     });
@@ -79,8 +81,10 @@ describe("SourceForm", function () {
         });
 
         it("Checks that forms are empty at start.", function () {
-            let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
-                nameRule={positiveValidator} />);
+            let wrapper = shallow((
+                <SourceForm.SourceForm createSource={createSource}
+                    nameRule={positiveValidator} />
+            ));
 
             let formInputs = wrapper.find("FormInput");
 
@@ -93,8 +97,10 @@ describe("SourceForm", function () {
         });
 
         it("Checks that the source is nulled when validator goes from true to false.", function () {
-            let wrapper = shallow(<SourceForm.SourceForm createSource={createSource}
-                nameRule={noNumberValidator} />);
+            let wrapper = shallow((
+                <SourceForm.SourceForm createSource={createSource}
+                    nameRule={noNumberValidator} />
+            ));
 
             let formInputs = wrapper.find("FormInput");
             let nameForm = formInputs.at(0);
