@@ -62,7 +62,7 @@ function mapDispatchToProps(dispatch: any) {
       return dispatch(setCurrentSource(source));
     },
     goToSource: function(source: Source) {
-      return dispatch(replace("/skills/" + source.id + "/logs"));
+      return dispatch(replace("/skills/" + source.id));
     }
   };
 }
