@@ -1,6 +1,7 @@
 import * as React from "react";
 import { VictoryBar, VictoryChart } from "victory";
 
+import FormInput from "../components/FormInput";
 import { Cell, Grid } from "../components/Grid";
 import SourceSummary from "../models/source-summary";
 
@@ -20,9 +21,33 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                 summary = (
                     <span>
                         <Grid>
-                            <Cell col={4}> {this.props.sourceSummary.eventLabel}: {this.props.sourceSummary.totalEvents} </Cell>
-                            <Cell col={4}> Crashes: {this.props.sourceSummary.totalCrashes} </Cell>
-                            <Cell col={4}> Unique Users: {this.props.sourceSummary.totalUniqueUsers} </Cell>
+                            <Cell col={4}>
+                                <FormInput
+                                    type={"text"}
+                                    value={this.props.sourceSummary.totalEvents.toString()}
+                                    label={this.props.sourceSummary.eventLabel}
+                                    floatingLabel={true}
+                                    autoComplete={"off"}
+                                    readOnly={true} />
+                            </Cell>
+                            <Cell col={4}>
+                                <FormInput
+                                    type={"text"}
+                                    value={this.props.sourceSummary.totalUniqueUsers.toString()}
+                                    label={"Unique Users"}
+                                    floatingLabel={true}
+                                    autoComplete={"off"}
+                                    readOnly={true} />
+                            </Cell>
+                            <Cell col={4}>
+                                <FormInput
+                                    type={"text"}
+                                    value={this.props.sourceSummary.totalCrashes.toString()}
+                                    label={"Crashes"}
+                                    floatingLabel={true}
+                                    autoComplete={"off"}
+                                    readOnly={true} />
+                            </Cell>
                         </Grid>
                         <Grid>
                             <Cell col={12}>
@@ -43,7 +68,7 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
         return (
             <div>
                 <Grid>
-                    <h4> Summary </h4>
+                    <h4> Last Seven Day Summary </h4>
                 </Grid>
                 {summary}
             </div>
