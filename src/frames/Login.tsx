@@ -32,10 +32,10 @@ export class Login extends React.Component<LoginProps, any> {
     render() {
         return (
             <Layout>
-                <Content classNames={ this.classes() } >
+                <Content classNames={this.classes()} >
                     {this.props.children}
                 </Content>
-                <Snackbar text={this.props.snackBarMessage}/>
+                <Snackbar text={this.props.snackBarMessage} />
             </Layout>
         );
     }
