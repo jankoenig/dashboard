@@ -1,20 +1,32 @@
+import * as objectAssign from "object-assign";
 import * as React from "react";
+
+import { COLORS } from "../constants";
+
+interface PillProps {
+    style?: React.CSSProperties;
+    onClick?: (event: React.MouseEvent) => void;
+}
 
 export default class Pill extends React.Component<any, any> {
 
     style(): React.CSSProperties {
-        return {
-            backgroundColor: "#e53935",
+        return objectAssign({}, {
+            backgroundColor: COLORS.ICONS.PRIMARY,
             padding: "5px",
             borderRadius: "5px",
             color: "#eeeeee",
             fontSize: "10px",
-            margin: "5px"
-        };
+            margin: "5px",
+            WebkitUserSelect: "none",
+            msUserSelect: "none",
+            MozUserSelect: "none",
+            cursor: "default"
+        }, this.props.style);
     }
     render() {
         return (
-            <span style={this.style()}>
+            <span style={this.style()} onClick={this.props.onClick}>
                 {this.props.children}
             </span>
         );

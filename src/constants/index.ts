@@ -51,6 +51,13 @@ export const FETCH_SOURCES_SUCCESS: FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SU
 export type SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 export const SET_SNACKBAR_MESSAGE: SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 
+export namespace COLORS {
+    export const RED = "rgb(255,82,82)";
+    export namespace ICONS {
+        export const PRIMARY = RED;
+    }
+}
+
 export namespace CLASSES {
     export namespace COLOR {
         export const BLUE_GREY_800 = "mdl-color--blue-grey-800";

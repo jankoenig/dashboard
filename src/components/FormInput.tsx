@@ -1,8 +1,10 @@
 import * as classNames from "classnames";
+import * as objectAssign from "object-assign";
 import * as React from "react";
 
 import StringUtil from "../utils/string";
 import MDLComponent from "./MDLComponent";
+import Pill from "./Pill";
 
 /**
  * Class that can be included to display custom messages to the user based on the input.
@@ -22,7 +24,12 @@ export interface ErrorHandler {
     errorMessage: (input: string) => string | undefined;
 }
 
+interface FormInputTheme {
+    inputTextColor: string;
+} ;
+
 interface FormInputProps {
+    theme?: FormInputTheme;
     label: string;
     type: "text" | "password";
     value: string;
@@ -34,10 +41,12 @@ interface FormInputProps {
     autoComplete?: "off" | "on" ;
     hidden?: boolean;
     error?: ErrorHandler;
+    showable?: boolean;
 }
 
 interface FormState {
     errorMsg?: string;
+    show: boolean;
 }
 
 export class FormInput extends MDLComponent<FormInputProps, FormState> {
@@ -45,7 +54,8 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
     constructor(props: FormInputProps) {
         super(props);
         this.state = {
-            errorMsg: undefined
+            errorMsg: undefined,
+            show: false
         };
     }
 
@@ -53,6 +63,10 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         return classNames("mdl-textfield mdl-js-textfield", {
             "mdl-textfield--floating-label": this.props.floatingLabel
         });
+    }
+
+    inputStyle(): React.CSSProperties {
+        return objectAssign({}, {color: this.props.theme ? this.props.theme.inputTextColor : undefined});
     }
 
     onFormChange(event: React.FormEvent) {
@@ -68,6 +82,15 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         if (this.props.onChange) {
             this.props.onChange(event);
         }
+    }
+
+    onShow(event: React.MouseEvent) {
+        this.setState(function(previousState) {
+            return {
+                errorMsg: previousState.errorMsg,
+                show: true
+            };
+        });
     }
 
     render() {
@@ -86,12 +109,16 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     autoFocus={autoFocus}
                     autoComplete={this.props.autoComplete ? this.props.autoComplete : "off"}
                     className="mdl-textfield__input"
-                    type={this.props.type}
+                    type={this.state.show ? "text" : this.props.type}
                     id={StringUtil.stringToCamelCase(this.props.label)}
                     value={this.props.value}
                     pattern={pattern}
                     onChange={this.onFormChange.bind(this)}
-                    readOnly={this.props.readOnly}/>
+                    readOnly={this.props.readOnly}
+                    style={this.inputStyle()}/>
+                { this.props.showable && !this.state.show ? (
+                    <Pill onClick={this.onShow.bind(this)} style={{ position: "absolute", "right": "0px", top:"20px", padding:"2px", lineHeight:"12px"}}> show </Pill>
+                ) : undefined }
                 <label
                     className="mdl-textfield__label"
                     htmlFor={StringUtil.stringToCamelCase(this.props.label)}>

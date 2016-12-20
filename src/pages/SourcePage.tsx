@@ -2,6 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 
+import FormInput from "../components/FormInput";
 import { Cell, Grid } from "../components/Grid";
 import SourceSummaryView from "../components/SourceSummaryView";
 import ConversationList from "../models/conversation-list";
@@ -10,8 +11,6 @@ import Log from "../models/log";
 import Source from "../models/source";
 import { State } from "../reducers";
 import { LogMap } from "../reducers/log";
-
-import { CLASSES } from "../constants";
 
 interface SourcePageProps {
     source: Source;
@@ -47,25 +46,53 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
         return (
             <span>
                 {this.props.source ? (
-                    <Grid style={{ backgroundColor: "grey" }}>
+                    <Grid style={{ backgroundColor: "rgb(36, 48, 54)" }}>
                         <Cell col={3} >
-                            <span> name: </span>
-                            <span className={CLASSES.TEXT.BLUE_GREY_50}> {this.props.source.name} </span>
+                            <FormInput
+                                theme={{ inputTextColor: "#ECEFF1" }}
+                                type={"text"}
+                                value={this.props.source.name}
+                                label={"Name"}
+                                floatingLabel={true}
+                                autoComplete={"off"}
+                                readOnly={true} />
                         </Cell>
                         <Cell col={3} >
-                            <span> id: </span>
-                            <span className={CLASSES.TEXT.BLUE_GREY_50}> {this.props.source.id} </span>
+                            <FormInput
+                                theme={{ inputTextColor: "#ECEFF1" }}
+                                type={"text"}
+                                value={this.props.source.id}
+                                label={"ID"}
+                                floatingLabel={true}
+                                autoComplete={"off"}
+                                readOnly={true} />
                         </Cell>
                         <Cell col={3} >
-                            <span> created: </span>
-                            <span className={CLASSES.TEXT.BLUE_GREY_50}> {moment(this.props.source.created).format("MMM Do, YYYY")} </span>
+                            <FormInput
+                                theme={{ inputTextColor: "#ECEFF1" }}
+                                type={"text"}
+                                value={moment(this.props.source.created).format("MMM Do, YYYY")}
+                                label={"Created"}
+                                floatingLabel={true}
+                                autoComplete={"off"}
+                                readOnly={true} />
+                        </Cell>
+                        <Cell col={3} >
+                            <FormInput
+                                theme={{ inputTextColor: "#ECEFF1" }}
+                                type={"password"}
+                                value={this.props.source.secretKey}
+                                label={"Secret Key"}
+                                floatingLabel={true}
+                                autoComplete={"off"}
+                                readOnly={true}
+                                showable={true} />
                         </Cell>
                     </Grid>
-                    ) : undefined}
+                ) : undefined}
                 <SourceSummaryView sourceSummary={conversationListSummary} />
             </span>
         );
-
     }
 }
 
