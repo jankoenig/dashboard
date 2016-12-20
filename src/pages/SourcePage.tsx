@@ -11,6 +11,8 @@ import Source from "../models/source";
 import { State } from "../reducers";
 import { LogMap } from "../reducers/log";
 
+import { CLASSES } from "../constants";
+
 interface SourcePageProps {
     source: Source;
     logs: Log[];
@@ -44,19 +46,22 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
 
         return (
             <span>
-                <Grid style={{ backgroundColor: "grey" }}>
-                    <Cell col={12} >
-                        {this.props.source ? (
-                            <span>
-                                <span> Project Name </span>
-                                <span> {this.props.source.name} </span>
-                                <span> Project ID </span>
-                                <span> {this.props.source.id} </span>
-                                <span> Created {moment(this.props.source.created).format("MMM Do, YYYY")} </span>
-                            </span>
-                        ) : undefined}
-                    </Cell>
-                </Grid>
+                {this.props.source ? (
+                    <Grid style={{ backgroundColor: "grey" }}>
+                        <Cell col={3} >
+                            <span> name: </span>
+                            <span className={CLASSES.TEXT.BLUE_GREY_50}> {this.props.source.name} </span>
+                        </Cell>
+                        <Cell col={3} >
+                            <span> id: </span>
+                            <span className={CLASSES.TEXT.BLUE_GREY_50}> {this.props.source.id} </span>
+                        </Cell>
+                        <Cell col={3} >
+                            <span> created: </span>
+                            <span className={CLASSES.TEXT.BLUE_GREY_50}> {moment(this.props.source.created).format("MMM Do, YYYY")} </span>
+                        </Cell>
+                    </Grid>
+                    ) : undefined}
                 <SourceSummaryView sourceSummary={conversationListSummary} />
             </span>
         );

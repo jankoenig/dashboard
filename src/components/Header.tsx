@@ -1,5 +1,6 @@
 import * as classNames from "classnames";
 import * as React from "react";
+import { Link } from "react-router";
 
 import Button from "./Button";
 import { Menu, MenuItem } from "./Menu";
@@ -10,6 +11,7 @@ interface HeaderProps {
   titles?: string[];
   className?: string;
   onTitleSelect?: (title: string, index: number) => void;
+  displayHomeButton?: boolean;
 }
 
 interface HeaderState {
@@ -34,19 +36,23 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
         title = (<span className="mdl-layout-title">{this.props.titles[0]}</span>);
       } else {
         let index = this.props.selectedIndex || 0;
-        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index}/>);
+        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index} />);
       }
     }
 
     return (
       <header className={this.classes()}>
-        <div className="mdl-layout__header-row">
+        <div className="mdl-layout__header-row" style={{ paddingLeft: "0px" }}>
+          {this.props.displayHomeButton ? (
+            <Link to={"/"} style={{paddingLeft: "15px", paddingRight: "15px"}}>
+              <i className="material-icons" role="presentation">home</i>
+            </Link>
+          ) : (undefined)}
           {title}
           <div className="mdl-layout-spacer" />
           {this.props.children}
           <Button id="support">
-            <i
-              className="material-icons"
+            <i className="material-icons"
               role="presentation">help_outline
           </i>
           </Button>

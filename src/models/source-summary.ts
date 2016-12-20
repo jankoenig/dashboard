@@ -1,21 +1,20 @@
-import StackTrace from "./stack-trace";
-
-export interface CrashDatum {
-    timestamp: Date;
-    stackTrace: StackTrace;
-}
 
 export interface EventDatum {
     timestamp: Date;
-    event: string;
+    events: number;
 }
 
 interface SourceSummary {
     startTime: Date;
     endTime: Date;
-    uniqueUsers: string[];
-    crashes: CrashDatum[];
+
+    totalUniqueUsers: number;
+
+    totalCrashes: number;
+
     events: EventDatum[];
+    totalEvents: number;
+    eventLabel: string;
 }
 
 export default SourceSummary;

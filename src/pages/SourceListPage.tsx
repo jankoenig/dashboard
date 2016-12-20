@@ -3,6 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
+import Button from "../components/Button";
 import { Cell, Grid } from "../components/Grid";
 import Source from "../models/source";
 import { State } from "../reducers";
@@ -40,16 +41,25 @@ export class SourceListPage extends React.Component<SourceListPageProps, any> {
         }
 
         return (
-            <Grid>
-                <Cell col={12}>
-                    {listItems.length === 0 ? (
-                        <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>
-                    ) : undefined}
-                    <ul className="mdl-list">
-                        {listItems}
-                    </ul>
-                </Cell>
-            </Grid>
+            <div>
+                <Grid>
+                    <Cell col={12}>
+                        {listItems.length === 0 ? (
+                            <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>
+                        ) : undefined}
+                        <ul className="mdl-list">
+                            {listItems}
+                        </ul>
+                    </Cell>
+                </Grid>
+                {listItems.length !== 0 ? (
+                    <Grid>
+                        <Cell col={2}>
+                            <Link to={"/skills/new"}><Button colored={true} raised={true}>New Skill</Button></Link>
+                        </Cell>
+                    </Grid>
+                ) : undefined}
+            </div>
         );
     }
 }

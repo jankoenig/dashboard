@@ -18,8 +18,6 @@ export namespace IndexUtils {
      *                      new sources from the web.
      */
     export function getAndSaveSources(root: Source[]): Promise<Source[]> {
-        console.log("getAndSaveSources ");
-        console.log(root);
         let realRoot = (root) ? root : [];
         return Promise.all(realRoot)
             .then(function (sources: Source[]) {
@@ -65,7 +63,6 @@ export namespace IndexUtils {
     export function dispatchSelectedSourceSource(dispatch: Redux.Dispatch<any>,  sourceId: string, sources?: Source[]): Promise<Source> {
         return findSource(sources, sourceId)
                 .then(function (source: Source) {
-                    console.log("setting selected source " + source.name);
                     dispatch(getLogs(source));
                     dispatch(setCurrentSource(source));
                     return source;
