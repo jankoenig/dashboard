@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { goBack, push, RouterAction } from "react-router-redux";
+import { push, RouterAction } from "react-router-redux";
 
 import { createSourceSuccess, CreateSourceSuccess } from "../actions/source";
 import Button from "../components/Button";
@@ -99,8 +99,8 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
         ) : (<div />);
 
         let bottomHalf = (createSource) ?
-            (<NewSkillForm createSource={this.createSource.bind(this)} />) :
-            (<CodeForm source={this.state.source} goToLogs={this.goToLogs.bind(this)} goBack={this.goBack.bind(this)} />);
+            (<NewSkillForm onCreateSource={this.createSource.bind(this)} />) :
+            (<CodeForm source={this.state.source} onGoToLogs={this.goToLogs.bind(this)} onGoBack={this.goBack.bind(this)} />);
 
         return (
             <div>
@@ -117,7 +117,7 @@ export default connect(
 )(NewSourcePage);
 
 interface NewSkillProps {
-    createSource: (source: Source) => Redux.ThunkAction<any, any, any>;
+    onCreateSource: (source: Source) => void;
     error?: Error;
 }
 
@@ -134,7 +134,7 @@ class NewSkillForm extends React.Component<NewSkillProps, any> {
                 </Cell>
                 <Cell col={12}>
                     <SourceForm
-                        createSource={this.props.createSource}
+                        createSource={this.props.onCreateSource}
                         error={this.props.error}
                         nameRule={new SourceNameRule()} />
                 </Cell>
@@ -145,8 +145,8 @@ class NewSkillForm extends React.Component<NewSkillProps, any> {
 
 interface CodeFormProps {
     source: Source | undefined;
-    goToLogs: (source: Source) => void;
-    goBack: () => void;
+    onGoToLogs: (source: Source) => void;
+    onGoBack: () => void;
 }
 
 interface CodeFormState {
@@ -172,7 +172,7 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
     }
 
     goToLogs() {
-        this.props.goToLogs(this.props.source);
+        this.props.onGoToLogs(this.props.source);
     }
 
     codeStyle(): React.CSSProperties {
@@ -207,11 +207,12 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
                 </Cell>
                 {(this.props.source) ?
                     (
-                        <div><Cell col={12}>
-                            <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
-                        </Cell>
+                        <div>
                             <Cell col={12}>
-                                <Button raised={true} onClick={this.props.goBack}>Create Another</Button>
+                                <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
+                            </Cell>
+                            <Cell col={12}>
+                                <Button raised={true} onClick={this.props.onGoBack}>Create Another</Button>
                             </Cell>
                         </div>
                     )
