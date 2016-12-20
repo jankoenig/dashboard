@@ -1,5 +1,5 @@
 import * as React from "react";
-import { VictoryBar, VictoryChart } from "victory";
+import { VictoryChart, VictoryLine } from "victory";
 
 import FormInput from "../components/FormInput";
 import { Cell, Grid } from "../components/Grid";
@@ -24,6 +24,7 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                             <Cell col={4}>
                                 <FormInput
                                     type={"text"}
+                                    style={{paddingBottom: 0}}
                                     value={this.props.sourceSummary.totalEvents.toString()}
                                     label={this.props.sourceSummary.eventLabel}
                                     floatingLabel={true}
@@ -33,6 +34,7 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                             <Cell col={4}>
                                 <FormInput
                                     type={"text"}
+                                    style={{paddingBottom: 0}}
                                     value={this.props.sourceSummary.totalUniqueUsers.toString()}
                                     label={"Unique Users"}
                                     floatingLabel={true}
@@ -42,6 +44,7 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                             <Cell col={4}>
                                 <FormInput
                                     type={"text"}
+                                    style={{paddingBottom: 0}}
                                     value={this.props.sourceSummary.totalCrashes.toString()}
                                     label={"Crashes"}
                                     floatingLabel={true}
@@ -51,8 +54,14 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                         </Grid>
                         <Grid>
                             <Cell col={12}>
-                                <VictoryChart scale={{ x: "time", y: "linear" }} height={200} animate={{ duration: 2000 }}>
-                                    <VictoryBar data={this.props.sourceSummary.events} x={"timestamp"} y={"events"} />
+                                <VictoryChart
+                                    scale={{ x: "time", y: "linear" }}
+                                    height={200}
+                                    animate={{ duration: 500 }}>
+                                    <VictoryLine
+                                        data={this.props.sourceSummary.events}
+                                        x={"timestamp"}
+                                        y={"events"} />
                                 </VictoryChart>
                             </Cell>
                         </Grid>

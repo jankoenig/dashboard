@@ -1,7 +1,9 @@
 import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router";
 
+import Button from "../components/Button";
 import FormInput from "../components/FormInput";
 import { Cell, Grid } from "../components/Grid";
 import SourceSummaryView from "../components/SourceSummaryView";
@@ -46,49 +48,65 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
         return (
             <span>
                 {this.props.source ? (
-                    <Grid style={{ backgroundColor: "rgb(36, 48, 54)" }}>
-                        <Cell col={3} >
-                            <FormInput
-                                theme={{ inputTextColor: "#ECEFF1" }}
-                                type={"text"}
-                                value={this.props.source.name}
-                                label={"Name"}
-                                floatingLabel={true}
-                                autoComplete={"off"}
-                                readOnly={true} />
-                        </Cell>
-                        <Cell col={3} >
-                            <FormInput
-                                theme={{ inputTextColor: "#ECEFF1" }}
-                                type={"text"}
-                                value={this.props.source.id}
-                                label={"ID"}
-                                floatingLabel={true}
-                                autoComplete={"off"}
-                                readOnly={true} />
-                        </Cell>
-                        <Cell col={3} >
-                            <FormInput
-                                theme={{ inputTextColor: "#ECEFF1" }}
-                                type={"text"}
-                                value={moment(this.props.source.created).format("MMM Do, YYYY")}
-                                label={"Created"}
-                                floatingLabel={true}
-                                autoComplete={"off"}
-                                readOnly={true} />
-                        </Cell>
-                        <Cell col={3} >
-                            <FormInput
-                                theme={{ inputTextColor: "#ECEFF1" }}
-                                type={"password"}
-                                value={this.props.source.secretKey}
-                                label={"Secret Key"}
-                                floatingLabel={true}
-                                autoComplete={"off"}
-                                readOnly={true}
-                                showable={true} />
-                        </Cell>
-                    </Grid>
+                    <span>
+                        <Grid style={{ backgroundColor: "rgb(36, 48, 54)" }}>
+                            <Cell col={3} >
+                                <FormInput
+                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    style={{ paddingBottom: 0 }}
+                                    type={"text"}
+                                    value={this.props.source.name}
+                                    label={"Name"}
+                                    floatingLabel={true}
+                                    autoComplete={"off"}
+                                    readOnly={true} />
+                            </Cell>
+                            <Cell col={3} >
+                                <FormInput
+                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    style={{ paddingBottom: 0 }}
+                                    type={"text"}
+                                    value={this.props.source.id}
+                                    label={"ID"}
+                                    floatingLabel={true}
+                                    autoComplete={"off"}
+                                    readOnly={true} />
+                            </Cell>
+                            <Cell col={3} >
+                                <FormInput
+                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    style={{ paddingBottom: 0 }}
+                                    type={"text"}
+                                    value={moment(this.props.source.created).format("MMM Do, YYYY")}
+                                    label={"Created"}
+                                    floatingLabel={true}
+                                    autoComplete={"off"}
+                                    readOnly={true} />
+                            </Cell>
+                            <Cell col={3} >
+                                <FormInput
+                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    style={{ paddingBottom: 0 }}
+                                    type={"password"}
+                                    value={this.props.source.secretKey}
+                                    label={"Secret Key"}
+                                    floatingLabel={true}
+                                    autoComplete={"off"}
+                                    readOnly={true}
+                                    showable={true} />
+                            </Cell>
+                        </Grid>
+                        <Grid>
+                            <Cell col={3}>
+                                <p style={{ fontSize: "16px", fontFamily: "Roboto, Helvetica"}}>What would you like to do? </p>
+                            </Cell>
+                            <Cell col={3}>
+                                <Link to={"/skills/" + this.props.source.id + "/logs"}>
+                                <Button raised={true} ripple={true}>View Logs</Button>
+                                </Link>
+                            </Cell>
+                        </Grid>
+                    </span>
                 ) : undefined}
                 <SourceSummaryView sourceSummary={conversationListSummary} />
             </span>
