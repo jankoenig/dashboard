@@ -1,6 +1,7 @@
 import { expect } from "chai";
 
 import { fetchLogsRequest, setLogs } from "../actions/log";
+import LogQuery from "../models/log-query";
 import Source from "../models/source";
 import { dummyLogs } from "../utils/test";
 import { log } from "./log";
@@ -30,12 +31,17 @@ describe("Log Reducer", function () {
                 secretKey: "secret"
             });
 
-            let action = setLogs(source, dummyLogs(4));
+            let query = new LogQuery({
+                source: source
+            });
+
+            let action = setLogs(query, dummyLogs(4));
             let newState = log(state, action);
 
             expect(newState.logs).to.exist;
             expect(newState.logs).to.have.length(4);
-            expect(newState.logMap[source.id]).to.have.length(4);
+            expect(newState.logMap[source.id].query).to.equal(query);
+            expect(newState.logMap[source.id].logs).to.have.length(4);
 
             // Make sure the existing state is not modified
             expect(newState.isLoading).to.equal(state.isLoading);

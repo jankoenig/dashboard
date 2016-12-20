@@ -1,21 +1,26 @@
 import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
-import { VictoryChart, VictoryGroup, VictoryLine, VictoryPie, VictoryScatter } from "victory";
 
 import { Cell, Grid } from "../components/Grid";
+import SourceSummaryView from "../components/SourceSummaryView";
+import ConversationList from "../models/conversation-list";
+import ConversationListSummary from "../models/conversation-list-summary";
 import Log from "../models/log";
 import Source from "../models/source";
 import { State } from "../reducers";
+import { LogMap } from "../reducers/log";
 
 interface SourcePageProps {
     source: Source;
     logs: Log[];
+    logMap: LogMap;
 }
 
 function mapStateToProps(state: State.All) {
     return {
         logs: state.log.logs,
+        logMap: state.log.logMap,
         source: state.source.currentSource
     };
 }
@@ -28,7 +33,15 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 export class SourcePage extends React.Component<SourcePageProps, any> {
 
     render() {
-        console.log(this.props.logs);
+
+        let conversations: ConversationList;
+        let conversationListSummary: ConversationListSummary;
+
+        if (this.props.source && this.props.logMap) {
+            conversations = ConversationList.fromLogs(this.props.logMap[this.props.source.id].logs);
+            conversationListSummary = new ConversationListSummary(this.props.logMap[this.props.source.id].query, conversations);
+        }
+
         return (
             <span>
                 <Grid style={{ backgroundColor: "grey" }}>
@@ -44,17 +57,7 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
                         ) : undefined}
                     </Cell>
                 </Grid>
-                <Grid>
-                    <Cell col={4}> <VictoryPie /> </Cell>
-                    <Cell col={4}>
-                        <VictoryChart>
-                            <VictoryGroup>
-                                <VictoryLine />
-                                <VictoryScatter />
-                            </VictoryGroup>
-                        </VictoryChart>
-                    </Cell>
-                </Grid>
+                <SourceSummaryView sourceSummary={conversationListSummary} />
             </span>
         );
 

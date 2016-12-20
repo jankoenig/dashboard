@@ -59,7 +59,7 @@ export class FilterableConversationList extends React.Component<FilterableConver
                 if (err.message !== ERROR.FILTER.NO_ITEMS_FOUND) {
                     console.error(err);
                 }
-                me.state.shownConversations = [];
+                me.state.shownConversations = new ConversationList();
                 me.setState(me.state);
             });
     }

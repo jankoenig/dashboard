@@ -1,5 +1,5 @@
+import { getLogs } from "./actions/log";
 import { setCurrentSource } from "./actions/source";
-
 import Source from "./models/source";
 import source from "./services/source";
 
@@ -66,6 +66,7 @@ export namespace IndexUtils {
         return findSource(sources, sourceId)
                 .then(function (source: Source) {
                     console.log("setting selected source " + source.name);
+                    dispatch(getLogs(source));
                     dispatch(setCurrentSource(source));
                     return source;
                 });

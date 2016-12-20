@@ -35,6 +35,6 @@ export default class LogQuery implements LogQueryProperties {
     constructor(props: LogQueryProperties) {
         this.source = props.source;
         this.startTime = props.startTime ? props.startTime : DateUtil.daysAgo(1);
-        this.endTime = props.endTime;
+        this.endTime = props.endTime ? props.endTime : new Date();
     }
 }

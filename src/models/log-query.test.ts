@@ -30,7 +30,7 @@ describe("LogQuery", function () {
 
             expect(logQuery.startTime).to.exist;
             expect(logQuery.source).to.equal(source);
-            expect(logQuery.endTime).to.be.undefined;
+            expect(logQuery.endTime).to.exist;
         });
     });
     describe("queryBuilder", function () {
@@ -42,13 +42,14 @@ describe("LogQuery", function () {
 
             let logQuery = new LogQuery({
                 source: source,
-                startTime: new Date()
+                startTime: new Date(),
+                endTime: new Date()
             });
 
             let query = logQuery.queryString;
             expect(query).to.contain("source=source");
             expect(query).to.contain("start_time=");
-            expect(query).to.not.contain("end_time=");
+            expect(query).to.contain("end_time=");
         });
         it("builds a query with source, start time and end time", function () {
 

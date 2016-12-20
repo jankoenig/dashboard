@@ -6,14 +6,14 @@ import service from "../services/log";
 
 export type SetLogsAction = {
     type: SET_LOGS,
-    source: Source,
+    query: LogQuery,
     logs: Log[]
 }
 
-export function setLogs(source: Source, logs: Log[]): SetLogsAction {
+export function setLogs(query: LogQuery, logs: Log[]): SetLogsAction {
     return {
         type: SET_LOGS,
-        source: source,
+        query: query,
         logs: logs
     };
 }
@@ -49,7 +49,7 @@ export function getLogs(source: Source) {
             startTime: startTime
         });
         return service.getLogs(query).then(function (logs) {
-            dispatch(setLogs(source, logs));
+            dispatch(setLogs(query, logs));
         });
     };
 }
