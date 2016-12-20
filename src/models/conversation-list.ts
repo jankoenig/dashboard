@@ -2,7 +2,9 @@ import Conversation, {ConversationProperties} from "./conversation";
 import Log from "./log";
 import Output from "./output";
 
-export type ConversationMap = { [id: string]: ConversationProperties }
+export type ConversationMap = {
+    [id: string]: ConversationProperties
+};
 
 class ConversationList extends Array<Conversation> {
 
