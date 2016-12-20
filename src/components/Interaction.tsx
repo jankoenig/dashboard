@@ -1,8 +1,9 @@
+import * as React from "react";
+import JSONTree from "react-json-tree";
+
 import { OutputList } from "../components/OutputList";
 import Log from "../models/log";
 import Output from "../models/output";
-import * as React from "react";
-import JSONTree from "react-json-tree";
 
 interface InteractionProps {
     request: Log;
@@ -90,7 +91,8 @@ export class Interaction extends React.Component<InteractionProps, any> {
                 <OutputList outputs={this.props.outputs} />
                 <h6>RESPONSE</h6>
                 {this.getTree(this.props.response)}
-            </div>);
+            </div>
+        );
     }
 }
 

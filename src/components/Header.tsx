@@ -34,7 +34,7 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
         title = (<span className="mdl-layout-title">{this.props.titles[0]}</span>);
       } else {
         let index = this.props.selectedIndex || 0;
-        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index}/>);
+        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index} />);
       }
     }
 
@@ -89,7 +89,8 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
             </MenuItem>
           </Menu>
         </div>
-      </header>);
+      </header>
+    );
   }
 }
 
