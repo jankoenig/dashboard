@@ -1,8 +1,6 @@
 import * as chai from "chai";
 import { shallow } from "enzyme";
-// tslint:disable:no-unused-variable
-import * as React from "react"; // Needed for enzyme, unused for some reason.
-// tslint:enable:no-unused-variable
+import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
@@ -19,7 +17,6 @@ interface TestNameRule extends SourceForm.NameRule {
 }
 
 describe("SourceForm", function () {
-
     it("Renders properly", function () {
         let createSource = function (source: Source) {
             console.info("Creating source.");

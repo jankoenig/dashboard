@@ -15,7 +15,6 @@
         "no-internal-module": true,
         "no-trailing-whitespace": true,
         "no-var-keyword": true,
-        "no-unused-variable": true,
         "one-line": [
             true,
             "check-open-brace",
@@ -23,7 +22,8 @@
         ],
         "quotemark": [
             true,
-            "double"
+            "double",
+            "avoid-escape"
         ],
         "semicolon": [
             true,

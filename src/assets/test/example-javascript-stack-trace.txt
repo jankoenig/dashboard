@@ -1,0 +1,11 @@
+ReferenceError: opinion is not defined
+    at /Users/michaelmyers/Development/travis-ci-skill/src/index.js:52:33
+    at /Users/michaelmyers/Development/travis-ci-skill/src/node_modules/travis-ci/lib/travis-ci.js:51:21
+    at Request._callback (/Users/michaelmyers/Development/travis-ci-skill/src/node_modules/travis-ci/lib/travis-http.js:51:13)
+    at Request.self.callback (/Users/michaelmyers/Development/travis-ci-skill/src/node_modules/travis-ci/node_modules/request/request.js:187:22)
+    at emitTwo (events.js:87:13)
+    at Request.emit (events.js:172:7)
+    at Request.<anonymous> (/Users/michaelmyers/Development/travis-ci-skill/src/node_modules/travis-ci/node_modules/request/request.js:1044:10)
+    at emitOne (events.js:77:13)
+    at Request.emit (events.js:169:7)
+    at IncomingMessage.<anonymous> (/Users/michaelmyers/Development/travis-ci-skill/src/node_modules/travis-ci/node_modules/request/request.js:965:12)

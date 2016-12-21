@@ -7,6 +7,8 @@ import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import { dummyLogs } from "../utils/test";
 import * as log from "./log";
 
+import Source from "../models/source";
+
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
@@ -30,8 +32,11 @@ describe("Log Actions", function () {
 
             let initialState = {};
             let store = mockStore(initialState);
+            let source = new Source({
+                name: "Test"
+            });
 
-            store.dispatch(log.getLogs("happy_xapp")).then(function () {
+            store.dispatch(log.getLogs(source)).then(function () {
 
                 let actions: any[] = store.getActions();
 

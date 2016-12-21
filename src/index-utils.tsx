@@ -1,5 +1,5 @@
+import { getLogs } from "./actions/log";
 import { setCurrentSource } from "./actions/source";
-
 import Source from "./models/source";
 import source from "./services/source";
 
@@ -63,6 +63,7 @@ export namespace IndexUtils {
     export function dispatchSelectedSourceSource(dispatch: Redux.Dispatch<any>,  sourceId: string, sources?: Source[]): Promise<Source> {
         return findSource(sources, sourceId)
                 .then(function (source: Source) {
+                    dispatch(getLogs(source));
                     dispatch(setCurrentSource(source));
                     return source;
                 });

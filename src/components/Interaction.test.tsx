@@ -19,9 +19,10 @@ describe("Logs Page", function () {
 
         const wrapper = shallow((
             <Interaction
-            request={logs[0]}
-            response={logs[1]}
-            outputs={outputs}/>
+                request={logs[0]}
+                response={logs[1]}
+                outputs={outputs}
+                stackTraces={[]} />
         ));
 
         expect(wrapper.find("JSONTree")).to.have.length(2);

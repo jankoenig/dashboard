@@ -6,26 +6,13 @@ import { push, replace } from "react-router-redux";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
-import Drawer from "../components/Drawer";
-import Header from "../components/Header";
+import { Header, HeaderTitleAdapter } from "../components/Header";
 import Layout from "../components/Layout";
-import Navigation from "../components/Navigation";
-import NavLink from "../components/NavLink";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
-
-/**
- * Extend the Element object with the MaterialLayout.toggleDrawer function
- * so we can close the drawer
- */
-interface MDLElement extends Element {
-    MaterialLayout: {
-      toggleDrawer: () => void;
-    };
-}
 
 interface DashboardProps {
   user: User;
@@ -35,8 +22,12 @@ interface DashboardProps {
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
-  goToSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
+  goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
   location: Location;
+}
+
+interface DashboardState {
+  adapter: SourceAdapter;
 }
 
 function mapStateToProps(state: State.All) {
@@ -61,13 +52,20 @@ function mapDispatchToProps(dispatch: any) {
     setSource: function(source: Source) {
       return dispatch(setCurrentSource(source));
     },
-    goToSource: function(source: Source) {
-      return dispatch(replace("/skills/" + source.id + "/logs"));
+    goTo: function(path: string) {
+      return dispatch(replace(path));
     }
   };
 }
 
-class Dashboard extends React.Component<DashboardProps, any> {
+class Dashboard extends React.Component<DashboardProps, DashboardState> {
+
+  constructor(props: DashboardProps) {
+    super(props);
+    this.state = {
+      adapter: new SourceAdapter(this.props.sources)
+    };
+  }
 
   drawerClasses() {
     return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
@@ -81,46 +79,29 @@ class Dashboard extends React.Component<DashboardProps, any> {
     this.props.getSources();
   }
 
-  componentWillReceiveProps(nextProps: DashboardProps) {
-
-    // Solution suggested by https://github.com/react-mdl/react-mdl/issues/254#issuecomment-237926011 for
-    // closing the navigation drawer after a click
-    //
-    // If our locations are different and drawer is open, force a close
-    if (this.props.location.pathname !== nextProps.location.pathname) {
-      const layout = document.querySelector(".mdl-js-layout") as MDLElement;
-      const drawer = document.querySelector(".mdl-layout__drawer");
-
-      if (layout.classList.contains("is-small-screen") && drawer.classList.contains("is-visible")) {
-        layout.MaterialLayout.toggleDrawer();
-      }
-    }
+  componentWillReceiveProps(nextProps: DashboardProps, context: any) {
+    this.state.adapter = new SourceAdapter(nextProps.sources);
+    this.setState(this.state);
   }
 
-  handleSelectedSource(title: string, index: number) {
-    let source = this.getSource(title);
+  handleSelectedSource(index: number) {
+    let source = this.state.adapter.getItem(index);
+    this.props.setSource(source);
+
+    let currentPath = this.props.location.pathname;
+    let newPath = currentPath.replace(this.props.currentSource.id, source.id);
+
+    this.props.goTo(newPath);
+  }
+
+  indexOf(source: Source): number | undefined {
     if (source) {
-      this.props.setSource(source);
-      this.props.goToSource(source);
-    }
-  }
-
-  titles(): string[] {
-    let titles: string[] = [];
-    let sources = this.props.sources;
-    let count = sources.length;
-    for (let i = 0; i < count; ++i) {
-      titles.push(sources[i].name);
-    }
-    return titles;
-  }
-
-  getSource(title: string): Source {
-    let sources = this.props.sources;
-    let count = sources.length;
-    for (let i = 0; i < count; ++i) {
-      if (sources[i].name === title) {
-        return sources[i];
+      let adapter = this.state.adapter;
+      let maxCount = adapter.getCount();
+      for (let i = 0; i < maxCount; ++i) {
+        if (adapter.getItem(i).id === source.id) {
+          return i;
+        }
       }
     }
     return undefined;
@@ -128,24 +109,18 @@ class Dashboard extends React.Component<DashboardProps, any> {
 
   render() {
     return (
-      <Layout drawer={true} header={true}>
+      <Layout header={true}>
         <Header
           className={this.headerClasses()}
-          selectedIndex={this.props.currentSource ? this.titles().indexOf(this.props.currentSource.name) : undefined}
-          titles={this.props.currentSource ? this.titles() : undefined}
-          onTitleSelect={this.handleSelectedSource.bind(this)}>
+          selectedIndex={this.indexOf(this.props.currentSource)}
+          items={this.props.currentSource ? new SourceAdapter(this.props.sources) : undefined}
+          onItemSelect={this.handleSelectedSource.bind(this)}
+          displayHomeButton={this.props.location.pathname !== "/"}>
           <UserControl
             login={this.props.login}
             logout={this.props.logout}
             user={this.props.user} />
         </Header>
-        <Drawer className={this.drawerClasses()} >
-          <Navigation className={CLASSES.COLOR.BLUE_GREY_800}>
-            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/" name="Home" icon="home" />
-            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/skills/new" name="New Skill" icon="add" />
-            <NavLink className={CLASSES.TEXT.BLUE_GREY_400} path="/skills" name="My Skills" icon="subject" />
-          </Navigation>
-        </Drawer>
         <Content>
           {this.props.children}
         </Content>
@@ -158,3 +133,23 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dashboard);
+
+class SourceAdapter implements HeaderTitleAdapter<Source> {
+  readonly sources: Source[];
+
+  constructor(source: Source[]) {
+    this.sources = (source) ? source : [];
+  }
+
+  getCount(): number {
+    return this.sources.length;
+  }
+
+  getItem(index: number): Source {
+    return this.sources[index];
+  }
+
+  getTitle(index: number): string {
+    return this.sources[index].name;
+  }
+}

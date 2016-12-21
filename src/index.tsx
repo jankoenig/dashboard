@@ -13,12 +13,12 @@ import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
 import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
-import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/logspage/LogsPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SourceListPage from "./pages/SourceListPage";
+import SourcePage from "./pages/SourcePage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
@@ -104,10 +104,11 @@ let render = function () {
                     <IndexRoute component={LoginPage} />
                 </Route>
                 <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                    <IndexRoute component={HomePage} />
+                    <IndexRoute component={SourceListPage} />
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
-                    <Route path="/skill/:sourceId" onEnter={setSource} onLeave={removeSource} >
+                    <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
+                        <IndexRoute component={SourcePage} />
                         <Route path="/skills/:sourceId/logs" component={LogsPage} />
                     </Route>
                     <Route path="*" component={NotFoundPage} />

@@ -16,6 +16,7 @@ interface ButtonProps {
   testid?: string;
   style?: React.CSSProperties;
   href?: string;
+  to?: string;
 };
 
 /**

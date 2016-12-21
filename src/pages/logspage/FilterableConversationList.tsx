@@ -18,11 +18,6 @@ export interface FilterableConversationListProps {
     filter?: FilterType;
 }
 
-interface Dimensions {
-    width: number;
-    height: number;
-}
-
 interface FilterableConversationListState {
     shownConversations: ConversationList;
     lastFilterType: FilterType;
@@ -59,7 +54,7 @@ export class FilterableConversationList extends React.Component<FilterableConver
                 if (err.message !== ERROR.FILTER.NO_ITEMS_FOUND) {
                     console.error(err);
                 }
-                me.state.shownConversations = [];
+                me.state.shownConversations = new ConversationList();
                 me.setState(me.state);
             });
     }

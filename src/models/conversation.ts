@@ -1,11 +1,13 @@
 import Color from "../utils/color";
 import Log from "./log";
 import Output from "./output";
+import StackTrace from "./stack-trace";
 
 export interface ConversationProperties {
     request: Log;
     response: Log;
     outputs?: Output[];
+    stackTraces?: StackTrace[];
 }
 
 export default class Conversation implements ConversationProperties {
@@ -16,10 +18,13 @@ export default class Conversation implements ConversationProperties {
 
     readonly outputs: Output[];
 
+    readonly stackTraces: StackTrace[];
+
     constructor(props: ConversationProperties) {
         this.request = props.request;
         this.response = props.response;
         this.outputs = props.outputs ? props.outputs.slice() : [];
+        this.stackTraces = props.stackTraces ? props.stackTraces.slice() : [];
     }
 
     get id(): string {
@@ -106,6 +111,10 @@ export default class Conversation implements ConversationProperties {
 
     get hasError(): boolean {
         return this.hasOutputType("ERROR");
+    }
+
+    get hasCrash(): boolean {
+        return this.stackTraces.length > 0;
     }
 
     hasOutputType(type: string): boolean {

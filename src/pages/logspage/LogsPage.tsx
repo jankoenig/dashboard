@@ -9,6 +9,7 @@ import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
 import Output from "../../models/output";
 import Source from "../../models/source";
+import StackTrace from "../../models/stack-trace";
 import { State } from "../../reducers";
 import browser from "../../utils/browser";
 import { FilterableConversationList } from "./FilterableConversationList";
@@ -28,7 +29,7 @@ interface Dimensions {
 export interface LogsPageProps {
     logs: Log[];
     source: Source;
-    getLogs: (source: string) => (dispatch: Redux.Dispatch<any>) => void;
+    getLogs: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
     params?: any;
 }
 
@@ -39,6 +40,7 @@ interface LogsPageState {
     request: Log | undefined;
     response: Log | undefined;
     outputs: Output[];
+    stackTraces: StackTrace[];
     filter?: FilterType;
 }
 
@@ -51,7 +53,7 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        getLogs: function (source: string) {
+        getLogs: function (source: Source) {
             dispatch(getLogs(source));
         }
     };
@@ -70,7 +72,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             retrievingLogs: false,
             request: undefined,
             response: undefined,
-            outputs: []
+            outputs: [],
+            stackTraces: []
         };
     }
 
@@ -130,7 +133,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         if (this.state.retrievingLogs) {
             this.state.retrievingLogs = false;
         } else if (nextProps.source) {
-            this.props.getLogs(nextProps.source.secretKey);
+            this.props.getLogs(nextProps.source);
             this.state.retrievingLogs = true;
         }
         this.state.source = nextProps.source;
@@ -141,6 +144,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.state.request = conversation.request;
         this.state.response = conversation.response;
         this.state.outputs = conversation.outputs;
+        this.state.stackTraces = conversation.stackTraces;
         this.setState(this.state);
     }
 
@@ -173,7 +177,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                                     <Interaction
                                         request={this.state.request}
                                         response={this.state.response}
-                                        outputs={this.state.outputs} />
+                                        outputs={this.state.outputs}
+                                        stackTraces={this.state.stackTraces} />
                                 ) : (
                                     <h6> Select a log to view </h6>
                                 )

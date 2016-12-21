@@ -42,7 +42,7 @@ describe("FormInput", function () {
         expect(label.props().children).to.equal("Label");
     });
 
-    describe("Checks the onChange gets routed to our method.", function() {
+    describe("Checks the onChange gets routed to our method.", function () {
         let value = "value";
         const onChange = sinon.spy();
         const wrapper = shallow((
@@ -54,8 +54,7 @@ describe("FormInput", function () {
                 />
         ));
 
-        wrapper.find("input").simulate("change", {target: {value: "A"}});
-
+        wrapper.find("input").simulate("change", { target: { value: "A" } });
         expect(onChange).is.calledOnce;
     });
 
@@ -98,44 +97,63 @@ describe("FormInput", function () {
     });
 
     describe("with autocomplete = on", function () {
-        it("renders correctly", function () {
-            let value = "value";
-            const onChange = sinon.spy();
-            const wrapper = shallow((
-                <Form.FormInput
-                    type={"text"}
-                    label={"Label"}
-                    value={value}
-                    onChange={onChange}
-                    autoComplete={"on"}
-                    />
-            ));
 
+        let value = "value";
+        const onChange = sinon.spy();
+        const wrapper = shallow((
+            <Form.FormInput
+                type={"text"}
+                label={"Label"}
+                value={value}
+                onChange={onChange}
+                autoComplete={"on"}
+                />
+        ));
+        it("renders correctly", function () {
             let input = wrapper.find("input");
             expect(input.props().autoComplete).to.equal("on");
         });
     });
     describe("with readonly = true", function () {
+        let value = "value";
+        const onChange = sinon.spy();
+        const wrapper = shallow((
+            <Form.FormInput
+                type={"text"}
+                label={"Label"}
+                value={value}
+                onChange={onChange}
+                readOnly={true}
+                />
+        ));
         it("renders correctly", function () {
-            let value = "value";
-            const onChange = sinon.spy();
-            const wrapper = shallow((
-                <Form.FormInput
-                    type={"text"}
-                    label={"Label"}
-                    value={value}
-                    onChange={onChange}
-                    readOnly={true}
-                    />
-            ));
-
             let input = wrapper.find("input");
             expect(input.props().readOnly).to.equal(true);
         });
     });
-
-    describe("With error handler", function() {
-        it("Check that there is no pattern if error is not applied", function() {
+    describe("with showable = true", function () {
+        const onChange = sinon.spy();
+        const wrapper = shallow((
+            <Form.FormInput
+                type={"password"}
+                label={"Label"}
+                value={"value"}
+                onChange={onChange}
+                readOnly={true}
+                showable={true}
+                />
+        ));
+        it("renders correctly", function () {
+            expect(wrapper.find("Pill")).to.have.length(1);
+        });
+        it("shows the contents on click", function () {
+            expect(wrapper.find("input").first().props().type).to.equal("password");
+            wrapper.find("Pill").simulate("click");
+            expect(wrapper.find("input").first().props().type).to.equal("text");
+        });
+    });
+    describe("With error handler", function () {
+        it("Check that there is no pattern if error is not applied", function () {
             let value = "value";
 
             const onChange = sinon.spy();
@@ -152,12 +170,11 @@ describe("FormInput", function () {
             let input = wrapper.find("input");
             expect(input.props().pattern).is.undefined;
         });
-
-        it("Checks that the error handler pattern is applied", function() {
+        it("Checks that the error handler pattern is applied", function () {
             let value = "value";
             let error: Form.ErrorHandler = {
                 regex: /^\w$/,
-                errorMessage: function(input: string): string {
+                errorMessage: function (input: string): string {
                     return "Check";
                 }
             };
@@ -177,12 +194,11 @@ describe("FormInput", function () {
             let input = wrapper.find("input");
             expect(input.props().pattern).is.equal(error.regex.source);
         });
-
-        it ("Checks that the error message is thrown when pattern doesn't match.", function() {
+        it("Checks that the error message is thrown when pattern doesn't match.", function () {
             let value = "value";
             let error: Form.ErrorHandler = {
                 regex: /^[A-Z]$/,
-                errorMessage: sinon.spy(function(input: string): string {
+                errorMessage: sinon.spy(function (input: string): string {
                     return "Check";
                 })
             };
@@ -199,7 +215,7 @@ describe("FormInput", function () {
                     />
             ));
 
-            wrapper.find("input").simulate("change", {target: {value: "A"}});
+            wrapper.find("input").simulate("change", { target: { value: "A" } });
 
             expect(error.errorMessage).to.be.calledOnce;
         });

@@ -4,11 +4,13 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es5",
-    "jsx": "react"
+    "jsx": "react",
+    "noUnusedLocals": true
   },
   "include": [
     "src/**/*",
     "./typings/index.d.ts",
+    "./typings/victory.d.ts",
     "./typings/react-list.d.ts",
     "./typings/react-json-tree.d.ts",
     "./typings/uuid.d.ts",

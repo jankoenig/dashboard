@@ -1,8 +1,11 @@
 import * as classNames from "classnames";
+import * as objectAssign from "object-assign";
 import * as React from "react";
 
+import { COLORS } from "../constants";
 import StringUtil from "../utils/string";
 import MDLComponent from "./MDLComponent";
+import Pill from "./Pill";
 
 /**
  * Class that can be included to display custom messages to the user based on the input.
@@ -22,7 +25,12 @@ export interface ErrorHandler {
     errorMessage: (input: string) => string | undefined;
 }
 
+export interface FormInputTheme {
+    inputTextColor: string;
+};
+
 interface FormInputProps {
+    theme?: FormInputTheme;
     label: string;
     type: "text" | "password";
     value: string;
@@ -31,13 +39,15 @@ interface FormInputProps {
     onChange?: (event: React.FormEvent) => any;
     style?: React.CSSProperties;
     readOnly?: boolean;
-    autoComplete?: "off" | "on" ;
+    autoComplete?: "off" | "on";
     hidden?: boolean;
     error?: ErrorHandler;
+    showable?: boolean;
 }
 
 interface FormState {
     errorMsg?: string;
+    show: boolean;
 }
 
 export class FormInput extends MDLComponent<FormInputProps, FormState> {
@@ -45,7 +55,8 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
     constructor(props: FormInputProps) {
         super(props);
         this.state = {
-            errorMsg: undefined
+            errorMsg: undefined,
+            show: false
         };
     }
 
@@ -53,6 +64,10 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         return classNames("mdl-textfield mdl-js-textfield", {
             "mdl-textfield--floating-label": this.props.floatingLabel
         });
+    }
+
+    inputStyle(): React.CSSProperties {
+        return objectAssign({}, { color: this.props.theme ? this.props.theme.inputTextColor : undefined });
     }
 
     onFormChange(event: React.FormEvent) {
@@ -70,10 +85,41 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         }
     }
 
+    onShow(event: React.MouseEvent) {
+        this.setState(function (previousState) {
+            return {
+                errorMsg: previousState.errorMsg,
+                show: !previousState.show
+            };
+        });
+    }
+
     render() {
         let pattern: string = undefined;
         if (this.props.error !== undefined) {
             pattern = this.props.error.regex.source;
+        }
+
+        let pill: JSX.Element;
+
+        if (this.props.showable) {
+            let pillText = this.state.show ? "hide" : "show";
+            let pillColor = this.state.show ? COLORS.GREEN : COLORS.RED;
+
+            pill = (
+                <Pill onClick={this.onShow.bind(this)}
+                    style={{
+                        backgroundColor: pillColor,
+                        position: "absolute",
+                        right: "0px",
+                        top: "0px",
+                        padding: "2px",
+                        lineHeight: "12px",
+                        cursor: "pointer"
+                    }}>
+                    {pillText}
+                </Pill>
+            );
         }
 
         let autoFocus: boolean = this.props.autoFocus || false;
@@ -86,12 +132,14 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     autoFocus={autoFocus}
                     autoComplete={this.props.autoComplete ? this.props.autoComplete : "off"}
                     className="mdl-textfield__input"
-                    type={this.props.type}
+                    type={this.state.show ? "text" : this.props.type}
                     id={StringUtil.stringToCamelCase(this.props.label)}
                     value={this.props.value}
                     pattern={pattern}
                     onChange={this.onFormChange.bind(this)}
-                    readOnly={this.props.readOnly}/>
+                    readOnly={this.props.readOnly}
+                    style={this.inputStyle()} />
+                {pill}
                 <label
                     className="mdl-textfield__label"
                     htmlFor={StringUtil.stringToCamelCase(this.props.label)}>

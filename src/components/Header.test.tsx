@@ -6,12 +6,31 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import Header from "./Header";
-import { SelectAdapter, SelectProps } from "./Select";
+import { Header, HeaderTitleAdapter } from "./Header";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
+
+class TitlesAdapter implements HeaderTitleAdapter<string> {
+    readonly titles: string[];
+
+    constructor(titles: string[]) {
+        this.titles = titles;
+    }
+
+    getCount(): number {
+        return this.titles.length;
+    }
+
+    getTitle(index: number): string {
+        return this.titles[index];
+    }
+
+    getItem(index: number): string {
+        return this.titles[index];
+    }
+}
 
 describe("Header", function () {
     it("renders correctly", function () {
@@ -21,7 +40,7 @@ describe("Header", function () {
 
     describe("with title", function () {
         it("renders correctly", function () {
-            const wrapper = shallow(<Header titles={["title"]} />);
+            const wrapper = shallow(<Header items={new TitlesAdapter(["title"])} />);
             expect(wrapper.find("span").text()).to.have.equal("title");
             expect(wrapper.find("Select")).to.have.length(0);
         });
@@ -29,15 +48,16 @@ describe("Header", function () {
 
     describe("with multiple titles", function () {
         it("renders correctly", function () {
-            const wrapper = shallow(<Header titles={["title1", "title2"]} />);
+            const wrapper = shallow(<Header items={new TitlesAdapter(["title1", "title2"])} />);
             expect(wrapper.find("span")).to.have.length(0);
             // There should be a munu which lists the titles.
             expect(wrapper.find("Select")).to.have.length(1);
         });
 
         it("tests that the titles are selectable", function () {
+            const adapter = new TitlesAdapter(["title1", "title2", "title3", "title4"]);
             const onHandled = sinon.spy();
-            const wrapper = shallow(<Header titles={["title1", "title2", "title3", "title4"]} onTitleSelect={onHandled} />);
+            const wrapper = shallow(<Header items={adapter} onItemSelect={onHandled} />);
             let select = wrapper.find("Select");
 
             select.simulate("selected", "title1", 0);
@@ -47,33 +67,20 @@ describe("Header", function () {
             select.simulate("selected", "title5", 4);
 
             expect(onHandled).to.have.callCount(5);
-            expect(onHandled).to.be.calledWithExactly("title1", 0);
-            expect(onHandled).to.be.calledWithExactly("title2", 1);
-            expect(onHandled).to.be.calledWithExactly("title3", 2);
-            expect(onHandled).to.be.calledWithExactly("title4", 3);
-            expect(onHandled).to.be.calledWithExactly("title5", 4);
+            expect(onHandled).to.be.calledWithExactly(0);
+            expect(onHandled).to.be.calledWithExactly(1);
+            expect(onHandled).to.be.calledWithExactly(2);
+            expect(onHandled).to.be.calledWithExactly(3);
+            expect(onHandled).to.be.calledWithExactly(4);
         });
 
         it("tests the selectd index", function () {
+            const adapter = new TitlesAdapter(["title1", "title2", "title3", "title4"]);
             const onHandled = sinon.spy();
-            const wrapper = shallow(<Header titles={["title1", "title2", "title3", "title4"]} onTitleSelect={onHandled} selectedIndex={2} />);
+            const wrapper = shallow(<Header items={adapter} onItemSelect={onHandled} selectedIndex={2} />);
             let select = wrapper.find("Select");
 
             expect((select.props() as any).defaultIndex).to.equal(2);
-        });
-
-        it("tests the selector adapter.", function () {
-            const titles = ["title1", "title2", "title3", "title4"];
-            const wrapper = shallow(<Header titles={titles} />);
-            let select = wrapper.find("Select");
-
-            let adapter: SelectAdapter<string> = (select.props() as SelectProps<string>).adapter;
-
-            expect(adapter.getCount()).to.equal(4);
-            for (let i = 0; i < titles.length; i++) {
-                expect(adapter.getItem(i)).to.equal(titles[i]);
-                expect(adapter.getTitle(i)).to.equal(titles[i]);
-            }
         });
     });
 });

@@ -1,25 +1,33 @@
 import * as classNames from "classnames";
 import * as React from "react";
+import { Link } from "react-router";
 
 import Button from "./Button";
 import { Menu, MenuItem } from "./Menu";
-import { Select, SelectAdapter } from "./Select";
+import { Select } from "./Select";
 
-interface HeaderProps {
+export interface HeaderTitleAdapter<T> {
+  getCount(): number;
+  getItem(index: number): T;
+  getTitle(index: number): string;
+}
+
+export interface HeaderProps {
   selectedIndex?: number;
-  titles?: string[];
+  items?: HeaderTitleAdapter<any>;
   className?: string;
-  onTitleSelect?: (title: string, index: number) => void;
+  onItemSelect?: (index: number) => void;
+  displayHomeButton?: boolean;
 }
 
 interface HeaderState {
 }
 
-export default class Header extends React.Component<HeaderProps, HeaderState> {
+export class Header extends React.Component<HeaderProps, HeaderState> {
 
-  handleTitleSelect(title: string, index: number) {
-    if (this.props.onTitleSelect) {
-      this.props.onTitleSelect(title, index);
+  handleTitleSelect(item: any, index: number) {
+    if (this.props.onItemSelect) {
+      this.props.onItemSelect(index);
     }
   }
 
@@ -29,24 +37,28 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
 
   render() {
     let title: JSX.Element = undefined;
-    if (this.props.titles && this.props.titles.length > 0) {
-      if (this.props.titles.length === 1) {
-        title = (<span className="mdl-layout-title">{this.props.titles[0]}</span>);
+    if (this.props.items && this.props.items.getCount() > 0) {
+      if (this.props.items.getCount() === 1) {
+        title = (<span className="mdl-layout-title">{this.props.items.getTitle(0)}</span>);
       } else {
         let index = this.props.selectedIndex || 0;
-        title = (<Select adapter={new TitlesAdapter(this.props.titles)} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index} />);
+        title = (<Select adapter={this.props.items} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index} />);
       }
     }
 
     return (
       <header className={this.classes()}>
-        <div className="mdl-layout__header-row">
+        <div className="mdl-layout__header-row" style={{ paddingLeft: "0px" }}>
+          {this.props.displayHomeButton ? (
+            <Link to={"/"} style={{paddingLeft: "15px", paddingRight: "15px"}}>
+              <i className="material-icons" role="presentation">home</i>
+            </Link>
+          ) : (undefined)}
           {title}
           <div className="mdl-layout-spacer" />
           {this.props.children}
           <Button id="support">
-            <i
-              className="material-icons"
+            <i className="material-icons"
               role="presentation">help_outline
           </i>
           </Button>
@@ -94,23 +106,4 @@ export default class Header extends React.Component<HeaderProps, HeaderState> {
   }
 }
 
-class TitlesAdapter implements SelectAdapter<string> {
-
-  titles: string[];
-
-  constructor(titles: string[]) {
-    this.titles = titles;
-  }
-
-  getCount(): number {
-    return this.titles.length;
-  };
-
-  getItem(index: number): string {
-    return this.titles[index];
-  };
-
-  getTitle(index: number): string {
-    return this.titles[index];
-  }
-}
+export default Header;

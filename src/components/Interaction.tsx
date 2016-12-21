@@ -4,11 +4,13 @@ import JSONTree from "react-json-tree";
 import { OutputList } from "../components/OutputList";
 import Log from "../models/log";
 import Output from "../models/output";
+import StackTrace from "../models/stack-trace";
 
 interface InteractionProps {
     request: Log;
     response: Log;
     outputs: Output[];
+    stackTraces: StackTrace[];
     theme?: any;
 }
 
@@ -88,7 +90,7 @@ export class Interaction extends React.Component<InteractionProps, any> {
                 <h6>REQUEST</h6>
                 {this.getTree(this.props.request)}
                 <h6>LOGS</h6>
-                <OutputList outputs={this.props.outputs} />
+                <OutputList outputs={this.props.outputs} stackTraces={this.props.stackTraces} />
                 <h6>RESPONSE</h6>
                 {this.getTree(this.props.response)}
             </div>

@@ -1,9 +1,9 @@
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
-import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
-
+import { Cell, Grid } from "../../components/Grid";
 import { Select, SelectAdapter } from "../../components/Select";
+import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
 
 const DatePickerTheme = require("./themes/datepicker-input");
 
@@ -110,21 +110,34 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
         return (
-            <div style={{ backgroundColor: "#243036", paddingLeft: "16px", paddingRight: "16px" }}>
-                <div style={{ float: "left", width: "120px" }} >
-                    <Select inputStyle={SelectInputStyle} labelStyle={SelectLabelStyle} iconStyle={SelectIconStyle} adapter={this.filterAdapter} hint={"Log Level"} onSelected={typeHandleChange} />
-                </div>
-                <div style={{ float: "right", display: "block" }} >
-                    <div style={{ float: "left", display: "inline-block" }} >
-                        <DatePicker theme={DatePickerTheme} label="Start Date" maxDate={today} value={this.state.startDate} onChange={startHandleChange} />
-                    </div>
-                    <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto 10px", marginTop: "20px", display: "inline-block" }}>-</p>
-                    <div style={{ float: "right", display: "inline-block" }} >
-                        <DatePicker theme={DatePickerTheme} label="End Date" maxDate={today} value={this.state.endDate} onChange={endHandleChange} />
-                    </div>
-                </div>
-                <div style={{ clear: "both" }} />
-            </div>
+            <Grid style={{ backgroundColor: "#243036" }} >
+                <Cell col={2} tablet={2} phone={4}>
+                    <Select
+                        inputStyle={SelectInputStyle}
+                        labelStyle={SelectLabelStyle}
+                        iconStyle={SelectIconStyle}
+                        adapter={this.filterAdapter}
+                        hint={"Log Level"}
+                        onSelected={typeHandleChange} />
+                </Cell>
+                <Cell col={2} offset={5} tablet={2} offsetTablet={1} phone={2}>
+                    <DatePicker
+                        theme={DatePickerTheme}
+                        label="Start Date"
+                        maxDate={today}
+                        value={this.state.startDate}
+                        onChange={startHandleChange} />
+                </Cell>
+                <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
+                <Cell col={2} tablet={2} phone={2}>
+                    <DatePicker
+                        theme={DatePickerTheme}
+                        label="End Date"
+                        maxDate={today}
+                        value={this.state.endDate}
+                        onChange={endHandleChange} />
+                </Cell>
+            </Grid>
         );
     }
 }

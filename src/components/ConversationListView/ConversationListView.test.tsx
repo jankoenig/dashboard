@@ -46,7 +46,7 @@ describe("ConversationListView", function () {
 
         it("renders correctly", function () {
             let onClick = sinon.spy();
-            const wrapper = shallow(<ConversationListView height={200} conversations={[]} onClick={onClick} onEmpty={noLogsRenderer}/>);
+            const wrapper = shallow(<ConversationListView height={200} conversations={new ConversationList()} onClick={onClick} onEmpty={noLogsRenderer}/>);
 
             expect(wrapper.find("ReactList")).to.have.length(0);
             expect(wrapper.find("p")).to.have.length(1);

@@ -40,7 +40,7 @@ export namespace String {
 
         // remove accents, swap ñ for n, etc
         let from = "ãàáäâẽèéëêìíïîõòóöôùúüûñçß·/_,:;";
-        let to   = "aaaaaeeeeeiiiiooooouuuuncs------";
+        let to = "aaaaaeeeeeiiiiooooouuuuncs------";
         for (let i = 0, l = from.length; i < l; i++) {
             str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
         }
@@ -68,6 +68,16 @@ export namespace String {
             full += useChars.charAt(Math.floor(Math.random() * useChars.length));
         }
         return full;
+    }
+
+
+    export function setCharAt(str: string, index: number, character: string) {
+
+        if (index > str.length - 1) {
+            return str;
+        }
+
+        return str.substr(0, index) + character + str.substr(index + 1);
     }
 }
 

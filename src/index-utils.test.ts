@@ -3,7 +3,7 @@ import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as sinon from "sinon";
 
-import { SET_CURRENT_SOURCE } from "./constants";
+import { FETCH_LOGS_REQUEST, SET_CURRENT_SOURCE } from "./constants";
 import IndexUtils from "./index-utils";
 import Source from "./models/source";
 import source from "./services/source";
@@ -115,9 +115,10 @@ describe("Unit tests for the index-utils.ts", function () {
                     .then(function(returnedSource: Source) {
                         expect(returnedSource).to.equal(sources[3]);
 
-                        let action: any = store.getActions()[0];
-                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
-                        expect(action.source).to.equal(sources[3]);
+                        let actions = store.getActions();
+                        expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[1].type).to.equal(SET_CURRENT_SOURCE);
+                        expect(actions[1].source).to.equal(sources[3]);
                     });
         });
 
@@ -127,9 +128,10 @@ describe("Unit tests for the index-utils.ts", function () {
                         expect(returnedSource).to.equal(sources[3]);
                         expect(getSourceSpy).to.be.calledOnce;
 
-                        let action: any = store.getActions()[0];
-                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
-                        expect(action.source).to.equal(sources[3]);
+                        let actions = store.getActions();
+                        expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[1].type).to.equal(SET_CURRENT_SOURCE);
+                        expect(actions[1].source).to.equal(sources[3]);
                     });
         });
 
@@ -139,9 +141,10 @@ describe("Unit tests for the index-utils.ts", function () {
                         expect(returnedSource).to.equal(sources[3]);
                         expect(getSourceSpy).to.be.calledOnce;
 
-                        let action: any = store.getActions()[0];
-                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
-                        expect(action.source).to.equal(sources[3]);
+                        let actions = store.getActions();
+                        expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[1].type).to.equal(SET_CURRENT_SOURCE);
+                        expect(actions[1].source).to.equal(sources[3]);
                     });
         });
 
@@ -152,9 +155,10 @@ describe("Unit tests for the index-utils.ts", function () {
                         expect(returnedSource).to.equal(sources[3]);
                         expect(getSourceSpy).to.be.calledOnce;
 
-                        let action: any = store.getActions()[0];
-                        expect(action.type).to.equal(SET_CURRENT_SOURCE);
-                        expect(action.source).to.equal(sources[3]);
+                        let actions = store.getActions();
+                        expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[1].type).to.equal(SET_CURRENT_SOURCE);
+                        expect(actions[1].source).to.equal(sources[3]);
                     });
             // tslint:enable:no-null-keyword
         });
@@ -176,12 +180,12 @@ describe("Unit tests for the index-utils.ts", function () {
             store = mockStore({});
         });
 
-        it ("Checks that a dispatched action for removing the selected source was thrown.", function() {
+        it("Checks that a dispatched action for removing the selected source was thrown.", function() {
             IndexUtils.removeSelectedSource(store.dispatch);
 
-            let action: any = store.getActions()[0];
-            expect(action.type).to.equal(SET_CURRENT_SOURCE);
-            expect(action.source).to.equal(undefined);
+            let actions = store.getActions();
+            expect(actions[0].type).to.equal(SET_CURRENT_SOURCE);
+            expect(actions[0].source).to.equal(undefined);
         });
     });
 });
