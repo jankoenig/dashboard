@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import * as sinon from "sinon";
 
 import DateUtil from "./date";
 
@@ -12,6 +13,14 @@ describe("DateUtil", function () {
         });
     });
     describe("hoursAgo", function () {
+        let clock: Sinon.SinonFakeTimers;
+        beforeEach(function() {
+            clock = sinon.useFakeTimers(new Date(1986, 6, 19, 14).getTime());
+        });
+
+        afterEach(function() {
+            clock.restore();
+        });
         it("returns a date from two hours ago", function () {
             let now = new Date();
             let previousDate = DateUtil.hoursAgo(2);
@@ -22,20 +31,24 @@ describe("DateUtil", function () {
     });
     describe("buckets", function () {
         describe("for hours", function () {
-            let buckets = DateUtil.timeBuckets(DateUtil.hoursAgo(7), new Date(), "hours");
+            let endTime = new Date();
+            endTime.setHours(14);
+            let startTime = new Date();
+            startTime.setHours(endTime.getHours() - 7);
+            let buckets = DateUtil.timeBuckets(startTime, endTime, "hours");
 
             it("returns the correct amount", function () {
                 expect(buckets).to.have.length(8); // 7 ago plus the current hour = 8
             });
             it("returns the proper first date", function () {
-                expect(buckets[0].getHours()).to.equal(new Date().getHours() - 7);
+                expect(buckets[0].getHours()).to.equal(endTime.getHours() - 7);
                 expect(buckets[0].getMinutes()).to.equal(0);
             });
             it("returns a correct date an hour after the first", function () {
-                expect(buckets[1].getHours()).to.equal(new Date().getHours() - 6);
+                expect(buckets[1].getHours()).to.equal(endTime.getHours() - 6);
             });
             it("returns the last date that has the same hour as the current", function () {
-                expect(buckets[7].getHours()).to.equal(new Date().getHours());
+                expect(buckets[7].getHours()).to.equal(endTime.getHours());
             });
         });
     });
