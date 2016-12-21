@@ -114,7 +114,8 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                         right: "0px",
                         top: "0px",
                         padding: "2px",
-                        lineHeight: "12px"
+                        lineHeight: "12px",
+                        cursor: "pointer"
                     }}>
                     {pillText}
                 </Pill>
