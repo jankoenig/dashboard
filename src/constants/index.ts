@@ -46,7 +46,8 @@ export type SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 export const SET_SNACKBAR_MESSAGE: SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 
 export namespace COLORS {
-    export const RED = "rgb(255,82,82)";
+    export const RED = "#F44336";
+    export const GREEN = "#4CAF50";
     export namespace ICONS {
         export const PRIMARY = RED;
     }
