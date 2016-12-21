@@ -28,7 +28,7 @@ describe("Source Page", function () {
         ));
 
         it("renders correctly", function () {
-            expect(wrapper.find("FormInput")).to.have.length(4);
+            expect(wrapper.find("DataTile")).to.have.length(4);
             expect(wrapper.find("SourceSummaryView")).to.have.length(1);
         });
     });
@@ -38,7 +38,7 @@ describe("Source Page", function () {
         ));
 
         it("renders correctly", function () {
-            expect(wrapper.find("FormInput")).to.have.length(0);
+            expect(wrapper.find("DataTile")).to.have.length(0);
             expect(wrapper.find("SourceSummaryView")).to.have.length(1);
         });
     });

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router";
 
 import Button from "../components/Button";
-import FormInput from "../components/FormInput";
+import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
 import SourceSummaryView from "../components/SourceSummaryView";
 import ConversationList from "../models/conversation-list";
@@ -48,48 +48,29 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
                     <span>
                         <Grid style={{ backgroundColor: "rgb(36, 48, 54)" }}>
                             <Cell col={3} >
-                                <FormInput
+                                <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
-                                    style={{ paddingBottom: 0 }}
-                                    type={"text"}
                                     value={this.props.source.name}
-                                    label={"Name"}
-                                    floatingLabel={true}
-                                    autoComplete={"off"}
-                                    readOnly={true} />
+                                    label={"Name"} />
                             </Cell>
                             <Cell col={3} >
-                                <FormInput
+                                <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
-                                    style={{ paddingBottom: 0 }}
-                                    type={"text"}
                                     value={this.props.source.id}
-                                    label={"ID"}
-                                    floatingLabel={true}
-                                    autoComplete={"off"}
-                                    readOnly={true} />
+                                    label={"ID"} />
                             </Cell>
                             <Cell col={3} >
-                                <FormInput
+                                <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
-                                    style={{ paddingBottom: 0 }}
-                                    type={"text"}
                                     value={moment(this.props.source.created).format("MMM Do, YYYY")}
-                                    label={"Created"}
-                                    floatingLabel={true}
-                                    autoComplete={"off"}
-                                    readOnly={true} />
+                                    label={"Created"} />
                             </Cell>
                             <Cell col={3} >
-                                <FormInput
+                                <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
-                                    style={{ paddingBottom: 0 }}
-                                    type={"password"}
                                     value={this.props.source.secretKey}
                                     label={"Secret Key"}
-                                    floatingLabel={true}
-                                    autoComplete={"off"}
-                                    readOnly={true}
+                                    hidden={true}
                                     showable={true} />
                             </Cell>
                         </Grid>

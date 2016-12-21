@@ -24,7 +24,7 @@ export interface ErrorHandler {
     errorMessage: (input: string) => string | undefined;
 }
 
-interface FormInputTheme {
+export interface FormInputTheme {
     inputTextColor: string;
 } ;
 
