@@ -2,6 +2,7 @@ import * as classNames from "classnames";
 import * as objectAssign from "object-assign";
 import * as React from "react";
 
+import { COLORS } from "../constants";
 import StringUtil from "../utils/string";
 import MDLComponent from "./MDLComponent";
 import Pill from "./Pill";
@@ -24,9 +25,9 @@ export interface ErrorHandler {
     errorMessage: (input: string) => string | undefined;
 }
 
-interface FormInputTheme {
+export interface FormInputTheme {
     inputTextColor: string;
-} ;
+};
 
 interface FormInputProps {
     theme?: FormInputTheme;
@@ -38,7 +39,7 @@ interface FormInputProps {
     onChange?: (event: React.FormEvent) => any;
     style?: React.CSSProperties;
     readOnly?: boolean;
-    autoComplete?: "off" | "on" ;
+    autoComplete?: "off" | "on";
     hidden?: boolean;
     error?: ErrorHandler;
     showable?: boolean;
@@ -66,7 +67,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
     }
 
     inputStyle(): React.CSSProperties {
-        return objectAssign({}, {color: this.props.theme ? this.props.theme.inputTextColor : undefined});
+        return objectAssign({}, { color: this.props.theme ? this.props.theme.inputTextColor : undefined });
     }
 
     onFormChange(event: React.FormEvent) {
@@ -85,10 +86,10 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
     }
 
     onShow(event: React.MouseEvent) {
-        this.setState(function(previousState) {
+        this.setState(function (previousState) {
             return {
                 errorMsg: previousState.errorMsg,
-                show: true
+                show: !previousState.show
             };
         });
     }
@@ -97,6 +98,28 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         let pattern: string = undefined;
         if (this.props.error !== undefined) {
             pattern = this.props.error.regex.source;
+        }
+
+        let pill: JSX.Element;
+
+        if (this.props.showable) {
+            let pillText = this.state.show ? "hide" : "show";
+            let pillColor = this.state.show ? COLORS.GREEN : COLORS.RED;
+
+            pill = (
+                <Pill onClick={this.onShow.bind(this)}
+                    style={{
+                        backgroundColor: pillColor,
+                        position: "absolute",
+                        right: "0px",
+                        top: "0px",
+                        padding: "2px",
+                        lineHeight: "12px",
+                        cursor: "pointer"
+                    }}>
+                    {pillText}
+                </Pill>
+            );
         }
 
         let autoFocus: boolean = this.props.autoFocus || false;
@@ -115,10 +138,8 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     pattern={pattern}
                     onChange={this.onFormChange.bind(this)}
                     readOnly={this.props.readOnly}
-                    style={this.inputStyle()}/>
-                { this.props.showable && !this.state.show ? (
-                    <Pill onClick={this.onShow.bind(this)} style={{ position: "absolute", "right": "0px", top:"20px", padding:"2px", lineHeight:"12px"}}> show </Pill>
-                ) : undefined }
+                    style={this.inputStyle()} />
+                {pill}
                 <label
                     className="mdl-textfield__label"
                     htmlFor={StringUtil.stringToCamelCase(this.props.label)}>

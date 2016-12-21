@@ -6,7 +6,7 @@ import { push, replace } from "react-router-redux";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
-import Header from "../components/Header";
+import { Header, HeaderTitleAdapter } from "../components/Header";
 import Layout from "../components/Layout";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
@@ -22,8 +22,12 @@ interface DashboardProps {
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
-  goToSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
+  goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
   location: Location;
+}
+
+interface DashboardState {
+  adapter: SourceAdapter;
 }
 
 function mapStateToProps(state: State.All) {
@@ -48,13 +52,20 @@ function mapDispatchToProps(dispatch: any) {
     setSource: function(source: Source) {
       return dispatch(setCurrentSource(source));
     },
-    goToSource: function(source: Source) {
-      return dispatch(replace("/skills/" + source.id));
+    goTo: function(path: string) {
+      return dispatch(replace(path));
     }
   };
 }
 
-class Dashboard extends React.Component<DashboardProps, any> {
+class Dashboard extends React.Component<DashboardProps, DashboardState> {
+
+  constructor(props: DashboardProps) {
+    super(props);
+    this.state = {
+      adapter: new SourceAdapter(this.props.sources)
+    };
+  }
 
   drawerClasses() {
     return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
@@ -68,30 +79,29 @@ class Dashboard extends React.Component<DashboardProps, any> {
     this.props.getSources();
   }
 
-  handleSelectedSource(title: string, index: number) {
-    let source = this.getSource(title);
+  componentWillReceiveProps(nextProps: DashboardProps, context: any) {
+    this.state.adapter = new SourceAdapter(nextProps.sources);
+    this.setState(this.state);
+  }
+
+  handleSelectedSource(index: number) {
+    let source = this.state.adapter.getItem(index);
+    this.props.setSource(source);
+
+    let currentPath = this.props.location.pathname;
+    let newPath = currentPath.replace(this.props.currentSource.id, source.id);
+
+    this.props.goTo(newPath);
+  }
+
+  indexOf(source: Source): number | undefined {
     if (source) {
-      this.props.setSource(source);
-      this.props.goToSource(source);
-    }
-  }
-
-  titles(): string[] {
-    let titles: string[] = [];
-    let sources = this.props.sources;
-    let count = sources.length;
-    for (let i = 0; i < count; ++i) {
-      titles.push(sources[i].name);
-    }
-    return titles;
-  }
-
-  getSource(title: string): Source {
-    let sources = this.props.sources;
-    let count = sources.length;
-    for (let i = 0; i < count; ++i) {
-      if (sources[i].name === title) {
-        return sources[i];
+      let adapter = this.state.adapter;
+      let maxCount = adapter.getCount();
+      for (let i = 0; i < maxCount; ++i) {
+        if (adapter.getItem(i).id === source.id) {
+          return i;
+        }
       }
     }
     return undefined;
@@ -102,9 +112,9 @@ class Dashboard extends React.Component<DashboardProps, any> {
       <Layout header={true}>
         <Header
           className={this.headerClasses()}
-          selectedIndex={this.props.currentSource ? this.titles().indexOf(this.props.currentSource.name) : undefined}
-          titles={this.props.currentSource ? this.titles() : undefined}
-          onTitleSelect={this.handleSelectedSource.bind(this)}
+          selectedIndex={this.indexOf(this.props.currentSource)}
+          items={this.props.currentSource ? new SourceAdapter(this.props.sources) : undefined}
+          onItemSelect={this.handleSelectedSource.bind(this)}
           displayHomeButton={this.props.location.pathname !== "/"}>
           <UserControl
             login={this.props.login}
@@ -123,3 +133,23 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dashboard);
+
+class SourceAdapter implements HeaderTitleAdapter<Source> {
+  readonly sources: Source[];
+
+  constructor(source: Source[]) {
+    this.sources = (source) ? source : [];
+  }
+
+  getCount(): number {
+    return this.sources.length;
+  }
+
+  getItem(index: number): Source {
+    return this.sources[index];
+  }
+
+  getTitle(index: number): string {
+    return this.sources[index].name;
+  }
+}

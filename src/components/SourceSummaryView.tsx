@@ -1,15 +1,20 @@
 import * as React from "react";
 import { VictoryChart, VictoryLine } from "victory";
 
-import FormInput from "../components/FormInput";
+import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
 import SourceSummary from "../models/source-summary";
+import DataUtil from "../utils/data";
 
 interface SourceSummaryViewProps {
     sourceSummary: SourceSummary;
 }
 
 export default class SourceSummaryView extends React.Component<SourceSummaryViewProps, any> {
+
+    getY(datum: DataUtil.TimeSeriesDatum) {
+        return datum.data.length;
+    }
 
     render() {
 
@@ -22,34 +27,19 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                     <span>
                         <Grid>
                             <Cell col={4}>
-                                <FormInput
-                                    type={"text"}
-                                    style={{paddingBottom: 0}}
+                                <DataTile
                                     value={this.props.sourceSummary.totalEvents.toString()}
-                                    label={this.props.sourceSummary.eventLabel}
-                                    floatingLabel={true}
-                                    autoComplete={"off"}
-                                    readOnly={true} />
+                                    label={this.props.sourceSummary.eventLabel} />
                             </Cell>
                             <Cell col={4}>
-                                <FormInput
-                                    type={"text"}
-                                    style={{paddingBottom: 0}}
+                                <DataTile
                                     value={this.props.sourceSummary.totalUniqueUsers.toString()}
-                                    label={"Unique Users"}
-                                    floatingLabel={true}
-                                    autoComplete={"off"}
-                                    readOnly={true} />
+                                    label={"Unique Users"} />
                             </Cell>
                             <Cell col={4}>
-                                <FormInput
-                                    type={"text"}
-                                    style={{paddingBottom: 0}}
+                                <DataTile
                                     value={this.props.sourceSummary.totalCrashes.toString()}
-                                    label={"Crashes"}
-                                    floatingLabel={true}
-                                    autoComplete={"off"}
-                                    readOnly={true} />
+                                    label={"Crashes"} />
                             </Cell>
                         </Grid>
                         <Grid>
@@ -57,11 +47,11 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                                 <VictoryChart
                                     scale={{ x: "time", y: "linear" }}
                                     height={200}
-                                    animate={{ duration: 500 }}>
+                                    animate={{ duration: 200 }}>
                                     <VictoryLine
                                         data={this.props.sourceSummary.events}
-                                        x={"timestamp"}
-                                        y={"events"} />
+                                        x={"bucket"}
+                                        y={this.getY} />
                                 </VictoryChart>
                             </Cell>
                         </Grid>
