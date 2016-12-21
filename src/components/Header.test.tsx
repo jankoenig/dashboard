@@ -67,11 +67,11 @@ describe("Header", function () {
             select.simulate("selected", "title5", 4);
 
             expect(onHandled).to.have.callCount(5);
-            expect(onHandled).to.be.calledWithExactly("title1", 0);
-            expect(onHandled).to.be.calledWithExactly("title2", 1);
-            expect(onHandled).to.be.calledWithExactly("title3", 2);
-            expect(onHandled).to.be.calledWithExactly("title4", 3);
-            expect(onHandled).to.be.calledWithExactly("title5", 4);
+            expect(onHandled).to.be.calledWithExactly(0);
+            expect(onHandled).to.be.calledWithExactly(1);
+            expect(onHandled).to.be.calledWithExactly(2);
+            expect(onHandled).to.be.calledWithExactly(3);
+            expect(onHandled).to.be.calledWithExactly(4);
         });
 
         it("tests the selectd index", function () {
