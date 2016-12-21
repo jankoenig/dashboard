@@ -22,7 +22,7 @@ interface DashboardProps {
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
-  goToSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
+  goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
   location: Location;
 }
 
@@ -52,8 +52,8 @@ function mapDispatchToProps(dispatch: any) {
     setSource: function(source: Source) {
       return dispatch(setCurrentSource(source));
     },
-    goToSource: function(source: Source) {
-      return dispatch(replace("/skills/" + source.id));
+    goTo: function(path: string) {
+      return dispatch(replace(path));
     }
   };
 }
@@ -86,9 +86,12 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   handleSelectedSource(index: number) {
     let source = this.state.adapter.getItem(index);
-    console.log(source);
     this.props.setSource(source);
-    this.props.goToSource(source);
+
+    let currentPath = this.props.location.pathname;
+    let newPath = currentPath.replace(this.props.currentSource.id, source.id);
+
+    this.props.goTo(newPath);
   }
 
   indexOf(source: Source): number | undefined {
