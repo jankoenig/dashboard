@@ -148,7 +148,7 @@ describe("FormInput", function () {
         });
         it("shows the contents on click", function () {
             expect(wrapper.find("input").first().props().type).to.equal("password");
-            wrapper.find("Pill").simulate("click", {target: {value: "A"}});
+            wrapper.find("Pill").simulate("click");
             expect(wrapper.find("input").first().props().type).to.equal("text");
         });
     });
