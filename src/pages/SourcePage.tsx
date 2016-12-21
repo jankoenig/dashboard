@@ -9,20 +9,17 @@ import { Cell, Grid } from "../components/Grid";
 import SourceSummaryView from "../components/SourceSummaryView";
 import ConversationList from "../models/conversation-list";
 import ConversationListSummary from "../models/conversation-list-summary";
-import Log from "../models/log";
 import Source from "../models/source";
 import { State } from "../reducers";
 import { LogMap } from "../reducers/log";
 
 interface SourcePageProps {
     source: Source;
-    logs: Log[];
     logMap: LogMap;
 }
 
 function mapStateToProps(state: State.All) {
     return {
-        logs: state.log.logs,
         logMap: state.log.logMap,
         source: state.source.currentSource
     };
