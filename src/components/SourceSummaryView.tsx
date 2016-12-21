@@ -4,12 +4,17 @@ import { VictoryChart, VictoryLine } from "victory";
 import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
 import SourceSummary from "../models/source-summary";
+import DataUtil from "../utils/data";
 
 interface SourceSummaryViewProps {
     sourceSummary: SourceSummary;
 }
 
 export default class SourceSummaryView extends React.Component<SourceSummaryViewProps, any> {
+
+    getY(datum: DataUtil.TimeSeriesDatum) {
+        return datum.data.length;
+    }
 
     render() {
 
@@ -42,11 +47,11 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                                 <VictoryChart
                                     scale={{ x: "time", y: "linear" }}
                                     height={200}
-                                    animate={{ duration: 500 }}>
+                                    animate={{ duration: 200 }}>
                                     <VictoryLine
                                         data={this.props.sourceSummary.events}
-                                        x={"timestamp"}
-                                        y={"events"} />
+                                        x={"bucket"}
+                                        y={this.getY} />
                                 </VictoryChart>
                             </Cell>
                         </Grid>

@@ -25,7 +25,7 @@ describe("ConversationListSummary", function () {
     });
     it("returns the correct event data", function() {
         expect(conversationListSummary.events).to.have.length(3);
-        expect(conversationListSummary.events[2].events).to.equal(5);
+        expect(conversationListSummary.events[2].data).to.have.length(5);
     });
     it("returns total crashes", function() {
         expect(conversationListSummary.totalCrashes).to.equal(0);

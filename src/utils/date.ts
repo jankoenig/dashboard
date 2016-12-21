@@ -17,7 +17,7 @@ export namespace DateUtil {
 
         let buckets: Date[] = [];
 
-        for (let m = moment(start); m.isBefore(end); m.add(1, interval)) {
+        for (let m = moment(start); m.isBefore(end, interval) || m.isSame(end, interval); m.add(1, interval)) {
             buckets.push(m.startOf(interval).toDate());
         }
 

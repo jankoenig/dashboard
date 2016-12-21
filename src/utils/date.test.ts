@@ -50,5 +50,13 @@ describe("DateUtil", function () {
                 expect(buckets[7].getHours()).to.equal(endTime.getHours());
             });
         });
+        describe("for days", function() {
+            describe("on the same day", function() {
+                it("returns one bucket", function() {
+                    let buckets = DateUtil.timeBuckets(new Date(), new Date(), "days");
+                    expect(buckets).to.have.length(1);
+                });
+            });
+        });
     });
 });

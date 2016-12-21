@@ -1,8 +1,5 @@
 
-export interface EventDatum {
-    timestamp: Date;
-    events: number;
-}
+import DataUtil from "../utils/data";
 
 interface SourceSummary {
     startTime: Date;
@@ -12,7 +9,7 @@ interface SourceSummary {
 
     totalCrashes: number;
 
-    events: EventDatum[];
+    events: DataUtil.TimeSeriesDatum[];
     totalEvents: number;
     eventLabel: string;
 }
