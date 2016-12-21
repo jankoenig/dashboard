@@ -26,7 +26,6 @@ describe("DateUtil", function () {
             let previousDate = DateUtil.hoursAgo(2);
 
             expect(previousDate.getHours()).to.equal(now.getHours() - 2);
-
         });
     });
     describe("buckets", function () {
