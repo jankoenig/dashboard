@@ -173,7 +173,7 @@ describe("Unit tests for the index-utils.ts", function () {
         });
     });
 
-    /*describe("Tests the \"RemoveSelectedSource\" method", function() {
+    describe("Tests the \"RemoveSelectedSource\" method", function() {
         let store: any;
 
         beforeEach(function() {
@@ -187,5 +187,5 @@ describe("Unit tests for the index-utils.ts", function () {
             expect(actions[0].type).to.equal(SET_CURRENT_SOURCE);
             expect(actions[0].source).to.equal(undefined);
         });
-    }); */
+    });
 });
