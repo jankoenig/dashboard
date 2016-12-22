@@ -37,11 +37,9 @@ describe("Logs Page", function () {
         it("registers an onResize listener", function () {
 
             let onResize = sinon.spy(browser, "onResize");
-            let getLogs = sinon.spy();
             mount((
                 <LogsPage
                     logs={undefined}
-                    getLogs={getLogs}
                     source={undefined} />
             ));
 
@@ -63,12 +61,10 @@ describe("Logs Page", function () {
                 .returns(wrappedEvent);
 
             let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
-            let getLogs = sinon.spy();
 
             mount((
                 <LogsPage
                     logs={undefined}
-                    getLogs={getLogs}
                     source={undefined} />
             ));
 
@@ -93,11 +89,10 @@ describe("Logs Page", function () {
                 .returns(wrappedEvent);
 
             let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
-            let getLogs = sinon.spy();
+
             mount((
                 <LogsPage
                     logs={undefined}
-                    getLogs={getLogs}
                     source={undefined} />
             ));
 
@@ -117,7 +112,6 @@ describe("Logs Page", function () {
         let onResizeStub: Sinon.SinonStub;
         let sizeStub: Sinon.SinonStub;
 
-        let getLogs: Sinon.SinonSpy;
         let wrapper: ShallowWrapper<LogsPageProps, any>;
 
         beforeEach(function () {
@@ -126,11 +120,9 @@ describe("Logs Page", function () {
             onResizeStub = sinon.stub(browser, "onResize");
             sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
-            getLogs = sinon.spy();
             wrapper = shallow((
                 <LogsPage
                     logs={undefined}
-                    getLogs={getLogs}
                     source={undefined} />
             ));
         });
@@ -145,18 +137,6 @@ describe("Logs Page", function () {
         it("should render correctly", function () {
             expect(wrapper.find("Grid")).to.have.length(1);
             expect(wrapper.find("FilterableConversationList")).to.have.length(1);
-        });
-
-        describe("componentWillReceiveProps", function () {
-            it("sets the source and requests logs", function () {
-                wrapper.setProps({
-                    source: new Source({ name: "name" }),
-                    logs: [],
-                    getLogs: getLogs
-                });
-
-                expect(getLogs).to.have.been.calledOnce;
-            });
         });
     });
 
@@ -181,7 +161,6 @@ describe("Logs Page", function () {
                 onResizeStub = sinon.stub(browser, "onResize");
                 sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
-                const getLogs = sinon.spy();
                 let logs: Log[] = [];
                 let source = new Source({ name: "name" });
                 let params = {
@@ -190,7 +169,6 @@ describe("Logs Page", function () {
                 const wrapper = shallow((
                     <LogsPage
                         logs={logs}
-                        getLogs={getLogs}
                         source={source}
                         params={params} />
                 ));
@@ -206,7 +184,6 @@ describe("Logs Page", function () {
                 onResizeStub = sinon.stub(browser, "onResize");
                 sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
-                const getLogs = sinon.spy();
                 let logs: Log[] = dummyLogs(4);
                 let source = new Source({ name: "name" });
                 let params = {
@@ -215,7 +192,6 @@ describe("Logs Page", function () {
                 const wrapper = shallow((
                     <LogsPage
                         logs={logs}
-                        getLogs={getLogs}
                         source={source}
                         params={params} />
                 ));
@@ -226,7 +202,6 @@ describe("Logs Page", function () {
 
         describe("Test interactions", function () {
 
-            const getLogs = sinon.spy();
             let logs: Log[] = dummyLogs(2);
             let outputs: Output[] = dummyOutputs(2);
             let source = new Source({ name: "name" });
@@ -245,7 +220,6 @@ describe("Logs Page", function () {
                 wrapper = shallow((
                     <LogsPage
                         logs={logs}
-                        getLogs={getLogs}
                         source={source}
                         params={params} />
                 ));
