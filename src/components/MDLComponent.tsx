@@ -9,6 +9,7 @@ interface MDLWindow extends Window {
     componentHandler: {
         upgradeElement: (any);
         downgradeElements: (any);
+        upgradeDom: () => void;
     };
 }
 
@@ -24,7 +25,12 @@ declare let window: MDLWindow;
 export default class MDLComponent<P, S> extends React.Component<P, S> {
     componentDidMount() {
         if (window.componentHandler) {
-            window.componentHandler.upgradeElement(findDOMNode(this));
+            window.componentHandler.upgradeDom();
+            // The preferred method is to upgrade the individual elements
+            // However the Select component was not working all the way
+            // For now, we will call upgradeDom, which upgrades the whole dom
+            // and does not seem to impact performance at the moment. -- MMM
+            // window.componentHandler.upgradeElement(findDOMNode(this));
         }
     }
 

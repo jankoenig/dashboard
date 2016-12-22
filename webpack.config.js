@@ -29,7 +29,7 @@ module.exports = {
       },
       {
         test: /\.(scss|css)$/,
-        loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
+        loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[local]!postcss!sass')
       }
     ],
 
@@ -47,6 +47,6 @@ module.exports = {
   },
 
   plugins: [
-    new ExtractTextPlugin("style.css", { allChunks: true })
+    new ExtractTextPlugin("style/dashboard.css", { allChunks: true })
   ],
 }

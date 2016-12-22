@@ -1,5 +1,10 @@
 import * as React from "react";
 
+import MDLComponent from "../MDLComponent";
+
+// const getmdlSelect =
+require("./getmdl-select");
+
 export interface SelectAdapter<T> {
     getCount(): number;
     getItem(index: number): T;
@@ -26,7 +31,7 @@ interface SelectState {
  * corresponding SelectAdapter provided.  As of writing this, the top item will be an "unselect" option which will be titled based
  * on the provided HINT.
  */
-export class Select extends React.Component<SelectProps<any>, SelectState> {
+export class Select extends MDLComponent<SelectProps<any>, SelectState> {
 
     // This is checked and increased internally so there can always be a unique "ID" for the input.  Otherwise you get a lot of really frustrating errors in the DOM.
     static count: number = 0;
@@ -80,12 +85,14 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     }
 
     componentDidMount() {
+        super.componentDidMount();
         // The input dom of the getmdl-select dispatches an "onchange" event on each selection.
         this.boundChangeListener = this.handleChange.bind(this);
         this.inputRef.addEventListener("onchange", this.boundChangeListener);
     }
 
     componentWillUnmount() {
+        super.componentDidMount();
         this.inputRef.removeEventListener("onchange", this.boundChangeListener);
     }
 
@@ -158,6 +165,8 @@ export class Select extends React.Component<SelectProps<any>, SelectState> {
     render() {
         // You have to do this way or else you get some weird warning with React about going from controlled to uncontrolled states.
         let useValue = this.props.adapter.getTitle(this.state.lastSelectedIndex);
+
+        // console.log(getmdlSelect);
 
         return (
             <div ref={this.handleDropdownBind.bind(this)} className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
