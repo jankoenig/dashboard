@@ -2,7 +2,7 @@ import * as React from "react";
 
 import MDLComponent from "../MDLComponent";
 
-// const getmdlSelect =
+// Import the style
 require("./getmdl-select");
 
 export interface SelectAdapter<T> {
@@ -165,8 +165,6 @@ export class Select extends MDLComponent<SelectProps<any>, SelectState> {
     render() {
         // You have to do this way or else you get some weird warning with React about going from controlled to uncontrolled states.
         let useValue = this.props.adapter.getTitle(this.state.lastSelectedIndex);
-
-        // console.log(getmdlSelect);
 
         return (
             <div ref={this.handleDropdownBind.bind(this)} className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
