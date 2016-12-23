@@ -32,7 +32,20 @@ export default class Conversation implements ConversationProperties {
     }
 
     get applicationId(): string {
-        return this.request.payload.session.application.applicationId;
+
+        let applicationId = "";
+
+        if (this.request.payload.session.application) {
+            // Leaving this in for backwards compatibility
+            applicationId = this.request.payload.session.application.applicationId;
+        }
+
+        if (this.request.payload.context) {
+            // This is the preferred applicationId
+            applicationId = this.request.payload.context.System.application.applicationId;
+        }
+
+        return applicationId;
     }
 
     get sessionId(): string {

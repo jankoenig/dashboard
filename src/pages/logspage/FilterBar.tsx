@@ -64,8 +64,8 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         super(props);
         let types: ConvoType[] = [];
         types.push({ type: "", title: "All Logs" });
-        types.push({ type: "INFO", title: "Info" });
         types.push({ type: "DEBUG", title: "Debug" });
+        types.push({ type: "INFO", title: "Info" });
         types.push({ type: "WARN", title: "Warning" });
         types.push({ type: "ERROR", title: "Error" });
         this.filterAdapter = new ConvoTypeAdapter(types);
