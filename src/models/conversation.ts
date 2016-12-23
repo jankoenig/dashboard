@@ -32,7 +32,7 @@ export default class Conversation implements ConversationProperties {
     }
 
     get applicationId(): string {
-        return this.request.payload.session.application.applicationId;
+        return this.request.payload.context.System.application.applicationId;
     }
 
     get sessionId(): string {
