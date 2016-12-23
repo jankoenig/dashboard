@@ -79,6 +79,8 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleDateChange(item: string, value: Date) {
+        console.log(item);
+        console.log(value);
         // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
         if (item === "startDate") {
             this.state.startDate = value;
@@ -107,7 +109,8 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     render(): JSX.Element {
-        let today = new Date();
+        let queryStartDate = this.props.query ? this.props.query.startTime : new Date();
+        let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
         let typeHandleChange = this.handleTypeSelectChange.bind(this);
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
@@ -128,18 +131,22 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
                     <DatePicker
                         theme={DatePickerTheme}
                         label="Start Date"
-                        maxDate={today}
+                        minDate={queryStartDate}
+                        maxDate={queryEndDate}
                         value={this.state.startDate}
-                        onChange={startHandleChange} />
+                        onChange={startHandleChange}
+                        readonly={this.props.query ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
                 <Cell col={2} tablet={2} phone={2}>
                     <DatePicker
                         theme={DatePickerTheme}
                         label="End Date"
-                        maxDate={today}
+                        minDate={this.state.startDate}
+                        maxDate={queryEndDate}
                         value={this.state.endDate}
-                        onChange={endHandleChange} />
+                        onChange={endHandleChange}
+                        readonly={this.props.query ? false : true} />
                 </Cell>
             </Grid>
         );
