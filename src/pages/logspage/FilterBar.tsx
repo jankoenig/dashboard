@@ -3,7 +3,9 @@ import DatePicker from "react-toolbox/lib/date_picker";
 
 import { Cell, Grid } from "../../components/Grid";
 import { Select, SelectAdapter } from "../../components/Select";
+import LogQuery from "../../models/log-query";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
+
 
 const DatePickerTheme = require("./themes/datepicker-input");
 
@@ -21,6 +23,7 @@ const SelectIconStyle = {
 };
 
 export interface FilterProps {
+    query: LogQuery;
     onFilter: (filter: FilterType) => void;
 }
 
@@ -108,6 +111,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         let typeHandleChange = this.handleTypeSelectChange.bind(this);
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
+        console.log(this.props.query);
 
         return (
             <Grid style={{ backgroundColor: "#243036" }} >

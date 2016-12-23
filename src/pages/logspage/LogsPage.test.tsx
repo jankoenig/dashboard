@@ -1,16 +1,16 @@
 import * as chai from "chai";
 import { mount, shallow, ShallowWrapper } from "enzyme";
-// tslint:disable:no-unused-variable
-import * as React from "react"; // Needed for enzyme, unused for some reason.
-// tslint:enable:no-unused-variable
+import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 let jsdom = require("mocha-jsdom");
 
 import Conversation from "../../models/conversation";
 import Log from "../../models/log";
+import LogQuery from "../../models/log-query";
 import Output from "../../models/output";
 import Source from "../../models/source";
+import { LogMap } from "../../reducers/log";
 import browser from "../../utils/browser";
 import { dummyLogs, dummyOutputs } from "../../utils/test";
 import { LogsPage, LogsPageProps } from "./LogsPage";
@@ -39,7 +39,7 @@ describe("Logs Page", function () {
             let onResize = sinon.spy(browser, "onResize");
             mount((
                 <LogsPage
-                    logs={undefined}
+                    logMap={undefined}
                     source={undefined} />
             ));
 
@@ -64,7 +64,7 @@ describe("Logs Page", function () {
 
             mount((
                 <LogsPage
-                    logs={undefined}
+                    logMap={undefined}
                     source={undefined} />
             ));
 
@@ -92,7 +92,7 @@ describe("Logs Page", function () {
 
             mount((
                 <LogsPage
-                    logs={undefined}
+                    logMap={undefined}
                     source={undefined} />
             ));
 
@@ -122,7 +122,7 @@ describe("Logs Page", function () {
 
             wrapper = shallow((
                 <LogsPage
-                    logs={undefined}
+                    logMap={undefined}
                     source={undefined} />
             ));
         });
@@ -161,14 +161,16 @@ describe("Logs Page", function () {
                 onResizeStub = sinon.stub(browser, "onResize");
                 sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
-                let logs: Log[] = [];
-                let source = new Source({ name: "name" });
+
+                let source = new Source({ name: "name", id: "id" });
+                let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
+                let logMap: LogMap = { id: { logs: [], query: logQuery}};
                 let params = {
                     sourceSlug: "name"
                 };
                 const wrapper = shallow((
                     <LogsPage
-                        logs={logs}
+                        logMap={logMap}
                         source={source}
                         params={params} />
                 ));
@@ -185,13 +187,15 @@ describe("Logs Page", function () {
                 sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
                 let logs: Log[] = dummyLogs(4);
-                let source = new Source({ name: "name" });
+                let source = new Source({ name: "name", id: "id" });
+                let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
+                let logMap: LogMap = { id: { logs: logs, query: logQuery}};
                 let params = {
                     sourceSlug: "name"
                 };
                 const wrapper = shallow((
                     <LogsPage
-                        logs={logs}
+                        logMap={logMap}
                         source={source}
                         params={params} />
                 ));
@@ -204,7 +208,9 @@ describe("Logs Page", function () {
 
             let logs: Log[] = dummyLogs(2);
             let outputs: Output[] = dummyOutputs(2);
-            let source = new Source({ name: "name" });
+            let source = new Source({ name: "name", id: "id" });
+            let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
+            let logMap: LogMap = { id: { logs: logs, query: logQuery}};
             let params = {
                 sourceSlug: "name"
             };
@@ -219,7 +225,7 @@ describe("Logs Page", function () {
 
                 wrapper = shallow((
                     <LogsPage
-                        logs={logs}
+                        logMap={logMap}
                         source={source}
                         params={params} />
                 ));

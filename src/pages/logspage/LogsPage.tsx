@@ -6,10 +6,12 @@ import Interaction from "../../components/Interaction";
 import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
+import LogQuery from "../../models/log-query";
 import Output from "../../models/output";
 import Source from "../../models/source";
 import StackTrace from "../../models/stack-trace";
 import { State } from "../../reducers";
+import { LogMap } from "../../reducers/log";
 import browser from "../../utils/browser";
 import { FilterableConversationList } from "./FilterableConversationList";
 import { FilterBar } from "./FilterBar";
@@ -26,7 +28,7 @@ interface Dimensions {
 }
 
 export interface LogsPageProps {
-    logs: Log[];
+    logMap: LogMap;
     source: Source;
     params?: any;
 }
@@ -42,7 +44,7 @@ interface LogsPageState {
 
 function mapStateToProps(state: State.All) {
     return {
-        logs: state.log.logs,
+        logMap: state.log.logMap,
         source: state.source.currentSource
     };
 }
@@ -138,16 +140,25 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     render() {
+
+        let query: LogQuery;
+        let logs: Log[];
+
+        if (this.props.source) {
+            query = this.props.logMap[this.props.source.id].query;
+            logs = this.props.logMap[this.props.source.id].logs;
+        }
+
         return (
             <span>
-                <FilterBar onFilter={this.handleFilter.bind(this)} />
+                <FilterBar onFilter={this.handleFilter.bind(this)} query={query}/>
                 <div ref={this.onRootLayout.bind(this)}>
                     <Grid
                         noSpacing={true}>
                         <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
                             <FilterableConversationList
                                 height={this.state.lastDimens.cellDimens.height}
-                                conversations={ConversationList.fromLogs(this.props.logs)}
+                                conversations={ConversationList.fromLogs(logs)}
                                 filter={this.state.filter}
                                 onShowConversation={this.onConversationClicked.bind(this)} />
                         </Cell>
