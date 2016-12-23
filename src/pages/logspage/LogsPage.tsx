@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { getLogs } from "../../actions/log";
 import { Cell, Grid } from "../../components/Grid";
 import Interaction from "../../components/Interaction";
 import Conversation from "../../models/conversation";
@@ -29,14 +28,11 @@ interface Dimensions {
 export interface LogsPageProps {
     logs: Log[];
     source: Source;
-    getLogs: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
     params?: any;
 }
 
 interface LogsPageState {
     lastDimens: Dimensions;
-    retrievingLogs: boolean;
-    source: Source | undefined;
     request: Log | undefined;
     response: Log | undefined;
     outputs: Output[];
@@ -53,9 +49,6 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        getLogs: function (source: Source) {
-            dispatch(getLogs(source));
-        }
     };
 }
 
@@ -68,8 +61,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         super(props);
         this.state = {
             lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
-            source: props.source,
-            retrievingLogs: false,
             request: undefined,
             response: undefined,
             outputs: [],
@@ -127,17 +118,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return lastDimens.height !== dimens.height ||
             dimens.width < browser.mobileWidthThreshold && lastDimens.width >= browser.mobileWidthThreshold ||
             dimens.width >= browser.mobileWidthThreshold && lastDimens.width < browser.mobileWidthThreshold;
-    }
-
-    componentWillReceiveProps(nextProps: LogsPageProps, nextContext: any): void {
-        if (this.state.retrievingLogs) {
-            this.state.retrievingLogs = false;
-        } else if (nextProps.source) {
-            this.props.getLogs(nextProps.source);
-            this.state.retrievingLogs = true;
-        }
-        this.state.source = nextProps.source;
-        this.setState(this.state);
     }
 
     onConversationClicked(conversation: Conversation) {
