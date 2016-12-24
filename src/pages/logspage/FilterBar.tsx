@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
@@ -5,7 +6,6 @@ import { Cell, Grid } from "../../components/Grid";
 import { Select, SelectAdapter } from "../../components/Select";
 import LogQuery from "../../models/log-query";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
-
 
 const DatePickerTheme = require("./themes/datepicker-input");
 
@@ -78,9 +78,23 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         };
     }
 
-    handleDateChange(item: string, value: Date) {
-        console.log(item);
-        console.log(value);
+    componentWillReceiveProps(nextProps: FilterProps) {
+
+        // The first time we get the query,
+        // we set it as the initial start and end dates.
+        if (!this.state.endDate && nextProps.query) {
+            this.state.startDate = nextProps.query.startTime;
+            this.state.startDate.setHours(0, 0, 0, 0);
+
+            this.state.endDate = nextProps.query.endTime;
+            this.state.endDate.setHours(23, 59, 59, 999);
+
+            this.setState(this.state);
+        }
+    }
+
+    handleDateChange(item: "startDate" | "endDate", value: Date) {
+
         // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
         if (item === "startDate") {
             this.state.startDate = value;
@@ -114,7 +128,6 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         let typeHandleChange = this.handleTypeSelectChange.bind(this);
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
-        console.log(this.props.query);
 
         return (
             <Grid style={{ backgroundColor: "#243036" }} >
@@ -132,7 +145,8 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
                         theme={DatePickerTheme}
                         label="Start Date"
                         minDate={queryStartDate}
-                        maxDate={queryEndDate}
+                        // You can't select the same date as the end date
+                        maxDate={moment(this.state.endDate).subtract(1, "days").toDate()}
                         value={this.state.startDate}
                         onChange={startHandleChange}
                         readonly={this.props.query ? false : true} />
@@ -142,7 +156,8 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
                     <DatePicker
                         theme={DatePickerTheme}
                         label="End Date"
-                        minDate={this.state.startDate}
+                        // You can't select the same date as the start date
+                        minDate={moment(this.state.startDate).add(1, "days").toDate()}
                         maxDate={queryEndDate}
                         value={this.state.endDate}
                         onChange={endHandleChange}
