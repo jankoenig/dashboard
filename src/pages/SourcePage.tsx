@@ -46,26 +46,26 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
             <span>
                 {this.props.source ? (
                     <span>
-                        <Grid style={{ backgroundColor: "rgb(36, 48, 54)" }}>
-                            <Cell col={3} >
+                        <Grid style={{ backgroundColor: "rgb(36, 48, 54)", paddingBottom: "0px", paddingTop: "0px"}}>
+                            <Cell col={3} hidePhone={true}>
                                 <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
                                     value={this.props.source.name}
                                     label={"Name"} />
                             </Cell>
-                            <Cell col={3} >
+                            <Cell col={3} hidePhone={true} >
                                 <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
                                     value={this.props.source.id}
                                     label={"ID"} />
                             </Cell>
-                            <Cell col={3} >
+                            <Cell col={3} hidePhone={true} >
                                 <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
                                     value={moment(this.props.source.created).format("MMM Do, YYYY")}
                                     label={"Created"} />
                             </Cell>
-                            <Cell col={3} >
+                            <Cell col={3} hidePhone={true} >
                                 <DataTile
                                     theme={{ inputTextColor: "#ECEFF1" }}
                                     value={this.props.source.secretKey}
