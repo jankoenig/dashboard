@@ -21,7 +21,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
             padding: "10px",
             marginTop: "10px",
             marginBottom: "10px",
-            cursor: "hande",
+            cursor: "pointer",
             backgroundColor: (this.props.active ? "#90A4AE" : "#FAFAFA"),
             border: "solid #90A4AE",
             borderWidth: "1px",
