@@ -1,12 +1,15 @@
+import * as classNames from "classnames";
 import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
+import Button from "../../components/Button";
 import { Cell, Grid } from "../../components/Grid";
 import { Select, SelectAdapter } from "../../components/Select";
 import LogQuery from "../../models/log-query";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
 
+const FilterBarStyle = require("./FilterBar.scss");
 const DatePickerTheme = require("./themes/datepicker-input");
 
 const SelectInputStyle = {
@@ -32,6 +35,7 @@ interface FilterState {
     endDate?: Date;
     selectedType?: ConvoType;
     filterMap: any;
+    filterbarHidden: boolean;
 }
 
 interface ConvoType {
@@ -74,8 +78,15 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         this.filterAdapter = new ConvoTypeAdapter(types);
 
         this.state = {
-            filterMap: {}
+            filterMap: {},
+            filterbarHidden: false
         };
+    }
+
+    gridClasses() {
+        return classNames(FilterBarStyle.filterBarGrid, {
+            [FilterBarStyle.filterBarGridHidden]: this.state.filterbarHidden
+        });
     }
 
     componentWillReceiveProps(nextProps: FilterProps) {
@@ -122,6 +133,12 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         this.props.onFilter(new CompositeFilter(filters));
     }
 
+    handleFilterClicked(event: React.MouseEvent) {
+        console.log("filter clicked");
+        this.state.filterbarHidden = !this.state.filterbarHidden;
+        this.setState(this.state);
+    }
+
     render(): JSX.Element {
         let queryStartDate = this.props.query ? this.props.query.startTime : new Date();
         let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
@@ -129,41 +146,46 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
+        console.log(FilterBarStyle);
+
         return (
-            <Grid style={{ backgroundColor: "#243036" }} >
-                <Cell col={2} tablet={2} phone={4}>
-                    <Select
-                        inputStyle={SelectInputStyle}
-                        labelStyle={SelectLabelStyle}
-                        iconStyle={SelectIconStyle}
-                        adapter={this.filterAdapter}
-                        hint={"Log Level"}
-                        onSelected={typeHandleChange} />
-                </Cell>
-                <Cell col={2} offset={5} tablet={2} offsetTablet={1} phone={2}>
-                    <DatePicker
-                        theme={DatePickerTheme}
-                        label="Start Date"
-                        minDate={queryStartDate}
-                        // You can't select the same date as the end date
-                        maxDate={moment(this.state.endDate).subtract(1, "days").toDate()}
-                        value={this.state.startDate}
-                        onChange={startHandleChange}
-                        readonly={this.props.query ? false : true} />
-                </Cell>
-                <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
-                <Cell col={2} tablet={2} phone={2}>
-                    <DatePicker
-                        theme={DatePickerTheme}
-                        label="End Date"
-                        // You can't select the same date as the start date
-                        minDate={moment(this.state.startDate).add(1, "days").toDate()}
-                        maxDate={queryEndDate}
-                        value={this.state.endDate}
-                        onChange={endHandleChange}
-                        readonly={this.props.query ? false : true} />
-                </Cell>
-            </Grid>
+            <span /* style={{position: "relative"}} */>
+                <Grid className={this.gridClasses()} >
+                    <Cell col={2} tablet={2} phone={4}>
+                        <Select
+                            inputStyle={SelectInputStyle}
+                            labelStyle={SelectLabelStyle}
+                            iconStyle={SelectIconStyle}
+                            adapter={this.filterAdapter}
+                            hint={"Log Level"}
+                            onSelected={typeHandleChange} />
+                    </Cell>
+                    <Cell col={2} offset={5} tablet={2} offsetTablet={1} phone={2}>
+                        <DatePicker
+                            theme={DatePickerTheme}
+                            label="Start Date"
+                            minDate={queryStartDate}
+                            // You can't select the same date as the end date
+                            maxDate={moment(this.state.endDate).subtract(1, "days").toDate()}
+                            value={this.state.startDate}
+                            onChange={startHandleChange}
+                            readonly={this.props.query ? false : true} />
+                    </Cell>
+                    <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
+                    <Cell col={2} tablet={2} phone={2}>
+                        <DatePicker
+                            theme={DatePickerTheme}
+                            label="End Date"
+                            // You can't select the same date as the start date
+                            minDate={moment(this.state.startDate).add(1, "days").toDate()}
+                            maxDate={queryEndDate}
+                            value={this.state.endDate}
+                            onChange={endHandleChange}
+                            readonly={this.props.query ? false : true} />
+                    </Cell>
+                </Grid>
+                <Button className={FilterBarStyle.filterBarButton} fab colored onClick={this.handleFilterClicked.bind(this)}><i className="material-icons">filter_list</i></Button>
+            </span>
         );
     }
 }
