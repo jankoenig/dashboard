@@ -151,10 +151,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
         return (
             <span>
-                <FilterBar onFilter={this.handleFilter.bind(this)} query={query}/>
+                <FilterBar onFilter={this.handleFilter.bind(this)} query={query} />
                 <div ref={this.onRootLayout.bind(this)}>
-                    <Grid
-                        noSpacing={true}>
+                    <Grid noSpacing={true}>
                         <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
                             <FilterableConversationList
                                 height={this.state.lastDimens.cellDimens.height}
