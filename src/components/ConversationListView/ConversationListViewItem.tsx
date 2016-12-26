@@ -119,8 +119,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
                         <Button
                             primary={true}
                             ripple={true}
-                            icon={"keyboard_arrow_up"}
-                            onClick={this.props.onClick.bind(this, this.props.conversation)}>Collapse</Button>
+                            onClick={this.props.onClick.bind(this, this.props.conversation)}><i className="material-icons">keyboard_arrow_up</i>Collapse</Button>
                     </span>
                 ) : undefined}
             </span>
