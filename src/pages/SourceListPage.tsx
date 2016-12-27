@@ -12,33 +12,58 @@ interface SourceListPageProps {
     sources: Source[];
 }
 
+interface SourceListState {
+    listItems: JSX.Element[];
+}
+
 function mapStateToProps(state: State.All) {
     return {
         sources: state.source.sources
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
-    return {
-    };
-}
+export class SourceListPage extends React.Component<SourceListPageProps, SourceListState> {
 
-export class SourceListPage extends React.Component<SourceListPageProps, any> {
-    render() {
+    constructor(props: SourceListPageProps) {
+        super(props);
+        this.state = {
+            listItems: this.newListItems(this.props.sources)
+        };
+    }
 
+    componentWillReceiveProps(props: SourceListPageProps, context: any) {
+        this.state.listItems = this.newListItems(props.sources);
+        this.setState(this.state);
+    }
+
+    newListItems(sources: Source[]): JSX.Element[] {
         // Construct the list
         let listItems: JSX.Element[] = [];
 
-        for (let source of this.props.sources) {
-            listItems.push((
+        if (sources) {
+            for (let source of sources) {
+                listItems.push(this.newListItem(source));
+            }
+        }
+        return listItems;
+    }
+
+    newListItem(source: Source): JSX.Element {
+        if (source) {
+            return (
                 <li key={source.id} className="mdl-list__item">
                     <Link to={"/skills/" + source.id}>{source.name}</Link>
                     <span style={{ textAlign: "center", marginLeft: "10px", fontSize: "12px" }}>
                         Created {moment(source.created).format("MMM Do, YYYY")}
                     </span>
                 </li>
-            ));
+            );
         }
+        return <li key="NA" className="mdl-list__item"/>;
+    }
+
+    render() {
+        let listItems = this.state.listItems;
 
         return (
             <div>
@@ -65,6 +90,5 @@ export class SourceListPage extends React.Component<SourceListPageProps, any> {
 }
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps
 )(SourceListPage);
