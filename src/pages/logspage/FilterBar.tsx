@@ -134,7 +134,6 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleFilterClicked(event: React.MouseEvent) {
-        console.log("filter clicked");
         this.state.filterbarHidden = !this.state.filterbarHidden;
         this.setState(this.state);
     }
@@ -145,8 +144,6 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         let typeHandleChange = this.handleTypeSelectChange.bind(this);
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
-
-        console.log(FilterBarStyle);
 
         return (
             <span /* style={{position: "relative"}} */>
