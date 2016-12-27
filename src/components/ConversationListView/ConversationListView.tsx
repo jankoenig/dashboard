@@ -1,13 +1,10 @@
 import * as objectAssign from "object-assign";
 import * as React from "react";
-// import { ReactList } from "react-list";
 
+import List from "../../components/List";
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";
-
-// TODO: Would be nice to get this to work with typescript
-let ReactList = require("react-list");
 
 export interface ConversationListViewProps {
     readonly height: number;
@@ -79,19 +76,14 @@ export default class ConversationListView extends React.Component<ConversationLi
         let emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div />);
 
         let listElement = (
-            <ReactList
+            <List
                 itemRenderer={this.renderItem.bind(this)}
                 length={this.props.conversations.length}
-                type={"simple"} /> // "uniform" with "useState = true" is more efficient rendering, but it won't expand the list for some reason (even though it's supposed to).
-            // pageSize={this.props.conversations.length} // TODO: paging needs to be fixed so it doesn't load all elements at once.
-            // type={"uniform"}
-            // useStaticSize={true} />
+                type={"simple"} />
         );
 
-        return (
-            <div style={{ "height": this.props.height, "overflowY": "scroll" }}>
-                {this.props.conversations.length > 0 ? listElement : emptyElement}
-            </div>
-        );
+        let finalElement = this.props.conversations.length > 0 ? listElement : emptyElement;
+
+        return finalElement;
     }
 }

@@ -43,3 +43,5 @@ export class List extends React.Component<ListProps, ListState> {
         );
     }
 }
+
+export default List;
