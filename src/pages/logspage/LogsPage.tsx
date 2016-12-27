@@ -1,8 +1,8 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { Cell, Grid } from "../../components/Grid";
 import Interaction from "../../components/Interaction";
+import { Pane, TwoPane } from "../../components/TwoPane";
 import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
@@ -137,34 +137,44 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.setState(this.state);
     }
 
+    leftPane(): Pane {
+        return {
+            cellStyle: { paddingLeft: "10px", paddingRight: "5px" },
+            pane: (
+                <FilterableConversationList
+                    height={this.state.lastDimens.cellDimens.height}
+                    conversations={ConversationList.fromLogs(this.props.logs)}
+                    filter={this.state.filter}
+                    onShowConversation={this.onConversationClicked.bind(this)} />
+            )
+        };
+    }
+
+    rightPane(): Pane {
+        return {
+            cellStyle: { maxHeight: this.state.lastDimens.cellDimens.height, paddingLeft: "5px", paddingRight: "10px" },
+            pane: this.state.request ?
+                (
+                    <Interaction
+                        request={this.state.request}
+                        response={this.state.response}
+                        outputs={this.state.outputs}
+                        stackTraces={this.state.stackTraces} />
+                ) : (
+                    <h6> Select a log to view </h6>
+                )
+        };
+    }
+
     render() {
         return (
             <span>
                 <FilterBar onFilter={this.handleFilter.bind(this)} />
                 <div ref={this.onRootLayout.bind(this)}>
-                    <Grid
-                        noSpacing={true}>
-                        <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
-                            <FilterableConversationList
-                                height={this.state.lastDimens.cellDimens.height}
-                                conversations={ConversationList.fromLogs(this.props.logs)}
-                                filter={this.state.filter}
-                                onShowConversation={this.onConversationClicked.bind(this)} />
-                        </Cell>
-                        <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
-                            {this.state.request ?
-                                (
-                                    <Interaction
-                                        request={this.state.request}
-                                        response={this.state.response}
-                                        outputs={this.state.outputs}
-                                        stackTraces={this.state.stackTraces} />
-                                ) : (
-                                    <h6> Select a log to view </h6>
-                                )
-                            }
-                        </Cell>
-                    </Grid >
+                    <TwoPane
+                        leftPane={this.leftPane.bind(this)}
+                        rightPane={this.rightPane.bind(this)}
+                        spacing={true} />
                 </div>
             </span>
         );
