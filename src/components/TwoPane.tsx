@@ -3,7 +3,7 @@ import { Cell, Grid } from "./Grid";
 
 export interface Pane {
     pane: JSX.Element;
-    cellStyle: any;
+    cellStyle: React.CSSProperties;
 }
 
 export interface TwoPaneProps {

@@ -3,12 +3,16 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
-import { Button } from "react-toolbox/lib/button";
+// import { Button } from "react-toolbox/lib/button";
+
+import { List } from "../components/List";
+import { Pane, TwoPane } from "../components/TwoPane";
 
 import Source from "../models/source";
+
 import { State } from "../reducers";
 
-let ReactList = require("react-list");
+import HomePage from "./HomePage";
 
 interface SourceListPageProps {
     sources: Source[];
@@ -25,14 +29,36 @@ function mapStateToProps(state: State.All) {
 }
 
 export class SourceListPage extends React.Component<SourceListPageProps, SourceListPageState> {
+
+    leftPane(): Pane {
+        return {
+            cellStyle: { paddingLeft: "10px", paddingRight: "5px" },
+            pane: (
+                <div>
+                    <SourceList
+                        sources={this.props.sources} />
+                </div>
+            )
+        };
+    }
+
+    rightPane(): Pane {
+        return {
+            cellStyle: { paddingRight: "10px", paddingLeft: "5px" },
+            pane: (
+                <div style={{ overflowY:"auto" }}>
+                    <HomePage />
+                </div>
+            )
+        };
+    }
+
     render() {
         return (
-            <div>
-                <SourceList
-                    sources={this.props.sources}
-                    />
-                <Button style={{ position: "fixed", bottom: "3.6rem", right: "2.8rem" }} icon="add" floating accent mini />
-            </div>
+            <TwoPane
+                spacing={true}
+                leftPane={this.leftPane.bind(this)}
+                rightPane={this.rightPane.bind(this)} />
         );
     }
 }
@@ -69,7 +95,7 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
                         <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>
                     ) :
                     (
-                        <ReactList
+                        <List
                             itemRenderer={this.renderItem.bind(this)}
                             length={this.props.sources.length}
                             type={"simple"} />
