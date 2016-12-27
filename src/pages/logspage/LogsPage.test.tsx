@@ -1,9 +1,8 @@
 import * as chai from "chai";
-import { mount, shallow, ShallowWrapper } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
-let jsdom = require("mocha-jsdom");
 
 import Conversation from "../../models/conversation";
 import Log from "../../models/log";
@@ -19,90 +18,12 @@ import { LogsPage, LogsPageProps } from "./LogsPage";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-class TestingWrappedEvent implements browser.WrappedEvent {
-    register() {
-
-    }
-    unregister() {
-
-    }
-}
 
 describe("Logs Page", function () {
 
-    jsdom();
-
-    describe("componentDidMount", function () {
-
-        it("registers an onResize listener", function () {
-
-            let onResize = sinon.spy(browser, "onResize");
-            mount((
-                <LogsPage
-                    logMap={undefined}
-                    source={undefined} />
-            ));
-
-            expect(onResize).to.have.been.calledOnce;
-
-            onResize.restore();
-        });
-
-        it("when window gets smaller it forces an update", function () {
-            // No need for this to do anything as they won't be called. The resizeStub throws the event to the callback.
-            let wrappedEvent: browser.WrappedEvent = new TestingWrappedEvent();
-            wrappedEvent.register = sinon.stub();
-            wrappedEvent.unregister = sinon.stub();
-
-            // Utils stubs.  Not testing these so do whatever.
-            let sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
-            let onResizeStub = sinon.stub(browser, "onResize")
-                .yields({ target: { innerWidth: 200, innerHeight: 800 } })
-                .returns(wrappedEvent);
-
-            let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
-
-            mount((
-                <LogsPage
-                    logMap={undefined}
-                    source={undefined} />
-            ));
-
-            expect(wrappedEvent.register).to.have.been.calledOnce;
-            expect(updateDimensions).to.have.been.calledTwice; // Once for mounting and once for event thrown.
-
-            sizeStub.restore();
-            onResizeStub.restore();
-            updateDimensions.restore();
-        });
-
-        it("when window gets larger it forces an update", function () {
-            // No need for this to do anything as they won't be called. The resizeStub throws the event to the callback.
-            let wrappedEvent: browser.WrappedEvent = new TestingWrappedEvent();
-            wrappedEvent.register = sinon.stub();
-            wrappedEvent.unregister = sinon.stub();
-
-            // Utils stubs.  Not testing these so do whatever.
-            let sizeStub = sinon.stub(browser, "size").returns({ width: 200, height: 800 });
-            let onResizeStub = sinon.stub(browser, "onResize")
-                .yields({ target: { innerWidth: 800, innerHeight: 800 } })
-                .returns(wrappedEvent);
-
-            let updateDimensions = sinon.spy(LogsPage.prototype, "updateDimensions");
-
-            mount((
-                <LogsPage
-                    logMap={undefined}
-                    source={undefined} />
-            ));
-
-            expect(wrappedEvent.register).to.have.been.calledOnce;
-            expect(updateDimensions).to.have.been.calledTwice;
-
-            sizeStub.restore();
-            onResizeStub.restore();
-            updateDimensions.restore();
-        });
+    let wrapper = shallow(<LogsPage source={undefined} logMap={undefined} />);
+    it("renders a LogExplorer", function() {
+        expect(wrapper.find("LogExplorer")).to.have.length(1);
     });
 
     describe("without source", function () {
@@ -161,35 +82,9 @@ describe("Logs Page", function () {
                 onResizeStub = sinon.stub(browser, "onResize");
                 sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
-
                 let source = new Source({ name: "name", id: "id" });
                 let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
                 let logMap: LogMap = { id: { logs: [], query: logQuery}};
-                let params = {
-                    sourceSlug: "name"
-                };
-                const wrapper = shallow((
-                    <LogsPage
-                        logMap={logMap}
-                        source={source}
-                        params={params} />
-                ));
-
-                expect(wrapper.find("JSONTree")).to.have.length(0);
-            });
-        });
-
-        describe("with logs", function () {
-            it("should render correctly", function () {
-
-                isMobileWidthStub = sinon.stub(browser, "isMobileWidth").returns(true);
-                onResizeStub = sinon.stub(browser, "onResize");
-                sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
-
-                let logs: Log[] = dummyLogs(4);
-                let source = new Source({ name: "name", id: "id" });
-                let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
-                let logMap: LogMap = { id: { logs: logs, query: logQuery}};
                 let params = {
                     sourceSlug: "name"
                 };
