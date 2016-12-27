@@ -3,14 +3,14 @@ import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 
-import Button from "../../components/Button";
-import { Cell, Grid } from "../../components/Grid";
-import { Select, SelectAdapter } from "../../components/Select";
-import LogQuery from "../../models/log-query";
-import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
+import Button from "../../../components/Button";
+import { Cell, Grid } from "../../../components/Grid";
+import { Select, SelectAdapter } from "../../../components/Select";
+import LogQuery from "../../../models/log-query";
+import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "../Filters";
 
-const FilterBarStyle = require("./FilterBar.scss");
-const DatePickerTheme = require("./themes/datepicker-input");
+const FilterBarStyle = require("./style");
+const DatePickerTheme = require("./datepicker-input-theme");
 
 const SelectInputStyle = {
     "color": "rgb(255, 255, 255)",
@@ -64,11 +64,12 @@ class ConvoTypeAdapter implements SelectAdapter<ConvoType> {
     };
 }
 
-export class FilterBar extends React.Component<FilterProps, FilterState> {
-    filterAdapter: ConvoTypeAdapter;
+class FilterBar extends React.Component<FilterProps, FilterState> {
+    private filterAdapter: ConvoTypeAdapter;
 
     constructor(props: FilterProps) {
         super(props);
+        console.log("filterBar constructor");
         let types: ConvoType[] = [];
         types.push({ type: "", title: "All Logs" });
         types.push({ type: "DEBUG", title: "Debug" });
@@ -139,6 +140,8 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     render(): JSX.Element {
+        console.log("filterBar render");
+        console.log(this.props.query);
         let queryStartDate = this.props.query ? this.props.query.startTime : new Date();
         let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
         let typeHandleChange = this.handleTypeSelectChange.bind(this);
@@ -186,3 +189,5 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         );
     }
 }
+
+export default FilterBar;

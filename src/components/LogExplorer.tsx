@@ -1,6 +1,5 @@
 import * as React from "react";
 
-
 import { Cell, Grid } from "../components/Grid";
 import Interaction from "../components/Interaction";
 import Conversation from "../models/conversation";
@@ -123,11 +122,12 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     handleFilter(filter: FilterType) {
+        console.log("handleFilter");
         this.state.filter = filter;
         this.setState(this.state);
     }
 
-    render() {
+    render(): JSX.Element {
 
         let query: LogQuery;
         let logs: Log[];
@@ -136,14 +136,13 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             query = this.props.logMap[this.props.source.id].query;
             logs = this.props.logMap[this.props.source.id].logs;
         }
-        console.log("render");
-        console.log(this.props.source);
-        console.log(this.props.logMap);
-        console.log(query);
+
         return (
             <span>
-                <FilterBar onFilter={this.handleFilter.bind(this)} query={query} />
-                <div ref={this.onRootLayout.bind(this)}>
+                { query ? (
+                    <FilterBar onFilter={this.handleFilter.bind(this)} query={query} />
+                ) : undefined }
+                    <div ref={this.onRootLayout.bind(this)}>
                     <Grid noSpacing={true}>
                         <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
                             <FilterableConversationList
