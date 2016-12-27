@@ -12,7 +12,7 @@ interface SourceListPageProps {
     sources: Source[];
 }
 
-interface SourceListState {
+interface SourceListPageState {
     listItems: JSX.Element[];
 }
 
@@ -22,8 +22,29 @@ function mapStateToProps(state: State.All) {
     };
 }
 
-export class SourceListPage extends React.Component<SourceListPageProps, SourceListState> {
+export class SourceListPage extends React.Component<SourceListPageProps, SourceListPageState> {
+    render() {
+        return (
+            <SourceList
+                sources={this.props.sources}
+                />
+        );
+    }
+}
 
+export default connect(
+    mapStateToProps
+)(SourceListPage);
+
+interface SourceListProps {
+    sources: Source[];
+}
+
+interface SourceListState {
+    listItems: JSX.Element[];
+}
+
+class SourceList extends React.Component<SourceListProps, SourceListState> {
     constructor(props: SourceListPageProps) {
         super(props);
         this.state = {
@@ -88,7 +109,3 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
         );
     }
 }
-
-export default connect(
-    mapStateToProps
-)(SourceListPage);
