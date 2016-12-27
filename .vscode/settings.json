@@ -6,7 +6,7 @@
         "**/*.js.map": true,
         "**/*.js": { "when": "$(basename).ts"},
         "**/*?.js": { "when": "$(basename).tsx"},
-        "**/*.scss.d.ts": { "when": "$(basename).scss"}
+        "**/*.scss.d.ts": true
     },
     "files.autoSave": "onFocusChange",
     "files.trimTrailingWhitespace": true,
