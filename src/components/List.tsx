@@ -59,10 +59,7 @@ export class List extends React.Component<ListProps, ListState> {
 
             heightOffset = rect.top;
             width = windowDimens.width;
-            height = rect.bottom;
-
-            console.info(windowDimens);
-            console.info(rect);
+            height = windowDimens.height - heightOffset;
         } else {
             // Unit tests
             width = 200;

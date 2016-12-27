@@ -46,7 +46,7 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
         return {
             cellStyle: { paddingRight: "10px", paddingLeft: "5px" },
             pane: (
-                <div style={{ overflowY:"auto" }}>
+                <div>
                     <HomePage />
                 </div>
             )
