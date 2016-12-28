@@ -1,0 +1,25 @@
+
+
+/*
+const SelectIconStyle = {
+    "color": "rgb(255, 255, 255)"
+}; */
+
+.input {
+    .icon {
+        color: white;
+    }
+}
+
+.value {
+    color: white;
+    border-bottom: 1px solid rgb(255, 255, 255);
+}
+
+.label {
+    color: rgba(255, 255, 255, 0.3);
+
+    .icon {
+        color: white;
+    }
+}

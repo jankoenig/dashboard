@@ -1,56 +1,76 @@
 import * as classNames from "classnames";
 import * as React from "react";
 import { Link } from "react-router";
+import Dropdown from "react-toolbox/lib/dropdown";
 
 import Button from "./Button";
 import { Menu, MenuItem } from "./Menu";
-import { Select } from "./Select";
 
-export interface HeaderTitleAdapter<T> {
-  getCount(): number;
-  getItem(index: number): T;
-  getTitle(index: number): string;
+const DropdownDark = require("../themes/dropdown-dark.scss");
+
+export interface Dropdownable {
+  value: string;
+  label: string;
 }
 
 export interface HeaderProps {
   selectedIndex?: number;
-  items?: HeaderTitleAdapter<any>;
+  items?: Array<Dropdownable>;
   className?: string;
-  onItemSelect?: (index: number) => void;
+  onItemSelected?: (item: Dropdownable) => void;
   displayHomeButton?: boolean;
 }
 
 interface HeaderState {
+  selectedItem?: string;
 }
 
 export class Header extends React.Component<HeaderProps, HeaderState> {
 
-  handleTitleSelect(item: any, index: number) {
-    if (this.props.onItemSelect) {
-      this.props.onItemSelect(index);
-    }
+  constructor(props: HeaderProps) {
+    super(props);
+    this.state = { selectedItem: "kj" };
   }
 
   classes() {
     return classNames(this.props.className, "mdl-layout__header");
   }
 
-  render() {
-    let title: JSX.Element = undefined;
-    if (this.props.items && this.props.items.getCount() > 0) {
-      if (this.props.items.getCount() === 1) {
-        title = (<span className="mdl-layout-title">{this.props.items.getTitle(0)}</span>);
-      } else {
-        let index = this.props.selectedIndex || 0;
-        title = (<Select adapter={this.props.items} hint="" onSelected={this.handleTitleSelect.bind(this)} defaultIndex={index} />);
+  handleItemSelect = (value: string, event: any) => {
+    console.log("handleTitleSelect");
+    console.log(value);
+    console.log(this.props.items);
+    this.setState({ selectedItem: value });
+    if (this.props.onItemSelected) {
+      for (let item of this.props.items) {
+        if (item.value === value) {
+          this.props.onItemSelected(item);
+        }
       }
+      // this.props.onItemSelected(this.props.items[value]);
+    }
+  }
+
+  render() {
+
+    let title: JSX.Element = undefined;
+    if (this.props.items && this.props.items.length > 0) {
+      title = (
+        <Dropdown
+          theme={DropdownDark}
+          auto
+          onChange={this.handleItemSelect}
+          source={this.props.items}
+          value={this.state.selectedItem}
+          />
+      );
     }
 
     return (
       <header className={this.classes()}>
         <div className="mdl-layout__header-row" style={{ paddingLeft: "0px" }}>
           {this.props.displayHomeButton ? (
-            <Link to={"/"} style={{paddingLeft: "15px", paddingRight: "15px"}}>
+            <Link to={"/"} style={{ paddingLeft: "15px", paddingRight: "15px" }}>
               <i className="material-icons" role="presentation">home</i>
             </Link>
           ) : (undefined)}

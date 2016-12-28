@@ -1,36 +1,14 @@
 import * as chai from "chai";
 import { shallow } from "enzyme";
-// tslint:disable:no-unused-variable
-import * as React from "react"; // Needed for enzyme, unused for some reason.
-// tslint:enable:no-unused-variable
+import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import { Header, HeaderTitleAdapter } from "./Header";
+import { Header } from "./Header";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
-
-class TitlesAdapter implements HeaderTitleAdapter<string> {
-    readonly titles: string[];
-
-    constructor(titles: string[]) {
-        this.titles = titles;
-    }
-
-    getCount(): number {
-        return this.titles.length;
-    }
-
-    getTitle(index: number): string {
-        return this.titles[index];
-    }
-
-    getItem(index: number): string {
-        return this.titles[index];
-    }
-}
 
 describe("Header", function () {
     it("renders correctly", function () {
@@ -40,7 +18,7 @@ describe("Header", function () {
 
     describe("with title", function () {
         it("renders correctly", function () {
-            const wrapper = shallow(<Header items={new TitlesAdapter(["title"])} />);
+            const wrapper = shallow(<Header items={[{ label: "name", value: "id" }]} />);
             expect(wrapper.find("span").text()).to.have.equal("title");
             expect(wrapper.find("Select")).to.have.length(0);
         });
@@ -48,16 +26,16 @@ describe("Header", function () {
 
     describe("with multiple titles", function () {
         it("renders correctly", function () {
-            const wrapper = shallow(<Header items={new TitlesAdapter(["title1", "title2"])} />);
+            const wrapper = shallow(<Header items={[{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }]} />);
             expect(wrapper.find("span")).to.have.length(0);
             // There should be a munu which lists the titles.
             expect(wrapper.find("Select")).to.have.length(1);
         });
 
         it("tests that the titles are selectable", function () {
-            const adapter = new TitlesAdapter(["title1", "title2", "title3", "title4"]);
-            const onHandled = sinon.spy();
-            const wrapper = shallow(<Header items={adapter} onItemSelect={onHandled} />);
+            const items = [{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }];
+            const onItemSelected = sinon.spy();
+            const wrapper = shallow(<Header items={items} onItemSelected={onItemSelected} />);
             let select = wrapper.find("Select");
 
             select.simulate("selected", "title1", 0);
@@ -66,18 +44,18 @@ describe("Header", function () {
             select.simulate("selected", "title4", 3);
             select.simulate("selected", "title5", 4);
 
-            expect(onHandled).to.have.callCount(5);
-            expect(onHandled).to.be.calledWithExactly(0);
-            expect(onHandled).to.be.calledWithExactly(1);
-            expect(onHandled).to.be.calledWithExactly(2);
-            expect(onHandled).to.be.calledWithExactly(3);
-            expect(onHandled).to.be.calledWithExactly(4);
+            expect(onItemSelected).to.have.callCount(5);
+            expect(onItemSelected).to.be.calledWithExactly(0);
+            expect(onItemSelected).to.be.calledWithExactly(1);
+            expect(onItemSelected).to.be.calledWithExactly(2);
+            expect(onItemSelected).to.be.calledWithExactly(3);
+            expect(onItemSelected).to.be.calledWithExactly(4);
         });
 
         it("tests the selectd index", function () {
-            const adapter = new TitlesAdapter(["title1", "title2", "title3", "title4"]);
-            const onHandled = sinon.spy();
-            const wrapper = shallow(<Header items={adapter} onItemSelect={onHandled} selectedIndex={2} />);
+            const items = [{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }];
+            const onItemSelected = sinon.spy();
+            const wrapper = shallow(<Header items={items} onItemSelected={onItemSelected} selectedIndex={2} />);
             let select = wrapper.find("Select");
 
             expect((select.props() as any).defaultIndex).to.equal(2);
