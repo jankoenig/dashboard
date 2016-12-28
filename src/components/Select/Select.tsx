@@ -1,6 +1,8 @@
-import * as React from "react";
+import * as classNames from "classnames";
 
 import MDLComponent from "../MDLComponent";
+
+import theme from "./theme";
 
 // Import the style
 require("./getmdl-select");
@@ -166,14 +168,34 @@ export class Select extends MDLComponent<SelectProps<any>, SelectState> {
         // You have to do this way or else you get some weird warning with React about going from controlled to uncontrolled states.
         let useValue = this.props.adapter.getTitle(this.state.lastSelectedIndex);
 
+        console.info("SELECT");
+        console.log(theme.GMDL);
+
+        let gmdl = theme.GMDL;
+
+        let topTheme = classNames("mdl-textfield", "mdl-js-textfield", "mdl-textfield--floating-label"
+                                    , gmdl["getmdl-select"]
+                                    , gmdl["getmdl-select__fix-height"]
+                                    , gmdl["getmdl-select__fullwidth"]);
+        let inputTheme = classNames("mdl-textfield__input");
+        let iconTheme = classNames("mdl-icon-toggle__label", "material-icons");
+        let labelTheme = classNames("mdl-textfield__label");
+        let listTheme = classNames("mdl-menu", "mdl-menu--bottom-left", "mdl-js-menu");
+
+        console.log(topTheme);
+        console.log(iconTheme);
+        console.log(inputTheme);
+        console.log(labelTheme);
+        console.log(listTheme);
+
         return (
-            <div ref={this.handleDropdownBind.bind(this)} className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label getmdl-select getmdl-select__fix-height getmdl-select__fullwidth">
-                <input ref={this.handleRefBind.bind(this)} style={this.props.inputStyle} value={useValue} className="mdl-textfield__input" type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
+            <div ref={this.handleDropdownBind.bind(this)} className={topTheme}>
+                <input ref={this.handleRefBind.bind(this)} style={this.props.inputStyle} value={useValue} className={inputTheme} type="text" id={this.id} readOnly tabIndex={-1} onKeyDown={this.handleInputKeyDown.bind(this)} />
                 <label htmlFor={this.id}>
-                    <i style={this.props.iconStyle} className="mdl-icon-toggle__label material-icons">keyboard_arrow_down</i>
+                    <i style={this.props.iconStyle} className={iconTheme}>keyboard_arrow_down</i>
                 </label>
-                <label htmlFor={this.id} style={this.props.labelStyle} className="mdl-textfield__label">{this.props.hint}</label>
-                <ul ref={this.handleMenuBind.bind(this)} onKeyDown={this.handleMenuKeyDown.bind(this)} htmlFor={this.id} className="mdl-menu mdl-menu--bottom-left mdl-js-menu">
+                <label htmlFor={this.id} style={this.props.labelStyle} className={labelTheme}>{this.props.hint}</label>
+                <ul ref={this.handleMenuBind.bind(this)} onKeyDown={this.handleMenuKeyDown.bind(this)} htmlFor={this.id} className={listTheme}>
                     {this.state.list}
                 </ul>
             </div>

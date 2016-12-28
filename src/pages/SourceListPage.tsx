@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
-// import { Button } from "react-toolbox/lib/button";
+import { Button } from "react-toolbox/lib/button";
 
 import { List } from "../components/List";
 import { Pane, TwoPane } from "../components/TwoPane";
@@ -37,6 +37,11 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
                 <div>
                     <SourceList
                         sources={this.props.sources} />
+                    <div style={{ position: "relative" }}>
+                        <Link to="/skills/new" style={{ position: "absolute", bottom: "2.5rem", right: "2.5rem" }} >
+                            <Button icon="add" accent mini floating />
+                        </Link>
+                    </div>
                 </div>
             )
         };
