@@ -2,7 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import Interaction from "../../components/Interaction";
-import { Pane, TwoPane } from "../../components/TwoPane";
+import { TwoPane } from "../../components/TwoPane";
 import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
@@ -48,6 +48,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onConversationClicked(conversation: Conversation) {
+        console.info("CONVERSATION CLICK " + conversation);
         this.state.request = conversation.request;
         this.state.response = conversation.response;
         this.state.outputs = conversation.outputs;
@@ -60,44 +61,35 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.setState(this.state);
     }
 
-    leftPane(): Pane {
-        return {
-            cellStyle: { paddingLeft: "10px", paddingRight: "5px" },
-            pane: (
-                <FilterableConversationList
-                    conversations={ConversationList.fromLogs(this.props.logs)}
-                    filter={this.state.filter}
-                    onShowConversation={this.onConversationClicked.bind(this)} />
-            )
-        };
-    }
-
-    rightPane(): Pane {
-        return {
-            cellStyle: { paddingLeft: "5px", paddingRight: "10px" },
-            pane: this.state.request ?
-                (
-                    <Interaction
-                        request={this.state.request}
-                        response={this.state.response}
-                        outputs={this.state.outputs}
-                        stackTraces={this.state.stackTraces} />
-                ) : (
-                    <h6> Select a log to view </h6>
-                )
-        };
-    }
-
     render() {
+        let leftSide = (
+            <FilterableConversationList
+                conversations={ConversationList.fromLogs(this.props.logs)}
+                filter={this.state.filter}
+                onShowConversation={this.onConversationClicked.bind(this)} />
+        );
+
+        let rightSide = this.state.request ?
+            (
+                <Interaction
+                    request={this.state.request}
+                    response={this.state.response}
+                    outputs={this.state.outputs}
+                    stackTraces={this.state.stackTraces} />
+            ) : (
+                <h6> Select a log to view </h6>
+            );
+
         return (
             <span>
                 <FilterBar onFilter={this.handleFilter.bind(this)} />
-                <div>
-                    <TwoPane
-                        leftPane={this.leftPane.bind(this)}
-                        rightPane={this.rightPane.bind(this)}
-                        spacing={true} />
-                </div>
+                <TwoPane
+                    leftStyle={{ paddingLeft: "10px", paddingRight: "5px" }}
+                    rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}
+                    spacing={true}>
+                    {leftSide}
+                    {rightSide}
+                </TwoPane>
             </span>
         );
     }

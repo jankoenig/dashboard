@@ -7,7 +7,7 @@ import { Button } from "react-toolbox/lib/button";
 
 import { List } from "../components/List/List";
 import { TwoLineItem } from "../components/List/TwoLineItem";
-import { Pane, TwoPane } from "../components/TwoPane";
+import { TwoPane } from "../components/TwoPane";
 
 import Source from "../models/source";
 
@@ -31,40 +31,33 @@ function mapStateToProps(state: State.All) {
 
 export class SourceListPage extends React.Component<SourceListPageProps, SourceListPageState> {
 
-    leftPane(): Pane {
-        return {
-            cellStyle: { paddingLeft: "10px", paddingRight: "5px" },
-            pane: (
-                <div>
-                    <SourceList
-                        sources={this.props.sources} />
-                    <div style={{ position: "relative" }}>
-                        <Link to="/skills/new" style={{ position: "absolute", bottom: "2.5rem", right: "2.5rem" }} >
-                            <Button icon="add" accent mini floating />
-                        </Link>
-                    </div>
-                </div>
-            )
-        };
-    }
-
-    rightPane(): Pane {
-        return {
-            cellStyle: { paddingRight: "10px", paddingLeft: "5px" },
-            pane: (
-                <div>
-                    <HomePage />
-                </div>
-            )
-        };
-    }
-
     render() {
+        let leftSide = (
+            <div className="source_list_page_left">
+                <SourceList
+                    sources={this.props.sources} />
+                <div style={{ position: "relative" }}>
+                    <Link to="/skills/new" style={{ position: "absolute", bottom: "2.5rem", right: "2.5rem" }} >
+                        <Button icon="add" accent mini floating />
+                    </Link>
+                </div>
+            </div>
+        );
+
+        let rightSide = (
+            <div className="source_list_page_right">
+                <HomePage />
+            </div>
+        );
+
         return (
             <TwoPane
                 spacing={true}
-                leftPane={this.leftPane.bind(this)}
-                rightPane={this.rightPane.bind(this)} />
+                leftStyle={{ paddingLeft: "10px", paddingRight: "5px" }}
+                rightStyle={{ paddingRight: "10px", paddingLeft: "5px" }}>
+                {leftSide}
+                {rightSide}
+            </TwoPane>
         );
     }
 }
