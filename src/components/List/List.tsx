@@ -1,11 +1,12 @@
 import * as React from "react";
 
-import { Dimensions, Measure } from "./Measure";
+import { Dimensions, Measure } from "../Measure";
 
 let ReactList = require("react-list");
 
 export interface ListProps {
     itemRenderer: (index: number, key: string) => JSX.Element;
+    onSelect?: (index: number) => void;
     length: number;
     type: string;
 }
@@ -28,6 +29,10 @@ export class List extends React.Component<ListProps, ListState> {
         this.setState(this.state);
     }
 
+    onSelect(value: any) {
+        console.log(value);
+    }
+
     render(): JSX.Element {
         let parentStyle = (this.state.dimens) ? { overflowY: "scroll", height: this.state.dimens.height } : {};
         return (
@@ -37,7 +42,8 @@ export class List extends React.Component<ListProps, ListState> {
                     <ReactList
                         itemRenderer={this.props.itemRenderer}
                         length={this.props.length}
-                        type={this.props.type} />
+                        type={this.props.type}
+                        onSelect={this.onSelect.bind(this)} />
                 </div>
             </Measure>
         );

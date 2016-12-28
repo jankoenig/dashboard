@@ -1,7 +1,7 @@
 import * as objectAssign from "object-assign";
 import * as React from "react";
 
-import List from "../../components/List";
+import List from "../../components/List/List";
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";

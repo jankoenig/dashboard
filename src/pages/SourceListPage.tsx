@@ -5,7 +5,8 @@ import { Link } from "react-router";
 
 import { Button } from "react-toolbox/lib/button";
 
-import { List } from "../components/List";
+import { List } from "../components/List/List";
+import { TwoLineItem } from "../components/List/TwoLineItem";
 import { Pane, TwoPane } from "../components/TwoPane";
 
 import Source from "../models/source";
@@ -83,13 +84,18 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
     renderItem(index: number, key: string): JSX.Element {
         let source = this.props.sources[index];
         return (
-            <li key={source.id} className="mdl-list__item">
-                <Link to={"/skills/" + source.id}>{source.name}</Link>
-                <span style={{ textAlign: "center", marginLeft: "10px", fontSize: "12px" }}>
-                    Created {moment(source.created).format("MMM Do, YYYY")}
-                </span>
-            </li>
+            <TwoLineItem
+                primaryValue={source.name}
+                secondaryValue={moment(source.created).format("MMM Do, YYYY")} />
         );
+        // return (
+        //     <li key={source.id} className="mdl-list__item">
+        //         <Link to={"/skills/" + source.id}>{source.name}</Link>
+        //         <span style={{ textAlign: "center", marginLeft: "10px", fontSize: "12px" }}>
+        //             Created {moment(source.created).format("MMM Do, YYYY")}
+        //         </span>
+        //     </li>
+        // );
     }
 
     render() {
