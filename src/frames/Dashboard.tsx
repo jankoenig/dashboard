@@ -108,14 +108,26 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     return dropdownableSources;
   }
 
+  indexOf(source: Source): number {
+    if (source) {
+      for (let item of this.props.sources) {
+        if (item.id === source.id) {
+          return this.props.sources.indexOf(item);
+        }
+      }
+    }
+
+    return -1;
+  }
+
   render() {
     return (
       <Layout header={true}>
         <Header
           className={this.headerClasses()}
-          selectedIndex={this.props.sources.indexOf(this.props.currentSource)}
-          items={this.props.currentSource ? this.dropdownableSources() : undefined}
-          onItemSelected={this.handleSelectedSource.bind(this)}
+          currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
+          sources={this.props.currentSource ? this.dropdownableSources() : undefined}
+          onSourceSelected={this.handleSelectedSource.bind(this)}
           displayHomeButton={this.props.location.pathname !== "/"}>
           <UserControl
             login={this.props.login}

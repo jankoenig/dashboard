@@ -14,56 +14,67 @@ export interface Dropdownable {
 }
 
 export interface HeaderProps {
-  selectedIndex?: number;
-  items?: Array<Dropdownable>;
-  className?: string;
-  onItemSelected?: (item: Dropdownable) => void;
+  currentSourceId?: string;
+  sources?: Array<Dropdownable>;
+  onSourceSelected?: (source: Dropdownable) => void;
   displayHomeButton?: boolean;
+  className?: string;
 }
 
 interface HeaderState {
-  selectedItem?: string;
+  selectedSourceId?: string;
 }
 
+/**
+ * Header for the Dashboard frame
+ *
+ * TODO: We may want to consider renaming this since it is not a resuable header component.
+ */
 export class Header extends React.Component<HeaderProps, HeaderState> {
 
   constructor(props: HeaderProps) {
     super(props);
-    this.state = { selectedItem: "kj" };
+    this.state = { selectedSourceId: this.props.currentSourceId };
+  }
+
+  componentWillReceiveProps(nextProps: HeaderProps, context: any) {
+    this.state.selectedSourceId = nextProps.currentSourceId;
+    this.setState(this.state);
   }
 
   classes() {
-    return classNames(this.props.className, "mdl-layout__header");
+    return classNames("mdl-layout__header", this.props.className);
   }
 
   handleItemSelect = (value: string, event: any) => {
-    console.log("handleTitleSelect");
-    console.log(value);
-    console.log(this.props.items);
-    this.setState({ selectedItem: value });
-    if (this.props.onItemSelected) {
-      for (let item of this.props.items) {
-        if (item.value === value) {
-          this.props.onItemSelected(item);
-        }
+
+    this.state.selectedSourceId = value;
+
+    // Now find the source and pass it back out
+    for (let item of this.props.sources) {
+      if (item.value === value && this.props.onSourceSelected) {
+        this.props.onSourceSelected(item);
       }
-      // this.props.onItemSelected(this.props.items[value]);
     }
   }
 
   render() {
 
     let title: JSX.Element = undefined;
-    if (this.props.items && this.props.items.length > 0) {
-      title = (
-        <Dropdown
-          theme={DropdownDark}
-          auto
-          onChange={this.handleItemSelect}
-          source={this.props.items}
-          value={this.state.selectedItem}
-          />
-      );
+    if (this.props.sources && this.props.sources.length > 0) {
+      if (this.props.sources.length === 1) {
+        title = (<span className="mdl-layout-title">{this.props.sources[0].label}</span>);
+      } else {
+        title = (
+          <Dropdown
+            theme={DropdownDark}
+            auto
+            onChange={this.handleItemSelect}
+            source={this.props.sources}
+            value={this.state.selectedSourceId}
+            />
+        );
+      }
     }
 
     return (

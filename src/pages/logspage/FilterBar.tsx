@@ -5,8 +5,10 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import { Cell, Grid } from "../../components/Grid";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
 
-const DatePickerTheme = require("./themes/datepicker-input");
-const DropdownLightTheme = require("../../themes/dropdown-light");
+const DatePickerFilterbarTheme = require("../../themes/datepicker-filterbar");
+const DropdownFilterbarTheme = require("../../themes/dropdown-filterbar");
+
+// const FilterBarTheme = require("../../themes/filterbar");
 
 export interface FilterProps {
     onFilter: (filter: FilterType) => void;
@@ -79,7 +81,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
             <Grid style={{ backgroundColor: "#243036" }} >
                 <Cell col={2} tablet={2} phone={4}>
                     <Dropdown
-                        theme={DropdownLightTheme}
+                        theme={DropdownFilterbarTheme}
                         label="Log Level"
                         auto={false}
                         onChange={this.handleLogTypeChange.bind(this)}
@@ -89,7 +91,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
                 </Cell>
                 <Cell col={2} offset={5} tablet={2} offsetTablet={1} phone={2}>
                     <DatePicker
-                        theme={DatePickerTheme}
+                        theme={DatePickerFilterbarTheme}
                         label="Start Date"
                         maxDate={today}
                         value={this.state.startDate}
@@ -98,7 +100,7 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
                 <Cell col={2} tablet={2} phone={2}>
                     <DatePicker
-                        theme={DatePickerTheme}
+                        theme={DatePickerFilterbarTheme}
                         label="End Date"
                         maxDate={today}
                         value={this.state.endDate}

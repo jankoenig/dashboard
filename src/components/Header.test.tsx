@@ -10,32 +10,32 @@ import { Header } from "./Header";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("Header", function () {
+describe.only("Header", function () {
     it("renders correctly", function () {
         const wrapper = shallow(<Header />);
         expect(wrapper.find("header")).to.have.length(1);
     });
 
-    describe("with title", function () {
+    describe("with one source", function () {
         it("renders correctly", function () {
-            const wrapper = shallow(<Header items={[{ label: "name", value: "id" }]} />);
-            expect(wrapper.find("span").text()).to.have.equal("title");
-            expect(wrapper.find("Select")).to.have.length(0);
+            const wrapper = shallow(<Header sources={[{ label: "name", value: "id" }]} />);
+            expect(wrapper.find("span").text()).to.have.equal("name");
+            expect(wrapper.find("Dropdown")).to.have.length(0);
         });
     });
 
-    describe("with multiple titles", function () {
+    describe("with multiple sources", function () {
         it("renders correctly", function () {
-            const wrapper = shallow(<Header items={[{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }]} />);
+            const wrapper = shallow(<Header sources={[{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }]} />);
             expect(wrapper.find("span")).to.have.length(0);
             // There should be a munu which lists the titles.
-            expect(wrapper.find("Select")).to.have.length(1);
+            expect(wrapper.find("Dropdown")).to.have.length(1);
         });
 
         it("tests that the titles are selectable", function () {
-            const items = [{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }];
+            const sources = [{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }];
             const onItemSelected = sinon.spy();
-            const wrapper = shallow(<Header items={items} onItemSelected={onItemSelected} />);
+            const wrapper = shallow(<Header sources={sources} onSourceSelected={onItemSelected} />);
             let select = wrapper.find("Select");
 
             select.simulate("selected", "title1", 0);
@@ -53,9 +53,9 @@ describe("Header", function () {
         });
 
         it("tests the selectd index", function () {
-            const items = [{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }];
-            const onItemSelected = sinon.spy();
-            const wrapper = shallow(<Header items={items} onItemSelected={onItemSelected} selectedIndex={2} />);
+            const sources = [{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }];
+            const onSourceSelected = sinon.spy();
+            const wrapper = shallow(<Header sources={sources} onSourceSelected={onSourceSelected} currentSourceId={"id2"} />);
             let select = wrapper.find("Select");
 
             expect((select.props() as any).defaultIndex).to.equal(2);

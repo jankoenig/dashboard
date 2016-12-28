@@ -1,0 +1,28 @@
+@import "dropdown-light";
+
+.inputInput {
+    padding: 2rem 0 0 0;
+}
+.inputInputElement {
+    &:focus:not([disabled]):not([readonly]), &.filled {
+        ~ .label:not(.fixed) {
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.inputInputElement {
+    font-size: 0.9em;
+    padding: 0;
+}
+
+.inputLabel {
+    // Using !important is bad practice however
+    // I cannot figure out how to override this style --MMM
+    font-size: 0.9rem !important;
+    top: 0.5rem !important;
+}
+
+.title {
+    font-size: 1.3rem;
+}

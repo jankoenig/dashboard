@@ -1,0 +1,30 @@
+@import "dashboard";
+
+.inputElement {
+    &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
+        ~ .label:not(.fixed) {
+            color: rgba(255, 255, 255, 0.3);
+            top: 10px;
+            font-size: $input-font-size;
+        }
+    }
+}
+
+.input:not(.disabled) > .inputElement {
+    border-bottom: 1px solid $input-color-dark;
+    font-size: $input-font-size;
+    color: rgb(255, 255, 255);
+    padding: 0px;
+}
+
+.label {
+    font-size: $label-font-size;
+    color: rgba(255, 255, 255, 0.3);
+    top: 20px;
+}
+
+.title {
+    font-size: $input-font-size;
+    color: rgb(255, 255, 255);
+    top: 20px;
+}
