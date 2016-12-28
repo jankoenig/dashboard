@@ -84,18 +84,13 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
     renderItem(index: number, key: string): JSX.Element {
         let source = this.props.sources[index];
         return (
-            <TwoLineItem
-                primaryValue={source.name}
-                secondaryValue={moment(source.created).format("MMM Do, YYYY")} />
+            <Link to={"/skills/" + source.id} style={{ textDecoration: "none" }}>
+                <TwoLineItem
+                    index={index}
+                    primaryValue={source.name}
+                    secondaryValue={moment(source.created).format("MMM Do, YYYY")} />
+            </Link>
         );
-        // return (
-        //     <li key={source.id} className="mdl-list__item">
-        //         <Link to={"/skills/" + source.id}>{source.name}</Link>
-        //         <span style={{ textAlign: "center", marginLeft: "10px", fontSize: "12px" }}>
-        //             Created {moment(source.created).format("MMM Do, YYYY")}
-        //         </span>
-        //     </li>
-        // );
     }
 
     render() {
