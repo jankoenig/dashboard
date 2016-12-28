@@ -126,11 +126,10 @@ describe("New Source Page", function () {
             wrapper.find("NewSkillForm").simulate("createSource", partialSource);
 
             return completePromise.then(() => {
-                console.info("COMPLETE AREAS");
                 wrapper.update();
                 let source = wrapper.state("source");
                 let error = wrapper.state("error");
-                console.log(source);
+
                 expect(wrapper.find("NewSkillForm")).to.have.length(0);
                 expect(wrapper.find("CodeForm")).to.have.length(1);
                 expect(source).to.deep.equal(completeSource);
@@ -174,7 +173,7 @@ describe("New Source Page", function () {
                 wrapper.update();
                 let source = wrapper.state("source");
                 let error = wrapper.state("error");
-                console.log(wrapper.state("error"));
+
                 expect(wrapper.find("NewSkillForm")).to.have.length(1);
                 expect(wrapper.find("CodeForm")).to.have.length(0);
                 expect(source).to.be.undefined;

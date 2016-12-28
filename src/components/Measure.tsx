@@ -50,8 +50,6 @@ export class Measure extends React.Component<MeasureProps, MeasureState> {
             width = windowDimens.width;
             height = windowDimens.height - heightOffset;
 
-            console.info(windowDimens);
-            console.info(rect);
         } else {
             // Unit tests
             width = 200;

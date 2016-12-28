@@ -24,7 +24,6 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
         this.state = {
             myHeight: 0
         };
-        console.info("TWOPANE");
     }
 
     onMeasure(dimensions: Dimensions) {
@@ -33,7 +32,6 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
     }
 
     render(): JSX.Element {
-        console.info("TWOPANE RENDER");
         let leftStyleProp = (this.props.leftStyle) ? this.props.leftStyle : {};
         let rightStyleProp = (this.props.rightStyle) ? this.props.rightStyle : {};
         let spacing = this.props.spacing !== undefined && this.props.spacing;
@@ -41,11 +39,8 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
         let leftStyle = {...{ height: this.state.myHeight, overflowY: "auto" }, ...leftStyleProp };
         let rightStyle = {...{height: this.state.myHeight, overflowY: "auto" }, ...rightStyleProp };
 
-        console.log(this.props.children);
         let leftObj = (this.props as any).children[0];
         let rightObj = (this.props as any).children[1];
-        console.log(leftObj);
-        console.log(rightObj);
 
         return (
             <Measure

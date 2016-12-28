@@ -48,7 +48,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onConversationClicked(conversation: Conversation) {
-        console.info("CONVERSATION CLICK " + conversation);
         this.state.request = conversation.request;
         this.state.response = conversation.response;
         this.state.outputs = conversation.outputs;

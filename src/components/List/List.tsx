@@ -29,10 +29,6 @@ export class List extends React.Component<ListProps, ListState> {
         this.setState(this.state);
     }
 
-    onSelect(value: any) {
-        console.log(value);
-    }
-
     render(): JSX.Element {
         let parentStyle = (this.state.dimens) ? { overflowY: "scroll", height: this.state.dimens.height } : {};
         return (
@@ -42,8 +38,7 @@ export class List extends React.Component<ListProps, ListState> {
                     <ReactList
                         itemRenderer={this.props.itemRenderer}
                         length={this.props.length}
-                        type={this.props.type}
-                        onSelect={this.onSelect.bind(this)} />
+                        type={this.props.type} />
                 </div>
             </Measure>
         );
