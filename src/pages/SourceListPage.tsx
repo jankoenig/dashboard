@@ -15,7 +15,7 @@ import { State } from "../reducers";
 
 import HomePage from "./HomePage";
 
-interface SourceListPageProps {
+export interface SourceListPageProps {
     sources: Source[];
 }
 

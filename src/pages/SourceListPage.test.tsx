@@ -6,6 +6,7 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 
 let jsdom = require("mocha-jsdom");
 
+import { Source } from "../models/source";
 import { dummySources } from "../utils/test";
 import { SourceListPage } from "./SourceListPage";
 
@@ -13,13 +14,17 @@ let expect = chai.expect;
 
 describe("Source List Page", function () {
 
+    let sources: Source[];
+
+    before(function() {
+        sources = dummySources(4);
+    });
+
     describe("Full render", function () {
 
         jsdom();
 
         it("should render correctly", function () {
-
-            const sources = dummySources(4);
             const wrapper = mount(<SourceListPage sources={sources} />);
 
             let twoPaneWrapper = wrapper.find("TwoPane");
