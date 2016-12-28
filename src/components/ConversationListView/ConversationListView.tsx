@@ -7,7 +7,6 @@ import ConversationList, { ConversationMap } from "../../models/conversation-lis
 import ConversationListViewItem from "./ConversationListViewItem";
 
 export interface ConversationListViewProps {
-    readonly height: number;
     readonly conversations: ConversationList;
     readonly expandListItemWhenActive?: boolean;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;

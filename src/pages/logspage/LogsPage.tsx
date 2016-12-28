@@ -10,20 +10,9 @@ import Output from "../../models/output";
 import Source from "../../models/source";
 import StackTrace from "../../models/stack-trace";
 import { State } from "../../reducers";
-import browser from "../../utils/browser";
 import { FilterableConversationList } from "./FilterableConversationList";
 import { FilterBar } from "./FilterBar";
 import { FilterType } from "./Filters";
-
-interface CellDimensions {
-    height: number;
-}
-
-interface Dimensions {
-    width: number;
-    height: number;
-    cellDimens: CellDimensions;
-}
 
 export interface LogsPageProps {
     logs: Log[];
@@ -32,7 +21,6 @@ export interface LogsPageProps {
 }
 
 interface LogsPageState {
-    lastDimens: Dimensions;
     request: Log | undefined;
     response: Log | undefined;
     outputs: Output[];
@@ -47,77 +35,16 @@ function mapStateToProps(state: State.All) {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
-    return {
-    };
-}
-
 export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
-
-    root: Element;
-    resizeEvent: browser.WrappedEvent;
 
     constructor(props: LogsPageProps) {
         super(props);
         this.state = {
-            lastDimens: { width: 0, height: 0, cellDimens: { height: 0 } },
             request: undefined,
             response: undefined,
             outputs: [],
             stackTraces: []
         };
-    }
-
-    componentDidMount() {
-        this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
-        this.resizeEvent.register();
-        this.updateDimensions();
-    }
-
-    componentWillUnmount() {
-        this.resizeEvent.unregister();
-    }
-
-    updateDimensions() {
-        let dimens: Dimensions = this.getDimensions();
-        if (this.shouldUpdate(dimens)) {
-            this.state.lastDimens = dimens;
-            this.setState(this.state);
-        }
-    }
-
-    getDimensions(): Dimensions {
-        // Algorithm taken from https://andylangton.co.uk/blog/development/get-viewportwindow-size-width-and-height-javascript
-        // Modified to get around unit tests which don't have half this.
-        let width: number, height: number, heightOffset: number;
-        if (window) {
-            let windowDimens = browser.size();
-            let rect = this.root.getBoundingClientRect();
-
-            width = windowDimens.width;
-            height = windowDimens.height;
-            heightOffset = rect.top;
-        } else {
-            // Unit tests
-            width = 200;
-            height = 200;
-            heightOffset = 0;
-        }
-
-        return {
-            width: width,
-            height: height,
-            cellDimens: {
-                height: height - heightOffset,
-            }
-        };
-    }
-
-    shouldUpdate(dimens: Dimensions): boolean {
-        let lastDimens = this.state.lastDimens;
-        return lastDimens.height !== dimens.height ||
-            dimens.width < browser.mobileWidthThreshold && lastDimens.width >= browser.mobileWidthThreshold ||
-            dimens.width >= browser.mobileWidthThreshold && lastDimens.width < browser.mobileWidthThreshold;
     }
 
     onConversationClicked(conversation: Conversation) {
@@ -126,10 +53,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.state.outputs = conversation.outputs;
         this.state.stackTraces = conversation.stackTraces;
         this.setState(this.state);
-    }
-
-    onRootLayout(element: Element) {
-        this.root = element;
     }
 
     handleFilter(filter: FilterType) {
@@ -142,7 +65,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             cellStyle: { paddingLeft: "10px", paddingRight: "5px" },
             pane: (
                 <FilterableConversationList
-                    height={this.state.lastDimens.cellDimens.height}
                     conversations={ConversationList.fromLogs(this.props.logs)}
                     filter={this.state.filter}
                     onShowConversation={this.onConversationClicked.bind(this)} />
@@ -152,7 +74,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     rightPane(): Pane {
         return {
-            cellStyle: { maxHeight: this.state.lastDimens.cellDimens.height, paddingLeft: "5px", paddingRight: "10px" },
+            cellStyle: { paddingLeft: "5px", paddingRight: "10px" },
             pane: this.state.request ?
                 (
                     <Interaction
@@ -170,7 +92,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         return (
             <span>
                 <FilterBar onFilter={this.handleFilter.bind(this)} />
-                <div ref={this.onRootLayout.bind(this)}>
+                <div>
                     <TwoPane
                         leftPane={this.leftPane.bind(this)}
                         rightPane={this.rightPane.bind(this)}
@@ -182,6 +104,5 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 }
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps
 )(LogsPage);
