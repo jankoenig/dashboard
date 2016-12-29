@@ -8,8 +8,6 @@ import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filte
 const DatePickerFilterbarTheme = require("../../themes/datepicker-filterbar");
 const DropdownFilterbarTheme = require("../../themes/dropdown-filterbar");
 
-// const FilterBarTheme = require("../../themes/filterbar");
-
 export interface FilterProps {
     onFilter: (filter: FilterType) => void;
 }
