@@ -1,6 +1,6 @@
 .itemText {
     &.primary {
-    font-size: 1.3em;
+        font-size: 1.3em;
     }
     &:not(.primary) {
         font-size: 0.9em;
@@ -9,6 +9,10 @@
 
 .listItem {
     list-style-type: none;
+    &:hover .itemText.primary {
+        font-size: 1.6em;
+        transition: font 0.3s ease
+    }
     a {
         text-decoration: none;
     }
