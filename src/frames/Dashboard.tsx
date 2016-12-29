@@ -17,28 +17,31 @@ import { State } from "../reducers";
 /**
  * Simple Adapter so a Source can conform to Dropdownable
  */
-class SourceDropdownableAdapter extends Source implements Dropdownable {
+class SourceDropdownableAdapter implements Dropdownable {
+
+    constructor(readonly source: Source) {
+    }
 
     get value() {
-      return this.id;
+      return this.source.id;
     }
 
     get label() {
-      return this.name;
+      return this.source.name;
     }
 
 }
 
 interface DashboardProps {
   user: User;
-  currentSource: SourceDropdownableAdapter;
-  sources: SourceDropdownableAdapter[];
-  login: () => void;
+  currentSource: Source;
+  sources: Source[];
+  location: Location;
+  login: () => (dispatch: Redux.Dispatch<any>) => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
-  location: Location;
 }
 
 interface DashboardState {
@@ -55,7 +58,7 @@ function mapStateToProps(state: State.All) {
 function mapDispatchToProps(dispatch: any) {
   return {
     login: function () {
-      dispatch(push("/login"));
+      return dispatch(push("/login"));
     },
     logout: function () {
       return dispatch(logout());
