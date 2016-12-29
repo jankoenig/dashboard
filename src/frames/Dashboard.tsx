@@ -6,7 +6,7 @@ import { push, replace } from "react-router-redux";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
-import { Dropdownable, Header,  } from "../components/Header";
+import { Dropdownable, Header, } from "../components/Header";
 import Layout from "../components/Layout";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
@@ -19,16 +19,16 @@ import { State } from "../reducers";
  */
 class SourceDropdownableAdapter implements Dropdownable {
 
-    constructor(readonly source: Source) {
-    }
+  constructor(readonly source: Source) {
+  }
 
-    get value() {
-      return this.source.id;
-    }
+  get value() {
+    return this.source.id;
+  }
 
-    get label() {
-      return this.source.name;
-    }
+  get label() {
+    return this.source.name;
+  }
 
 }
 
@@ -89,14 +89,11 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.props.getSources();
   }
 
-  handleSelectedSource(source: Source) {
-    console.log("handleSelectedSource");
-    console.log(source);
-    // let source = this.state.adapter.getItem(index);
-    this.props.setSource(source);
+  handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
+    this.props.setSource(sourceDropdownableAdapter.source);
 
     let currentPath = this.props.location.pathname;
-    let newPath = currentPath.replace(this.props.currentSource.id, source.id);
+    let newPath = currentPath.replace(this.props.currentSource.id, sourceDropdownableAdapter.source.id);
 
     this.props.goTo(newPath);
   }
@@ -113,9 +110,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   indexOf(source: Source): number {
     if (source) {
-      for (let item of this.props.sources) {
-        if (item.id === source.id) {
-          return this.props.sources.indexOf(item);
+      let length = this.props.sources.length;
+      for (let i = 0; i < length; ++i) {
+        if (this.props.sources[i].id === source.id) {
+          return i;
         }
       }
     }
