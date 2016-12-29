@@ -32,7 +32,6 @@ interface FilterState {
     filterbarHidden: boolean;
 }
 
-
 class FilterBar extends React.Component<FilterProps, FilterState> {
 
     constructor(props: FilterProps) {
@@ -49,7 +48,9 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
             filterMap: {},
             selectedType: types[0].value,
             logTypes: types,
-            filterbarHidden: false
+            filterbarHidden: false,
+            startDate: props.query ? props.query.startTime : undefined,
+            endDate: props.query ? props.query.endTime : undefined
         };
     }
 
@@ -60,14 +61,20 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     componentWillReceiveProps(nextProps: FilterProps) {
-
         // The first time we get the query,
         // we set it as the initial start and end dates.
         if (!this.state.endDate && nextProps.query) {
-            this.state.startDate = nextProps.query.startTime;
+            this.setDateRange(nextProps.query.startTime, nextProps.query.endTime);
+        }
+    }
+
+    setDateRange(startDate: Date, endDate: Date) {
+        if (startDate && endDate) {
+            // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
+            this.state.startDate = startDate;
             this.state.startDate.setHours(0, 0, 0, 0);
 
-            this.state.endDate = nextProps.query.endTime;
+            this.state.endDate = endDate;
             this.state.endDate.setHours(23, 59, 59, 999);
 
             this.setState(this.state);
@@ -75,15 +82,13 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
-        // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
+
         if (item === "startDate") {
-            this.state.startDate = value;
-            this.state.startDate.setHours(0, 0, 0, 0);
+            this.setDateRange(value, this.state.endDate);
         } else if (item === "endDate") {
-            this.state.endDate = value;
-            this.state.endDate.setHours(23, 59, 59, 999);
+            this.setDateRange(this.state.startDate, value);
         }
-        this.setState(this.state);
+
         this.newFilter(new DateFilter(this.state.startDate, this.state.endDate));
     }
 
@@ -100,21 +105,19 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.props.onFilter(new CompositeFilter(filters));
     }
 
-    handleFilterClicked(event: React.MouseEvent) {
+    handleFilterButtonClicked(event: React.MouseEvent) {
         this.state.filterbarHidden = !this.state.filterbarHidden;
         this.setState(this.state);
     }
 
     render(): JSX.Element {
-        console.log("filterBar render");
-        console.log(this.props.query);
-        let queryStartDate = this.props.query ? this.props.query.startTime : new Date();
+        let queryStartDate = this.props.query ? moment(this.props.query.startTime).subtract(1, "days").toDate() : new Date();
         let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
         return (
-            <span /* style={{position: "relative"}} */>
+            <span>
                 <Grid className={this.gridClasses()} >
                     <Cell col={2} tablet={2} phone={4}>
                         <Dropdown
@@ -150,7 +153,13 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                             readonly={this.props.query ? false : true} />
                     </Cell>
                 </Grid>
-                <Button className={FilterBarStyle.filterBarButton} fab colored onClick={this.handleFilterClicked.bind(this)}><i className="material-icons">filter_list</i></Button>
+                <Button
+                    className={FilterBarStyle.filterBarButton}
+                    fab
+                    colored
+                    onClick={this.handleFilterButtonClicked.bind(this)}>
+                    <i className="material-icons">filter_list</i>
+                </Button>
             </span>
         );
     }
