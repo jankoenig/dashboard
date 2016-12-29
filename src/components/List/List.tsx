@@ -1,7 +1,5 @@
 import * as React from "react";
 
-import { List } from "react-toolbox/lib/list";
-
 import { Dimensions, Measure } from "../Measure";
 
 let ReactList = require("react-list");
@@ -49,12 +47,10 @@ class StaticList extends React.Component<ListProps, ListState> {
             <Measure
                 onMeasure={this.updateDimensions.bind(this)} >
                 <div style={parentStyle}>
-                    <List selectable ripple>
                     <ReactList
                         itemRenderer={this.props.itemRenderer}
                         length={this.props.length}
                         type={this.props.type} />
-                    </List>
                 </div>
             </Measure>
         );
