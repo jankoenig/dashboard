@@ -2,6 +2,9 @@ import * as React from "react";
 
 import MDLComponent from "../MDLComponent";
 
+import Ripple from "../Ripple/Ripple";
+import RippleContainer from "../Ripple/RippleContainer";
+
 export interface TwoLineItemProps {
     index: number;
     primaryValue: string;
@@ -27,13 +30,13 @@ export class TwoLineItem extends MDLComponent<TwoLineItemProps, TwoLineItemState
     render() {
         return (
             <div className="mdl-list">
-                <div style={{ cursor: "pointer", overflow: "hidden", position: "relative" }} className="mdl-list__item mdl-list__item--two-line mdl-js-ripple-effect">
-                    <span className="mdl-ripple" />
+                <RippleContainer style={{ cursor: "pointer", overflow: "hidden", position: "relative" }} className="mdl-list__item mdl-list__item--two-line mdl-js-ripple-effect">
+                    <Ripple className="mdl-ripple" />
                     <span className="mdl-list__item-primary-content">
                         <span>{this.props.primaryValue}</span>
                         <span className="mdl-list__item-sub-title">{this.props.secondaryValue}</span>
                     </span>
-                </div>
+                </RippleContainer>
             </div>
         );
     }
