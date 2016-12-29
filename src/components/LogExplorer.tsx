@@ -122,7 +122,6 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     handleFilter(filter: FilterType) {
-        console.log("handleFilter");
         this.state.filter = filter;
         this.setState(this.state);
     }
