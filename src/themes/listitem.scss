@@ -1,18 +1,24 @@
+$transition-time: 0.3s;
+
 .itemText {
     &.primary {
         font-size: 1.3em;
+        transition: font $transition-time ease
     }
     &:not(.primary) {
         font-size: 0.9em;
+        transition: font $transition-time ease
     }
 }
 
 .listItem {
     list-style-type: none;
+
     &:hover .itemText.primary {
         font-size: 1.6em;
-        transition: font 0.3s ease
+        transition: font $transition-time ease
     }
+
     a {
         text-decoration: none;
     }
