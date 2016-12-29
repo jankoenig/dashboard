@@ -21,14 +21,15 @@ export interface HeaderProps {
   className?: string;
 }
 
-interface HeaderState {
+export interface HeaderState {
   selectedSourceId?: string;
 }
 
 /**
  * Header for the Dashboard frame
  *
- * TODO: We may want to consider renaming this since it is not a resuable header component.
+ * TODO: We may want to consider renaming this since it is not a resuable header
+ * component and is instead can only be used by the Dashboard frame.
  */
 export class Header extends React.Component<HeaderProps, HeaderState> {
 
@@ -59,7 +60,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render() {
-
     let title: JSX.Element = undefined;
     if (this.props.sources && this.props.sources.length > 0) {
       if (this.props.sources.length === 1) {
@@ -84,12 +84,13 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <Link to={"/"} style={{ paddingLeft: "15px", paddingRight: "15px" }}>
               <i className="material-icons" role="presentation">home</i>
             </Link>
-          ) : (undefined)}
+          ) : undefined}
           {title}
           <div className="mdl-layout-spacer" />
           {this.props.children}
           <Button id="support">
-            <i className="material-icons"
+            <i
+              className="material-icons"
               role="presentation">help_outline
           </i>
           </Button>
