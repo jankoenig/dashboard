@@ -47,8 +47,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     return classNames("mdl-layout__header", this.props.className);
   }
 
-  handleItemSelect = (value: string, event: any) => {
-
+  handleItemSelect = (value: string) => {
     this.state.selectedSourceId = value;
 
     // Now find the source and pass it back out

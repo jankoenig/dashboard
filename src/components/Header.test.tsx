@@ -49,9 +49,15 @@ describe("Header", function () {
         let wrapper: ShallowWrapper<HeaderProps, HeaderState>;
         const componentWillReceivePropsSpy = sinon.spy(Header.prototype, "componentWillReceiveProps");
         const setStateSpy = sinon.spy(Header.prototype, "setState");
+        const onSourceSelectedSpy = sinon.spy();
 
         beforeEach(function () {
-            wrapper = shallow(<Header sources={[{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }]} />);
+            wrapper = shallow((
+                <Header
+                    onSourceSelected={onSourceSelectedSpy}
+                    sources={[{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }]}
+                    />
+            ));
         });
 
         afterEach(function () {
@@ -66,11 +72,19 @@ describe("Header", function () {
             expect(wrapper.find(Dropdown)).to.have.length(1);
         });
         it("updates the selectedSourceId on receiving props", function () {
-            wrapper.setProps({currentSourceId: "id"});
+            wrapper.setProps({ currentSourceId: "id" });
             expect(componentWillReceivePropsSpy).to.have.been.calledOnce;
             expect(wrapper.state().selectedSourceId).to.equal("id");
             expect(setStateSpy).to.have.been.calledOnce;
             expect(setStateSpy).to.have.been.calledWith({ selectedSourceId: "id" });
+        });
+        it("calls the onSourceSelected prop", function() {
+            // need to go untyped here so we can call the method on the component
+            let instance =  wrapper.instance() as any;
+            instance.handleItemSelect("id");
+
+            expect(onSourceSelectedSpy).to.have.been.calledOnce;
+            expect(onSourceSelectedSpy).to.have.been.calledWith({ label: "name", value: "id" });
         });
     });
 });
