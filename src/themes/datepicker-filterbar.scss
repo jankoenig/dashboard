@@ -8,6 +8,10 @@
     }
 }
 
+.input {
+    padding: 1.8em 0 0 0; // This removes the bottom where the error typically is
+}
+
 .input:not(.disabled) > .inputElement {
     font-size: 1.0rem;
 }
