@@ -2,8 +2,7 @@ import * as React from "react";
 
 import MDLComponent from "../MDLComponent";
 
-import Ripple from "../Ripple/Ripple";
-import RippleContainer from "../Ripple/RippleContainer";
+const rippleFactory = require("../../../node_modules/react-toolbox/lib/ripple/Ripple.js");
 
 export interface TwoLineItemProps {
     index: number;
@@ -15,29 +14,35 @@ export interface TwoLineItemProps {
 export interface TwoLineItemState {
 }
 
-export class TwoLineItem extends MDLComponent<TwoLineItemProps, TwoLineItemState> {
+const factory = (ripple: any) => {
+    class TwoLineItem extends MDLComponent<TwoLineItemProps, TwoLineItemState> {
 
-    constructor(props: TwoLineItemProps) {
-        super(props);
-    }
-
-    click() {
-        if (this.props.onSelected) {
-            this.props.onSelected(this.props.index);
+        constructor(props: TwoLineItemProps) {
+            super(props);
         }
-    }
 
-    render() {
-        return (
-            <div className="mdl-list">
-                <RippleContainer style={{ cursor: "pointer", overflow: "hidden", position: "relative" }} className="mdl-list__item mdl-list__item--two-line mdl-js-ripple-effect">
-                    <Ripple className="mdl-ripple" />
+        click() {
+            console.info("CLICK");
+            if (this.props.onSelected) {
+                this.props.onSelected(this.props.index);
+            }
+        }
+
+        render() {
+            return (
+                <div onClick={this.click.bind(this)} style={{ cursor: "pointer", overflow: "hidden", position: "relative" }} className="mdl-list__item mdl-list__item--two-line">
                     <span className="mdl-list__item-primary-content">
                         <span>{this.props.primaryValue}</span>
                         <span className="mdl-list__item-sub-title">{this.props.secondaryValue}</span>
                     </span>
-                </RippleContainer>
-            </div>
-        );
+                </div>
+            );
+        }
     }
-}
+
+    return ripple(TwoLineItem);
+};
+
+const TwoLineItem = factory(rippleFactory.default({}));
+
+export default TwoLineItem;
