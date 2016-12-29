@@ -1,0 +1,16 @@
+// Dropdown style meant for a light background
+
+@import "dashboard";
+@import "dropdown";
+
+.inputInputElement {
+    color: $input-color-dark;
+}
+
+.value {
+    color: $input-color-dark;
+}
+
+.label {
+    color: $label-color-dark;
+}
