@@ -2,84 +2,53 @@ import * as classNames from "classnames";
 import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
+import Dropdown from "react-toolbox/lib/dropdown";
 
 import Button from "../../../components/Button";
 import { Cell, Grid } from "../../../components/Grid";
-import { Select, SelectAdapter } from "../../../components/Select";
 import LogQuery from "../../../models/log-query";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "../Filters";
 
 const FilterBarStyle = require("./style");
-const DatePickerTheme = require("./datepicker-input-theme");
-
-const SelectInputStyle = {
-    "color": "rgb(255, 255, 255)",
-    "borderBottom": "1px solid rgb(255, 255, 255)"
-};
-
-const SelectLabelStyle = {
-    "color": "rgba(255, 255, 255, 0.3)"
-};
-
-const SelectIconStyle = {
-    "color": "rgb(255, 255, 255)"
-};
+const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar");
+const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar");
 
 export interface FilterProps {
     query: LogQuery;
     onFilter: (filter: FilterType) => void;
 }
 
+interface LogType {
+    value: string;
+    label: string;
+}
+
 interface FilterState {
     startDate?: Date;
     endDate?: Date;
-    selectedType?: ConvoType;
+    logTypes?: LogType[];
+    selectedType?: string;
     filterMap: any;
     filterbarHidden: boolean;
 }
 
-interface ConvoType {
-    type: string;
-    title: string;
-}
-
-class ConvoTypeAdapter implements SelectAdapter<ConvoType> {
-    filterTypes: ConvoType[];
-
-    constructor(types: ConvoType[]) {
-        this.filterTypes = types;
-    }
-
-    getCount(): number {
-        return this.filterTypes.length;
-    }
-
-    getItem(index: number): ConvoType {
-        return this.filterTypes[index];
-    };
-
-    getTitle(index: number): string {
-        let type = this.filterTypes[index];
-        return (type !== undefined) ? type.title : undefined;
-    };
-}
 
 class FilterBar extends React.Component<FilterProps, FilterState> {
-    private filterAdapter: ConvoTypeAdapter;
 
     constructor(props: FilterProps) {
         super(props);
-        console.log("filterBar constructor");
-        let types: ConvoType[] = [];
-        types.push({ type: "", title: "All Logs" });
-        types.push({ type: "DEBUG", title: "Debug" });
-        types.push({ type: "INFO", title: "Info" });
-        types.push({ type: "WARN", title: "Warning" });
-        types.push({ type: "ERROR", title: "Error" });
-        this.filterAdapter = new ConvoTypeAdapter(types);
+
+        let types: LogType[] = [];
+        types.push({ value: "", label: "All Logs" });
+        types.push({ value: "DEBUG", label: "Debug" });
+        types.push({ value: "INFO", label: "Info" });
+        types.push({ value: "WARN", label: "Warning" });
+        types.push({ value: "ERROR", label: "Error" });
 
         this.state = {
             filterMap: {},
+            selectedType: types[0].value,
+            logTypes: types,
             filterbarHidden: false
         };
     }
@@ -106,7 +75,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
-
         // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
         if (item === "startDate") {
             this.state.startDate = value;
@@ -119,12 +87,10 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.newFilter(new DateFilter(this.state.startDate, this.state.endDate));
     }
 
-    handleTypeSelectChange(value: ConvoType) {
-        let type = (value) ? value.type : undefined;
-
+    handleLogTypeChange(value: string) {
         this.state.selectedType = value;
         this.setState(this.state);
-        this.newFilter(new LogLevelFilter(type));
+        this.newFilter(new LogLevelFilter(value));
     }
 
     newFilter(filter: FilterType) {
@@ -144,7 +110,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         console.log(this.props.query);
         let queryStartDate = this.props.query ? this.props.query.startTime : new Date();
         let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
-        let typeHandleChange = this.handleTypeSelectChange.bind(this);
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
@@ -152,17 +117,18 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
             <span /* style={{position: "relative"}} */>
                 <Grid className={this.gridClasses()} >
                     <Cell col={2} tablet={2} phone={4}>
-                        <Select
-                            inputStyle={SelectInputStyle}
-                            labelStyle={SelectLabelStyle}
-                            iconStyle={SelectIconStyle}
-                            adapter={this.filterAdapter}
-                            hint={"Log Level"}
-                            onSelected={typeHandleChange} />
+                        <Dropdown
+                            theme={DropdownFilterbarTheme}
+                            label="Log Level"
+                            auto={false}
+                            onChange={this.handleLogTypeChange.bind(this)}
+                            source={this.state.logTypes}
+                            value={this.state.selectedType}
+                            />
                     </Cell>
                     <Cell col={2} offset={5} tablet={2} offsetTablet={1} phone={2}>
                         <DatePicker
-                            theme={DatePickerTheme}
+                            theme={DatePickerFilterbarTheme}
                             label="Start Date"
                             minDate={queryStartDate}
                             // You can't select the same date as the end date
@@ -174,7 +140,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                     <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
                     <Cell col={2} tablet={2} phone={2}>
                         <DatePicker
-                            theme={DatePickerTheme}
+                            theme={DatePickerFilterbarTheme}
                             label="End Date"
                             // You can't select the same date as the start date
                             minDate={moment(this.state.startDate).add(1, "days").toDate()}

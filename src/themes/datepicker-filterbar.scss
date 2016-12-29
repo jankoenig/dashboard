@@ -1,0 +1,21 @@
+@import "datepicker-light";
+
+.inputElement {
+    &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
+        ~ .label:not(.fixed) {
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.input:not(.disabled) > .inputElement {
+    font-size: 1.0rem;
+}
+
+.label {
+    font-size: 1.3rem;
+}
+
+.title {
+    font-size: 1.3rem;
+}

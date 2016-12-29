@@ -6,7 +6,7 @@ import { push, replace } from "react-router-redux";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
-import { Header, HeaderTitleAdapter } from "../components/Header";
+import { Dropdownable, Header,  } from "../components/Header";
 import Layout from "../components/Layout";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
@@ -14,10 +14,25 @@ import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
 
+/**
+ * Simple Adapter so a Source can conform to Dropdownable
+ */
+class SourceDropdownableAdapter extends Source implements Dropdownable {
+
+    get value() {
+      return this.id;
+    }
+
+    get label() {
+      return this.name;
+    }
+
+}
+
 interface DashboardProps {
   user: User;
-  currentSource: Source;
-  sources: Source[];
+  currentSource: SourceDropdownableAdapter;
+  sources: SourceDropdownableAdapter[];
   login: () => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
@@ -27,7 +42,6 @@ interface DashboardProps {
 }
 
 interface DashboardState {
-  adapter: SourceAdapter;
 }
 
 function mapStateToProps(state: State.All) {
@@ -49,23 +63,16 @@ function mapDispatchToProps(dispatch: any) {
     getSources: function () {
       return dispatch(getSources());
     },
-    setSource: function(source: Source) {
+    setSource: function (source: Source) {
       return dispatch(setCurrentSource(source));
     },
-    goTo: function(path: string) {
+    goTo: function (path: string) {
       return dispatch(replace(path));
     }
   };
 }
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
-
-  constructor(props: DashboardProps) {
-    super(props);
-    this.state = {
-      adapter: new SourceAdapter(this.props.sources)
-    };
-  }
 
   drawerClasses() {
     return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
@@ -79,13 +86,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.props.getSources();
   }
 
-  componentWillReceiveProps(nextProps: DashboardProps, context: any) {
-    this.state.adapter = new SourceAdapter(nextProps.sources);
-    this.setState(this.state);
-  }
-
-  handleSelectedSource(index: number) {
-    let source = this.state.adapter.getItem(index);
+  handleSelectedSource(source: Source) {
+    console.log("handleSelectedSource");
+    console.log(source);
+    // let source = this.state.adapter.getItem(index);
     this.props.setSource(source);
 
     let currentPath = this.props.location.pathname;
@@ -94,17 +98,26 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.props.goTo(newPath);
   }
 
-  indexOf(source: Source): number | undefined {
+  dropdownableSources(): SourceDropdownableAdapter[] {
+    let dropdownableSources = [];
+
+    for (let source of this.props.sources) {
+      dropdownableSources.push(new SourceDropdownableAdapter(source));
+    }
+
+    return dropdownableSources;
+  }
+
+  indexOf(source: Source): number {
     if (source) {
-      let adapter = this.state.adapter;
-      let maxCount = adapter.getCount();
-      for (let i = 0; i < maxCount; ++i) {
-        if (adapter.getItem(i).id === source.id) {
-          return i;
+      for (let item of this.props.sources) {
+        if (item.id === source.id) {
+          return this.props.sources.indexOf(item);
         }
       }
     }
-    return undefined;
+
+    return -1;
   }
 
   render() {
@@ -112,9 +125,9 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       <Layout header={true}>
         <Header
           className={this.headerClasses()}
-          selectedIndex={this.indexOf(this.props.currentSource)}
-          items={this.props.currentSource ? new SourceAdapter(this.props.sources) : undefined}
-          onItemSelect={this.handleSelectedSource.bind(this)}
+          currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
+          sources={this.props.currentSource ? this.dropdownableSources() : undefined}
+          onSourceSelected={this.handleSelectedSource.bind(this)}
           displayHomeButton={this.props.location.pathname !== "/"}>
           <UserControl
             login={this.props.login}
@@ -133,23 +146,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Dashboard);
-
-class SourceAdapter implements HeaderTitleAdapter<Source> {
-  readonly sources: Source[];
-
-  constructor(source: Source[]) {
-    this.sources = (source) ? source : [];
-  }
-
-  getCount(): number {
-    return this.sources.length;
-  }
-
-  getItem(index: number): Source {
-    return this.sources[index];
-  }
-
-  getTitle(index: number): string {
-    return this.sources[index].name;
-  }
-}
