@@ -1,11 +1,10 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
+import LogExplorer from "../../components/LogsExplorer";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap } from "../../reducers/log";
-
-import LogExplorer from "../../components/LogsExplorer";
 
 export interface LogsPageProps {
     logMap: LogMap;
@@ -13,19 +12,12 @@ export interface LogsPageProps {
     params?: any;
 }
 
-interface LogsPageState {
-
-}
+interface LogsPageState { }
 
 function mapStateToProps(state: State.All) {
     return {
         logMap: state.log.logMap,
         source: state.source.currentSource
-    };
-}
-
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
-    return {
     };
 }
 
@@ -39,6 +31,5 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 }
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps
 )(LogsPage);

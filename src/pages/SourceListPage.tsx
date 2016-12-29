@@ -3,13 +3,24 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
-import Button from "../components/Button";
-import { Cell, Grid } from "../components/Grid";
+import { Button } from "react-toolbox/lib/button";
+
+import { List } from "../components/List/List";
+import { TwoLineItem } from "../components/List/TwoLineItem";
+import { TwoPane } from "../components/TwoPane";
+
 import Source from "../models/source";
+
 import { State } from "../reducers";
 
-interface SourceListPageProps {
+import HomePage from "./HomePage";
+
+export interface SourceListPageProps {
     sources: Source[];
+}
+
+interface SourceListPageState {
+    listItems: JSX.Element[];
 }
 
 function mapStateToProps(state: State.All) {
@@ -18,53 +29,78 @@ function mapStateToProps(state: State.All) {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
-    return {
-    };
-}
+export class SourceListPage extends React.Component<SourceListPageProps, SourceListPageState> {
 
-export class SourceListPage extends React.Component<SourceListPageProps, any> {
     render() {
+        let leftSide = (
+            <div className="source_list_page_left">
+                <SourceList
+                    sources={this.props.sources} />
+                <div style={{ position: "relative" }}>
+                    <Link to="/skills/new" style={{ position: "absolute", bottom: "2.5rem", right: "2.5rem" }} >
+                        <Button icon="add" accent mini floating />
+                    </Link>
+                </div>
+            </div>
+        );
 
-        // Construct the list
-        let listItems: JSX.Element[] = [];
-
-        for (let source of this.props.sources) {
-            listItems.push((
-                <li key={source.id} className="mdl-list__item">
-                    <Link to={"/skills/" + source.id}>{source.name}</Link>
-                    <span style={{ textAlign: "center", marginLeft: "10px", fontSize: "12px" }}>
-                        Created {moment(source.created).format("MMM Do, YYYY")}
-                    </span>
-                </li>
-            ));
-        }
+        let rightSide = (
+            <div className="source_list_page_right">
+                <HomePage />
+            </div>
+        );
 
         return (
-            <div>
-                <Grid>
-                    <Cell col={12}>
-                        {listItems.length === 0 ? (
-                            <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>
-                        ) : undefined}
-                        <ul className="mdl-list">
-                            {listItems}
-                        </ul>
-                    </Cell>
-                </Grid>
-                {listItems.length !== 0 ? (
-                    <Grid>
-                        <Cell col={2}>
-                            <Link to={"/skills/new"}><Button colored={true} raised={true}>New Skill</Button></Link>
-                        </Cell>
-                    </Grid>
-                ) : undefined}
-            </div>
+            <TwoPane
+                spacing={true}
+                leftStyle={{ paddingLeft: "10px", paddingRight: "5px" }}
+                rightStyle={{ paddingRight: "10px", paddingLeft: "5px" }}>
+                {leftSide}
+                {rightSide}
+            </TwoPane>
         );
     }
 }
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+    mapStateToProps
 )(SourceListPage);
+
+interface SourceListProps {
+    sources: Source[];
+}
+
+interface SourceListState {
+}
+
+class SourceList extends React.Component<SourceListProps, SourceListState> {
+    renderItem(index: number, key: string): JSX.Element {
+        let source = this.props.sources[index];
+        return (
+            <Link to={"/skills/" + source.id} style={{ textDecoration: "none" }}>
+                <TwoLineItem
+                    index={index}
+                    primaryValue={source.name}
+                    secondaryValue={moment(source.created).format("MMM Do, YYYY")} />
+            </Link>
+        );
+    }
+
+    render() {
+        return (
+            <div>
+                {this.props.sources.length === 0 ?
+                    (
+                        <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>
+                    ) :
+                    (
+                        <List
+                            itemRenderer={this.renderItem.bind(this)}
+                            length={this.props.sources.length}
+                            type={"simple"} />
+                    )
+                }
+            </div>
+        );
+    }
+}

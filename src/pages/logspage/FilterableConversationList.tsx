@@ -12,7 +12,6 @@ import { filter } from "../../utils/promise";
 import { FilterType } from "./Filters";
 
 export interface FilterableConversationListProps {
-    height: number;
     conversations: ConversationList;
     onShowConversation: (conversation: Conversation) => void;
     filter?: FilterType;
@@ -67,12 +66,10 @@ export class FilterableConversationList extends React.Component<FilterableConver
     }
 
     render() {
-        let listHeight = this.props.height;
         return (
             <div style={{ overflowY: "hidden" }}>
                 <ConversationListView
                     onScroll={this.props.onScroll}
-                    height={listHeight}
                     conversations={this.state.shownConversations}
                     expandListItemWhenActive={browser.isMobileWidth()}
                     onClick={this.onConversationClicked.bind(this)}
