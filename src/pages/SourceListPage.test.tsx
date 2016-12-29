@@ -1,18 +1,40 @@
 import * as chai from "chai";
-import { shallow } from "enzyme";
-import * as React from "react";
+import { mount } from "enzyme";
+// tslint:disable:no-unused-variable
+import * as React from "react"; // Needed for enzyme, unused for some reason.
+// tslint:enable:no-unused-variable
 
-import {dummySources} from "../utils/test";
+let jsdom = require("mocha-jsdom");
+
+import { Source } from "../models/source";
+import { dummySources } from "../utils/test";
 import { SourceListPage } from "./SourceListPage";
 
 let expect = chai.expect;
 
-describe("Source List Page", function() {
-    it("should render correctly", function() {
+describe("Source List Page", function () {
 
-        const sources = dummySources(4);
-        const wrapper = shallow(<SourceListPage sources={sources} />);
+    let sources: Source[];
 
-        expect(wrapper.find("Link")).to.have.length(5);
+    before(function() {
+        sources = dummySources(4);
+    });
+
+    describe("Full render", function () {
+
+        jsdom();
+
+        it("should render correctly", function () {
+            const wrapper = mount(<SourceListPage sources={sources} />);
+
+            let twoPaneWrapper = wrapper.find("TwoPane");
+            let leftSide = twoPaneWrapper.find(".source_list_page_left");
+            let rightSide = twoPaneWrapper.find(".source_list_page_right");
+
+            expect(leftSide.find("List").find("Link")).to.have.length(4);
+            expect(leftSide.find("Button")).to.have.length(1);
+
+            expect(rightSide.find("HomePage")).to.have.length(1);
+        });
     });
 });
