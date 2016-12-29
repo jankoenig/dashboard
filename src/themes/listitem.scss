@@ -1,0 +1,14 @@
+.itemText {
+    &.primary {
+    font-size: 1.3em;
+    }
+    &:not(.primary) {
+        font-size: 0.9em;
+    }
+}
+
+.listItem {
+    a {
+        text-decoration: none;
+    }
+}
