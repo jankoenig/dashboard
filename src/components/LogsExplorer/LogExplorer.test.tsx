@@ -5,14 +5,14 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 let jsdom = require("mocha-jsdom");
 
-import Conversation from "../models/conversation";
-import Log from "../models/log";
-import LogQuery from "../models/log-query";
-import Output from "../models/output";
-import Source from "../models/source";
-import { LogMap } from "../reducers/log";
-import browser from "../utils/browser";
-import { dummyLogs, dummyOutputs } from "../utils/test";
+import Conversation from "../../models/conversation";
+import Log from "../../models/log";
+import LogQuery from "../../models/log-query";
+import Output from "../../models/output";
+import Source from "../../models/source";
+import { LogMap } from "../../reducers/log";
+import browser from "../../utils/browser";
+import { dummyLogs, dummyOutputs } from "../../utils/test";
 import LogExplorer from "./LogExplorer";
 
 // Setup chai with sinon-chai

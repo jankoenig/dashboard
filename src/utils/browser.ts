@@ -58,15 +58,23 @@ export namespace Browser {
      * @return A wrapped event in which you can register it or unregister it when the time comes.
     * */
     export function onResize(callback: (event: UIEvent) => void, _window?: Window): WrappedEvent {
+        return onEvent("resize", callback);
+    }
+
+    export function onScroll(callback: (event: UIEvent) => void, _window?: Window): WrappedEvent {
+        return onEvent("scroll", callback);
+    }
+
+    export function onEvent(event: "resize" | "scroll", callback: (event: UIEvent) => void, _window?: Window): WrappedEvent {
         return {
             register() {
                 _window = _window ? _window : window;
-                _window.addEventListener("resize", callback);
+                _window.addEventListener(event, callback);
             },
 
             unregister() {
                 _window = _window ? _window : window;
-                _window.removeEventListener("resize", callback);
+                _window.removeEventListener(event, callback);
             }
         };
     }

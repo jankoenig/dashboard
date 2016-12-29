@@ -4,7 +4,6 @@ import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
 
-import Button from "../../../components/Button";
 import { Cell, Grid } from "../../../components/Grid";
 import LogQuery from "../../../models/log-query";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "../Filters";
@@ -16,6 +15,7 @@ const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar");
 export interface FilterProps {
     query: LogQuery;
     onFilter: (filter: FilterType) => void;
+    className?: string;
 }
 
 interface LogType {
@@ -55,9 +55,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     gridClasses() {
-        return classNames(FilterBarStyle.filterBarGrid, {
-            [FilterBarStyle.filterBarGridHidden]: this.state.filterbarHidden
-        });
+        return classNames(FilterBarStyle.filterBarGrid, this.props.className);
     }
 
     componentWillReceiveProps(nextProps: FilterProps) {
@@ -105,11 +103,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.props.onFilter(new CompositeFilter(filters));
     }
 
-    handleFilterButtonClicked(event: React.MouseEvent) {
-        this.state.filterbarHidden = !this.state.filterbarHidden;
-        this.setState(this.state);
-    }
-
     render(): JSX.Element {
         let queryStartDate = this.props.query ? moment(this.props.query.startTime).subtract(1, "days").toDate() : new Date();
         let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
@@ -117,50 +110,41 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
         return (
-            <span>
-                <Grid className={this.gridClasses()} >
-                    <Cell col={2} tablet={2} phone={4}>
-                        <Dropdown
-                            theme={DropdownFilterbarTheme}
-                            label="Log Level"
-                            auto={false}
-                            onChange={this.handleLogTypeChange.bind(this)}
-                            source={this.state.logTypes}
-                            value={this.state.selectedType}
-                            />
-                    </Cell>
-                    <Cell col={2} offset={5} tablet={2} offsetTablet={1} phone={2}>
-                        <DatePicker
-                            theme={DatePickerFilterbarTheme}
-                            label="Start Date"
-                            minDate={queryStartDate}
-                            // You can't select the same date as the end date
-                            maxDate={moment(this.state.endDate).subtract(1, "days").toDate()}
-                            value={this.state.startDate}
-                            onChange={startHandleChange}
-                            readonly={this.props.query ? false : true} />
-                    </Cell>
-                    <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
-                    <Cell col={2} tablet={2} phone={2}>
-                        <DatePicker
-                            theme={DatePickerFilterbarTheme}
-                            label="End Date"
-                            // You can't select the same date as the start date
-                            minDate={moment(this.state.startDate).add(1, "days").toDate()}
-                            maxDate={queryEndDate}
-                            value={this.state.endDate}
-                            onChange={endHandleChange}
-                            readonly={this.props.query ? false : true} />
-                    </Cell>
-                </Grid>
-                <Button
-                    className={FilterBarStyle.filterBarButton}
-                    fab
-                    colored
-                    onClick={this.handleFilterButtonClicked.bind(this)}>
-                    <i className="material-icons">filter_list</i>
-                </Button>
-            </span>
+            <Grid className={this.gridClasses()} >
+                <Cell col={2} tablet={2} phone={4}>
+                    <Dropdown
+                        theme={DropdownFilterbarTheme}
+                        label="Log Level"
+                        auto={false}
+                        onChange={this.handleLogTypeChange.bind(this)}
+                        source={this.state.logTypes}
+                        value={this.state.selectedType}
+                        />
+                </Cell>
+                <Cell col={2} offset={5} tablet={2} offsetTablet={1} phone={2}>
+                    <DatePicker
+                        theme={DatePickerFilterbarTheme}
+                        label="Start Date"
+                        minDate={queryStartDate}
+                        // You can't select the same date as the end date
+                        maxDate={moment(this.state.endDate).subtract(1, "days").toDate()}
+                        value={this.state.startDate}
+                        onChange={startHandleChange}
+                        readonly={this.props.query ? false : true} />
+                </Cell>
+                <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
+                <Cell col={2} tablet={2} phone={2}>
+                    <DatePicker
+                        theme={DatePickerFilterbarTheme}
+                        label="End Date"
+                        // You can't select the same date as the start date
+                        minDate={moment(this.state.startDate).add(1, "days").toDate()}
+                        maxDate={queryEndDate}
+                        value={this.state.endDate}
+                        onChange={endHandleChange}
+                        readonly={this.props.query ? false : true} />
+                </Cell>
+            </Grid>
         );
     }
 }

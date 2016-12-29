@@ -1,20 +1,24 @@
+import * as classNames from "classnames";
 import * as React from "react";
 
-import { Cell, Grid } from "../components/Grid";
-import Interaction from "../components/Interaction";
-import Conversation from "../models/conversation";
-import ConversationList from "../models/conversation-list";
-import Log from "../models/log";
-import LogQuery from "../models/log-query";
-import Output from "../models/output";
-import StackTrace from "../models/stack-trace";
-import { FilterableConversationList } from "../pages/logsPage/FilterableConversationList";
-import { FilterBar } from "../pages/logsPage/FilterBar";
-import { FilterType } from "../pages/logsPage/Filters";
-import browser from "../utils/browser";
+import Button from "../../components/Button";
+import { Cell, Grid } from "../../components/Grid";
+import Interaction from "../../components/Interaction";
+import Conversation from "../../models/conversation";
+import ConversationList from "../../models/conversation-list";
+import Log from "../../models/log";
+import LogQuery from "../../models/log-query";
+import Output from "../../models/output";
+import StackTrace from "../../models/stack-trace";
+import { FilterableConversationList } from "../../pages/logsPage/FilterableConversationList";
+import { FilterBar } from "../../pages/logsPage/FilterBar";
+import { FilterType } from "../../pages/logsPage/Filters";
+import browser from "../../utils/browser";
 
-import Source from "../models/source";
-import { LogMap } from "../reducers/log";
+import Source from "../../models/source";
+import { LogMap } from "../../reducers/log";
+
+const style = require("./style.scss");
 
 interface CellDimensions {
     height: number;
@@ -38,6 +42,7 @@ interface LogExplorerState {
     outputs: Output[];
     stackTraces: StackTrace[];
     filter?: FilterType;
+    filterBarHidden: boolean;
 }
 
 export default class LogExplorer extends React.Component<LogExplorerProps, LogExplorerState> {
@@ -52,7 +57,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             request: undefined,
             response: undefined,
             outputs: [],
-            stackTraces: []
+            stackTraces: [],
+            filterBarHidden: false
         };
     }
 
@@ -117,6 +123,14 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.setState(this.state);
     }
 
+    onScroll(event: React.UIEvent) {
+        if (!this.state.filterBarHidden) {
+            console.log("hiding filterbar");
+            this.state.filterBarHidden = true;
+            this.setState(this.state);
+        }
+    }
+
     onRootLayout(element: Element) {
         this.root = element;
     }
@@ -124,6 +138,18 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     handleFilter(filter: FilterType) {
         this.state.filter = filter;
         this.setState(this.state);
+    }
+
+    handleFilterButtonClicked(event: React.MouseEvent) {
+        console.log("filterbutton clicked");
+        this.state.filterBarHidden = !this.state.filterBarHidden;
+        this.setState(this.state);
+    }
+
+    filterBarClasses() {
+        return classNames(style.filterBar, {
+            [style.filterBarHidden]: this.state.filterBarHidden
+        });
     }
 
     render(): JSX.Element {
@@ -138,16 +164,17 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
         return (
             <span>
-                { query ? (
-                    <FilterBar onFilter={this.handleFilter.bind(this)} query={query} />
-                ) : undefined }
-                    <div ref={this.onRootLayout.bind(this)}>
+                {query ? (
+                    <FilterBar className={this.filterBarClasses()} onFilter={this.handleFilter.bind(this)} query={query} />
+                ) : undefined}
+                <div ref={this.onRootLayout.bind(this)}>
                     <Grid noSpacing={true}>
                         <Cell col={6} phone={4} tablet={4} style={{ paddingLeft: "10px", paddingRight: "5px" }}>
                             <FilterableConversationList
                                 height={this.state.lastDimens.cellDimens.height}
                                 conversations={ConversationList.fromLogs(logs)}
                                 filter={this.state.filter}
+                                onScroll={this.onScroll.bind(this)}
                                 onShowConversation={this.onConversationClicked.bind(this)} />
                         </Cell>
                         <Cell col={6} hidePhone={true} tablet={4} style={{ maxHeight: this.state.lastDimens.cellDimens.height, overflowY: "scroll", paddingLeft: "5px", paddingRight: "10px" }}>
@@ -165,6 +192,15 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                         </Cell>
                     </Grid >
                 </div>
+                {this.state.filterBarHidden ? (
+                    <Button
+                        className={style.button}
+                        fab
+                        colored
+                        onClick={this.handleFilterButtonClicked.bind(this)}>
+                        <i className="material-icons">filter_list</i>
+                    </Button>
+                ) : undefined}
             </span>
         );
     }

@@ -1,6 +1,5 @@
 import * as objectAssign from "object-assign";
 import * as React from "react";
-// import { ReactList } from "react-list";
 
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
@@ -15,6 +14,7 @@ export interface ConversationListViewProps {
     readonly expandListItemWhenActive?: boolean;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
     readonly onEmpty?: () => JSX.Element;
+    readonly onScroll?: (event: React.UIEvent) => void;
 }
 
 export interface ConversationListViewState {
@@ -89,7 +89,7 @@ export default class ConversationListView extends React.Component<ConversationLi
         );
 
         return (
-            <div style={{ "height": this.props.height, "overflowY": "scroll" }}>
+            <div onScroll={this.props.onScroll} style={{ "height": this.props.height, "overflowY": "scroll" }}>
                 {this.props.conversations.length > 0 ? listElement : emptyElement}
             </div>
         );

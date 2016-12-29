@@ -5,7 +5,7 @@ import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap } from "../../reducers/log";
 
-import LogExplorer from "../../components/LogExplorer";
+import LogExplorer from "../../components/LogsExplorer";
 
 export interface LogsPageProps {
     logMap: LogMap;
