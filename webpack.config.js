@@ -33,9 +33,9 @@ module.exports = {
       }
     ],
 
-  sassLoader: {
+    sassLoader: {
       data: '@import "' + path.resolve(__dirname, 'theme/_theme.scss') + '";'
-  },
+    },
 
     preLoaders: [
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
