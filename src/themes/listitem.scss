@@ -1,3 +1,7 @@
+// Style for list items in the dashboard.
+
+@import "dashboard";
+
 $transition-time: 0.3s;
 
 .itemText {
@@ -14,9 +18,14 @@ $transition-time: 0.3s;
 .listItem {
     list-style-type: none;
 
-    &:hover .itemText.primary {
-        font-size: 1.6em;
-        transition: font $transition-time ease
+    &:hover {
+
+        background: $palette-grey-200;
+
+        .itemText.primary {
+            font-size: 1.6em;
+            transition: font $transition-time ease
+        }
     }
 
     a {
