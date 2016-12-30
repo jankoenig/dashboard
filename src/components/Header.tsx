@@ -2,9 +2,10 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { Link } from "react-router";
 import Dropdown from "react-toolbox/lib/dropdown";
-import { IconMenu, MenuItem } from "react-toolbox/lib/menu";
 
-const MenuTheme = require("../themes/menu.scss");
+import { Menu, MenuItem } from "../components/menu";
+
+// const MenuTheme = require("../themes/menu.scss");
 const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
 
 export interface Dropdownable {
@@ -87,8 +88,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           <div className="mdl-layout-spacer" />
           {this.props.children}
 
-          <IconMenu
-            theme={MenuTheme}
+          <Menu
             icon="more_vert"
             position="topRight"
             menuRipple>
@@ -96,7 +96,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <MenuItem icon="build" caption="Request Feature" />
             <MenuItem icon="question_answer" caption="Talk to Us" />
             <MenuItem icon="email" caption="Email" />
-          </IconMenu>
+          </Menu>
         </div>
       </header>
     );
