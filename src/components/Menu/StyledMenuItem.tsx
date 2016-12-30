@@ -1,5 +1,4 @@
 import { Component } from "react";
-import { Link } from "react-router";
 
 import { MenuItem, MenuItemProps } from "react-toolbox/lib/menu";
 
@@ -20,13 +19,13 @@ class StyledMenuItem extends Component<StyledMenuItemProps, StyledMenuItemState>
         const useTheme = {... MenuTheme, ... theme};
 
         return (
-            <Link to={this.props.to}>
+            <a href={this.props.to}>
                 <MenuItem
                     theme={useTheme}
                     {...others}>
                     {this.props.children}
                 </MenuItem>
-            </Link>
+            </a>
         );
     }
 }
