@@ -57,7 +57,6 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
     onScroll(event: React.UIEvent) {
         if (!this.state.filterBarHidden && browser.isMobileWidth() && !this.props.lockFilterBar) {
-            console.log("hiding filterbar");
             this.state.filterBarHidden = true;
             this.setState(this.state);
         }

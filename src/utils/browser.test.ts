@@ -67,7 +67,7 @@ describe("Browser Util", function () {
                     registeredCallback = callback;
                 },
 
-                removeEventListener: function(event: string, callback: (event: UIEvent) => void) {
+                removeEventListener: function (event: string, callback: (event: UIEvent) => void) {
                     unregisteredEvent = event;
                     unregisteredCallback = callback;
                 }
@@ -82,10 +82,10 @@ describe("Browser Util", function () {
         });
     });
 
-    describe("onMutation", function() {
-        it("returns undefined on node", function() {
+    describe("onMutation", function () {
+        it("returns a a dummy instance on Node.js", function () {
             let observer = browser.onMutation(undefined, undefined);
-            expect(observer).to.be.undefined;
+            expect(observer).to.exist;
         });
     });
 

@@ -71,6 +71,15 @@ export namespace Browser {
         };
     }
 
+
+    /**
+     * Register a callback to receive mutation updates for a given Node (Element).
+     *
+     * @export
+     * @param {Node} node
+     * @param {MutationCallback} callback
+     * @returns {MutationObserver}
+     */
     export function onMutation(node: Node, callback: MutationCallback): MutationObserver {
 
         let observer: MutationObserver;
@@ -84,6 +93,18 @@ export namespace Browser {
                 characterData: true,
                 subtree: true
             });
+        } else {
+            // Otherwise return an innocuous observer
+            observer = {
+                observe: function() {
+
+                },
+                takeRecords: function() {
+                    return [];
+                },
+                disconnect: function() {
+                }
+            };
         }
 
         return observer;
