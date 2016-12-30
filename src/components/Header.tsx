@@ -3,7 +3,7 @@ import * as React from "react";
 import { Link } from "react-router";
 import Dropdown from "react-toolbox/lib/dropdown";
 
-import { Menu, MenuItem } from "../components/menu";
+import { Menu, MenuItem } from "../components/Menu";
 
 // const MenuTheme = require("../themes/menu.scss");
 const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");

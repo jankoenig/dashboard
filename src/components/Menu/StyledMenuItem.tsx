@@ -19,8 +19,6 @@ class StyledMenuItem extends Component<StyledMenuItemProps, StyledMenuItemState>
 
         const useTheme = {... MenuTheme, ... theme};
 
-        console.log(useTheme);
-
         return (
             <Link to={this.props.to}>
                 <MenuItem

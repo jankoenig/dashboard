@@ -20,8 +20,6 @@ class StyledMenu extends Component<StyledMenuProps, StyledMenuState> {
 
         const useTheme = {... MenuTheme, ... theme};
 
-        console.log(useTheme);
-
         return (
             <IconMenu
                 theme={useTheme}
