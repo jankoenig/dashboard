@@ -2,3 +2,13 @@
     padding-top: 0px;
     margin-top: 0px;
 }
+
+.menu {
+&.topRight {
+    top: 100%
+}
+
+&.topLeft {
+    top: 100%
+}
+}
