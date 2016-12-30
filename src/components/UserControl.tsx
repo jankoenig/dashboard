@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import User from "../models/user";
-import Button from "./Button";
 import { Icon, ICON } from "./Icon";
 import { Menu, MenuItem } from "./Menu";
 
@@ -18,33 +17,29 @@ export default class UserControl extends React.Component<UserProps, any> {
     let callback = this.props.user ? this.props.logout : this.props.login;
     let buttonText = this.props.user ? "Logout" : "Login";
 
+    let icon = this.props.user && this.props.user.photoUrl ? (
+      <img
+        style={{ borderRadius: "50%" }} /** Border Radius provides the circle */
+        width="32"
+        height="32"
+        src={this.props.user.photoUrl}
+        />
+    ) : (
+        <Icon
+          width={32}
+          height={32}
+          icon={ICON.DEFAULT_AVATAR}
+          />
+      );
     return (
-      <div>
-        <Button id="userControl">
-          {this.props.user && this.props.user.photoUrl ? (
-            <img
-              style={{ borderRadius: "50%" }} /** Border Radius provides the circle */
-              width="32"
-              height="32"
-              src={this.props.user.photoUrl}
-              />
-          ) : (
-              <Icon
-                width={32}
-                height={32}
-                icon={ICON.DEFAULT_AVATAR}
-                />
-            )}
-        </Button>
-
-        <Menu
-            position="topRight"
-            menuRipple >
-          <MenuItem
-            caption={buttonText}
-              onClick={callback}/>
-        </Menu>
-      </div>
+      <Menu
+        icon={icon}
+        position="topRight"
+        menuRipple >
+        <MenuItem
+          caption={buttonText}
+          onClick={callback} />
+      </Menu>
     );
   }
 }
