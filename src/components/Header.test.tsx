@@ -22,7 +22,7 @@ describe("Header", function () {
             expect(wrapper.find("Link")).to.have.length(0);
         });
         it("renders the menu", function () {
-            expect(wrapper.find("Menu")).to.have.length(1);
+            expect(wrapper.find("StyledMenu")).to.have.length(1);
         });
     });
 

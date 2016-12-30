@@ -1,3 +1,6 @@
+@import "~react-toolbox/lib/colors";
+@import "~react-toolbox/lib/globals";
+
 // Shared styles for the dashboard project
 
 $input-font-size: 1.2em;
@@ -8,3 +11,6 @@ $input-color-dark: rgba(117, 117, 117, 1.0);
 $label-font-size: 1.0em;
 $label-color-light: rgba(255, 255, 255, 0.5);
 $label-color-dark: rgba(255, 255, 255, 0.5);
+
+$menu-font-size: 0.7em;
+$menu-item-icon-font-size: 1.2em;
