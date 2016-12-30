@@ -13,9 +13,5 @@
 .filterBarHidden {
     max-height: 0;
     transition: max-height 0.15s ease-out;
-    z-index: -1000;
-    // div {
-        // display: none;
-        // transition: display 0.15s ease-out;
-    // }
+    z-index: -1;
 }
