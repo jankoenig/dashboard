@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -e # halt script on error
+
+#Build the deploy config
+npm run build
+cp -R dist/. harness/.
+echo build_number: $TRAVIS_BUILD_NUMBER
+echo build_id: $TRAVIS_BUILD_ID
+
+#depending on the branch, we either use prod or dev
+if [[ $TRAVIS_BRANCH == 'master' ]]; then
+  echo Deploying to Dev Dashboard
+  firebase deploy --token "$FIREBASE_TOKEN"
+fi
+
+firebase deploy

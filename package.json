@@ -17,7 +17,8 @@
     "start": "node scripts/server.js",
     "preversion": "npm run build && git add . && git commit -m 'dist-builds'",
     "postversion": "git push && git push --tags",
-    "build": "webpack && NODE_ENV=production webpack -p --config ./webpack.prod.config.js"
+    "build": "webpack && NODE_ENV=production webpack -p --config ./webpack.prod.config.js",
+    "deploy": "scripts/deploy"
   },
   "contributors": [
     {
@@ -47,6 +48,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "fetch-mock": "^5.5.0",
     "firebase": "^3.5.2",
+    "firebase-tools": "^3.2.1",
     "ignore-styles": "^5.0.1",
     "immutability-helper": "^2.0.0",
     "istanbul": "^0.4.5",

@@ -9,8 +9,8 @@ src/**/*.map
 src/**/*/*.d.ts
 
 # Ignoring generated map files in styles and generates Sass fiels
-harness/style/**/*.map
-harness/style/sass/.sass-cache
+harness/style
+harness/scripts
 
 **/.DS_Store
 typings/globals/
