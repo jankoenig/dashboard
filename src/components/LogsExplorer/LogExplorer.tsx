@@ -23,6 +23,7 @@ const style = require("./style.scss");
 interface LogExplorerProps {
     logMap: LogMap;
     source: Source;
+    lockFilterBar?: boolean;
 }
 
 interface LogExplorerState {
@@ -35,9 +36,6 @@ interface LogExplorerState {
 }
 
 export default class LogExplorer extends React.Component<LogExplorerProps, LogExplorerState> {
-
-    root: Element;
-    resizeEvent: browser.WrappedEvent;
 
     constructor(props: any) {
         super(props);
@@ -59,15 +57,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     onScroll(event: React.UIEvent) {
-        if (!this.state.filterBarHidden && browser.isMobileWidth()) {
+        if (!this.state.filterBarHidden && browser.isMobileWidth() && !this.props.lockFilterBar) {
             console.log("hiding filterbar");
             this.state.filterBarHidden = true;
             this.setState(this.state);
         }
-    }
-
-    onRootLayout(element: Element) {
-        this.root = element;
     }
 
     handleFilter(filter: FilterType) {
@@ -117,9 +111,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
         return (
             <span>
-                {query ? (
-                    <FilterBar className={this.filterBarClasses()} onFilter={this.handleFilter.bind(this)} query={query} />
-                ) : undefined}
+                <FilterBar className={this.filterBarClasses()} onFilter={this.handleFilter.bind(this)} query={query} />
                 <TwoPane
                     leftStyle={{ paddingLeft: "10px", paddingRight: "5px" }}
                     rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}
