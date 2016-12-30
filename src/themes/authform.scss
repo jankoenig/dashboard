@@ -1,0 +1,8 @@
+@import "dashboard";
+
+.neutral:not([disabled]) {
+  &.flat, &.toggle {
+    color: $palette-grey-400;
+    font-size: 0.9em;
+  }
+}
