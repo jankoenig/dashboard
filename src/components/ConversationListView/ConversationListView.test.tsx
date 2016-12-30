@@ -34,8 +34,8 @@ describe("ConversationListView", function () {
             let onClick = sinon.spy();
             const wrapper = shallow(<ConversationListView conversations={conversations} onClick={onClick} onEmpty={noLogsRenderer} />);
 
-            expect(wrapper.find("List")).to.have.length(1);
-            expect(wrapper.find("p")).to.have.length(0);
+            expect(wrapper.find("StaticList")).to.have.length(1);
+            expect(wrapper.find("div")).to.have.length(0);
         });
     });
     describe("without logs", function () {
