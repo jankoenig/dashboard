@@ -1,3 +1,15 @@
+@import "dashboard";
+
+.caption {
+    font-size: $menu-font-size;
+}
+
+.menuItem {
+  .icon {
+    font-size: $menu-item-icon-font-size !important;
+  }
+}
+
 .menuInner {
     padding-top: 0px;
     padding-bottom: 0px;
