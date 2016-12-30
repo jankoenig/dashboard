@@ -8,7 +8,7 @@ var server = new WebpackDevServer(webpack(config), { // Start a server
   hot: true, // With hot reloading
   inline: false,
   historyApiFallback: true,
-  quiet: false // Without logging
+  quiet: false // With logging
 }).listen(5000, 'localhost', function (err, result) {
   if (err) {
     console.log(err);
