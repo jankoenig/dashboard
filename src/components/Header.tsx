@@ -3,10 +3,9 @@ import * as React from "react";
 import { Link } from "react-router";
 import Dropdown from "react-toolbox/lib/dropdown";
 
-import Button from "./Button";
-import { Menu, MenuItem } from "./Menu";
+import { Menu, MenuItem } from "../components/Menu";
 
-const DropdownDark = require("../themes/dropdown-dark-nolabel.scss");
+const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
 
 export interface Dropdownable {
   value: string;
@@ -66,7 +65,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
       } else {
         title = (
           <Dropdown
-            theme={DropdownDark}
+            theme={DropdownDarkTheme}
             auto
             onChange={this.handleItemSelect}
             source={this.props.sources}
@@ -87,49 +86,27 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           {title}
           <div className="mdl-layout-spacer" />
           {this.props.children}
-          <Button id="support">
-            <i
-              className="material-icons"
-              role="presentation">help_outline
-          </i>
-          </Button>
-          <Menu align="right" valign="bottom" ripple={true} target="support" >
-            <MenuItem>
-              <Button href="https://github.com/bespoken/dashboard/issues/new?labels=bug">
-                <i
-                  style={{ paddingRight: "10px" }}
-                  className="material-icons"
-                  role="presentation">bug_report</i>
-                File Bug
-              </Button>
-            </MenuItem>
-            <MenuItem>
-              <Button href="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body=">
-                <i
-                  style={{ paddingRight: "10px" }}
-                  className="material-icons"
-                  role="presentation">build</i>
-                Request Feature
-                  </Button>
-            </MenuItem>
-            <MenuItem>
-              <Button href="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge">
-                <i
-                  style={{ paddingRight: "10px" }}
-                  className="material-icons"
-                  role="presentation">question_answer</i>
-                Talk to Us
-              </Button>
-            </MenuItem>
-            <MenuItem>
-              <Button href="mailto:contact@bespoken.tools">
-                <i
-                  style={{ paddingRight: "10px" }}
-                  className="material-icons"
-                  role="presentation">email</i>
-                Email
-              </Button>
-            </MenuItem>
+
+          <Menu
+            icon="help_outline"
+            position="topRight"
+            menuRipple>
+            <MenuItem
+              to="https://github.com/bespoken/dashboard/issues/new?labels=bug"
+              icon="bug_report"
+              caption="File Bug"/>
+            <MenuItem
+              to="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body="
+              icon="build"
+              caption="Request Feature" />
+            <MenuItem
+              to="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"
+              icon="question_answer"
+              caption="Talk to Us" />
+            <MenuItem
+              to="mailto:contact@bespoken.tools"
+              icon="email"
+              caption="Email" />
           </Menu>
         </div>
       </header>

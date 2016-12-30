@@ -19,9 +19,17 @@ describe("UserControl", function () {
             const login = sinon.spy();
             const logout = sinon.spy();
             const wrapper = shallow(<UserControl login={login} logout={logout} />);
-            expect(wrapper.find("Menu")).to.have.length(1);
-            expect(wrapper.find("img")).to.have.length(0);
-            expect(wrapper.find("Button")).to.have.length(2);
+
+            let styledMenu = wrapper.find("StyledMenu");
+
+            expect(styledMenu).to.have.length(1);
+
+            let iconProps = styledMenu.prop("icon");
+
+            console.log(iconProps);
+            // It returns JSX for "Icon" which compiles to a "function" which returns the actual item.
+            // It being a function means it's correct.
+            expect(iconProps.type).to.be.a("function");
         });
     });
 
@@ -33,23 +41,32 @@ describe("UserControl", function () {
                 const user = new User({ email: "email", photoUrl: "http://data.whicdn.com/images/60302035/original.jpg" });
                 const wrapper = shallow(<UserControl login={login} logout={logout} user={user} />);
 
-                expect(wrapper.find("Menu")).to.have.length(1);
-                expect(wrapper.find("img")).to.have.length(1);
-                expect(wrapper.find("Icon")).to.have.length(0);
-                expect(wrapper.find("Button")).to.have.length(2);
+                let styledMenu = wrapper.find("StyledMenu");
+
+                expect(styledMenu).to.have.length(1);
+
+                let iconProps = styledMenu.prop("icon");
+
+                console.log(iconProps);
+                // Enzyme doesn't see it as a "type" so comparing it as a "string".  It's correct if the type is "img".
+                expect(iconProps.type).to.be.equal("img");
             });
         });
         describe("without photo", function () {
             it("renders correctly", function () {
                 const login = sinon.spy();
                 const logout = sinon.spy();
-                const user = new User({ email: "email"});
+                const user = new User({ email: "email" });
                 const wrapper = shallow(<UserControl login={login} logout={logout} user={user} />);
 
-                expect(wrapper.find("Menu")).to.have.length(1);
-                expect(wrapper.find("img")).to.have.length(0);
-                expect(wrapper.find("Icon")).to.have.length(1);
-                expect(wrapper.find("Button")).to.have.length(2);
+                let styledMenu = wrapper.find("StyledMenu");
+
+                expect(styledMenu).to.have.length(1);
+
+                let iconProps = styledMenu.prop("icon");
+
+                console.log(iconProps);
+                expect(iconProps.type).to.be.a("function");
             });
         });
 
