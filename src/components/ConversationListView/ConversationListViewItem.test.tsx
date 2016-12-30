@@ -17,28 +17,43 @@ chai.use(sinonChai);
 let expect = chai.expect;
 
 describe("ConversationListViewItem", function () {
-    it("renders correctly", function () {
-        let onClick = sinon.spy();
-        let conversation = new Conversation({ request: requestIntentLog, response: responseLog });
-        let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} />);
+    let onClick = sinon.spy();
+    let conversation = new Conversation({ request: requestIntentLog, response: responseLog });
+    let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} />);
+    let li = wrapper.find("li");
+    let div = li.find("div").first();
 
-        expect(wrapper.find("li")).to.have.length(1);
-        let li = wrapper.find("li");
-        expect(li.props().style.backgroundColor).to.equal("#FAFAFA");
+    it("renders a li", function () {
+        expect(li).to.have.length(1);
+    });
+    it("has the right background color", function () {
+        expect(div.props().style.backgroundColor).to.equal("#FAFAFA");
+    });
+    it("renders the Icon", function () {
         expect(wrapper.find("Icon")).to.have.length(1);
+    });
+    it("does not render a Pill", function () {
         expect(wrapper.find("Pill")).to.have.length(0);
+    });
+    it("does not render an Interaction", function () {
         expect(wrapper.find("Interaction")).to.have.length(0);
+    });
+    it("does not render a Button", function () {
         expect(wrapper.find("Button")).to.have.length(0);
     });
+
     describe("when active", function () {
         let onClick = sinon.spy();
         let conversation = new Conversation({ request: requestIntentLog, response: responseLog });
         let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} active={true} />);
+        let li = wrapper.find("li");
+        let div = li.find("div").first();
 
-        it("renders the background color", function () {
+        it("renders one li", function () {
             expect(wrapper.find("li")).to.have.length(1);
-            let li = wrapper.find("li");
-            expect(li.props().style.backgroundColor).to.equal("#90A4AE");
+        });
+        it("renders the background color", function () {
+            expect(div.props().style.backgroundColor).to.equal("#90A4AE");
         });
         describe("with showInteractionOnActive", function () {
 

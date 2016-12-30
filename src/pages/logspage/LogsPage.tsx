@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap } from "../../reducers/log";
-import LogExplorer from "./LogsExplorer";
+import LogsExplorer from "./LogsExplorer";
 
 export interface LogsPageProps {
     logMap: LogMap;
@@ -25,7 +25,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     render() {
         return (
-            <LogExplorer source={this.props.source} logMap={this.props.logMap} />
+            <LogsExplorer source={this.props.source} logMap={this.props.logMap} />
         );
     }
 }

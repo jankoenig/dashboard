@@ -11,13 +11,13 @@ import HomePage from "./HomePage";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("Logs Page", function () {
+describe("HomePage", function () {
     it("should render correctly", function () {
         const wrapper = shallow(
             <HomePage/>
         );
 
-        expect(wrapper.find("div")).to.have.length(1);
+        expect(wrapper.find("h3")).to.have.length(1);
         // Hurray! It rendered.
     });
 });

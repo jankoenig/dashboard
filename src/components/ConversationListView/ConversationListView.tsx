@@ -28,6 +28,7 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     onClick(conversation: Conversation, event: React.MouseEvent) {
+        console.log("onClick");
         // depending on if we in a mobile mode or not,
         // we either only let one active at a time
         // or multiple active at a time.

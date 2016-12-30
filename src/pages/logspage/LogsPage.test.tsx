@@ -2,13 +2,14 @@ import * as chai from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
 
+import LogsExplorer from "./LogsExplorer";
 import { LogsPage } from "./LogsPage";
 
 let expect = chai.expect;
 
-describe("Logs Page", function () {
+describe("LogsPage", function () {
     let wrapper = shallow(<LogsPage source={undefined} logMap={undefined} />);
-    it("renders a LogExplorer", function() {
-        expect(wrapper.find("LogExplorer")).to.have.length(1);
+    it("renders a LogsExplorer", function() {
+        expect(wrapper.find(LogsExplorer)).to.have.length(1);
     });
 });

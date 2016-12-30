@@ -1,3 +1,3 @@
-import LogExplorer from "./LogExplorer";
+import LogsExplorer from "./LogsExplorer";
 
-export default LogExplorer;
+export default LogsExplorer;
