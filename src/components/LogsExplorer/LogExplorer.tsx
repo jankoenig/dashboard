@@ -113,7 +113,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             <span>
                 <FilterBar className={this.filterBarClasses()} onFilter={this.handleFilter.bind(this)} query={query} />
                 <TwoPane
-                    leftStyle={{ paddingLeft: "10px", paddingRight: "5px" }}
+                    leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 100 }}
                     rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}
                     spacing={true}>
                     {leftSide}

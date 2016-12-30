@@ -58,3 +58,5 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
         );
     }
 }
+
+export default TwoPane;
