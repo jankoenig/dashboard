@@ -1,2 +1,2 @@
-export { default as Menu } from "./StyledMenu";
-export { default as MenuItem } from "./StyledMenuItem";
+export { Menu } from "./StyledMenu";
+export { MenuItem } from "./StyledMenuItem";

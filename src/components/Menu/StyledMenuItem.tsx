@@ -17,7 +17,7 @@ class StyledMenuItem extends Component<StyledMenuItemProps, StyledMenuItemState>
     render() {
         const {theme, ...others} = this.props;
 
-        const useTheme = theme || MenuTheme;
+        const useTheme = {... MenuTheme, ... theme};
 
         console.log(useTheme);
 
@@ -33,4 +33,5 @@ class StyledMenuItem extends Component<StyledMenuItemProps, StyledMenuItemState>
     }
 }
 
+export { StyledMenuItem as MenuItem };
 export default StyledMenuItem;

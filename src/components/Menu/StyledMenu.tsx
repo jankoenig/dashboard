@@ -18,7 +18,7 @@ class StyledMenu extends Component<StyledMenuProps, StyledMenuState> {
     render() {
         const {theme, ...others} = this.props;
 
-        const useTheme = theme || MenuTheme;
+        const useTheme = {... MenuTheme, ... theme};
 
         console.log(useTheme);
 
@@ -32,4 +32,5 @@ class StyledMenu extends Component<StyledMenuProps, StyledMenuState> {
     }
 }
 
+export { StyledMenu as Menu };
 export default StyledMenu;

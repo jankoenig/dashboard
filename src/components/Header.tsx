@@ -89,7 +89,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
           {this.props.children}
 
           <Menu
-            icon="more_vert"
+            icon="help_outline"
             position="topRight"
             menuRipple>
             <MenuItem icon="bug_report" caption="File Bug"/>
