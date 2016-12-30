@@ -1,22 +1,21 @@
 import * as classNames from "classnames";
 import * as React from "react";
 
-import Button from "../../components/Button";
-import Interaction from "../../components/Interaction";
-import { TwoPane } from "../../components/TwoPane";
-import Conversation from "../../models/conversation";
-import ConversationList from "../../models/conversation-list";
-import Log from "../../models/log";
-import LogQuery from "../../models/log-query";
-import Output from "../../models/output";
-import StackTrace from "../../models/stack-trace";
-import { FilterableConversationList } from "../../pages/logsPage/FilterableConversationList";
-import { FilterBar } from "../../pages/logsPage/FilterBar";
-import { FilterType } from "../../pages/logsPage/Filters";
-import browser from "../../utils/browser";
-
-import Source from "../../models/source";
-import { LogMap } from "../../reducers/log";
+import Button from "../../../components/Button";
+import Interaction from "../../../components/Interaction";
+import { TwoPane } from "../../../components/TwoPane";
+import Conversation from "../../../models/conversation";
+import ConversationList from "../../../models/conversation-list";
+import Log from "../../../models/log";
+import LogQuery from "../../../models/log-query";
+import Output from "../../../models/output";
+import Source from "../../../models/source";
+import StackTrace from "../../../models/stack-trace";
+import { FilterableConversationList } from "../../../pages/logsPage/FilterableConversationList";
+import { FilterBar } from "../../../pages/logsPage/FilterBar";
+import { FilterType } from "../../../pages/logsPage/Filters";
+import { LogMap } from "../../../reducers/log";
+import browser from "../../../utils/browser";
 
 const style = require("./style.scss");
 

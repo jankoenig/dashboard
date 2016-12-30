@@ -1,10 +1,10 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import LogExplorer from "../../components/LogsExplorer";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap } from "../../reducers/log";
+import LogExplorer from "./LogsExplorer";
 
 export interface LogsPageProps {
     logMap: LogMap;
