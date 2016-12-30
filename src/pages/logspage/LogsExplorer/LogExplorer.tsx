@@ -11,11 +11,11 @@ import LogQuery from "../../../models/log-query";
 import Output from "../../../models/output";
 import Source from "../../../models/source";
 import StackTrace from "../../../models/stack-trace";
-import { FilterableConversationList } from "../../../pages/logsPage/FilterableConversationList";
-import { FilterBar } from "../../../pages/logsPage/FilterBar";
-import { FilterType } from "../../../pages/logsPage/Filters";
 import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
+import { FilterableConversationList } from "../FilterableConversationList";
+import { FilterBar } from "../FilterBar";
+import { FilterType } from "../Filters";
 
 const style = require("./style.scss");
 

@@ -4,7 +4,7 @@ import browser from "./browser";
 
 let expect = chai.expect;
 
-describe("Utils", function () {
+describe("Browser Util", function () {
     describe("isMobileOrTablet", function () {
         it("throws an error on node.js", function () {
             // navigator is not defined on node.js
