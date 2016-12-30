@@ -31,7 +31,7 @@ describe("Source List Page", function () {
             let leftSide = twoPaneWrapper.find(".source_list_page_left");
             let rightSide = twoPaneWrapper.find(".source_list_page_right");
 
-            expect(leftSide.find("List").find("Link")).to.have.length(4);
+            expect(leftSide.find("StaticList").find("ListItem")).to.have.length(4);
             expect(leftSide.find("Button")).to.have.length(1);
 
             expect(rightSide.find("HomePage")).to.have.length(1);

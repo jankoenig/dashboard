@@ -6,7 +6,7 @@ import { push, replace } from "react-router-redux";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
-import { Dropdownable, Header,  } from "../components/Header";
+import { Dropdownable, Header, } from "../components/Header";
 import Layout from "../components/Layout";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
@@ -17,28 +17,31 @@ import { State } from "../reducers";
 /**
  * Simple Adapter so a Source can conform to Dropdownable
  */
-class SourceDropdownableAdapter extends Source implements Dropdownable {
+class SourceDropdownableAdapter implements Dropdownable {
 
-    get value() {
-      return this.id;
-    }
+  constructor(readonly source: Source) {
+  }
 
-    get label() {
-      return this.name;
-    }
+  get value() {
+    return this.source.id;
+  }
+
+  get label() {
+    return this.source.name;
+  }
 
 }
 
 interface DashboardProps {
   user: User;
-  currentSource: SourceDropdownableAdapter;
-  sources: SourceDropdownableAdapter[];
-  login: () => void;
+  currentSource: Source;
+  sources: Source[];
+  location: Location;
+  login: () => (dispatch: Redux.Dispatch<any>) => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Redux.ThunkAction<any, any, any>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
-  location: Location;
 }
 
 interface DashboardState {
@@ -55,7 +58,7 @@ function mapStateToProps(state: State.All) {
 function mapDispatchToProps(dispatch: any) {
   return {
     login: function () {
-      dispatch(push("/login"));
+      return dispatch(push("/login"));
     },
     logout: function () {
       return dispatch(logout());
@@ -86,14 +89,11 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.props.getSources();
   }
 
-  handleSelectedSource(source: Source) {
-    console.log("handleSelectedSource");
-    console.log(source);
-    // let source = this.state.adapter.getItem(index);
-    this.props.setSource(source);
+  handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
+    this.props.setSource(sourceDropdownableAdapter.source);
 
     let currentPath = this.props.location.pathname;
-    let newPath = currentPath.replace(this.props.currentSource.id, source.id);
+    let newPath = currentPath.replace(this.props.currentSource.id, sourceDropdownableAdapter.source.id);
 
     this.props.goTo(newPath);
   }
@@ -110,9 +110,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   indexOf(source: Source): number {
     if (source) {
-      for (let item of this.props.sources) {
-        if (item.id === source.id) {
-          return this.props.sources.indexOf(item);
+      let length = this.props.sources.length;
+      for (let i = 0; i < length; ++i) {
+        if (this.props.sources[i].id === source.id) {
+          return i;
         }
       }
     }
