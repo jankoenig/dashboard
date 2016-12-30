@@ -25,7 +25,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     render() {
         return (
-            <LogExplorer source={this.props.source} logMap={this.props.logMap} />
+            <LogExplorer source={this.props.source} logMap={this.props.logMap} lockFilterBar={true}/>
         );
     }
 }
