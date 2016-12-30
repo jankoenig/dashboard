@@ -1,7 +1,19 @@
 @import "dashboard";
 
+.dropdown {
+  &:not(.up) > .values {
+    top: 100%;
+    margin-top: 0px;
+  }
+}
+
 .inputInputElement {
     font-size: $input-font-size;
+}
+
+.value {
+    top: 0px;
+    padding-bottom: 0px;
 }
 
 .values {

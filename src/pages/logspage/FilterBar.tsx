@@ -5,8 +5,8 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import { Cell, Grid } from "../../components/Grid";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
 
-const DatePickerFilterbarTheme = require("../../themes/datepicker-filterbar");
-const DropdownFilterbarTheme = require("../../themes/dropdown-filterbar");
+const DatePickerFilterbarTheme = require("../../themes/datepicker-filterbar.scss");
+const DropdownFilterbarTheme = require("../../themes/dropdown-filterbar.scss");
 
 export interface FilterProps {
     onFilter: (filter: FilterType) => void;
