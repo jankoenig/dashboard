@@ -8,7 +8,7 @@ import * as sinonChai from "sinon-chai";
 
 let jsdom = require("mocha-jsdom");
 
-import { List, ListProps } from "./List";
+import List, { ListProps } from "./List";
 
 chai.use(sinonChai);
 let expect = chai.expect;

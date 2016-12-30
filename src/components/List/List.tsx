@@ -6,7 +6,6 @@ let ReactList = require("react-list");
 
 export interface ListProps {
     itemRenderer: (index: number, key: string) => JSX.Element;
-    onSelect?: (index: number) => void;
     length: number;
     type: string;
 }
@@ -15,7 +14,14 @@ interface ListState {
     dimens: Dimensions;
 }
 
-export class List extends React.Component<ListProps, ListState> {
+/**
+ * A list that measures out it's own height so it does not stretch beyond the visible area.
+ * Items will not render beyond the visible height until the user scrolls to them. This prevents, say,
+ * a thousand items being rendered all at once.
+ *
+ * The ItemRenderer should return a ListItem component.
+ */
+class StaticList extends React.Component<ListProps, ListState> {
 
     constructor(props: ListProps) {
         super(props);
@@ -31,6 +37,12 @@ export class List extends React.Component<ListProps, ListState> {
 
     render(): JSX.Element {
         let parentStyle = (this.state.dimens) ? { overflowY: "scroll", height: this.state.dimens.height } : {};
+
+        // This is crazy, but there's a reason for now.
+        // "List" is part of the React-Toolbox which provides styling for the list and list items.
+        // "ReactList" is an internal element that provides infinite scrolling so that all the elements aren't loaded instantly.
+        // They are two separate but similarly name libraries patched together.
+
         return (
             <Measure
                 onMeasure={this.updateDimensions.bind(this)} >
@@ -45,4 +57,4 @@ export class List extends React.Component<ListProps, ListState> {
     }
 }
 
-export default List;
+export default StaticList;
