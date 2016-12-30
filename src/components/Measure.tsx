@@ -11,17 +11,22 @@ export interface MeasureProps {
     onMeasure: (newDimens: Dimensions) => void;
 }
 
-interface MeasureState {
-
-}
+interface MeasureState { }
 
 export class Measure extends React.Component<MeasureProps, MeasureState> {
-    root: Element;
-    resizeEvent: browser.WrappedEvent;
+    private root: Element;
+    private resizeEvent: browser.WrappedEvent;
+    private observer: MutationObserver;
 
     componentDidMount() {
         this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
         this.resizeEvent.register();
+        this.updateDimensions();
+
+        this.observer = browser.onMutation(this.root, this.onMutation.bind(this));
+    }
+
+    onMutation(mutations: MutationRecord[], observer: MutationObserver) {
         this.updateDimensions();
     }
 

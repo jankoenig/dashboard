@@ -79,6 +79,17 @@ export namespace Browser {
         };
     }
 
+    export function onMutation(node: Node, callback: MutationCallback, _window?: Window): MutationObserver {
+        let observer = new MutationObserver(callback);
+        observer.observe(node, {
+            attributes: true,
+            childList: true,
+            characterData: true,
+            subtree: true
+        });
+        return observer;
+    }
+
     /**
      * Get the current size of the browser window.
      *
