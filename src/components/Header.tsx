@@ -6,7 +6,7 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import Button from "./Button";
 import { Menu, MenuItem } from "./Menu";
 
-const DropdownDark = require("../themes/dropdown-dark.scss");
+const DropdownDark = require("../themes/dropdown-dark-nolabel.scss");
 
 export interface Dropdownable {
   value: string;
