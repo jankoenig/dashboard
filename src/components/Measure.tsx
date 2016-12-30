@@ -37,6 +37,7 @@ export class Measure extends React.Component<MeasureProps, MeasureState> {
 
     componentWillUnmount() {
         this.resizeEvent.unregister();
+        this.observer.disconnect();
     }
 
     onRootElement(root: Element) {
