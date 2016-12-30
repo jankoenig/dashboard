@@ -8,9 +8,9 @@ import { Cell, Grid } from "../../../components/Grid";
 import LogQuery from "../../../models/log-query";
 import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "../Filters";
 
-const FilterBarStyle = require("./style");
-const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar");
-const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar");
+const FilterBarStyle = require("./style.scss");
+const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
+const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss");
 
 export interface FilterProps {
     query: LogQuery;
