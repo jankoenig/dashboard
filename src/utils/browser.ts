@@ -79,14 +79,21 @@ export namespace Browser {
         };
     }
 
-    export function onMutation(node: Node, callback: MutationCallback, _window?: Window): MutationObserver {
-        let observer = new MutationObserver(callback);
-        observer.observe(node, {
-            attributes: true,
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
+    export function onMutation(node: Node, callback: MutationCallback): MutationObserver {
+
+        let observer: MutationObserver;
+
+        // MutationObserver doesn't exist on Node.js
+        if (typeof MutationObserver !== "undefined") {
+            observer = new MutationObserver(callback);
+            observer.observe(node, {
+                attributes: true,
+                childList: true,
+                characterData: true,
+                subtree: true
+            });
+        }
+
         return observer;
     }
 

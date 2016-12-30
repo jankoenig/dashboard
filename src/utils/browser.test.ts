@@ -82,6 +82,13 @@ describe("Utils", function () {
         });
     });
 
+    describe("onMutation", function() {
+        it("returns undefined on node", function() {
+            let observer = browser.onMutation(undefined, undefined);
+            expect(observer).to.be.undefined;
+        });
+    });
+
     describe("size", function () {
         it("returns the correct size", function () {
             let dummyWindow = { innerWidth: 480, innerHeight: 1020 };
