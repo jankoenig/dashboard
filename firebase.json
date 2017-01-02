@@ -3,7 +3,7 @@
     "public": "harness",
     "rewrites": [
       {
-        "source": "/dashboard/**",
+        "source": "**",
         "destination": "/index.html"
       }
     ]

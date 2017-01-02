@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "dev-dashboard-bbcee"
+    "default": "dev-dashboard-bbcee",
+    "build": "build-dashboard-57502"
   }
 }
