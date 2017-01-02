@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "public": "harness",
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
