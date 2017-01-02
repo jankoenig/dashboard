@@ -1,12 +1,55 @@
 var path = require("path");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var webpack = require("webpack");
+var package = require("./package.json");
 
-module.exports = {
+var node_env = process.env.NODE_ENV;
+var projectName = "dashboard";
+var version = package.version;
+var buildNumber = process.env.TRAVIS_BUILD_NUMBER;
+var buildId = process.env.TRAVIS_BUILD_ID
+
+// A couple of default buildVariables, these are then made available
+// within the project.  Make sure they are also declared in typings/config.d.ts
+// to let TypeScript know about them.
+var buildVariables = {
+  'process.env': {
+    NODE_ENV: JSON.stringify(node_env)
+  },
+  'BASENAME': JSON.stringify("/dashboard"),
+  'GOOGLE_ANALYTICS': JSON.stringify(""),
+  'VERSION': JSON.stringify(version),
+  'BUILD_NUMBER': JSON.stringify(buildNumber),
+  'BUILD_ID': JSON.stringify(buildId)
+}
+
+// A list of plugins
+var plugins = [];
+
+// If it is production
+if (node_env === "production") {
+  // For production postfix min to the file names
+  projectName += ".min";
+  buildVariables.GOOGLE_ANALYTICS = "UA-40630247-7";
+  // Add the production plugins
+  plugins.push(new webpack.optimize.UglifyJsPlugin());
+}
+
+// Used by our dev instances
+if (node_env === "development") {
+  buildVariables.BASENAME = JSON.stringify("/");
+}
+
+// Now that everything is configured, add the plugins
+plugins.push(new ExtractTextPlugin("style/" + projectName + ".css", { allChunks: true }))
+plugins.push(new webpack.DefinePlugin(buildVariables));
+
+// The remaining webpack config
+var config = {
   entry: "./src/index.tsx",
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "scripts/dashboard.js",
+    filename: "scripts/" + projectName + ".js",
   },
   // Enable sourcemaps for debugging webpack's output.
   devtool: "source-map",
@@ -46,7 +89,7 @@ module.exports = {
     ]
   },
 
-  plugins: [
-    new ExtractTextPlugin("style/dashboard.css", { allChunks: true })
-  ],
+  plugins: plugins,
 }
+
+module.exports = config;
