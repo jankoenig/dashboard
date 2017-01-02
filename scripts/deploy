@@ -6,12 +6,12 @@ cp -R dist/. harness/.
 
 # For master branch, we push to the dev location
 # Not on master, we push to a build location
-if [[ $TRAVIS_BRANCH == 'master' ]]; then
-  echo Deploying to Dev Dashboard
-  firebase use default
-else
+if [[ $TRAVIS_PULL_REQUEST ]]; then
   echo Deploying to Build Dashboard
   firebase use build
+else
+  echo Deploying to Dev Dashboard
+  firebase use default
 fi
 
 # And deploy the harness directory
