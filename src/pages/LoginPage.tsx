@@ -2,11 +2,12 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
-import { Cell, Grid } from "../components/Grid";
 
+import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
+import { Cell, Grid } from "../components/Grid";
+import { State } from "../reducers";
 
 /**
  * Configuration objects to pass in to the router when pushing or replacing this page on the router.
@@ -27,7 +28,12 @@ interface LoginPageProps {
     location?: RoutingData.Location<LoginConfig>;
 };
 
+function mapStateToProps(state: State.All) {
+    return {};
+}
+
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+    console.log(dispatch);
     return {
         login: function (email: string, password: string, redirectStrat: SuccessCallback) {
             return dispatch(login(email, password, redirectStrat));
@@ -93,5 +99,6 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
 };
 
 export default connect(
+    mapStateToProps,
     mapDispatchToProps
 )(LoginPage);
