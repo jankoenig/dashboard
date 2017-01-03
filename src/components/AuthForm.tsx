@@ -182,6 +182,10 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
         return (
             <div>
                 <LoginForms
+                    email={this.state.email}
+                    password={this.state.password}
+                    confirmPassword={this.state.confirmPass}
+                    error={this.props.error}
                     onEmailChange={this.onEmailChange.bind(this)}
                     onPasswordChange={this.onPasswordChange.bind(this)}
                     onConfirmPasswordChange={this.onConfirmPassChange.bind(this)}
@@ -216,31 +220,26 @@ interface LoginFormsState {
 
 class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
 
-    onEmailChange(event: React.FormEvent) {
-        preventDefaults(event);
+    onEmailChange(value: string) {
         if (this.props.onEmailChange) {
-            let target = event.target as HTMLSelectElement;
-            this.props.onEmailChange(target.value);
+            this.props.onEmailChange(value);
         }
     }
 
-    onPasswordChange(event: React.FormEvent) {
-        preventDefaults(event);
+    onPasswordChange(value: string) {
         if (this.props.onEmailChange) {
-            let target = event.target as HTMLSelectElement;
-            this.props.onPasswordChange(target.value);
+            this.props.onPasswordChange(value);
         }
     }
 
-    onConfirmPasswordChange(event: React.FormEvent) {
-        preventDefaults(event);
+    onConfirmPasswordChange(value: string) {
         if (this.props.onEmailChange) {
-            let target = event.target as HTMLSelectElement;
-            this.props.onConfirmPasswordChange(target.value);
+            this.props.onConfirmPasswordChange(value);
         }
     }
 
     render() {
+        console.log(this.props);
         return (
             <div>
                 <Input
@@ -277,8 +276,4 @@ class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
             </div>
         );
     }
-}
-
-function preventDefaults(event: React.FormEvent) {
-    event.preventDefault();
 }
