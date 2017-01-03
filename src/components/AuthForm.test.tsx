@@ -34,9 +34,6 @@ describe("AuthForm", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow((
             <AuthForm onSubmit={onSubmit}
-                                email={"test@test.email"}
-                                password ={"passwaord"}
-                                confirmPassword ={"passwaord"}
                                 onSignUpWithEmail={onSignUpWithEmail} />
         ));
 
@@ -49,9 +46,6 @@ describe("AuthForm", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow((
             <AuthForm onSubmit={onSubmit}
-                                email={"test@test.email"}
-                                password ={"passwaord"}
-                                confirmPassword ={"passrd"}
                                 onSignUpWithEmail={onSignUpWithEmail} />
         ));
 
@@ -64,9 +58,6 @@ describe("AuthForm", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow((
         <AuthForm onSubmit={onSubmit}
-                                email={"testl"}
-                                password ={"password"}
-                                confirmPassword ={"password"}
                                 onSignUpWithEmail={onSignUpWithEmail} />
         ));
 
