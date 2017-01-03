@@ -35,7 +35,7 @@ export default class Conversation implements ConversationProperties {
 
         let applicationId = "";
 
-        if (this.request.payload.session.application) {
+        if (this.request.payload.session && this.request.payload.session.application) {
             // Leaving this in for backwards compatibility
             applicationId = this.request.payload.session.application.applicationId;
         }
@@ -49,7 +49,12 @@ export default class Conversation implements ConversationProperties {
     }
 
     get sessionId(): string {
-        return this.request.payload.session.sessionId;
+        let sessionId = "";
+        if (this.request.payload.session) {
+            sessionId = this.request.payload.session.sessionId;
+        }
+
+        return sessionId;
     }
 
     get userId(): string | undefined {
