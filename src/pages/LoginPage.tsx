@@ -29,11 +29,12 @@ interface LoginPageProps {
 };
 
 function mapStateToProps(state: State.All) {
-    return {};
+    return {
+        error: state.authForm.error
+    };
 }
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
-    console.log(dispatch);
     return {
         login: function (email: string, password: string, redirectStrat: SuccessCallback) {
             return dispatch(login(email, password, redirectStrat));
@@ -58,6 +59,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
     }
 
     handleFormSubmit(email: string, pass: string) {
+        console.info("Logging in with " + email + " " + pass);
         this.props.login(email, pass, this.getRedirectStrategy());
     }
 

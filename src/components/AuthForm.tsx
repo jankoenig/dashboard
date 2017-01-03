@@ -106,6 +106,7 @@ interface NormalLoginFormProps {
 }
 
 interface NormalLoginFormState {
+    error?: string;
     email?: string;
     password?: string;
     confirmPass?: string;
@@ -116,7 +117,14 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
 
     constructor(props: NormalLoginFormProps) {
         super(props);
-        this.state = {};
+        this.state = {
+            error: props.error
+        };
+    }
+
+    componentWillReceiveProps(nextProps: NormalLoginFormProps, ctx: any) {
+        this.state.error = nextProps.error;
+        this.setState(this.state);
     }
 
     onEmailChange(value: string) {
@@ -130,28 +138,31 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
     }
 
     onConfirmPassChange(value: string) {
+        console.info("value = " + value);
         this.state.confirmPass = value;
         this.setState(this.state);
     }
 
-    onLogin(event: React.FormEvent) {
+    onLogin() {
+        console.log(this.state.email);
+        console.log(this.state.password);
         this.props.onLogin(this.state.email, this.state.password);
         this.state.password = "";
         this.state.confirmPass = "";
         this.setState(this.state);
     }
 
-    onSignUpClick(event: React.FormEvent) {
+    onSignUpClick() {
         this.state.confirmPass = "";
         this.state.isConfirmPassword = true;
         this.setState(this.state);
     }
 
-    onSubmitClicked(event: React.FormEvent) {
+    onSubmitClicked() {
         if (this.state.password !== this.state.confirmPass) {
-            this.props.error = "Passwords do not match.";
+            this.state.error = "Passwords do not match.";
         } else {
-            this.props.error = "";
+            this.state.error = "";
             this.props.onSignUpWithEmail(this.state.email, this.state.password);
         }
         this.state.password = "";
@@ -159,8 +170,16 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
         this.setState(this.state);
     }
 
-    onPasswordReset(event: React.FormEvent) {
+    onPasswordReset() {
         this.props.onResetPassword(this.state.email);
+    }
+
+    onFormSubmit() {
+        if (this.state.isConfirmPassword) {
+            this.onSubmitClicked();
+        } else {
+            this.onLogin();
+        }
     }
 
     render() {
@@ -169,7 +188,7 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
                 <Button
                     theme={theme}
                     label="Submit"
-                    onClick={this.props.onSignUpWithEmail.bind(this)}
+                    onClick={this.onSubmitClicked.bind(this)}
                     />
             ) :
             (
@@ -185,16 +204,18 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
                     email={this.state.email}
                     password={this.state.password}
                     confirmPassword={this.state.confirmPass}
-                    error={this.props.error}
+                    showConfirmPassword={this.state.isConfirmPassword}
+                    error={this.state.error}
                     onEmailChange={this.onEmailChange.bind(this)}
                     onPasswordChange={this.onPasswordChange.bind(this)}
                     onConfirmPasswordChange={this.onConfirmPassChange.bind(this)}
-                    showConfirmPassword={this.state.isConfirmPassword} />
+                    onPasswordSubmit={this.onFormSubmit.bind(this)}
+                    onConfirmPasswordSubmit={this.onFormSubmit.bind(this)} />
                 <div className="mdl-card__actions mdl-card--border clearfix">
                     <Button
                         theme={theme}
                         label="Login"
-                        onClick={this.props.onSignUpWithEmail.bind(this)} />
+                        onClick={this.onLogin.bind(this)} />
                     {signupBtn}
                     <PasswordReset
                         onPasswordReset={this.onPasswordReset.bind(this)} />
@@ -205,14 +226,16 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
 }
 
 interface LoginFormsProps {
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-    error?: string;
-    showConfirmPassword?: boolean;
-    onEmailChange?: (newText: string) => void;
-    onPasswordChange?: (newText: string) => void;
-    onConfirmPasswordChange?: (newText: string) => void;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    error: string;
+    showConfirmPassword: boolean;
+    onEmailChange: (newText: string) => void;
+    onPasswordChange: (newText: string) => void;
+    onConfirmPasswordChange: (newText: string) => void;
+    onPasswordSubmit: () => void;
+    onConfirmPasswordSubmit: () => void;
 }
 
 interface LoginFormsState {
@@ -238,8 +261,18 @@ class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
         }
     }
 
+    onPasswordKeyPress(name: string, event: any) {
+        if (event.charCode === 13) {
+            if (name === "password") {
+                this.props.onPasswordSubmit();
+            } else if (name === "confirmPassword") {
+                this.props.onConfirmPasswordSubmit();
+            }
+        }
+    }
+
     render() {
-        console.log(this.props);
+        console.log(this.props.confirmPassword);
         return (
             <div>
                 <Input
@@ -255,6 +288,7 @@ class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
                     type="password"
                     value={this.props.password}
                     onChange={this.onPasswordChange.bind(this)}
+                    onKeyPress={this.onPasswordKeyPress.bind(this, "password")}
                     />
                 {
                     this.props.showConfirmPassword ?
@@ -265,6 +299,7 @@ class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
                                 type="password"
                                 value={this.props.confirmPassword}
                                 onChange={this.onConfirmPasswordChange.bind(this)}
+                                onKeyPress={this.onPasswordKeyPress.bind(this, "confirmPassword")}
                                 />
                         ) :
                         undefined
