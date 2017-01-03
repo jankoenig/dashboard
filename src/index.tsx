@@ -24,15 +24,17 @@ import rootReducer from "./reducers";
 import IndexUtils from "./index-utils";
 import configureStore from "./store";
 
+console.log("v" + VERSION + "-" + BUILD_NUMBER);
+
 // Initialize Google Analytics
-ReactGA.initialize("UA-40630247-7");
+ReactGA.initialize(GOOGLE_ANALYTICS);
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
 // Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
 // And http://stackoverflow.com/a/38123375/1349766
 const browserHistory = useRouterHistory(createHistory)({
-    basename: "/dashboard"
+    basename: BASENAME
 });
 // Configure the store
 const store = configureStore(browserHistory, rootReducer);

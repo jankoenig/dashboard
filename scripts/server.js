@@ -36,6 +36,9 @@ browserSync.init({
     middleware: [
         webpackDevMiddleware(bundler, {
             publicPath: webpackConfig.output.publicPath,
+            progress: true,
+            inline: true,
+            hot: true,
             stats: {colors: true}
         }),
         historyApiFallback()

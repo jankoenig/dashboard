@@ -3,12 +3,12 @@ import * as objectAssign from "object-assign";
 import * as React from "react";
 
 interface ButtonProps {
+  fab?: boolean;
   ripple?: boolean;
   primary?: boolean;
   raised?: boolean;
   colored?: boolean;
   accent?: boolean;
-  icon?: string;
   onClick?: () => void;
   type?: string;
   className?: string;
@@ -27,6 +27,7 @@ interface ButtonProps {
 class Button extends React.Component<ButtonProps, any> {
   classes() {
     return classNames("mdl-button mdl-js-button", {
+      "mdl-button--fab": this.props.fab,
       "mdl-js-ripple-effect": this.props.ripple,
       "mdl-button--raised": this.props.raised,
       "mdl-button--colored": this.props.colored,
@@ -46,6 +47,7 @@ class Button extends React.Component<ButtonProps, any> {
 
     // Clean off properties that were used for setting classes
     // They are not real and should not be passed on
+    delete properties.fab;
     delete properties.accent;
     delete properties.raised;
     delete properties.colored;

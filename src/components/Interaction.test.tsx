@@ -12,7 +12,7 @@ import Interaction from "./Interaction";
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("Logs Page", function () {
+describe("Interaction", function () {
     it("should render correctly", function () {
         const logs = dummyLogs(2);
         const outputs = dummyOutputs(2);

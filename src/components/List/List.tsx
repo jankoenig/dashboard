@@ -6,6 +6,8 @@ let ReactList = require("react-list");
 
 export interface ListProps {
     itemRenderer: (index: number, key: string) => JSX.Element;
+    onSelect?: (index: number) => void;
+    onScroll?: (event: React.UIEvent) => void;
     length: number;
     type: string;
 }
@@ -46,7 +48,7 @@ class StaticList extends React.Component<ListProps, ListState> {
         return (
             <Measure
                 onMeasure={this.updateDimensions.bind(this)} >
-                <div style={parentStyle}>
+                <div style={parentStyle} onScroll={this.props.onScroll}>
                     <ReactList
                         itemRenderer={this.props.itemRenderer}
                         length={this.props.length}
