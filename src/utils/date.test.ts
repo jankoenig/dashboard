@@ -5,11 +5,18 @@ import DateUtil from "./date";
 
 describe("DateUtil", function () {
     describe("daysAgo", function () {
+        let clock: Sinon.SinonFakeTimers;
+        beforeEach(function() {
+            clock = sinon.useFakeTimers(new Date(1986, 6, 19, 14).getTime());
+        });
+
+        afterEach(function() {
+            clock.restore();
+        });
         it("returns a date from two days ago", function () {
-            let now = new Date();
             let previousDate = DateUtil.daysAgo(2);
 
-            expect(previousDate.getDate()).to.equal(now.getDate() - 2);
+            expect(previousDate.getDate()).to.equal(17);
         });
     });
     describe("hoursAgo", function () {
