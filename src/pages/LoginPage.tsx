@@ -7,6 +7,7 @@ import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
+import User from "../models/user";
 import { State } from "../reducers";
 
 /**
@@ -20,38 +21,45 @@ export interface LoginConfig {
 }
 
 interface LoginPageProps {
-    error: string;
-    login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    resetPassword: (email: string) => (dispatch: Redux.Dispatch<void>) => void;
+    login: (email: string, password: string, redirectStrat: SuccessCallback) => Promise<User>;
+    loginWithGithub: (redirectStrat: SuccessCallback) => Promise<User>;
+    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => Promise<User>;
+    resetPassword: (email: string) => Promise<void>;
     location?: RoutingData.Location<LoginConfig>;
 };
 
+interface LoginPageState {
+    error?: string;
+}
+
 function mapStateToProps(state: State.All) {
     return {
-        error: state.authForm.error
     };
 }
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        login: function (email: string, password: string, redirectStrat: SuccessCallback) {
+        login: function (email: string, password: string, redirectStrat: SuccessCallback): Promise<User> {
             return dispatch(login(email, password, redirectStrat));
         },
-        signUpWithEmail: function (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) {
+        signUpWithEmail: function (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback): Promise<User> {
             return dispatch(signUpWithEmail(email, password, confirmPassword, redirectStrat));
         },
-        loginWithGithub: function (redirectStrat: SuccessCallback) {
+        loginWithGithub: function (redirectStrat: SuccessCallback): Promise<User> {
             return dispatch(loginWithGithub(redirectStrat));
         },
-        resetPassword: function (email: string) {
+        resetPassword: function (email: string): Promise<void> {
             return dispatch(resetPassword(email));
         }
     };
 }
 
-export class LoginPage extends React.Component<LoginPageProps, any> {
+export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
+
+    constructor(props: LoginPageProps) {
+        super(props);
+        this.state = {};
+    }
 
     handleResetPassword(email: string) {
         this.props.resetPassword(email);
@@ -60,15 +68,30 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
 
     handleFormSubmit(email: string, pass: string) {
         console.info("Logging in with " + email + " " + pass);
-        this.props.login(email, pass, this.getRedirectStrategy());
+        this.props.login(email, pass, this.getRedirectStrategy())
+            .catch((err: Error) => {
+                console.info("ERROR " + err.message);
+                this.state.error = err.message;
+                this.setState(this.state);
+            });
     }
 
     handleFormLoginWithGithub() {
-        this.props.loginWithGithub(this.getRedirectStrategy());
+        this.props.loginWithGithub(this.getRedirectStrategy())
+            .catch((err: Error) => {
+                console.info("ERROR " + err.message);
+                this.state.error = err.message;
+                this.setState(this.state);
+            });
     }
 
     handleFormSignUpWithEmail(email: string, pass: string, confirmPass: string) {
-        this.props.signUpWithEmail(email, pass, confirmPass, this.getRedirectStrategy());
+        this.props.signUpWithEmail(email, pass, confirmPass, this.getRedirectStrategy())
+            .catch((err: Error) => {
+                console.info("ERROR " + err.message);
+                this.state.error = err.message;
+                this.setState(this.state);
+            });
     }
 
     getRedirectStrategy(): SuccessCallback {
@@ -86,7 +109,7 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
                 <Cell col={4} tablet={4} phone={4} align={"middle"}>
                     <Card>
                         <AuthForm
-                            error={this.props.error}
+                            error={this.state.error}
                             onSubmit={this.handleFormSubmit.bind(this)}
                             onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
                             onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}

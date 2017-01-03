@@ -49,6 +49,7 @@ export default class AuthForm extends Component<AuthFormProps, AuthFormState> {
         return (
             <div className="mdl-card__supporting-text">
                 <NormalLoginForm
+                    error={this.props.error}
                     onLogin={this.props.onSubmit}
                     onSignUpWithEmail={this.props.onSignUpWithEmail}
                     onEmailChange={this.onEmailChange.bind(this)}

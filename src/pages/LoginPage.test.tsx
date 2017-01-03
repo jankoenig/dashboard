@@ -20,7 +20,6 @@ describe("LoginPage", () => {
         const resetPassword = sinon.spy();
         const wrapper = shallow((
             <LoginPage
-                error="error"
                 login={login}
                 loginWithGithub={loginWithGithub}
                 signUpWithEmail ={signUpWithEmail}
