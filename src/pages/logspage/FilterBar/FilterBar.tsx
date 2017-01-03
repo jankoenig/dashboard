@@ -1,15 +1,26 @@
+import * as classNames from "classnames";
+import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
 
-import { Cell, Grid } from "../../components/Grid";
-import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "./Filters";
+import { Cell, Grid } from "../../../components/Grid";
+import LogQuery from "../../../models/log-query";
+import { CompositeFilter, DateFilter, FilterType, LogLevelFilter } from "../Filters";
 
-const DatePickerFilterbarTheme = require("../../themes/datepicker-filterbar.scss");
-const DropdownFilterbarTheme = require("../../themes/dropdown-filterbar.scss");
+const FilterBarStyle = require("./style.scss");
+const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
+const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss");
 
 export interface FilterProps {
+    query: LogQuery;
     onFilter: (filter: FilterType) => void;
+    className?: string;
+}
+
+interface LogType {
+    value: string;
+    label: string;
 }
 
 interface FilterState {
@@ -18,14 +29,10 @@ interface FilterState {
     logTypes?: LogType[];
     selectedType?: string;
     filterMap: any;
+    filterbarHidden: boolean;
 }
 
-interface LogType {
-    value: string;
-    label: string;
-}
-
-export class FilterBar extends React.Component<FilterProps, FilterState> {
+class FilterBar extends React.Component<FilterProps, FilterState> {
 
     constructor(props: FilterProps) {
         super(props);
@@ -40,20 +47,46 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
         this.state = {
             filterMap: {},
             selectedType: types[0].value,
-            logTypes: types
+            logTypes: types,
+            filterbarHidden: false,
+            startDate: props.query ? props.query.startTime : undefined,
+            endDate: props.query ? props.query.endTime : undefined
         };
     }
 
-    handleDateChange(item: string, value: Date) {
-        // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
-        if (item === "startDate") {
-            this.state.startDate = value;
-            this.state.startDate.setHours(0, 0, 0, 0);
-        } else if (item === "endDate") {
-            this.state.endDate = value;
-            this.state.endDate.setHours(23, 59, 59, 999);
+    gridClasses() {
+        return classNames(FilterBarStyle.filterBarGrid, this.props.className);
+    }
+
+    componentWillReceiveProps(nextProps: FilterProps) {
+        // The first time we get the query,
+        // we set it as the initial start and end dates.
+        if (!this.state.endDate && nextProps.query) {
+            this.setDateRange(nextProps.query.startTime, nextProps.query.endTime);
         }
-        this.setState(this.state);
+    }
+
+    setDateRange(startDate: Date, endDate: Date) {
+        if (startDate && endDate) {
+            // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
+            this.state.startDate = startDate;
+            this.state.startDate.setHours(0, 0, 0, 0);
+
+            this.state.endDate = endDate;
+            this.state.endDate.setHours(23, 59, 59, 999);
+
+            this.setState(this.state);
+        }
+    }
+
+    handleDateChange(item: "startDate" | "endDate", value: Date) {
+
+        if (item === "startDate") {
+            this.setDateRange(value, this.state.endDate);
+        } else if (item === "endDate") {
+            this.setDateRange(this.state.startDate, value);
+        }
+
         this.newFilter(new DateFilter(this.state.startDate, this.state.endDate));
     }
 
@@ -71,12 +104,13 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     render(): JSX.Element {
-        let today = new Date();
+        let queryStartDate = this.props.query ? moment(this.props.query.startTime).subtract(1, "days").toDate() : new Date();
+        let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
         return (
-            <Grid style={{ backgroundColor: "#243036" }} >
+            <Grid className={this.gridClasses()} >
                 <Cell col={2} tablet={2} phone={4}>
                     <Dropdown
                         theme={DropdownFilterbarTheme}
@@ -91,20 +125,28 @@ export class FilterBar extends React.Component<FilterProps, FilterState> {
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
-                        maxDate={today}
+                        minDate={queryStartDate}
+                        // You can't select the same date as the end date
+                        maxDate={moment(this.state.endDate).subtract(1, "days").toDate()}
                         value={this.state.startDate}
-                        onChange={startHandleChange} />
+                        onChange={startHandleChange}
+                        readonly={this.props.query ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
                 <Cell col={2} tablet={2} phone={2}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
-                        maxDate={today}
+                        // You can't select the same date as the start date
+                        minDate={moment(this.state.startDate).add(1, "days").toDate()}
+                        maxDate={queryEndDate}
                         value={this.state.endDate}
-                        onChange={endHandleChange} />
+                        onChange={endHandleChange}
+                        readonly={this.props.query ? false : true} />
                 </Cell>
             </Grid>
         );
     }
 }
+
+export default FilterBar;

@@ -9,6 +9,7 @@
 
 .inputInputElement {
     color: $input-color-light;
+    border-bottom-color: $label-color-light;
 }
 
 .value {
@@ -17,4 +18,12 @@
 
 .inputLabel {
     color: $label-color-light;
+}
+
+.inputBar {
+    color: $label-color-light;
+}
+
+.value:after {
+    border-top-color: $label-color-light;
 }

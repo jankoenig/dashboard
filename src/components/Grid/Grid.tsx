@@ -4,6 +4,7 @@ import * as React from "react";
 export interface GridProps {
     noSpacing?: boolean;
     style?: React.CSSProperties;
+    className?: string;
 }
 
 /**
@@ -16,7 +17,7 @@ export default class Grid extends React.Component<GridProps, any> {
     classes() {
         return classNames(Grid.GRID_CLASS, {
             "mdl-grid--no-spacing": this.props.noSpacing
-        });
+        }, this.props.className);
     }
     render() {
         return (

@@ -78,6 +78,7 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
         let source = this.props.sources[index];
         return (
             <ListItem
+                key={source.id}
                 index={index}
                 primaryValue={source.name}
                 to={"/skills/" + source.id}

@@ -71,6 +71,45 @@ export namespace Browser {
         };
     }
 
+
+    /**
+     * Register a callback to receive mutation updates for a given Node (Element).
+     *
+     * @export
+     * @param {Node} node
+     * @param {MutationCallback} callback
+     * @returns {MutationObserver}
+     */
+    export function onMutation(node: Node, callback: MutationCallback): MutationObserver {
+
+        let observer: MutationObserver;
+
+        // MutationObserver doesn't exist on Node.js
+        if (typeof MutationObserver !== "undefined") {
+            observer = new MutationObserver(callback);
+            observer.observe(node, {
+                attributes: true,
+                childList: true,
+                characterData: true,
+                subtree: true
+            });
+        } else {
+            // Otherwise return an innocuous observer
+            observer = {
+                observe: function() {
+
+                },
+                takeRecords: function() {
+                    return [];
+                },
+                disconnect: function() {
+                }
+            };
+        }
+
+        return observer;
+    }
+
     /**
      * Get the current size of the browser window.
      *

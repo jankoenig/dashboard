@@ -4,7 +4,7 @@ import browser from "./browser";
 
 let expect = chai.expect;
 
-describe("Utils", function () {
+describe("Browser Util", function () {
     describe("isMobileOrTablet", function () {
         it("throws an error on node.js", function () {
             // navigator is not defined on node.js
@@ -67,7 +67,7 @@ describe("Utils", function () {
                     registeredCallback = callback;
                 },
 
-                removeEventListener: function(event: string, callback: (event: UIEvent) => void) {
+                removeEventListener: function (event: string, callback: (event: UIEvent) => void) {
                     unregisteredEvent = event;
                     unregisteredCallback = callback;
                 }
@@ -79,6 +79,13 @@ describe("Utils", function () {
 
             expect(registeredEvent).to.equal("resize");
             expect(unregisteredCallback).to.equal(callback);
+        });
+    });
+
+    describe("onMutation", function () {
+        it("returns a a dummy instance on Node.js", function () {
+            let observer = browser.onMutation(undefined, undefined);
+            expect(observer).to.exist;
         });
     });
 
