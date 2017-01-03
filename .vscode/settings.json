@@ -6,9 +6,10 @@
         "**/*.js.map": true,
         "**/*.js": { "when": "$(basename).ts"},
         "**/*?.js": { "when": "$(basename).tsx"},
-        "**/*.scss.d.ts": { "when": "$(basename).scss"}
+        "**/*.scss.d.ts": true
     },
-    "files.autoSave": "onFocusChange",
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
     "files.trimTrailingWhitespace": true,
     "typescript.tsdk": "node_modules/typescript/lib",
     "npm-intellisense.scanDevDependencies": true

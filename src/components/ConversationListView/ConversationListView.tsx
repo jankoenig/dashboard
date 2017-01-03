@@ -11,6 +11,7 @@ export interface ConversationListViewProps {
     readonly expandListItemWhenActive?: boolean;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
     readonly onEmpty?: () => JSX.Element;
+    readonly onScroll?: (event: React.UIEvent) => void;
 }
 
 export interface ConversationListViewState {
@@ -76,6 +77,7 @@ export default class ConversationListView extends React.Component<ConversationLi
 
         let listElement = (
             <List
+                onScroll={this.props.onScroll}
                 itemRenderer={this.renderItem.bind(this)}
                 length={this.props.conversations.length}
                 type={"simple"} />

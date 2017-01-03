@@ -83,7 +83,7 @@ describe("ConversationListView", function () {
 
             it("renders interaction after clicking a list item", function () {
 
-                let listItem = wrapper.find("li").first();
+                let listItem = wrapper.find("li div").first();
                 listItem.simulate("click");
                 expect(onClick).to.have.been.calledOnce;
 
@@ -91,7 +91,7 @@ describe("ConversationListView", function () {
                 expect(wrapper.find("Interaction")).to.have.length(1);
             });
             it("clears the interaction when it is clicked again", function () {
-                let listItem = wrapper.find("li").first();
+                let listItem = wrapper.find("li div").first();
                 listItem.simulate("click");
                 expect(onClick).to.have.been.calledOnce;
                 listItem.simulate("click"); // click again to disable
@@ -99,7 +99,7 @@ describe("ConversationListView", function () {
                 expect(wrapper.find("Interaction")).to.have.length(0);
             });
             it("renders two interactions after clicking on two list items", function () {
-                let listItems = wrapper.find("li");
+                let listItems = wrapper.find("li div");
                 let listItemOne = listItems.first();
                 let listItemTwo = listItems.last();
 
@@ -123,7 +123,7 @@ describe("ConversationListView", function () {
                 expect(wrapper.find("Interaction")).to.have.length(0);
             });
             it("does not render the interaction when clicked", function () {
-                let listItem = wrapper.find("li").first();
+                let listItem = wrapper.find("li div").first();
                 listItem.simulate("click");
                 expect(onClick).to.have.been.calledOnce;
 

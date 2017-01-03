@@ -21,7 +21,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
             padding: "10px",
             marginTop: "10px",
             marginBottom: "10px",
-            cursor: "hande",
+            cursor: "pointer",
             backgroundColor: (this.props.active ? "#90A4AE" : "#FAFAFA"),
             border: "solid #90A4AE",
             borderWidth: "1px",
@@ -70,8 +70,8 @@ export default class ConversationListViewItem extends React.Component<Conversati
 
     render() {
         return (
-            <span>
-                <li key={this.props.conversation.id}
+            <li key={this.props.conversation.id} style={{ listStyle: "none" }}>
+                <div
                     style={this.listItemStyle()}
                     onClick={this.props.onClick.bind(this, this.props.conversation)}>
                     <span style={this.primaryContentStyle()}>
@@ -106,24 +106,23 @@ export default class ConversationListViewItem extends React.Component<Conversati
                             <Pill>
                                 crash
                             </Pill>
-                        ) : undefined }
+                        ) : undefined}
                     </span>
-                </li>
+                </div>
                 {this.props.showInteractionOnActive && this.props.active ? (
-                    <span>
+                    <div>
                         <Interaction
                             request={this.props.conversation.request}
                             response={this.props.conversation.response}
                             outputs={this.props.conversation.outputs}
-                            stackTraces={this.props.conversation.stackTraces}/>
+                            stackTraces={this.props.conversation.stackTraces} />
                         <Button
                             primary={true}
                             ripple={true}
-                            icon={"keyboard_arrow_up"}
-                            onClick={this.props.onClick.bind(this, this.props.conversation)}>Collapse</Button>
-                    </span>
+                            onClick={this.props.onClick.bind(this, this.props.conversation)}><i className="material-icons">keyboard_arrow_up</i>Collapse</Button>
+                    </div>
                 ) : undefined}
-            </span>
+            </li>
         );
     }
 }

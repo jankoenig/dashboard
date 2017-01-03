@@ -1,0 +1,17 @@
+.button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 100;
+}
+
+.filterBar {
+    max-height: 500px;
+    transition: max-height 0.25s ease-in;
+}
+
+.filterBarHidden {
+    max-height: 0;
+    transition: max-height 0.15s ease-out;
+    z-index: -1;
+}

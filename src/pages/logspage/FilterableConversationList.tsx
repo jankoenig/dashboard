@@ -15,6 +15,7 @@ export interface FilterableConversationListProps {
     conversations: ConversationList;
     onShowConversation: (conversation: Conversation) => void;
     filter?: FilterType;
+    onScroll?: (event: React.UIEvent) => void;
 }
 
 interface FilterableConversationListState {
@@ -23,8 +24,6 @@ interface FilterableConversationListState {
 }
 
 export class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
-
-    root: HTMLElement;
 
     constructor(props: FilterableConversationListProps) {
         super(props);
@@ -63,23 +62,18 @@ export class FilterableConversationList extends React.Component<FilterableConver
     }
 
     onEmpty(): JSX.Element {
-        return (<p> No available data </p> );
-    }
-
-    handleRoot(root: HTMLElement) {
-        this.root = root;
+        return (<p> No available data </p>);
     }
 
     render() {
         return (
-            <div ref={this.handleRoot.bind(this)} style={{ overflowY: "hidden" }}>
-                <div>
-                    <ConversationListView
-                        conversations={this.state.shownConversations}
-                        expandListItemWhenActive={browser.isMobileWidth()}
-                        onClick={this.onConversationClicked.bind(this)}
-                        onEmpty={this.onEmpty.bind(this)} />
-                </div>
+            <div style={{ overflowY: "hidden" }}>
+                <ConversationListView
+                    onScroll={this.props.onScroll}
+                    conversations={this.state.shownConversations}
+                    expandListItemWhenActive={browser.isMobileWidth()}
+                    onClick={this.onConversationClicked.bind(this)}
+                    onEmpty={this.onEmpty.bind(this)} />
             </div>
         );
     }

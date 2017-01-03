@@ -1,0 +1,10 @@
+.filterBarGrid {
+    background-color: #243036;
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+.filterBarGridHidden {
+    max-height: 0;
+    transition: max-height 0.15s ease-out;
+}
