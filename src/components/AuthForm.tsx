@@ -36,34 +36,43 @@ export default class AuthForm extends Component<AuthFormProps, AuthFormState> {
     }
 
     onEmailChange(email: string) {
-        this.state.email = email;
-        this.setState(this.state);
+
     }
 
-    onPasswordReset(event: React.FormEvent) {
+    onResetPassword(email: string) {
         if (this.props.onResetPassword) {
-            this.props.onResetPassword(this.state.email);
+            this.props.onResetPassword(email);
         }
     }
 
     render() {
         return (
             <div className="mdl-card__supporting-text">
-                <LoginGithub onLoginWithGithub={this.props.onLoginWithGithub} />
                 <NormalLoginForm
                     onLogin={this.props.onSubmit}
                     onSignUpWithEmail={this.props.onSignUpWithEmail}
                     onEmailChange={this.onEmailChange.bind(this)}
+                    onResetPassword={this.onResetPassword.bind(this)}
                     />
-                <div className="mdl-card__actions clearfix">
-                    <button
-                        onClick={this.onPasswordReset.bind(this)}
-                        className="mdl-button mdl-js-button mdl-js-ripple-effect"
-                        style={{ float: "right", height: "16px", fontSize: "12px", color: "#03A9F4", textTransform: "none", lineHeight: "12px" }}>
-                        Reset Password
-                    </button>
+                <div className="mdl-card__actions mdl-card--border clearfix">
+                    <LoginGithub onLoginWithGithub={this.props.onLoginWithGithub} />
                 </div>
             </div>
+        );
+    }
+}
+
+interface PasswordResetProps {
+    onPasswordReset: () => void;
+}
+
+class PasswordReset extends Component<PasswordResetProps, any> {
+    render() {
+        return (
+            <Button
+                label="Reset Password"
+                onClick={this.props.onPasswordReset}
+                style={{ float: "right", height: "16px", fontSize: "12px", color: "#03A9F4", textTransform: "none", lineHeight: "12px" }} />
         );
     }
 }
@@ -92,6 +101,7 @@ interface NormalLoginFormProps {
     onEmailChange: (email: string) => void;
     onLogin: (email: string, pass: string) => void;
     onSignUpWithEmail: (email: string, pass: string) => void;
+    onResetPassword: (email: string) => void;
     error?: string;
 }
 
@@ -149,6 +159,10 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
         this.setState(this.state);
     }
 
+    onPasswordReset(event: React.FormEvent) {
+        this.props.onResetPassword(this.state.email);
+    }
+
     render() {
         let signupBtn = this.state.isConfirmPassword ?
             (
@@ -166,7 +180,7 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
             );
 
         return (
-            <div style={{ margin: "16px" }}>
+            <div>
                 <LoginForms
                     onEmailChange={this.onEmailChange.bind(this)}
                     onPasswordChange={this.onPasswordChange.bind(this)}
@@ -178,6 +192,8 @@ class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormSta
                         label="Login"
                         onClick={this.props.onSignUpWithEmail.bind(this)} />
                     {signupBtn}
+                    <PasswordReset
+                        onPasswordReset={this.onPasswordReset.bind(this)} />
                 </div>
             </div>
         );
@@ -228,12 +244,14 @@ class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
         return (
             <div>
                 <Input
+                    theme={theme}
                     label="Email"
                     type="text"
                     value={this.props.email}
                     onChange={this.onEmailChange.bind(this)}
                     />
                 <Input
+                    theme={theme}
                     label="Password"
                     type="password"
                     value={this.props.password}
@@ -243,6 +261,7 @@ class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
                     this.props.showConfirmPassword ?
                         (
                             <Input
+                                theme={theme}
                                 label="Confirm Password"
                                 type="password"
                                 value={this.props.confirmPassword}
