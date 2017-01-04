@@ -87,9 +87,6 @@ export default class ConversationListViewItem extends React.Component<Conversati
                         ) : undefined}
                         <span>
                             {this.props.conversation.requestPayloadType}
-                            {this.props.conversation.intent ? (
-                                <span> - {this.props.conversation.intent} </span>
-                            ) : undefined}
                         </span>
                         <span style={this.subtitleStyle()}>
                             {moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a")}
