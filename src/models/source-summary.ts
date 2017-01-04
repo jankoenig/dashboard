@@ -1,16 +1,20 @@
 
-import DataUtil from "../utils/data";
+import { TimeSeriesDatum } from "./time-series";
 
 interface SourceSummary {
+
     startTime: Date;
+
     endTime: Date;
 
     totalUniqueUsers: number;
 
     totalCrashes: number;
 
-    events: DataUtil.TimeSeriesDatum[];
+    events: TimeSeriesDatum[];
+
     totalEvents: number;
+
     eventLabel: string;
 }
 

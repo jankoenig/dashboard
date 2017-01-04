@@ -1,5 +1,6 @@
 import { expect } from "chai";
 
+import { TimeSeriesDatum } from "../models/time-series";
 import DataUtil from "./data";
 
 describe("DataUtil", function() {
@@ -20,6 +21,28 @@ describe("DataUtil", function() {
                 expect(data[0].data).to.have.length(0);
                 expect(data[24].data).to.have.length(1);
             });
+        });
+    });
+    describe("getDayTicks", function() {
+        it("returns the number of ticks", function() {
+            let startDate = new Date();
+            startDate.setDate(12);
+            let endDate = new Date();
+            endDate.setDate(19);
+
+            let start = new TimeSeriesDatum({
+                date: startDate,
+                data: []
+            });
+
+            let end = new TimeSeriesDatum({
+                date: endDate,
+                data: []
+            });
+
+            let ticks = DataUtil.getDayTicks([start, end]);
+
+            expect(ticks).to.have.length(7);
         });
     });
 });

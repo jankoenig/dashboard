@@ -6,7 +6,7 @@ import { Link } from "react-router";
 import Button from "../components/Button";
 import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
-import SourceSummaryView from "../components/SourceSummaryView";
+import  SourceSummaryView from "../components/SourceSummaryView";
 import ConversationList from "../models/conversation-list";
 import ConversationListSummary from "../models/conversation-list-summary";
 import Source from "../models/source";
