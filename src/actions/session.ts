@@ -64,6 +64,7 @@ function loginMethod(dispatch: Redux.Dispatch<any>, redirectStrat: SuccessCallba
 
       return user;
     }).catch(function (err: Error) {
+      dispatch(sendingRequest(false));
       dispatch(authFormError(err.message));
       throw err;
     });

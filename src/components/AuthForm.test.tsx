@@ -17,55 +17,31 @@ describe("AuthForm", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow(<AuthForm onSubmit={onSubmit} />);
         // A form, two inputs and a button
-        expect(wrapper.find("form")).to.have.length(1);
-        expect(wrapper.find("FormInput")).to.have.length(3);
-        expect(wrapper.find("input")).to.have.length(1);
-        expect(wrapper.find("button")).to.have.length(2);
+        expect(wrapper.find("NormalLoginForm")).to.have.length(1);
+        expect(wrapper.find("LoginGithub")).to.have.length(1);
     });
-    it("can be submitted", function () {
+
+    it("Tests top level callback for submit", function () {
         const onSubmit = sinon.spy();
         const wrapper = shallow(<AuthForm onSubmit={onSubmit} />);
 
-        wrapper.find("form").first().simulate("submit");
-        expect(onSubmit).to.have.been.called;
+        wrapper.find("NormalLoginForm").first().simulate("login");
+        expect(onSubmit).to.have.been.calledOnce;
     });
-    it("can sign up", function () {
+
+    it("Tests top level callback for sign up with email", function () {
         const onSignUpWithEmail = sinon.spy();
         const onSubmit = sinon.spy();
         const wrapper = shallow((
             <AuthForm onSubmit={onSubmit}
-                                onSignUpWithEmail={onSignUpWithEmail} />
+                onSignUpWithEmail={onSignUpWithEmail} />
         ));
 
-        wrapper.find("button").at(0).simulate("click");
-        wrapper.find("button").at(0).simulate("click");
-        expect(onSignUpWithEmail).to.have.been.called;
+        wrapper.find("NormalLoginForm").at(0).simulate("SignUpWithEmail");
+        expect(onSignUpWithEmail).to.have.been.calledOnce;
     });
-     it("can not sign up wrong password", function () {
-        const onSignUpWithEmail = sinon.spy();
-        const onSubmit = sinon.spy();
-        const wrapper = shallow((
-            <AuthForm onSubmit={onSubmit}
-                                onSignUpWithEmail={onSignUpWithEmail} />
-        ));
 
-        wrapper.find("button").at(0).simulate("click");
-        wrapper.find("button").at(0).simulate("click");
-        expect(onSignUpWithEmail).to.have.been.called;
-    });
-     it("can not sign up wrong email", function () {
-        const onSignUpWithEmail = sinon.spy();
-        const onSubmit = sinon.spy();
-        const wrapper = shallow((
-        <AuthForm onSubmit={onSubmit}
-                                onSignUpWithEmail={onSignUpWithEmail} />
-        ));
-
-        wrapper.find("button").at(0).simulate("click");
-        wrapper.find("button").at(0).simulate("click");
-        expect(onSignUpWithEmail).to.have.been.called;
-    });
-    it("can be logged in with Github", function () {
+    it("Tests top level callback for login with github", function () {
         const onSubmit = sinon.spy();
         const onLoginWithGithub = sinon.spy();
         const wrapper = shallow((
@@ -74,8 +50,20 @@ describe("AuthForm", function () {
                 onLoginWithGithub={onLoginWithGithub} />
         ));
 
-        wrapper.find("button").last().simulate("click");
-        expect(onLoginWithGithub).to.have.been.called;
-        expect(onSubmit).to.have.not.been.called;
+        wrapper.find("LoginGithub").simulate("loginWithGithub");
+        expect(onLoginWithGithub).to.have.been.calledOnce;
+    });
+
+    it("Top level callback for reset password.", function () {
+        const onSubmit = sinon.spy();
+        const onResetPassword = sinon.spy();
+        const wrapper = shallow((
+            <AuthForm
+                onSubmit={onSubmit}
+                onResetPassword={onResetPassword} />
+        ));
+
+        wrapper.find("NormalLoginForm").simulate("resetPassword");
+        expect(onResetPassword).to.have.been.calledOnce;
     });
 });

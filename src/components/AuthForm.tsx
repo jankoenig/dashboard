@@ -1,4 +1,4 @@
-import { Component } from "react";
+import * as React from "react";
 
 import { Button } from "react-toolbox/lib/button";
 import Input from "react-toolbox/lib/input";
@@ -20,7 +20,7 @@ export interface AuthFormState {
     isConfirmPasswordVisible?: boolean;
 }
 
-export default class AuthForm extends Component<AuthFormProps, AuthFormState> {
+export default class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
 
     constructor(props: AuthFormProps) {
         super(props);
@@ -67,7 +67,7 @@ interface PasswordResetProps {
     onPasswordReset: () => void;
 }
 
-class PasswordReset extends Component<PasswordResetProps, any> {
+class PasswordReset extends React.Component<PasswordResetProps, any> {
     render() {
         return (
             <Button
@@ -82,7 +82,7 @@ interface LoginGithubProps {
     onLoginWithGithub?: () => void;
 }
 
-class LoginGithub extends Component<LoginGithubProps, any> {
+class LoginGithub extends React.Component<LoginGithubProps, any> {
     render() {
         return (
             this.props.onLoginWithGithub ? (
@@ -114,7 +114,7 @@ interface NormalLoginFormState {
     isConfirmPassword?: boolean;
 }
 
-class NormalLoginForm extends Component<NormalLoginFormProps, NormalLoginFormState> {
+class NormalLoginForm extends React.Component<NormalLoginFormProps, NormalLoginFormState> {
 
     constructor(props: NormalLoginFormProps) {
         super(props);
@@ -242,7 +242,7 @@ interface LoginFormsProps {
 interface LoginFormsState {
 }
 
-class LoginForms extends Component<LoginFormsProps, LoginFormsState> {
+class LoginForms extends React.Component<LoginFormsProps, LoginFormsState> {
 
     onEmailChange(value: string) {
         if (this.props.onEmailChange) {

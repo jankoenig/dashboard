@@ -27,6 +27,5 @@ describe("LoginPage", () => {
         ));
         // It contains the AuthForm
         expect(wrapper.find("AuthForm")).to.have.length(1);
-        expect(wrapper.find("AuthForm").first().prop("email")).to.equal("email");
     });
 });

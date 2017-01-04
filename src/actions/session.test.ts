@@ -87,18 +87,12 @@ describe("Session.ts", function () {
             setUserStub.restore();
         });
 
-        it("Tests the login flow works properly on a successful github login with a default login strategy.", function (done: MochaDone) {
-            verifySuccessLogin("/#welcome", (store: any) => {
-                session.loginWithGithub()(store.dispatch);
-                done();
-            });
+        it("Tests the login flow works properly on a successful github login with a default login strategy.", function () {
+            return verifySuccessLogin("/#welcome", session.loginWithGithub());
         });
 
-        it("Tests the login flow works properly on successful github login with overridden login strategy.", function (done: MochaDone) {
-            verifySuccessLogin("/NextPath", (store: any) => {
-                session.loginWithGithub(new session.ToPathCallback("/NextPath"))(store.dispatch);
-                done();
-            });
+        it("Tests the login flow works properly on successful github login with overridden login strategy.", function () {
+            return verifySuccessLogin("/NextPath", session.loginWithGithub(new session.ToPathCallback("/NextPath")));
         });
     });
 
@@ -122,18 +116,12 @@ describe("Session.ts", function () {
             setUserStub.restore();
         });
 
-        it("Tests the login flow works properly on a successful username and password login with a default login strategy.", function (done: MochaDone) {
-            verifySuccessLogin("/#welcome", (store: any) => {
-                session.login("testuser", "secretPassword")(store.dispatch);
-                done();
-            });
+        it("Tests the login flow works properly on a successful username and password login with a default login strategy.", function () {
+            return verifySuccessLogin("/#welcome", session.login("testuser", "secretPassword"));
         });
 
-        it("Tests the login flow works properly on successful username and password login with overridden login strategy.", function (done: MochaDone) {
-            verifySuccessLogin("/NextPath", (store: any) => {
-                session.login("testuser", "secretPassword", new session.ToPathCallback("/NextPath"))(store.dispatch);
-                done();
-            });
+        it("Tests the login flow works properly on successful username and password login with overridden login strategy.", function () {
+            return verifySuccessLogin("/NextPath", session.login("testuser", "secretPassword", new session.ToPathCallback("/NextPath")));
         });
     });
 
@@ -157,18 +145,12 @@ describe("Session.ts", function () {
             setUserStub.restore();
         });
 
-        it("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function (done: MochaDone) {
-            verifySuccessLogin("/#welcome", (store: any) => {
-                session.signUpWithEmail("testuser", "secretPassword", "secretPassword")(store.dispatch);
-                done();
-            });
+        it("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function () {
+            return verifySuccessLogin("/#welcome", session.signUpWithEmail("testuser", "secretPassword", "secretPassword"));
         });
 
-        it("Tests the signUpWithEmail flow works properly on successful username and password signUpWithEmail with overridden signUpWithEmail strategy.", function (done: MochaDone) {
-            verifySuccessLogin("/NextPath", (store: any) => {
-                session.signUpWithEmail("testuser", "secretPassword", "secretPassword", new session.ToPathCallback("/NextPath"))(store.dispatch);
-                done();
-            });
+        it("Tests the signUpWithEmail flow works properly on successful username and password signUpWithEmail with overridden signUpWithEmail strategy.", function () {
+            return verifySuccessLogin("/NextPath", session.signUpWithEmail("testuser", "secretPassword", "secretPassword", new session.ToPathCallback("/NextPath")));
         });
     });
 
@@ -178,6 +160,7 @@ describe("Session.ts", function () {
 
         before("Stubbing auth namespace.", function () {
             signUpWithEmail = sinon.stub(auth, "signUpWithEmail").returns(new Promise<any>((resolve, reject) => {
+                console.info("THROWING AN ERROR");
                 reject(new Error("Error failed do to requirements of the test."));
             }));
 
@@ -191,11 +174,8 @@ describe("Session.ts", function () {
             setUserStub.restore();
         });
 
-        it("Tests the login flow works properly on an unsuccessful signUpWithEmail attempt.", function (done: MochaDone) {
-            verifyUnsuccessfullLogin(() => {
-                session.signUpWithEmail("testAccount", "12345-", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
-                done();
-            });
+        it("Tests the login flow works properly on an unsuccessful signUpWithEmail attempt.", function () {
+            return verifyUnsuccessfullLogin(session.signUpWithEmail("testAccount", "12345-", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage"));
         });
     });
 
@@ -204,7 +184,7 @@ describe("Session.ts", function () {
         let setUserStub: Sinon.SinonStub;
 
         before("Stubbing auth namespace.", function () {
-            loginStub = sinon.stub(auth, "login").returns(new Promise<any>((resolve, reject) => {
+            loginStub = sinon.stub(auth, "loginWithGithub").returns(new Promise<any>((resolve, reject) => {
                 reject(new Error("Error failed do to requirements of the test."));
             }));
 
@@ -218,11 +198,8 @@ describe("Session.ts", function () {
             setUserStub.restore();
         });
 
-        it("Tests the login flow works properly on an unsuccessful login attempt.", function (done: MochaDone) {
-            verifyUnsuccessfullLogin(() => {
-                session.loginWithGithub();
-                done();
-            });
+        it("Tests the login flow works properly on an unsuccessful login attempt.", function () {
+            return verifyUnsuccessfullLogin(session.loginWithGithub());
         });
     });
 
@@ -245,11 +222,8 @@ describe("Session.ts", function () {
             setUserStub.restore();
         });
 
-        it("Tests the login flow works properly on an unsuccessful login attempt.", function (done: MochaDone) {
-            verifyUnsuccessfullLogin(() => {
-                session.login("testAccount@test.com", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage");
-                done();
-            });
+        it("Tests the login flow works properly on an unsuccessful login attempt.", function () {
+            return verifyUnsuccessfullLogin(session.login("testAccount@test.com", "12345-the-kind-of-password-an-idiot-would-have-on-his-luggage"));
         });
     });
 
@@ -266,7 +240,7 @@ describe("Session.ts", function () {
             logoutStub.restore();
         });
 
-        it("Verifies a successful logout actions.", function (done: MochaDone) {
+        it("Verifies a successful logout actions with callback", function (done: MochaDone) {
             let initialState = {};
             let store = mockStore(initialState);
 
@@ -281,7 +255,20 @@ describe("Session.ts", function () {
             }));
         });
 
-        it("Verifies an unsuccessful logout action.", function(done: MochaDone) {
+        it("Verifies a successful logout actions with Promise", function () {
+            let initialState = {};
+            let store = mockStore(initialState);
+
+            return store.dispatch(session.logout()).then(function() {
+                expect(store.getActions().length).to.equal(2);
+
+                let finalAction: any = store.getActions()[store.getActions().length - 1];
+                expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
+                expect(finalAction.payload.args[0]).to.equal("/login");
+            });
+        });
+
+        it("Verifies an unsuccessful logout action with callback.", function (done: MochaDone) {
             logoutStub.restore();
             logoutStub = sinon.stub(auth, "logout").returns(new Promise<any>((resolve, reject) => {
                 reject(new Error("Error per requirement of the test."));
@@ -295,6 +282,23 @@ describe("Session.ts", function () {
                 logoutStub.restore();
                 done();
             }));
+        });
+
+        it("Verifies an unsuccessful logout action with promise.", function () {
+            logoutStub.restore();
+            logoutStub = sinon.stub(auth, "logout").returns(new Promise<any>((resolve, reject) => {
+                reject(new Error("Error per requirement of the test."));
+            }));
+            let initialState = {};
+            let store = mockStore(initialState);
+
+            return store.dispatch(session.logout()).then(function () {
+                expect(store.getActions().length).to.equal(0);
+                logoutStub.restore();
+            }).catch(function (err: Error) {
+                logoutStub.restore();
+                throw err;
+            });
         });
     });
 
@@ -349,31 +353,41 @@ describe("Session.ts", function () {
         });
     });
 
-    function verifySuccessLogin(redirectPath: string, loginAction: (store: any) => void) {
+    function verifySuccessLogin(redirectPath: string, loginAction: (dispatch: Redux.Dispatch<any>) => Promise<User>): Promise<User> {
         let initialState = {};
         let store = mockStore(initialState);
 
-        loginAction(store);
+        console.log(store);
+        return loginAction(store.dispatch).then(function (user: User) {
+            expect(store.getActions().length).to.greaterThan(0);
 
-        expect(store.getActions().length).to.greaterThan(0);
+            // TODO: Right now these are assuming that the "setUserAction" and the "redirectAction" are the last two
+            // actions being dispatched, but really what's important is that "setUser" is before the "redirect". This can be
+            // generic.
+            let setUserAction: any = store.getActions()[store.getActions().length - 2];
+            let redirectAction: any = store.getActions()[store.getActions().length - 1];
 
-        // TODO: Right now these are assuming that the "setUserAction" and the "redirectAction" are the last two
-        // actions being dispatched, but really what's important is that "setUser" is before the "redirect". This can be
-        // generic.
-        let setUserAction: any = store.getActions()[store.getActions().length - 2];
-        let redirectAction: any = store.getActions()[store.getActions().length - 1];
-
-        verifyUserAction(setUserAction);
-        verifyReplaceAction(redirectAction, redirectPath);
+            verifyUserAction(setUserAction);
+            verifyReplaceAction(redirectAction, redirectPath);
+            return user;
+        });
     }
 
-    function verifyUnsuccessfullLogin(loginAction: (store: any) => void) {
+    function verifyUnsuccessfullLogin(loginAction: (dispatch: Redux.Dispatch<any>) => Promise<User>): Promise<void> {
         let initialState = {};
         let store = mockStore(initialState);
 
-        loginAction(store);
-
-        expect(store.getActions().length).to.equal(0);
+        return loginAction(store.dispatch)
+            .catch(function(err: Error) {
+                let actions = store.getActions() as any;
+                expect(actions.length).to.equal(3);
+                expect(actions[0].type).to.equal("SENDING_REQUEST");
+                expect(actions[0].sending).to.equal(true);
+                expect(actions[1].type).to.equal("SENDING_REQUEST");
+                expect(actions[1].sending).to.equal(false);
+                expect(actions[2].type).to.equal("bst/AUTH_FORM_ERROR");
+                expect(actions[2].error).to.equal(err.message);
+            });
     }
 
     function verifyUserAction(action: any) {
