@@ -5,7 +5,6 @@ import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "rec
 import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
 import SourceSummary from "../models/source-summary";
-import { TimeSeriesDatum } from "../models/time-series";
 import DataUtil from "../utils/data";
 
 interface SourceSummaryViewProps {
@@ -13,10 +12,6 @@ interface SourceSummaryViewProps {
 }
 
 export default class SourceSummaryView extends React.Component<SourceSummaryViewProps, any> {
-
-    getY(datum: TimeSeriesDatum) {
-        return datum.data.length;
-    }
 
     tickFormat(time: number): string {
         return moment(time).format("MM/DD");
