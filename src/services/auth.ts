@@ -19,8 +19,7 @@ namespace auth {
     function loginWithProvider(provider: remoteservice.auth.AuthProvider, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): Promise<User> {
         let firstPromise: Promise<User>;
         if (browser.isMobileOrTablet()) {
-            auth.signInWithRedirect(provider);
-            firstPromise = auth.getRedirectResult();
+            firstPromise = auth.signInWithRedirect(provider);
         } else {
             firstPromise = auth.signInWithPopup(provider);
         }
