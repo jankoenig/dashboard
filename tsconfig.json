@@ -11,7 +11,7 @@
     "src/**/*",
     "./typings/index.d.ts",
     "./typings/config.d.ts",
-    "./typings/victory.d.ts",
+    "./typings/recharts.d.ts",
     "./typings/react-list.d.ts",
     "./typings/react-json-tree.d.ts",
     "./typings/uuid.d.ts",

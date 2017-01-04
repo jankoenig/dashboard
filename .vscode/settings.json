@@ -8,8 +8,6 @@
         "**/*?.js": { "when": "$(basename).tsx"},
         "**/*.scss.d.ts": true
     },
-    "files.autoSave": "afterDelay",
-    "files.autoSaveDelay": 1000,
     "files.trimTrailingWhitespace": true,
     "typescript.tsdk": "node_modules/typescript/lib",
     "npm-intellisense.scanDevDependencies": true

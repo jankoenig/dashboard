@@ -3,13 +3,14 @@ import SourceSummary from "./source-summary";
 import StackTrace from "./stack-trace";
 
 import DataUtil from "../utils/data";
+import { TimeSeriesDatum } from "./time-series";
 
 class ConversationListSummary implements SourceSummary {
 
     private conversationList: ConversationList;
-    private userMap: { [userId: string]: string} = {};
-    private crashes: {timestamp: Date, stackTrace: StackTrace}[] = [];
-    private conversationEvents: DataUtil.TimeSeriesDatum[] = [];
+    private userMap: { [userId: string]: string } = {};
+    private crashes: { timestamp: Date, stackTrace: StackTrace }[] = [];
+    private conversationEvents: TimeSeriesDatum[] = [];
 
     readonly startTime: Date;
 
@@ -27,7 +28,7 @@ class ConversationListSummary implements SourceSummary {
         return this.crashes.length;
     }
 
-    get events(): DataUtil.TimeSeriesDatum[] {
+    get events(): TimeSeriesDatum[] {
         return this.conversationEvents;
     }
 
