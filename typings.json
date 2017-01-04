@@ -32,5 +32,8 @@
     "sinon": "registry:dt/sinon#1.16.0+20160924120326",
     "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
   },
-  "dependencies": {}
+  "dependencies": {
+    "d3-scale": "registry:dt/d3-scale#1.0.0+20161207020330",
+    "d3-time": "registry:dt/d3-time#1.0.0+20161207020330"
+  }
 }

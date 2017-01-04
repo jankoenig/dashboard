@@ -1,7 +1,6 @@
 import * as chai from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
-// import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import SourceSummary from "../models/source-summary";
@@ -19,11 +18,11 @@ describe("SourceSummaryView", function () {
         ));
         it("renders correctly", function () {
             expect(wrapper.find("p")).to.have.length(1);
-            expect(wrapper.find("VictoryChart")).to.have.length(0);
+            expect(wrapper.find("ResponsiveContainer")).to.have.length(0);
         });
     });
-    describe("with an empty source summary", function() {
-let sourceSummary: SourceSummary = {
+    describe("with an empty source summary", function () {
+        let sourceSummary: SourceSummary = {
             startTime: new Date(),
             endTime: new Date(),
             totalCrashes: 5,
@@ -37,7 +36,7 @@ let sourceSummary: SourceSummary = {
         ));
         it("renders correctly", function () {
             expect(wrapper.find("p")).to.have.length(1);
-            expect(wrapper.find("VictoryChart")).to.have.length(0);
+            expect(wrapper.find("ResponsiveContainer")).to.have.length(0);
         });
     });
     describe("with a source summary", function () {
@@ -55,7 +54,7 @@ let sourceSummary: SourceSummary = {
         ));
         it("renders correctly", function () {
             expect(wrapper.find("p")).to.have.length(0);
-            expect(wrapper.find("VictoryChart")).to.have.length(1);
+            expect(wrapper.find("ResponsiveContainer")).to.have.length(1);
         });
     });
 });
