@@ -38,8 +38,11 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
         let conversationListSummary: ConversationListSummary;
 
         if (this.props.source && this.props.logMap) {
-            conversations = ConversationList.fromLogs(this.props.logMap[this.props.source.id].logs);
-            conversationListSummary = new ConversationListSummary(this.props.logMap[this.props.source.id].query, conversations);
+            let logMap = this.props.logMap[this.props.source.id];
+            if (logMap) {
+                conversations = ConversationList.fromLogs(logMap.logs);
+                conversationListSummary = new ConversationListSummary(logMap.query, conversations);
+            }
         }
 
         return (

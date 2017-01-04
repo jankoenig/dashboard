@@ -50,7 +50,6 @@ class StaticListItem extends MDLComponent<TwoLineItemProps, TwoLineItemState> {
     }
 
     render() {
-        console.log(ListItemStyle);
         return (
             <Link style={{ textDecoration: "none" }} to={this.props.routeTo}>
                 <ListItem
