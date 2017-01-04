@@ -6,7 +6,7 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import { AuthForm, LoginGithub, NormalLoginForm, PasswordReset } from "./AuthForm";
+import { AuthForm, LoginForms, LoginGithub, NormalLoginForm, PasswordReset } from "./AuthForm";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -261,13 +261,107 @@ describe("AuthForm", function () {
                 expect(onLogin).to.have.been.calledWith(state.email, state.password);
             });
 
-            it ("Updates state on new props.", function () {
+            it("Updates state on new props.", function () {
                 wrapper.setProps({
                     error: "New Error"
                 });
 
                 expect(wrapper.state("error")).to.equal("New Error");
             });
+        });
+    });
+
+    describe("LoginForms", function () {
+        const onEmailChange = sinon.spy();
+        const onPasswordChange = sinon.spy();
+        const onConfirmPasswordChange = sinon.spy();
+        const onPasswordSubmit = sinon.spy();
+        const onConfirmPasswordSubmit = sinon.spy();
+
+        let wrapper: ShallowWrapper<any, any>;
+
+        beforeEach(function () {
+            wrapper = shallow((
+                <LoginForms
+                    email="test@test.com"
+                    password="ABCD1234"
+                    confirmPassword="1234ABCD"
+                    error="Error"
+                    showConfirmPassword={true}
+                    onEmailChange={onEmailChange}
+                    onPasswordChange={onPasswordChange}
+                    onConfirmPasswordChange={onConfirmPasswordChange}
+                    onPasswordSubmit={onPasswordSubmit}
+                    onConfirmPasswordSubmit={onConfirmPasswordSubmit} />
+            ));
+        });
+
+        it("Renders properly.", function () {
+            expect(wrapper.find("Themed")).to.have.length(3);
+            expect(wrapper.find("label")).to.have.length(1);
+
+            let emailInput = wrapper.find("Themed").at(0);
+            expect(emailInput.prop("label")).to.equal("Email");
+            expect(emailInput.prop("type")).to.equal("text");
+            expect(emailInput.prop("value")).to.equal("test@test.com");
+
+            let passInput = wrapper.find("Themed").at(1);
+            expect(passInput.prop("label")).to.equal("Password");
+            expect(passInput.prop("type")).to.equal("password");
+            expect(passInput.prop("value")).to.equal("ABCD1234");
+
+            let confirmPassInput = wrapper.find("Themed").at(2);
+            expect(confirmPassInput.prop("label")).to.equal("Confirm Password");
+            expect(confirmPassInput.prop("type")).to.equal("password");
+            expect(confirmPassInput.prop("value")).to.equal("1234ABCD");
+
+            let errorLabel = wrapper.find("label").at(0);
+            expect(errorLabel.text()).to.equal("Error");
+        });
+
+        it("Renders properly without confirm password field.", function () {
+            wrapper.setProps({ showConfirmPassword: false });
+
+            expect(wrapper.find("Themed")).to.have.length(2);
+
+
+            let emailInput = wrapper.find("Themed").at(0);
+            expect(emailInput.prop("label")).to.equal("Email");
+            expect(emailInput.prop("type")).to.equal("text");
+            expect(emailInput.prop("value")).to.equal("test@test.com");
+
+            let passInput = wrapper.find("Themed").at(1);
+            expect(passInput.prop("label")).to.equal("Password");
+            expect(passInput.prop("type")).to.equal("password");
+            expect(passInput.prop("value")).to.equal("ABCD1234");
+        });
+
+        it("Throws the callback on email change.", function () {
+            wrapper.find("Themed").at(0).simulate("change", "newEmail@test.com");
+            expect(onEmailChange).to.be.calledOnce;
+            expect(onEmailChange).to.be.calledWith("newEmail@test.com");
+        });
+
+        it("Throws the callback on password change.", function () {
+            wrapper.find("Themed").at(1).simulate("change", "new password");
+            expect(onPasswordChange).to.be.calledOnce;
+            expect(onPasswordChange).to.be.calledWith("new password");
+        });
+
+        it ("Throws the callback on password submit.", function () {
+            wrapper.find("Themed").at(1).simulate("keyPress", {charCode: 13});
+            expect(onPasswordSubmit).to.be.calledOnce;
+        });
+
+        it ("Throws the callback on confirm password change.", function () {
+            wrapper.find("Themed").at(2).simulate("change", "new confirm password");
+            expect(onConfirmPasswordChange).to.be.calledOnce;
+            expect(onConfirmPasswordChange).to.be.calledWith("new confirm password");
+        });
+
+        it ("Throws the callback on confirm password submit.", function () {
+            wrapper.find("Themed").at(2).simulate("keyPress", {charCode: 13});
+            expect(onConfirmPasswordChange).to.be.calledOnce;
         });
     });
 });
