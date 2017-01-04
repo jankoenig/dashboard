@@ -107,7 +107,7 @@ describe("Auth ts not mocked", function () {
                 expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithRedirect).to.be.calledOnce;
-                expect(authService.getRedirectResult).to.not.be.called;
+                expect(authService.getRedirectResult).to.be.calledOnce;
             });
         });
 
