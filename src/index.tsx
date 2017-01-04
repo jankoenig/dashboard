@@ -63,13 +63,11 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     // If there is a user, set it
     if (user) {
         if (!lastUser || lastUser.email !== user.email) {
-            console.info("NEW USER");
             store.dispatch(setUser(new FirebaseUser(user)));
             store.dispatch(replace("/#welcome"));
         }
     } else {
         if (lastUser) {
-            console.info("CLEARING USER");
             store.dispatch({ type: LOGOUT_USER });
             store.dispatch(setUser(undefined));
             store.dispatch(replace("/login"));
