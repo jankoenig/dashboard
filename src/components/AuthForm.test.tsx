@@ -6,7 +6,7 @@ import * as React from "react"; // Needed for enzyme, unused for some reason.
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import AuthForm from "./AuthForm";
+import { AuthForm, LoginGithub, PasswordReset } from "./AuthForm";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -37,7 +37,7 @@ describe("AuthForm", function () {
                 onSignUpWithEmail={onSignUpWithEmail} />
         ));
 
-        wrapper.find("NormalLoginForm").at(0).simulate("SignUpWithEmail");
+        wrapper.find("NormalLoginForm").simulate("SignUpWithEmail");
         expect(onSignUpWithEmail).to.have.been.calledOnce;
     });
 
@@ -65,5 +65,59 @@ describe("AuthForm", function () {
 
         wrapper.find("NormalLoginForm").simulate("resetPassword");
         expect(onResetPassword).to.have.been.calledOnce;
+    });
+
+    describe("Password Reset Button", function () {
+
+        it("Renders", function () {
+            const onPasswordReset = sinon.spy();
+
+            const wrapper = shallow((
+                <PasswordReset
+                    onPasswordReset={onPasswordReset} />
+            ));
+
+            // The "Button" class compiles down to a "Themed" class because it's heavily styled.
+            expect(wrapper.find("Themed")).to.have.length(1);
+        });
+
+        it("Tests the callback is thrown on click.", function () {
+            const onPasswordReset = sinon.spy();
+
+            const wrapper = shallow((
+                <PasswordReset
+                    onPasswordReset={onPasswordReset} />
+            ));
+
+            // The "Button" class compiles down to a "Themed" class because it's heavily styled.
+            wrapper.find("Themed").first().simulate("click");
+            expect(onPasswordReset).to.have.been.calledOnce;
+        });
+    });
+
+    describe("Login Github button", function () {
+
+        it("Renders properly,", function () {
+            const onLoginWithGithub = sinon.spy();
+            const wrapper = shallow((
+                <LoginGithub
+                    onLoginWithGithub={onLoginWithGithub} />
+            ));
+
+            // The "Button" class compiles down to a "Themed" class because it's heavily styled.
+            expect(wrapper.find("Themed")).to.have.length(1);
+        });
+
+        it("Tests the clalback is thrown on click.", function () {
+            const onLoginWithGithub = sinon.spy();
+            const wrapper = shallow((
+                <LoginGithub
+                    onLoginWithGithub={onLoginWithGithub} />
+            ));
+
+            // The "Button" class compiles down to a "Themed" class because it's heavily styled.
+            wrapper.find("Themed").simulate("click");
+            expect(onLoginWithGithub).to.have.been.calledOnce;
+        });
     });
 });

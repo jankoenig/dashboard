@@ -20,7 +20,7 @@ export interface AuthFormState {
     isConfirmPasswordVisible?: boolean;
 }
 
-export default class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
+export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
 
     constructor(props: AuthFormProps) {
         super(props);
@@ -63,17 +63,22 @@ export default class AuthForm extends React.Component<AuthFormProps, AuthFormSta
     }
 }
 
+export default AuthForm;
+
 interface PasswordResetProps {
     onPasswordReset: () => void;
 }
 
-class PasswordReset extends React.Component<PasswordResetProps, any> {
+export class PasswordReset extends React.Component<PasswordResetProps, any> {
     render() {
+        console.info("PASSWORD RESET RENDER");
         return (
-            <Button
-                label="Reset Password"
-                onClick={this.props.onPasswordReset}
-                style={{ float: "right", height: "16px", fontSize: "12px", color: "#03A9F4", textTransform: "none", lineHeight: "12px" }} />
+            <div>
+                <Button
+                    label="Reset Password"
+                    onClick={this.props.onPasswordReset}
+                    style={{ float: "right", height: "16px", fontSize: "12px", color: "#03A9F4", textTransform: "none", lineHeight: "12px" }} />
+            </div>
         );
     }
 }
@@ -82,7 +87,7 @@ interface LoginGithubProps {
     onLoginWithGithub?: () => void;
 }
 
-class LoginGithub extends React.Component<LoginGithubProps, any> {
+export class LoginGithub extends React.Component<LoginGithubProps, any> {
     render() {
         return (
             this.props.onLoginWithGithub ? (
@@ -98,7 +103,7 @@ class LoginGithub extends React.Component<LoginGithubProps, any> {
     }
 }
 
-interface NormalLoginFormProps {
+export interface NormalLoginFormProps {
     onEmailChange: (email: string) => void;
     onLogin: (email: string, pass: string) => void;
     onSignUpWithEmail: (email: string, pass: string) => void;
@@ -114,7 +119,7 @@ interface NormalLoginFormState {
     isConfirmPassword?: boolean;
 }
 
-class NormalLoginForm extends React.Component<NormalLoginFormProps, NormalLoginFormState> {
+export class NormalLoginForm extends React.Component<NormalLoginFormProps, NormalLoginFormState> {
 
     constructor(props: NormalLoginFormProps) {
         super(props);
@@ -226,7 +231,7 @@ class NormalLoginForm extends React.Component<NormalLoginFormProps, NormalLoginF
     }
 }
 
-interface LoginFormsProps {
+export interface LoginFormsProps {
     email: string;
     password: string;
     confirmPassword: string;
@@ -242,7 +247,7 @@ interface LoginFormsProps {
 interface LoginFormsState {
 }
 
-class LoginForms extends React.Component<LoginFormsProps, LoginFormsState> {
+export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState> {
 
     onEmailChange(value: string) {
         if (this.props.onEmailChange) {
