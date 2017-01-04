@@ -71,7 +71,6 @@ interface PasswordResetProps {
 
 export class PasswordReset extends React.Component<PasswordResetProps, any> {
     render() {
-        console.info("PASSWORD RESET RENDER");
         return (
             <div>
                 <Button
@@ -98,7 +97,7 @@ export class LoginGithub extends React.Component<LoginGithubProps, any> {
                         icon={(<Icon style={{ marginRight: "13px" }} width={20} height={20} icon={ICON.GITHUB} />)}
                         onClick={this.props.onLoginWithGithub.bind(this)} />
                 </div>
-            ) : undefined
+            ) : ( <div/> )
         );
     }
 }
@@ -115,7 +114,7 @@ interface NormalLoginFormState {
     error?: string;
     email?: string;
     password?: string;
-    confirmPass?: string;
+    confirmPassword?: string;
     isConfirmPassword?: boolean;
 }
 
@@ -136,6 +135,9 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
     onEmailChange(value: string) {
         this.state.email = value;
         this.setState(this.state);
+        if (this.props.onEmailChange) {
+            this.props.onEmailChange(value);
+        }
     }
 
     onPasswordChange(value: string) {
@@ -144,36 +146,42 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
     }
 
     onConfirmPassChange(value: string) {
-        console.info("value = " + value);
-        this.state.confirmPass = value;
+        this.state.confirmPassword = value;
         this.setState(this.state);
     }
 
     onLogin() {
-        console.log(this.state.email);
-        console.log(this.state.password);
-        this.props.onLogin(this.state.email, this.state.password);
+        let email = this.state.email;
+        let pass = this.state.password;
         this.state.password = "";
-        this.state.confirmPass = "";
+        this.state.confirmPassword = "";
+        this.state.error = "";
         this.setState(this.state);
+
+        this.props.onLogin(email, pass);
     }
 
     onSignUpClick() {
-        this.state.confirmPass = "";
+        this.state.confirmPassword = "";
         this.state.isConfirmPassword = true;
         this.setState(this.state);
     }
 
     onSubmitClicked() {
-        if (this.state.password !== this.state.confirmPass) {
-            this.state.error = "Passwords do not match.";
-        } else {
-            this.state.error = "";
-            this.props.onSignUpWithEmail(this.state.email, this.state.password);
-        }
+        let email = this.state.email;
+        let pass = this.state.password;
+        let match = pass === this.state.confirmPassword;
+
         this.state.password = "";
-        this.state.confirmPass = "";
+        this.state.confirmPassword = "";
+
+        this.state.error = (match) ? "" : "Passwords to not match.";
+
         this.setState(this.state);
+
+        if (match) {
+            this.props.onSignUpWithEmail(email, pass);
+        }
     }
 
     onPasswordReset() {
@@ -209,7 +217,7 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
                 <LoginForms
                     email={this.state.email}
                     password={this.state.password}
-                    confirmPassword={this.state.confirmPass}
+                    confirmPassword={this.state.confirmPassword}
                     showConfirmPassword={this.state.isConfirmPassword}
                     error={this.state.error}
                     onEmailChange={this.onEmailChange.bind(this)}
@@ -278,7 +286,6 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
     }
 
     render() {
-        console.log(this.props.confirmPassword);
         return (
             <div>
                 <Input
