@@ -175,7 +175,7 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
         this.state.password = "";
         this.state.confirmPassword = "";
 
-        this.state.error = (match) ? "" : "Passwords to not match.";
+        this.state.error = (match) ? "" : "Passwords do not match.";
 
         this.setState(this.state);
 

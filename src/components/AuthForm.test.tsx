@@ -260,6 +260,14 @@ describe("AuthForm", function () {
                 expect(onLogin).to.have.been.calledOnce;
                 expect(onLogin).to.have.been.calledWith(state.email, state.password);
             });
+
+            it ("Updates state on new props.", function () {
+                wrapper.setProps({
+                    error: "New Error"
+                });
+
+                expect(wrapper.state("error")).to.equal("New Error");
+            });
         });
     });
 });
