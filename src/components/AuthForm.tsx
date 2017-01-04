@@ -5,7 +5,7 @@ import Input from "react-toolbox/lib/input";
 
 import { Icon, ICON } from "./Icon";
 
-import theme = require("../themes/authform.scss");
+const theme = require("../themes/authform.scss");
 
 export interface AuthFormProps {
     error?: string;
