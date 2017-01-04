@@ -34,7 +34,7 @@ namespace auth {
     function authProviderSuccessHandler(result: any, localStorage: LocalStorage = new BrowserStorage()): Promise<User> {
         return new Promise<User>((resolve, reject) => {
             let user: User = undefined;
-            if (result.user !== undefined) {
+            if (result.user) {
                 ReactGA.event({
                     category: "Authorization",
                     action: "Login With Github"
