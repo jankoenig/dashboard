@@ -1,5 +1,5 @@
 import ConversationList from "./conversation-list";
-import SourceSummary from "./source-summary";
+import SourceSummary, { SummaryDatum } from "./source-summary";
 import StackTrace from "./stack-trace";
 
 import DataUtil from "../utils/data";
@@ -9,6 +9,7 @@ class ConversationListSummary implements SourceSummary {
 
     private conversationList: ConversationList;
     private userMap: { [userId: string]: string } = {};
+    private requestMap: { [request: string]: number } = {};
     private crashes: { timestamp: Date, stackTrace: StackTrace }[] = [];
     private conversationEvents: TimeSeriesDatum[] = [];
 
@@ -36,6 +37,23 @@ class ConversationListSummary implements SourceSummary {
         return this.conversationList.length;
     }
 
+    get requests(): SummaryDatum[] {
+        let requests = [];
+        // iterate through the keys of the map
+        for (let key of Object.keys(this.requestMap)) {
+            // and add them to the requests array
+            requests.push({ name: key, total: this.requestMap[key] });
+        }
+
+        // then sort
+        requests.sort(function (a, b) {
+            // in descending order
+            return b.total - a.total;
+        });
+
+        return requests;
+    }
+
     readonly eventLabel: string = "Conversations";
 
     constructor(period: { startTime: Date, endTime: Date }, conversationList: ConversationList) {
@@ -45,13 +63,28 @@ class ConversationListSummary implements SourceSummary {
 
         this.conversationEvents = DataUtil.convertToTimeSeries("hours", this.startTime, this.endTime, this.conversationList);
 
+        // The main data processing loop
         // Loop through the conversations and parse the data
         for (let conversation of this.conversationList) {
 
+            // Add the userId to the user map.  It is a set essentially
             this.userMap[conversation.userId] = conversation.userId;
 
+            // Add the intent
+            if (conversation.requestPayloadType) {
+                if (this.requestMap[conversation.requestPayloadType]) {
+                    // it exists, increase the count
+                    ++this.requestMap[conversation.requestPayloadType];
+                } else {
+                    // it doesn't exist, add it
+                    this.requestMap[conversation.requestPayloadType] = 1;
+                }
+            }
+
+            // if the conversation has a crash
             if (conversation.hasCrash) {
                 for (let stackTrace of conversation.stackTraces) {
+                    // add each to the array of crashes
                     this.crashes.push({
                         timestamp: stackTrace.timestamp,
                         stackTrace: stackTrace

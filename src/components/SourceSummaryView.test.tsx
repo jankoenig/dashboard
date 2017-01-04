@@ -1,9 +1,11 @@
 import * as chai from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
+import { BarChart, LineChart } from "recharts";
 import * as sinonChai from "sinon-chai";
 
 import SourceSummary from "../models/source-summary";
+import DataTile from "./DataTile";
 import SourceSummaryView from "./SourceSummaryView";
 
 // Setup chai with sinon-chai
@@ -29,14 +31,15 @@ describe("SourceSummaryView", function () {
             totalUniqueUsers: 15,
             totalEvents: 0,
             events: [],
-            eventLabel: "Label"
+            eventLabel: "Label",
+            requests: []
         };
         let wrapper = shallow((
             <SourceSummaryView sourceSummary={sourceSummary} />
         ));
         it("renders correctly", function () {
             expect(wrapper.find("p")).to.have.length(1);
-            expect(wrapper.find("ResponsiveContainer")).to.have.length(0);
+            expect(wrapper.find(BarChart)).to.have.length(0);
         });
     });
     describe("with a source summary", function () {
@@ -47,14 +50,23 @@ describe("SourceSummaryView", function () {
             totalUniqueUsers: 15,
             totalEvents: 67,
             events: [],
-            eventLabel: "Label"
+            eventLabel: "Label",
+            requests: []
         };
         let wrapper = shallow((
             <SourceSummaryView sourceSummary={sourceSummary} />
         ));
         it("renders correctly", function () {
             expect(wrapper.find("p")).to.have.length(0);
-            expect(wrapper.find("ResponsiveContainer")).to.have.length(1);
+        });
+        it("renders the data tiles", function() {
+            expect(wrapper.find(DataTile)).to.have.length(3);
+        });
+        it("renders the line chart", function() {
+            expect(wrapper.find(LineChart)).to.have.length(1);
+        });
+        it("renders the bar chart", function() {
+            expect(wrapper.find(BarChart)).to.have.length(1);
         });
     });
 });
