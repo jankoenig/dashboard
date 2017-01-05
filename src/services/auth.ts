@@ -19,10 +19,7 @@ namespace auth {
     function loginWithProvider(provider: remoteservice.auth.AuthProvider, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): Promise<User> {
         let firstPromise: Promise<User>;
         if (browser.isMobileOrTablet()) {
-            firstPromise = auth.signInWithRedirect(provider)
-                .then(function (results: any) {
-                    return auth.getRedirectResult();
-                });
+            firstPromise = auth.signInWithRedirect(provider);
         } else {
             firstPromise = auth.signInWithPopup(provider);
         }
@@ -36,7 +33,7 @@ namespace auth {
     function authProviderSuccessHandler(result: any, localStorage: LocalStorage = new BrowserStorage()): Promise<User> {
         return new Promise<User>((resolve, reject) => {
             let user: User = undefined;
-            if (result.user !== undefined) {
+            if (result.user) {
                 ReactGA.event({
                     category: "Authorization",
                     action: "Login With Github"

@@ -14,25 +14,18 @@ let expect = chai.expect;
 
 describe("LoginPage", () => {
     it("should render an AuthForm", function () {
-        const changeForm = sinon.spy();
         const login = sinon.spy();
         const loginWithGithub = sinon.spy();
         const signUpWithEmail = sinon.spy();
         const resetPassword = sinon.spy();
         const wrapper = shallow((
             <LoginPage
-                email="email"
-                password="password"
-                confirmPassword= "confirmPassword"
-                error="error"
                 login={login}
-                changeForm={changeForm}
                 loginWithGithub={loginWithGithub}
                 signUpWithEmail ={signUpWithEmail}
                 resetPassword = {resetPassword}/>
         ));
         // It contains the AuthForm
         expect(wrapper.find("AuthForm")).to.have.length(1);
-        expect(wrapper.find("AuthForm").first().prop("email")).to.equal("email");
     });
 });

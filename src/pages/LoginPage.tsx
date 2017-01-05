@@ -2,13 +2,13 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-import { authFormChanged } from "../actions/auth-form";
-import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
-import { Cell, Grid } from "../components/Grid";
-import { State } from "../reducers";
 
+import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
+import { Cell, Grid } from "../components/Grid";
+import User from "../models/user";
+import { State } from "../reducers";
 
 /**
  * Configuration objects to pass in to the router when pushing or replacing this page on the router.
@@ -21,83 +21,77 @@ export interface LoginConfig {
 }
 
 interface LoginPageProps {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    error: string;
-    changeForm: (field: string, value: string) => void;
-    login: (email: string, password: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    loginWithGithub: (redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => (dispatch: Redux.Dispatch<any>) => void;
-    resetPassword: (email: string) => (dispatch: Redux.Dispatch<void>) => void;
+    login: (email: string, password: string, redirectStrat?: SuccessCallback) => Promise<User>;
+    loginWithGithub: (redirectStrat?: SuccessCallback) => Promise<User>;
+    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) => Promise<User>;
+    resetPassword: (email: string) => Promise<void>;
     location?: RoutingData.Location<LoginConfig>;
 };
 
+interface LoginPageState {
+    error?: string;
+}
+
 function mapStateToProps(state: State.All) {
     return {
-        email: state.authForm.email,
-        password: state.authForm.password,
-        confirmPassword: state.authForm.confirmPassword,
-        error: state.authForm.error
     };
 }
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        changeForm: function (field: string, value: string) {
-            dispatch(authFormChanged(field, value));
-        },
-        login: function (email: string, password: string, redirectStrat: SuccessCallback) {
+        login: function (email: string, password: string, redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(login(email, password, redirectStrat));
         },
-        signUpWithEmail: function (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) {
+        signUpWithEmail: function (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(signUpWithEmail(email, password, confirmPassword, redirectStrat));
         },
-        loginWithGithub: function (redirectStrat: SuccessCallback) {
+        loginWithGithub: function (redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(loginWithGithub(redirectStrat));
         },
-        resetPassword: function (email: string) {
+        resetPassword: function (email: string): Promise<void> {
             return dispatch(resetPassword(email));
         }
     };
 }
 
-export class LoginPage extends React.Component<LoginPageProps, any> {
+export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 
-    handleFormChanged(event: React.FormEvent) {
-        // Need to cast in order to get to id and value
-        // See http://stackoverflow.com/a/39214607/1349766
-        let target = event.target as HTMLSelectElement;
-        this.props.changeForm(target.id, target.value);
+    constructor(props: LoginPageProps) {
+        super(props);
+        this.state = {};
     }
 
-    handleResetPassword(event: React.FormEvent) {
-        event.preventDefault();
-        this.props.resetPassword(this.props.email);
+    handleResetPassword(email: string) {
+        this.props.resetPassword(email);
         // Show some feedback in the link
     }
 
-    handleFormSubmit(event: React.FormEvent) {
-        event.preventDefault();
-        this.props.login(this.props.email, this.props.password, this.getRedirectStrategy());
+    handleFormSubmit(email: string, pass: string) {
+        console.info("Logging in with " + email + " " + pass);
+        this.props.login(email, pass)
+            .catch((err: Error) => {
+                console.info("ERROR " + err.message);
+                this.state.error = err.message;
+                this.setState(this.state);
+            });
     }
 
-    handleFormLoginWithGithub(event: React.FormEvent) {
-        event.preventDefault();
-        this.props.loginWithGithub(this.getRedirectStrategy());
+    handleFormLoginWithGithub() {
+        this.props.loginWithGithub()
+            .catch((err: Error) => {
+                console.info("ERROR " + err.message);
+                this.state.error = err.message;
+                this.setState(this.state);
+            });
     }
 
-    handleFormSignUpWithEmail(event: React.FormEvent) {
-        event.preventDefault();
-        this.props.signUpWithEmail(this.props.email, this.props.password, this.props.confirmPassword, this.getRedirectStrategy());
-    }
-
-    getRedirectStrategy(): SuccessCallback {
-        if (!this.props.location || !this.props.location.state || !this.props.location.state.nextPathName) {
-            return undefined;
-        } else {
-            return new ToPathCallback(this.props.location.state.nextPathName);
-        }
+    handleFormSignUpWithEmail(email: string, pass: string, confirmPass: string) {
+        this.props.signUpWithEmail(email, pass, confirmPass)
+            .catch((err: Error) => {
+                console.info("ERROR " + err.message);
+                this.state.error = err.message;
+                this.setState(this.state);
+            });
     }
 
     render() {
@@ -107,12 +101,8 @@ export class LoginPage extends React.Component<LoginPageProps, any> {
                 <Cell col={4} tablet={4} phone={4} align={"middle"}>
                     <Card>
                         <AuthForm
-                            email={this.props.email}
-                            password={this.props.password}
-                            confirmPassword={this.props.confirmPassword}
-                            error={this.props.error}
+                            error={this.state.error}
                             onSubmit={this.handleFormSubmit.bind(this)}
-                            onChange={this.handleFormChanged.bind(this)}
                             onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
                             onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}
                             onResetPassword={this.handleResetPassword.bind(this)}
