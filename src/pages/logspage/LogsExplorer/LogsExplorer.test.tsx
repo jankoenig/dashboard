@@ -68,15 +68,18 @@ describe("LogExplorer", function () {
                 onResizeStub.restore();
                 sizeStub.restore();
             });
+
             it("sets the correct request", function () {
-                expect(wrapper.state().request).to.equal(logs[0]);
+                expect(wrapper.state("selectedConvo").request).to.equal(logs[0]);
             });
+
             it("sets the correct response", function () {
-                expect(wrapper.state().response).to.equal(logs[1]);
+                expect(wrapper.state("selectedConvo").response).to.equal(logs[1]);
             });
+
             it("sets the log outputs", function () {
-                expect(wrapper.state().outputs[0]).to.equal(outputs[0]);
-                expect(wrapper.state().outputs[1]).to.equal(outputs[1]);
+                expect(wrapper.state("selectedConvo").outputs[0]).to.equal(outputs[0]);
+                expect(wrapper.state("selectedConvo").outputs[1]).to.equal(outputs[1]);
             });
         });
     });
