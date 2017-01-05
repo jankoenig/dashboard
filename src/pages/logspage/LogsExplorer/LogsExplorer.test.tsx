@@ -19,15 +19,19 @@ chai.use(sinonChai);
 let expect = chai.expect;
 
 describe("LogExplorer", function () {
+
     describe("without properties", function () {
         let wrapper = shallow(<LogsExplorer source={undefined} logMap={undefined} />);
+
         it("renders a FilterBar", function () {
             expect(wrapper.find("FilterBar")).to.have.length(1);
         });
+
         it("does not render an Interaction", function () {
             expect(wrapper.find("Interaction")).to.have.length(0);
         });
     });
+
     describe("with properties", function () {
         let logs: Log[] = dummyLogs(4);
         let outputs: Output[] = dummyOutputs(2);
@@ -41,11 +45,13 @@ describe("LogExplorer", function () {
         it("renders a FilterBar", function () {
             expect(wrapper.find("FilterBar")).to.have.length(1);
         });
+
         describe("without a conversation selected", function () {
             it("does not render an Interaction", function () {
                 expect(wrapper.find("Interaction")).to.have.length(0);
             });
         });
+
         describe("with a conversation selected", function () {
 
             // Set up some stubs
@@ -68,15 +74,27 @@ describe("LogExplorer", function () {
                 onResizeStub.restore();
                 sizeStub.restore();
             });
+
             it("sets the correct request", function () {
-                expect(wrapper.state().request).to.equal(logs[0]);
+                expect(wrapper.state("selectedConvo").request).to.equal(logs[0]);
             });
+
             it("sets the correct response", function () {
-                expect(wrapper.state().response).to.equal(logs[1]);
+                expect(wrapper.state("selectedConvo").response).to.equal(logs[1]);
             });
+
             it("sets the log outputs", function () {
-                expect(wrapper.state().outputs[0]).to.equal(outputs[0]);
-                expect(wrapper.state().outputs[1]).to.equal(outputs[1]);
+                expect(wrapper.state("selectedConvo").outputs[0]).to.equal(outputs[0]);
+                expect(wrapper.state("selectedConvo").outputs[1]).to.equal(outputs[1]);
+            });
+
+            it("clears conversation on new props.", function () {
+                wrapper.setProps({
+                    source: source,
+                    logMap: logMap
+                });
+
+                expect(wrapper.state("selectedConvo")).to.be.undefined;
             });
         });
     });
