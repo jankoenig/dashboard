@@ -147,7 +147,6 @@ describe("Session.ts", function () {
 
         before("Stubbing auth namespace.", function () {
             signUpWithEmail = sinon.stub(auth, "signUpWithEmail").returns(new Promise<any>((resolve, reject) => {
-                console.info("THROWING AN ERROR");
                 reject(new Error("Error failed do to requirements of the test."));
             }));
 
@@ -334,7 +333,6 @@ describe("Session.ts", function () {
         let initialState = {};
         let store = mockStore(initialState);
 
-        console.log(store);
         return loginAction(store.dispatch).then(function (user: User) {
             let numberOfActions = (redirectPath) ? 3 : 2;
             let actions = store.getActions() as any;
