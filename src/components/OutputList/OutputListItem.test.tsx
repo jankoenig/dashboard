@@ -21,7 +21,13 @@ describe("OutputListItem", function () {
         });
 
         const wrapper = shallow(<OutputListItem output={output} />);
-        expect(wrapper.find("li")).to.have.length(1);
 
+        let item = wrapper.find("StackTraceTextItem");
+        expect(item).to.have.length(1);
+
+        expect(item.prop("id")).to.equal(output.id);
+        expect(item.prop("timestamp")).to.equal(output.timestamp);
+        expect(item.prop("message")).to.equal(output.message); // Message is the top and raw is the bottom so it's combined.
+        expect(item.prop("levelColor")).to.equal(output.levelColor);
     });
 });

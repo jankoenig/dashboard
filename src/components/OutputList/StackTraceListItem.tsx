@@ -1,7 +1,8 @@
-import * as moment from "moment";
 import * as React from "react";
 
 import StackTrace from "../../models/stack-trace";
+
+import StackTraceTextItem from "./StackTraceTextItem";
 
 interface StackTraceListItemProps {
     stackTrace: StackTrace;
@@ -17,27 +18,15 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
     }
 
     render() {
-        let stackTraceElements: JSX.Element[] = [];
-
-        for (let stackTraceElement of this.props.stackTrace.elements) {
-            stackTraceElements.push(
-                <p style={{margin: "0px 0px 0px 5px", fontSize: "12px", lineHeight: "14px" }}>{stackTraceElement.raw}</p>
-            );
-        }
+        let fullTrace = this.props.stackTrace.message + this.props.stackTrace.raw;
 
         return (
-            <li key={this.props.stackTrace.id} style={this.style()}>
-                <span style={{color: "rgb(102, 217, 239)", paddingRight: "10px"}}>
-                    {moment(this.props.stackTrace.timestamp).format("hh:mm:ss.SSSSS")}
-                </span>
-                <span style={{ color: "red" }}>
-                    CRASH
-                </span>
-                <span style={{paddingLeft: "10px", color: "#EEEEEE"}}>
-                    {this.props.stackTrace.message}
-                </span>
-                {stackTraceElements}
-            </li>
+            <StackTraceTextItem
+                id={this.props.stackTrace.id}
+                timestamp={this.props.stackTrace.timestamp}
+                level={"CRASH"}
+                levelColor={"red"}
+                message={fullTrace} />
         );
     }
 }
