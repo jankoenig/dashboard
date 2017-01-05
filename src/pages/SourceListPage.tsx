@@ -36,9 +36,9 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
             <div className="source_list_page_left" style={{ position: "relative", height: "100%" }}>
                 <SourceList
                     sources={this.props.sources} />
-                    <Link to="/skills/new" style={{ position: "absolute", bottom: "5%", right: "5%" }} >
-                        <Button icon="add" accent mini floating />
-                    </Link>
+                <Link to="/skills/new" style={{ position: "absolute", bottom: "5%", right: "5%" }} >
+                    <Button icon="add" accent mini floating />
+                </Link>
             </div>
         );
 
