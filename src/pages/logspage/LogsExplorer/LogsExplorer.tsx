@@ -8,9 +8,7 @@ import Conversation from "../../../models/conversation";
 import ConversationList from "../../../models/conversation-list";
 import Log from "../../../models/log";
 import LogQuery from "../../../models/log-query";
-import Output from "../../../models/output";
 import Source from "../../../models/source";
-import StackTrace from "../../../models/stack-trace";
 import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
 import { FilterableConversationList } from "../FilterableConversationList";
@@ -26,12 +24,9 @@ interface LogExplorerProps {
 }
 
 interface LogExplorerState {
-    request: Log | undefined;
-    response: Log | undefined;
-    outputs: Output[];
-    stackTraces: StackTrace[];
-    filter?: FilterType;
     filterBarHidden: boolean;
+    selectedConvo?: Conversation;
+    filter?: FilterType;
 }
 
 export default class LogExplorer extends React.Component<LogExplorerProps, LogExplorerState> {
@@ -39,29 +34,17 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     constructor(props: any) {
         super(props);
         this.state = {
-            request: undefined,
-            response: undefined,
-            outputs: [],
-            stackTraces: [],
             filterBarHidden: false
         };
     }
 
     componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
-        this.state = {...this.state, ...{
-            request: undefined,
-            response: undefined,
-            outputs: [],
-            stackTraces: []
-        }};
+        this.state.selectedConvo = undefined;
         this.setState(this.state);
     }
 
     onConversationClicked(conversation: Conversation) {
-        this.state.request = conversation.request;
-        this.state.response = conversation.response;
-        this.state.outputs = conversation.outputs;
-        this.state.stackTraces = conversation.stackTraces;
+        this.state.selectedConvo = conversation;
         this.setState(this.state);
     }
 
@@ -106,13 +89,13 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                 onShowConversation={this.onConversationClicked.bind(this)} />
         );
 
-        let rightSide = this.state.request ?
+        let rightSide = this.state.selectedConvo ?
             (
                 <Interaction
-                    request={this.state.request}
-                    response={this.state.response}
-                    outputs={this.state.outputs}
-                    stackTraces={this.state.stackTraces} />
+                    request={this.state.selectedConvo.request}
+                    response={this.state.selectedConvo.response}
+                    outputs={this.state.selectedConvo.outputs}
+                    stackTraces={this.state.selectedConvo.stackTraces} />
             ) : (
                 <h6> Select a log to view </h6>
             );
