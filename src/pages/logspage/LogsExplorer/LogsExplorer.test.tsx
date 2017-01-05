@@ -90,8 +90,8 @@ describe("LogExplorer", function () {
 
             it("clears conversation on new props.", function () {
                 wrapper.setProps({
-                    source: { source },
-                    logMap: { logMap }
+                    source: source,
+                    logMap: logMap
                 });
 
                 expect(wrapper.state("selectedConvo")).to.be.undefined;
