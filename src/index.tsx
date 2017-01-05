@@ -5,7 +5,9 @@ import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
 import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
-import { syncHistoryWithStore } from "react-router-redux";
+import { replace, syncHistoryWithStore } from "react-router-redux";
+
+import { LOGOUT_USER } from "./constants";
 
 import { setUser } from "./actions/session";
 import Dashboard from "./frames/Dashboard";
@@ -57,9 +59,19 @@ Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     let firebaseInitializeTime = +new Date() - +firebaseInitializeTimer;
     console.log("Firebase took " + firebaseInitializeTime + "ms to initialize");
+    const lastUser = store.getState().session.user;
     // If there is a user, set it
     if (user) {
-        store.dispatch(setUser(new FirebaseUser(user)));
+        if (!lastUser || lastUser.email !== user.email) {
+            store.dispatch(setUser(new FirebaseUser(user)));
+            store.dispatch(replace("/#welcome"));
+        }
+    } else {
+        if (lastUser) {
+            store.dispatch({ type: LOGOUT_USER });
+            store.dispatch(setUser(undefined));
+            store.dispatch(replace("/login"));
+        }
     }
     // We need to wait for the user to be available before we can render the app
     render();
@@ -90,6 +102,7 @@ let setSource = function (nextState: RouterState, replace: RedirectFunction) {
     IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources)
         .catch(function (a?: Error) {
             console.info("ERROR " + a);
+            console.error(a);
             // TODO: Put in a 404.
         });
 };

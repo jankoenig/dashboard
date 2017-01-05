@@ -1,4 +1,5 @@
 import * as chai from "chai";
+import { replace } from "react-router-redux";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as sinon from "sinon";
@@ -19,6 +20,25 @@ let user = new User({
     photoUrl: undefined
 });
 
+/**
+ * In the olden days, session.ts allowed for an override of the success callback to allow movement around the
+ * app.  That's all taken care of now at a higher level, but this is still a useful callback, so this has been
+ * taken out of session.ts and moved in to the tests to ensure they still work.
+ *
+ * It also helps to not have to rewrite all the tests.  They already verified that the callback is used (by testing dispatch);
+ */
+class ToPathCallback implements session.SuccessCallback {
+    toPath: string;
+
+    public constructor(toPath: string) {
+        this.toPath = toPath;
+    }
+
+    loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
+        dispatch(replace(this.toPath));
+    }
+}
+
 describe("Session.ts", function () {
     describe("Session Actions", function () {
         it("sets the user", function () {
@@ -31,39 +51,6 @@ describe("Session.ts", function () {
             expect(store.getActions().length).to.equal(1);
             let action: any = store.getActions()[0];
             expect(action.type).to.equal(SET_USER);
-        });
-    });
-
-    describe("ToPath callbacks", function () {
-        it("Tests the toPath callback to ensure it goes to the appropriate location.", function () {
-            // The callback should replace the current page to the base page "/TestPath".
-            let callback = new session.ToPathCallback("/TestPath");
-            let initialState = {};
-            let store = mockStore(initialState);
-
-            callback.loginSuccess(store.dispatch, new User({ email: "email" }));
-
-            expect(store.getActions().length).to.equal(1);
-
-            let action: any = store.getActions()[0];
-            expect(action.payload.method).to.equal("replace"); // This is redux-route method which could change as that library changes.
-            expect(action.payload.args[0]).to.equal("/TestPath");
-        });
-    });
-
-    describe("Back callback", function () {
-        it("Tests the Back method actually goes back to the previous age.", function () {
-            // The callback should perform a "back" option.
-            let callback = new session.BackCallback();
-            let initialState = {};
-            let store = mockStore(initialState);
-
-            callback.loginSuccess(store.dispatch, new User({ email: "email" }));
-
-            expect(store.getActions().length).to.equal(1);
-
-            let action: any = store.getActions()[0];
-            expect(action.payload.method).to.equal("goBack"); // This is redux-route method which could change as that library changes.
         });
     });
 
@@ -88,11 +75,11 @@ describe("Session.ts", function () {
         });
 
         it("Tests the login flow works properly on a successful github login with a default login strategy.", function () {
-            return verifySuccessLogin("/#welcome", session.loginWithGithub());
+            return verifySuccessLogin(undefined, session.loginWithGithub());
         });
 
         it("Tests the login flow works properly on successful github login with overridden login strategy.", function () {
-            return verifySuccessLogin("/NextPath", session.loginWithGithub(new session.ToPathCallback("/NextPath")));
+            return verifySuccessLogin("/NextPath", session.loginWithGithub(new ToPathCallback("/NextPath")));
         });
     });
 
@@ -117,11 +104,11 @@ describe("Session.ts", function () {
         });
 
         it("Tests the login flow works properly on a successful username and password login with a default login strategy.", function () {
-            return verifySuccessLogin("/#welcome", session.login("testuser", "secretPassword"));
+            return verifySuccessLogin(undefined, session.login("testuser", "secretPassword"));
         });
 
         it("Tests the login flow works properly on successful username and password login with overridden login strategy.", function () {
-            return verifySuccessLogin("/NextPath", session.login("testuser", "secretPassword", new session.ToPathCallback("/NextPath")));
+            return verifySuccessLogin("/NextPath", session.login("testuser", "secretPassword", new ToPathCallback("/NextPath")));
         });
     });
 
@@ -146,11 +133,11 @@ describe("Session.ts", function () {
         });
 
         it("Tests the signUpWithEmail flow works properly on a successful username and password signUpWithEmail with a default signUpWithEmail strategy.", function () {
-            return verifySuccessLogin("/#welcome", session.signUpWithEmail("testuser", "secretPassword", "secretPassword"));
+            return verifySuccessLogin(undefined, session.signUpWithEmail("testuser", "secretPassword", "secretPassword"));
         });
 
         it("Tests the signUpWithEmail flow works properly on successful username and password signUpWithEmail with overridden signUpWithEmail strategy.", function () {
-            return verifySuccessLogin("/NextPath", session.signUpWithEmail("testuser", "secretPassword", "secretPassword", new session.ToPathCallback("/NextPath")));
+            return verifySuccessLogin("/NextPath", session.signUpWithEmail("testuser", "secretPassword", "secretPassword", new ToPathCallback("/NextPath")));
         });
     });
 
@@ -246,11 +233,6 @@ describe("Session.ts", function () {
 
             store.dispatch(session.logout(function (success: boolean) {
                 expect(success).to.be.true;
-                expect(store.getActions().length).to.equal(2);
-
-                let finalAction: any = store.getActions()[store.getActions().length - 1];
-                expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
-                expect(finalAction.payload.args[0]).to.equal("/login");
                 done();
             }));
         });
@@ -259,13 +241,8 @@ describe("Session.ts", function () {
             let initialState = {};
             let store = mockStore(initialState);
 
-            return store.dispatch(session.logout()).then(function() {
-                expect(store.getActions().length).to.equal(2);
-
-                let finalAction: any = store.getActions()[store.getActions().length - 1];
-                expect(finalAction.payload.method).to.equal("push"); // This is redux-route method which could change as that library changes.
-                expect(finalAction.payload.args[0]).to.equal("/login");
-            });
+            // Error will be thrown in the promise if something went up.
+            return store.dispatch(session.logout());
         });
 
         it("Verifies an unsuccessful logout action with callback.", function (done: MochaDone) {
@@ -359,16 +336,18 @@ describe("Session.ts", function () {
 
         console.log(store);
         return loginAction(store.dispatch).then(function (user: User) {
-            expect(store.getActions().length).to.greaterThan(0);
+            let numberOfActions = (redirectPath) ? 3 : 2;
+            let actions = store.getActions() as any;
+            expect(actions.length).to.equal(numberOfActions);
+            expect(actions[0].type).to.equal("SENDING_REQUEST");
+            expect(actions[0].sending).to.equal(true);
+            expect(actions[1].type).to.equal("SENDING_REQUEST");
+            expect(actions[1].sending).to.equal(false);
 
-            // TODO: Right now these are assuming that the "setUserAction" and the "redirectAction" are the last two
-            // actions being dispatched, but really what's important is that "setUser" is before the "redirect". This can be
-            // generic.
-            let setUserAction: any = store.getActions()[store.getActions().length - 2];
-            let redirectAction: any = store.getActions()[store.getActions().length - 1];
-
-            verifyUserAction(setUserAction);
-            verifyReplaceAction(redirectAction, redirectPath);
+            if (redirectPath) {
+                let redirectAction: any = actions[2];
+                verifyReplaceAction(redirectAction, redirectPath);
+            }
             return user;
         });
     }
@@ -378,7 +357,7 @@ describe("Session.ts", function () {
         let store = mockStore(initialState);
 
         return loginAction(store.dispatch)
-            .catch(function(err: Error) {
+            .catch(function (err: Error) {
                 let actions = store.getActions() as any;
                 expect(actions.length).to.equal(3);
                 expect(actions[0].type).to.equal("SENDING_REQUEST");
@@ -390,13 +369,10 @@ describe("Session.ts", function () {
             });
     }
 
-    function verifyUserAction(action: any) {
-        expect(action.type).to.equal(SET_USER);
-        expect(action.user.email).to.equal("testEmail");
-    }
-
     function verifyReplaceAction(action: any, path: string) {
-        expect(action.payload.method).to.equal("replace"); // This is redux-route method which could change as that library changes.
-        expect(action.payload.args[0]).to.equal(path);
+        if (path) {
+            expect(action.payload.method).to.equal("replace"); // This is redux-route method which could change as that library changes.
+            expect(action.payload.args[0]).to.equal(path);
+        }
     }
 });

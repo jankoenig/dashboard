@@ -81,7 +81,7 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
                 key={source.id}
                 index={index}
                 primaryValue={source.name}
-                to={"/skills/" + source.id}
+                routeTo={"/skills/" + source.id}
                 secondaryValue={moment(source.created).format("MMM Do, YYYY")} />
         );
     }

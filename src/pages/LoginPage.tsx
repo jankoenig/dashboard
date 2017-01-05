@@ -3,7 +3,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 
-import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback, ToPathCallback } from "../actions/session";
+import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -21,9 +21,9 @@ export interface LoginConfig {
 }
 
 interface LoginPageProps {
-    login: (email: string, password: string, redirectStrat: SuccessCallback) => Promise<User>;
-    loginWithGithub: (redirectStrat: SuccessCallback) => Promise<User>;
-    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback) => Promise<User>;
+    login: (email: string, password: string, redirectStrat?: SuccessCallback) => Promise<User>;
+    loginWithGithub: (redirectStrat?: SuccessCallback) => Promise<User>;
+    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) => Promise<User>;
     resetPassword: (email: string) => Promise<void>;
     location?: RoutingData.Location<LoginConfig>;
 };
@@ -39,13 +39,13 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        login: function (email: string, password: string, redirectStrat: SuccessCallback): Promise<User> {
+        login: function (email: string, password: string, redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(login(email, password, redirectStrat));
         },
-        signUpWithEmail: function (email: string, password: string, confirmPassword: string, redirectStrat: SuccessCallback): Promise<User> {
+        signUpWithEmail: function (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(signUpWithEmail(email, password, confirmPassword, redirectStrat));
         },
-        loginWithGithub: function (redirectStrat: SuccessCallback): Promise<User> {
+        loginWithGithub: function (redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(loginWithGithub(redirectStrat));
         },
         resetPassword: function (email: string): Promise<void> {
@@ -68,7 +68,7 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 
     handleFormSubmit(email: string, pass: string) {
         console.info("Logging in with " + email + " " + pass);
-        this.props.login(email, pass, this.getRedirectStrategy())
+        this.props.login(email, pass)
             .catch((err: Error) => {
                 console.info("ERROR " + err.message);
                 this.state.error = err.message;
@@ -77,7 +77,7 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
 
     handleFormLoginWithGithub() {
-        this.props.loginWithGithub(this.getRedirectStrategy())
+        this.props.loginWithGithub()
             .catch((err: Error) => {
                 console.info("ERROR " + err.message);
                 this.state.error = err.message;
@@ -86,20 +86,12 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     }
 
     handleFormSignUpWithEmail(email: string, pass: string, confirmPass: string) {
-        this.props.signUpWithEmail(email, pass, confirmPass, this.getRedirectStrategy())
+        this.props.signUpWithEmail(email, pass, confirmPass)
             .catch((err: Error) => {
                 console.info("ERROR " + err.message);
                 this.state.error = err.message;
                 this.setState(this.state);
             });
-    }
-
-    getRedirectStrategy(): SuccessCallback {
-        if (!this.props.location || !this.props.location.state || !this.props.location.state.nextPathName) {
-            return undefined;
-        } else {
-            return new ToPathCallback(this.props.location.state.nextPathName);
-        }
     }
 
     render() {
