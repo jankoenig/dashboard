@@ -19,16 +19,12 @@ namespace auth {
     function loginWithProvider(provider: remoteservice.auth.AuthProvider, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): Promise<User> {
         let firstPromise: Promise<User>;
         if (browser.isMobileOrTablet()) {
-            console.info("GOING THROUGH TABLET");
             firstPromise = auth.signInWithRedirect(provider);
         } else {
-            console.info("GOING THROUGH DESKPTOP");
             firstPromise = auth.signInWithPopup(provider);
         }
 
         firstPromise.then(function (result: any) {
-            console.info("SUCCESS");
-            console.log(result);
             return authProviderSuccessHandler(result, storage);
         });
         return firstPromise;
@@ -105,9 +101,7 @@ namespace auth {
                     action: "Login With Email"
                 });
                 let modelUser: User = new FirebaseUser(user);
-                console.info("SETTING USER");
                 localStorage.setItem("user", JSON.stringify(modelUser));
-                console.info("USER SET");
                 return modelUser;
             });
     }
