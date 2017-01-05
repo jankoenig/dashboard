@@ -64,7 +64,7 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     if (user) {
         if (!lastUser || lastUser.email !== user.email) {
             store.dispatch(setUser(new FirebaseUser(user)));
-            store.dispatch(replace("/#welcome"));
+            // store.dispatch(replace("/#welcome"));
         }
     } else {
         if (lastUser) {
