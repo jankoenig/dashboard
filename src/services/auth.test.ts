@@ -22,17 +22,14 @@ let user: remoteservice.user.User = {
 
 let successRedirect = new Promise<any>((resolve, reject) => {
     resolve({
-        success: true
+        success: true,
+        user: user
     });
 });
 let successResult = new Promise<any>((resolve, reject) => {
     resolve({
         user: user
     });
-});
-
-let unsuccessfulRedirect = new Promise<any>((resolve, reject) => {
-    reject(new Error("Error thrown from promise as per test requirement."));
 });
 
 let unsuccessfulResult = new Promise<any>((resolve, reject) => {
@@ -72,14 +69,12 @@ describe("Auth ts not mocked", function () {
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
             authService.signInWithRedirect = sinon.stub().returns(successRedirect);
-            authService.getRedirectResult = sinon.stub().returns(successResult);
 
             return auth.loginWithGithub(authService, localStorage)
                 .then(function (user: User) {
                     expect(user).to.not.be.undefined;
-                    expect(localStorage.length).to.equal(1);
                     expect(authService.signInWithRedirect).to.be.calledOnce;
-                    expect(authService.getRedirectResult).to.be.calledOnce;
+                    expect(localStorage.length).to.equal(1);
                 });
         });
 
@@ -100,14 +95,12 @@ describe("Auth ts not mocked", function () {
             utilsStub.restore();
             utilsStub = sinon.stub(browser, "isMobileOrTablet").returns(true);
 
-            authService.getRedirectResult = sinon.stub().returns(unsuccessfulRedirect);
             authService.signInWithRedirect = sinon.stub().returns(unsuccessfulResult);
 
             return auth.loginWithGithub(authService, localStorage).catch(function (err: Error) {
                 expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithRedirect).to.be.calledOnce;
-                expect(authService.getRedirectResult).to.be.calledOnce;
             });
         });
 
