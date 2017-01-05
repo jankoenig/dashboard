@@ -34,6 +34,12 @@ describe("StackTraceListItem", function () {
             <StackTraceListItem stackTrace={stackTrace} />
         ));
 
-        expect(wrapper.find("li")).to.have.length(1);
+        let item = wrapper.find("StackTraceTextItem");
+        expect(item).to.have.length(1);
+
+        expect(item.prop("id")).to.equal(stackTrace.id);
+        expect(item.prop("timestamp")).to.equal(stackTrace.timestamp);
+        expect(item.prop("message")).to.equal(stackTrace.message + stackTrace.raw); // Message is the top and raw is the bottom so it's combined.
+        expect(item.prop("levelColor")).to.equal("red");
     });
 });
