@@ -47,6 +47,16 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         };
     }
 
+    componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
+        this.state = {...this.state, ...{
+            request: undefined,
+            response: undefined,
+            outputs: [],
+            stackTraces: []
+        }};
+        this.setState(this.state);
+    }
+
     onConversationClicked(conversation: Conversation) {
         this.state.request = conversation.request;
         this.state.response = conversation.response;
