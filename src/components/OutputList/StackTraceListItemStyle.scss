@@ -3,11 +3,25 @@
     color: white;
     padding-left: 0px;
 
-    &.hidden {
-        display: none;
-    }
+    transition: opacity 1s ease-out;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
 
     li {
-        margin: 5px;
+        margin: 0px 0px 0px 5px;
+
+        p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 14px;
+            font-family: Courier New, Courier, monospace;
+            word-wrap: break-word;
+        }
     }
+}
+
+.display {
+    opacity: 1;
+    height: auto;
 }

@@ -41,6 +41,7 @@ export default class ListItemMessage extends React.Component<ListItemMessageProp
                 <span style={{ paddingLeft: "10px", color: messageColor }}>
                     {message}
                 </span>
+                {this.props.children}
             </div>
         );
     }

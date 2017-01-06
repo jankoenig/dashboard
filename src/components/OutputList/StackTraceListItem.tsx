@@ -1,4 +1,6 @@
+import * as classNames from "classnames";
 import * as React from "react";
+import FontIcon from "react-toolbox/lib/font_icon";
 
 import StackTrace from "../../models/stack-trace";
 import ListItemMessage from "./ListItemMessage";
@@ -9,7 +11,18 @@ interface StackTraceListItemProps {
     stackTrace: StackTrace;
 }
 
-export default class StackTraceListItem extends React.Component<StackTraceListItemProps, any> {
+interface StackTraceListItemState {
+    displayElements: boolean;
+}
+
+class StackTraceListItem extends React.Component<StackTraceListItemProps, StackTraceListItemState> {
+
+    constructor(props: StackTraceListItemProps) {
+        super(props);
+        this.state = {
+            displayElements: false
+        };
+    }
 
     style() {
         return {
@@ -18,8 +31,15 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
         };
     }
 
-    onClick() {
-        console.log("click");
+    elementsClassName() {
+        return classNames(style.elementsList, {
+            [style.display]: this.state.displayElements
+        });
+    }
+
+    onClick(event: React.MouseEvent) {
+        this.state.displayElements = !this.state.displayElements;
+        this.setState(this.state);
     }
 
     render() {
@@ -33,15 +53,19 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
             <li key={this.props.stackTrace.id}>
                 <ListItemMessage
                     style={{ cursor: "pointer" }}
-                    onClick={this.onClick}
+                    onClick={this.onClick.bind(this)}
                     timestamp={this.props.stackTrace.timestamp}
                     level={"CRASH"}
                     levelColor={"red"}
-                    message={this.props.stackTrace.message} />
-                <ul className={style.elementsList}>
+                    message={this.props.stackTrace.message} >
+                    <FontIcon value={this.state.displayElements ? "expand_less" : "expand_more"} />
+                </ListItemMessage>
+                <ul className={this.elementsClassName()}>
                     {elements}
                 </ul>
             </li>
         );
     }
 }
+
+export default StackTraceListItem;
