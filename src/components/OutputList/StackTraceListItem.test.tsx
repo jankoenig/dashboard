@@ -1,6 +1,7 @@
 import * as chai from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
+import FontIcon from "react-toolbox/lib/font_icon";
 import * as sinonChai from "sinon-chai";
 
 import StackTrace from "../../models/stack-trace";
@@ -28,22 +29,49 @@ describe("StackTraceListItem", function () {
         message: "message",
         elements: [stackTraceElement]
     });
+    let wrapper = shallow((
+        <StackTraceListItem stackTrace={stackTrace} />
+    ));
+    let message = wrapper.find(ListItemMessage);
+    let fontIcon = message.find(FontIcon);
+    let ul = wrapper.find("ul");
 
-    it("renders correctly", function () {
+    describe("when rendered", function () {
+        it("renders the main list item", function() {
+            expect(wrapper.first().type()).to.equal("li");
+        });
+        it("renders a ListItemMessage", function() {
+            expect(message).to.have.length(1);
+        });
+        it("sets the timestamp on the message", function () {
+            expect(message.prop("timestamp")).to.equal(stackTrace.timestamp);
+        });
+        it("sets the message on the message", function() {
+            expect(message.prop("message")).to.equal(stackTrace.message);
+        });
+        it("sets the color on the messsage", function() {
+            expect(message.prop("levelColor")).to.equal("red");
+        });
+        it("renders a FontIcon", function() {
+            expect(fontIcon).to.have.length(1);
+            expect(fontIcon.prop("value")).to.equal("expand_more");
+        });
+        it("renders a unordered list", function() {
+            expect(ul).to.have.length(1);
+        });
+        it("renders a list item in the unordered list", function() {
+            expect(ul.find("li")).to.have.length(1);
+        });
+    });
+    describe("onClick", function () {
+        message.simulate("click");
+        wrapper.update();
 
-        let wrapper = shallow((
-            <StackTraceListItem stackTrace={stackTrace} />
-        ));
-
-        // We will have two li, one for the StackTrace and one for
-        // the StackTraceElement
-        expect(wrapper.find("li")).to.have.length(2);
-
-        let message = wrapper.find(ListItemMessage);
-        expect(message).to.have.length(1);
-
-        expect(message.prop("timestamp")).to.equal(stackTrace.timestamp);
-        expect(message.prop("message")).to.equal(stackTrace.message);
-        expect(message.prop("levelColor")).to.equal("red");
+        it("updates the state", function() {
+            expect(wrapper.state("displayElements")).to.be.true;
+        });
+        it("updates the FontIcon", function() {
+            expect(wrapper.find(FontIcon).prop("value")).to.equal("expand_less");
+        });
     });
 });
