@@ -30,6 +30,7 @@ export default class OutputList extends React.Component<OutputListProps, any> {
 
     render() {
 
+        // First combine all the outputs and stacktraces
         let combined: (StackTrace | Output)[] = [];
         combined = combined.concat(this.props.outputs);
         combined = combined.concat(this.props.stackTraces);
