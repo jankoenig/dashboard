@@ -5,6 +5,7 @@ import * as sinonChai from "sinon-chai";
 
 import StackTrace from "../../models/stack-trace";
 import StackTraceElement from "../../models/stack-trace-element";
+import ListItemMessage from "./ListItemMessage";
 import StackTraceListItem from "./StackTraceListItem";
 
 // Setup chai with sinon-chai
@@ -34,12 +35,15 @@ describe("StackTraceListItem", function () {
             <StackTraceListItem stackTrace={stackTrace} />
         ));
 
-        let item = wrapper.find("StackTraceTextItem");
-        expect(item).to.have.length(1);
+        // We will have two li, one for the StackTrace and one for
+        // the StackTraceElement
+        expect(wrapper.find("li")).to.have.length(2);
 
-        expect(item.prop("id")).to.equal(stackTrace.id);
-        expect(item.prop("timestamp")).to.equal(stackTrace.timestamp);
-        expect(item.prop("message")).to.equal(stackTrace.message + stackTrace.raw); // Message is the top and raw is the bottom so it's combined.
-        expect(item.prop("levelColor")).to.equal("red");
+        let message = wrapper.find(ListItemMessage);
+        expect(message).to.have.length(1);
+
+        expect(message.prop("timestamp")).to.equal(stackTrace.timestamp);
+        expect(message.prop("message")).to.equal(stackTrace.message);
+        expect(message.prop("levelColor")).to.equal("red");
     });
 });

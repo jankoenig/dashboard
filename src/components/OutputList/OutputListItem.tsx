@@ -9,13 +9,6 @@ interface OutputListItemProps {
 
 export default class OutputListItem extends React.Component<OutputListItemProps, any> {
 
-    style() {
-        return {
-            color: "white",
-            margin: "5px"
-        };
-    }
-
     render() {
         return (
             <li key={this.props.output.id}>

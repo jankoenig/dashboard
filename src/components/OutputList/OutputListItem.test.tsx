@@ -1,10 +1,9 @@
 import * as chai from "chai";
 import { shallow } from "enzyme";
-// tslint:disable:no-unused-variable
-import * as React from "react"; // Needed for enzyme, unused for some reason.
-// tslint:enable:no-unused-variable
+import * as React from "react";
 
 import Output from "../../models/output";
+import ListItemMessage from "./ListItemMessage";
 import OutputListItem from "./OutputListItem";
 
 let expect = chai.expect;
@@ -20,14 +19,18 @@ describe("OutputListItem", function () {
             id: "id"
         });
 
-        const wrapper = shallow(<OutputListItem output={output} />);
+        const wrapper = shallow((
+            <OutputListItem output={output} />
+        ));
 
-        let item = wrapper.find("StackTraceTextItem");
-        expect(item).to.have.length(1);
+        expect(wrapper.find("li")).to.have.length(1);
 
-        expect(item.prop("id")).to.equal(output.id);
-        expect(item.prop("timestamp")).to.equal(output.timestamp);
-        expect(item.prop("message")).to.equal(output.message); // Message is the top and raw is the bottom so it's combined.
-        expect(item.prop("levelColor")).to.equal(output.levelColor);
+        let message = wrapper.find(ListItemMessage);
+        expect(message).to.have.length(1);
+
+        expect(message.prop("timestamp")).to.equal(output.timestamp);
+        expect(message.prop("message")).to.equal(output.message); // Message is the top and raw is the bottom so it's combined.
+        expect(message.prop("levelColor")).to.equal(output.levelColor);
+
     });
 });

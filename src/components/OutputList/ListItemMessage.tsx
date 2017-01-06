@@ -15,6 +15,14 @@ export const DEFAULT_TIME_FORMAT = "hh:mm:ss.SSSSS";
 
 export default class ListItemMessage extends React.Component<ListItemMessageProps, any> {
 
+    static defaultProps: ListItemMessageProps = {
+            timestamp: undefined,
+            level: "",
+            message: "",
+            levelColor: "white",
+            messageColor: "#EEEEEE"
+    };
+
     style(): React.CSSProperties {
         return {
             color: "white",

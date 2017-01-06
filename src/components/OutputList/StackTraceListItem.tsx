@@ -24,13 +24,6 @@ class StackTraceListItem extends React.Component<StackTraceListItemProps, StackT
         };
     }
 
-    style() {
-        return {
-            color: "white",
-            margin: "5px"
-        };
-    }
-
     elementsClassName() {
         return classNames(style.elementsList, {
             [style.display]: this.state.displayElements
