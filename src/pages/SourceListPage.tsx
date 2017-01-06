@@ -13,7 +13,7 @@ import Source from "../models/source";
 
 import { State } from "../reducers";
 
-import HomePage from "./HomePage";
+import WelcomePage from "./WelcomePage";
 
 export interface SourceListPageProps {
     sources: Source[];
@@ -44,7 +44,7 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
 
         let rightSide = (
             <div className="source_list_page_right">
-                <HomePage />
+                <WelcomePage />
             </div>
         );
 
