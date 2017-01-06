@@ -100,7 +100,7 @@
     "react-toolbox": "1.3.3",
     "recharts": "^0.20.1",
     "redux": "^3.6.0",
-    "redux-persist": "^4.0.0-alpha6",
+    "redux-persist": "^4.0.1",
     "redux-thunk": "^2.1.0",
     "uuid": "^2.0.3"
   }

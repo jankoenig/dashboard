@@ -1,16 +1,18 @@
 import { routerMiddleware } from "react-router-redux";
-import { applyMiddleware, createStore } from "redux";
+import { applyMiddleware, compose, createStore } from "redux";
+
 import thunk from "redux-thunk";
 
 import { State } from "../reducers";
 
-export default function configureStore(history: HistoryModule.History & HistoryModule.HistoryQueries, rootReducer: Redux.Reducer<State.All>): Redux.Store<State.All> {
-
-    // Create the history middleware which is needed for routing
+export default function configureStore(history: HistoryModule.History & HistoryModule.HistoryQueries, rootReducer: Redux.Reducer<State.All>, ...enhancers: Redux.StoreEnhancer<State.All>[]): Redux.Store<State.All> {
     const historyMiddleware = routerMiddleware(history);
-    // We now create the store, connecting it with thunk middleware and the history middleware we just built
-    const createStoreWithMiddleware = applyMiddleware(thunk, historyMiddleware)(createStore);
-    // Create and return the store
-    return createStoreWithMiddleware(rootReducer);
-
+    const historyEnhancers = applyMiddleware(thunk, historyMiddleware);
+    const storeEnhancers = (enhancers) ?
+        compose(
+            historyEnhancers,
+            ...enhancers
+        ) :
+        historyEnhancers;
+    return createStore(rootReducer, storeEnhancers) as Redux.Store<State.All>;
 }

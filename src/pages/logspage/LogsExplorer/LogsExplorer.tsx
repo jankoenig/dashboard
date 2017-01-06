@@ -78,8 +78,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
         if (this.props.source && this.props.logMap) {
             let logMap = this.props.logMap[this.props.source.id];
-            query = logMap.query;
-            logs = logMap.logs;
+            if (logMap) {
+                query = logMap.query;
+                logs = logMap.logs;
+            }
         }
 
         let leftSide = (

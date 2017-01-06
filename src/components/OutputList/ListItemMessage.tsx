@@ -8,7 +8,7 @@ interface ListItemMessageProps {
     levelColor?: string;
     messageColor?: string;
     style?: React.CSSProperties;
-    // onClick?: (event: React.MouseEvent) => void;
+    onClick?: (event: React.MouseEvent) => void;
 }
 
 export const DEFAULT_TIME_FORMAT = "hh:mm:ss.SSSSS";
@@ -31,7 +31,7 @@ export default class ListItemMessage extends React.Component<ListItemMessageProp
         let formattedTime = moment(timestamp).format(DEFAULT_TIME_FORMAT);
 
         return (
-            <div style={this.style()} >
+            <div style={this.style()} onClick={this.props.onClick} >
                 <span style={{ color: "rgb(102, 217, 239)", paddingRight: "10px" }}>
                     {formattedTime}
                 </span>

@@ -6,6 +6,7 @@ import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
 import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
 import { replace, syncHistoryWithStore } from "react-router-redux";
+import { autoRehydrate, persistStore } from "redux-persist";
 
 import { LOGOUT_USER } from "./constants";
 
@@ -26,6 +27,8 @@ import rootReducer from "./reducers";
 import IndexUtils from "./index-utils";
 import configureStore from "./store";
 
+import { State } from "./reducers";
+
 console.log("v" + VERSION + "-" + BUILD_NUMBER);
 
 // Initialize Google Analytics
@@ -38,8 +41,11 @@ ReactGA.initialize(GOOGLE_ANALYTICS);
 const browserHistory = useRouterHistory(createHistory)({
     basename: BASENAME
 });
+
 // Configure the store
-const store = configureStore(browserHistory, rootReducer);
+const store = configureStore(browserHistory, rootReducer, autoRehydrate() as Redux.StoreEnhancer<State.All>);
+persistStore(store, { whitelist: ["session"] });
+
 // And our history
 const history = syncHistoryWithStore(browserHistory, store);
 
@@ -64,7 +70,9 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     if (user) {
         if (!lastUser || lastUser.email !== user.email) {
             store.dispatch(setUser(new FirebaseUser(user)));
-            // store.dispatch(replace("/#welcome"));
+            if (!lastUser) {
+                store.dispatch(replace("/#welcome"));
+            }
         }
     } else {
         if (lastUser) {
@@ -107,7 +115,7 @@ let setSource = function (nextState: RouterState, replace: RedirectFunction) {
         });
 };
 
-let removeSource = function() {
+let removeSource = function () {
     IndexUtils.removeSelectedSource(store.dispatch);
 };
 

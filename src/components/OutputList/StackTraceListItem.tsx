@@ -3,7 +3,7 @@ import * as React from "react";
 import StackTrace from "../../models/stack-trace";
 import ListItemMessage from "./ListItemMessage";
 
-const style = require("./StackTraceListItem.scss");
+const style = require("./StackTraceListItemStyle.scss");
 
 interface StackTraceListItemProps {
     stackTrace: StackTrace;
@@ -18,6 +18,10 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
         };
     }
 
+    onClick() {
+        console.log("click");
+    }
+
     render() {
         let elements: JSX.Element[] = [];
 
@@ -28,7 +32,8 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
         return (
             <li key={this.props.stackTrace.id}>
                 <ListItemMessage
-                    style={{cursor: "pointer"}}
+                    style={{ cursor: "pointer" }}
+                    onClick={this.onClick}
                     timestamp={this.props.stackTrace.timestamp}
                     level={"CRASH"}
                     levelColor={"red"}
