@@ -4,29 +4,24 @@ import { shallow } from "enzyme";
 import * as moment from "moment";
 import * as React from "react";
 
-import { DEFAULT_TIME_FORMAT, StackTraceTextItem } from "./StackTraceTextItem";
+import ListItemMessage, { DEFAULT_TIME_FORMAT } from "./ListItemMessage";
 
 chai.use(chaiEnzyme());
 let expect = chai.expect;
 
-const DEFAULT_PROPS = StackTraceTextItem.defaultProps;
+const DEFAULT_PROPS = ListItemMessage.defaultProps;
 
-describe("StackTraceTextItem", function () {
+describe("ListItemMessage", function () {
     it("renders default correctly", function () {
         let date = new Date();
         let dateString = moment(date).format(DEFAULT_TIME_FORMAT);
 
         let wrapper = shallow((
-            <StackTraceTextItem
-                id="id"
+            <ListItemMessage
                 message="Hello"
                 timestamp={date}
                 level="DEBUG"/>
         ));
-
-        let listItem = wrapper.find("li");
-        expect(listItem).to.have.length(1);
-        // expect(listItem).to.have.attr("key", "id"); // This is actually for React. It gets removed. Would like a way to test it.
 
         let spans = wrapper.find("span");
         expect(spans).to.have.length(3);
@@ -48,18 +43,13 @@ describe("StackTraceTextItem", function () {
         let dateString = moment(date).format(DEFAULT_TIME_FORMAT);
 
         let wrapper = shallow((
-            <StackTraceTextItem
-                id="id"
+            <ListItemMessage
                 message="Hello"
                 timestamp={date}
                 levelColor="#FF0000"
                 messageColor="#FFFF00"
                 level="DEBUG"/>
         ));
-
-        let listItem = wrapper.find("li");
-        expect(listItem).to.have.length(1);
-        // expect(listItem).to.have.attr("key", "id"); // This is actually for React. It gets removed. Would like a way to test it.
 
         let spans = wrapper.find("span");
         expect(spans).to.have.length(3);

@@ -1,8 +1,7 @@
 import * as React from "react";
 
 import Output from "../../models/output";
-
-import StackTraceTextItem from "./StackTraceTextItem";
+import ListItemMessage from "./ListItemMessage";
 
 interface OutputListItemProps {
     output: Output;
@@ -10,21 +9,15 @@ interface OutputListItemProps {
 
 export default class OutputListItem extends React.Component<OutputListItemProps, any> {
 
-    style() {
-        return {
-            color: "white",
-            margin: "5px"
-        };
-    }
-
     render() {
         return (
-            <StackTraceTextItem
-                id={this.props.output.id}
-                timestamp={this.props.output.timestamp}
-                level={this.props.output.level}
-                levelColor={this.props.output.levelColor}
-                message={this.props.output.message} />
+            <li key={this.props.output.id}>
+                <ListItemMessage
+                    timestamp={this.props.output.timestamp}
+                    level={this.props.output.level}
+                    levelColor={this.props.output.levelColor}
+                    message={this.props.output.message} />
+            </li>
         );
     }
 }

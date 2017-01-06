@@ -1,26 +1,21 @@
 import * as moment from "moment";
 import * as React from "react";
 
-export interface StackTraceProps {
-    id: string;
+interface ListItemMessageProps {
     timestamp: Date | moment.Moment;
     level: string;
     message: string;
     levelColor?: string;
     messageColor?: string;
+    style?: React.CSSProperties;
+    onClick?: (event: React.MouseEvent) => void;
 }
 
 export const DEFAULT_TIME_FORMAT = "hh:mm:ss.SSSSS";
 
-export class StackTraceTextItem extends React.Component<StackTraceProps, any> {
+export default class ListItemMessage extends React.Component<ListItemMessageProps, any> {
 
-    constructor(props: StackTraceProps) {
-        super(props);
-        this.state = {};
-    }
-
-    static defaultProps: StackTraceProps = {
-            id: "",
+    static defaultProps: ListItemMessageProps = {
             timestamp: undefined,
             level: "",
             message: "",
@@ -28,21 +23,23 @@ export class StackTraceTextItem extends React.Component<StackTraceProps, any> {
             messageColor: "#EEEEEE"
     };
 
-    static style() {
+    style(): React.CSSProperties {
         return {
             color: "white",
-            margin: "5px"
+            margin: "5px",
+            overflow: "hidden",
+            ...this.props.style
         };
     }
 
     render() {
-        const { id, level, message, timestamp, levelColor, messageColor } = this.props;
 
-        let timestampMoment = moment(timestamp);
-        let formattedTime = timestampMoment.format(DEFAULT_TIME_FORMAT);
+        const { level, message, timestamp, levelColor, messageColor } = this.props;
+
+        let formattedTime = moment(timestamp).format(DEFAULT_TIME_FORMAT);
 
         return (
-            <li key={id} style={StackTraceTextItem.style()}>
+            <div style={this.style()} onClick={this.props.onClick} >
                 <span style={{ color: "rgb(102, 217, 239)", paddingRight: "10px" }}>
                     {formattedTime}
                 </span>
@@ -52,9 +49,8 @@ export class StackTraceTextItem extends React.Component<StackTraceProps, any> {
                 <span style={{ paddingLeft: "10px", color: messageColor }}>
                     {message}
                 </span>
-            </li>
+                {this.props.children}
+            </div>
         );
     }
 }
-
-export default StackTraceTextItem;
