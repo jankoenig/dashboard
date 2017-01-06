@@ -1,0 +1,13 @@
+.elementsList {
+    list-style: none;
+    color: white;
+    padding-left: 0px;
+
+    &.hidden {
+        display: none;
+    }
+
+    li {
+        margin: 5px;
+    }
+}

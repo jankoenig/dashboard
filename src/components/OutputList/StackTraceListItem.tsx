@@ -1,8 +1,9 @@
 import * as React from "react";
 
 import StackTrace from "../../models/stack-trace";
+import ListItemMessage from "./ListItemMessage";
 
-import StackTraceTextItem from "./StackTraceTextItem";
+const style = require("./StackTraceListItem.scss");
 
 interface StackTraceListItemProps {
     stackTrace: StackTrace;
@@ -18,15 +19,24 @@ export default class StackTraceListItem extends React.Component<StackTraceListIt
     }
 
     render() {
-        let fullTrace = this.props.stackTrace.message + this.props.stackTrace.raw;
+        let elements: JSX.Element[] = [];
+
+        for (let element of this.props.stackTrace.elements) {
+            elements.push(<li key={element.line + element.file}> <p> {element.raw} </p></li>);
+        }
 
         return (
-            <StackTraceTextItem
-                id={this.props.stackTrace.id}
-                timestamp={this.props.stackTrace.timestamp}
-                level={"CRASH"}
-                levelColor={"red"}
-                message={fullTrace} />
+            <li key={this.props.stackTrace.id}>
+                <ListItemMessage
+                    style={{cursor: "pointer"}}
+                    timestamp={this.props.stackTrace.timestamp}
+                    level={"CRASH"}
+                    levelColor={"red"}
+                    message={this.props.stackTrace.message} />
+                <ul className={style.elementsList}>
+                    {elements}
+                </ul>
+            </li>
         );
     }
 }

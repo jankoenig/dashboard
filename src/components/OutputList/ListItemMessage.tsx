@@ -7,18 +7,20 @@ interface ListItemMessageProps {
     message: string;
     levelColor?: string;
     messageColor?: string;
+    style?: React.CSSProperties;
+    // onClick?: (event: React.MouseEvent) => void;
 }
 
 export const DEFAULT_TIME_FORMAT = "hh:mm:ss.SSSSS";
 
-export class ListItemMessage extends React.Component<ListItemMessageProps, any> {
+export default class ListItemMessage extends React.Component<ListItemMessageProps, any> {
 
-
-    static style(): React.CSSProperties {
+    style(): React.CSSProperties {
         return {
             color: "white",
             margin: "5px",
-            overflow: "hidden"
+            overflow: "hidden",
+            ...this.props.style
         };
     }
 
@@ -29,7 +31,7 @@ export class ListItemMessage extends React.Component<ListItemMessageProps, any> 
         let formattedTime = moment(timestamp).format(DEFAULT_TIME_FORMAT);
 
         return (
-            <div style={ListItemMessage.style()}>
+            <div style={this.style()} >
                 <span style={{ color: "rgb(102, 217, 239)", paddingRight: "10px" }}>
                     {formattedTime}
                 </span>
