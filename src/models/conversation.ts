@@ -28,7 +28,16 @@ export default class Conversation implements ConversationProperties {
     }
 
     get id(): string {
-        return this.request.id;
+
+        let id: string;
+
+        if (this.request) {
+            id = this.request.id;
+        } else if (this.response) {
+            id = this.response.id;
+        }
+
+        return id;
     }
 
     get applicationId(): string {
@@ -61,7 +70,7 @@ export default class Conversation implements ConversationProperties {
 
         let userId: string | undefined = undefined;
 
-        if (typeof this.request.payload === "object") {
+        if (this.request && typeof this.request.payload === "object") {
             if (this.request.payload.session && this.request.payload.session.user) {
                 userId = this.request.payload.session.user.userId;
             } else if (this.request.payload.context && this.request.payload.context.System.user) {
@@ -108,7 +117,7 @@ export default class Conversation implements ConversationProperties {
     get requestPayloadType(): string | undefined {
         let requestType: string;
 
-        if (this.request.payload.request) {
+        if (this.request && this.request.payload.request) {
             requestType = this.request.payload.request.type;
         }
 
@@ -116,7 +125,7 @@ export default class Conversation implements ConversationProperties {
     }
 
     get intent(): string | undefined {
-        if (this.request.payload.request && this.request.payload.request.intent) {
+        if (this.request && this.request.payload.request && this.request.payload.request.intent) {
             return this.request.payload.request.intent.name;
         } else {
             return undefined;
@@ -124,7 +133,16 @@ export default class Conversation implements ConversationProperties {
     }
 
     get timestamp(): Date {
-        return this.request.timestamp;
+
+        let timeStamp: Date;
+
+        if (this.request) {
+            timeStamp = this.request.timestamp;
+        } else if (this.response) {
+            timeStamp = this.response.timestamp;
+        }
+
+        return timeStamp;
     }
 
     get hasError(): boolean {
