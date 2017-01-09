@@ -27,13 +27,22 @@ export default class Conversation implements ConversationProperties {
         this.stackTraces = props.stackTraces ? props.stackTraces.slice() : [];
     }
 
-    get id(): string {
-        return this.request.id;
+    get id(): string | undefined {
+
+        let id: string;
+
+        if (this.request) {
+            id = this.request.id;
+        } else if (this.response) {
+            id = this.response.id;
+        }
+
+        return id;
     }
 
-    get applicationId(): string {
+    get applicationId(): string | undefined {
 
-        let applicationId = "";
+        let applicationId: string;
 
         if (this.request.payload.session && this.request.payload.session.application) {
             // Leaving this in for backwards compatibility
@@ -48,8 +57,8 @@ export default class Conversation implements ConversationProperties {
         return applicationId;
     }
 
-    get sessionId(): string {
-        let sessionId = "";
+    get sessionId(): string | undefined {
+        let sessionId: string;
         if (this.request.payload.session) {
             sessionId = this.request.payload.session.sessionId;
         }
@@ -59,9 +68,9 @@ export default class Conversation implements ConversationProperties {
 
     get userId(): string | undefined {
 
-        let userId: string | undefined = undefined;
+        let userId: string;
 
-        if (typeof this.request.payload === "object") {
+        if (this.request && typeof this.request.payload === "object") {
             if (this.request.payload.session && this.request.payload.session.user) {
                 userId = this.request.payload.session.user.userId;
             } else if (this.request.payload.context && this.request.payload.context.System.user) {
@@ -108,7 +117,7 @@ export default class Conversation implements ConversationProperties {
     get requestPayloadType(): string | undefined {
         let requestType: string;
 
-        if (this.request.payload.request) {
+        if (this.request && this.request.payload.request) {
             requestType = this.request.payload.request.type;
         }
 
@@ -116,15 +125,24 @@ export default class Conversation implements ConversationProperties {
     }
 
     get intent(): string | undefined {
-        if (this.request.payload.request && this.request.payload.request.intent) {
+        if (this.request && this.request.payload.request && this.request.payload.request.intent) {
             return this.request.payload.request.intent.name;
         } else {
             return undefined;
         }
     }
 
-    get timestamp(): Date {
-        return this.request.timestamp;
+    get timestamp(): Date | undefined {
+
+        let timeStamp: Date;
+
+        if (this.request) {
+            timeStamp = this.request.timestamp;
+        } else if (this.response) {
+            timeStamp = this.response.timestamp;
+        }
+
+        return timeStamp;
     }
 
     get hasError(): boolean {
