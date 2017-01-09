@@ -149,7 +149,7 @@ export default class Conversation implements ConversationProperties {
         return this.hasOutputType("ERROR");
     }
 
-    get hasCrash(): boolean {
+    get hasException(): boolean {
         return this.stackTraces.length > 0;
     }
 

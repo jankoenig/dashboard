@@ -25,7 +25,7 @@ describe("SourceSummaryView", function () {
         let sourceSummary: SourceSummary = {
             startTime: new Date(),
             endTime: new Date(),
-            totalCrashes: 5,
+            totalExceptions: 5,
             totalUniqueUsers: 15,
             totalEvents: 0,
             events: [],
@@ -43,7 +43,7 @@ describe("SourceSummaryView", function () {
         let sourceSummary: SourceSummary = {
             startTime: new Date(),
             endTime: new Date(),
-            totalCrashes: 5,
+            totalExceptions: 5,
             totalUniqueUsers: 15,
             totalEvents: 67,
             events: [],
