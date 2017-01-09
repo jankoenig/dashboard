@@ -68,7 +68,7 @@
 	var reducers_1 = __webpack_require__(1061);
 	var index_utils_1 = __webpack_require__(1067);
 	var store_1 = __webpack_require__(1072);
-	console.log("v" + ("0.7.0") + "-" + (undefined));
+	console.log("v" + ("0.7.1") + "-" + (undefined));
 	// Initialize Google Analytics
 	ReactGA.initialize((""));
 	// Creates the Redux reducer with the redux-thunk middleware, which allows us
