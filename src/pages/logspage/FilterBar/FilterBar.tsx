@@ -126,8 +126,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
                         minDate={queryStartDate}
-                        // You can't select the same date as the end date
-                        maxDate={moment(this.state.endDate).subtract(1, "days").toDate()}
+                        maxDate={this.state.endDate}
                         value={this.state.startDate}
                         onChange={startHandleChange}
                         readonly={this.props.query ? false : true} />
@@ -137,8 +136,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
-                        // You can't select the same date as the start date
-                        minDate={moment(this.state.startDate).add(1, "days").toDate()}
+                        minDate={this.state.startDate}
                         maxDate={queryEndDate}
                         value={this.state.endDate}
                         onChange={endHandleChange}
