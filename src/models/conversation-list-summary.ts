@@ -9,7 +9,7 @@ class ConversationListSummary implements SourceSummary {
 
     private conversationList: ConversationList;
     private userMap: { [userId: string]: string } = {};
-    private crashes: { timestamp: Date, stackTrace: StackTrace }[] = [];
+    private exceptions: { timestamp: Date, stackTrace: StackTrace }[] = [];
     private conversationEvents: TimeSeriesDatum[] = [];
 
     readonly startTime: Date;
@@ -24,8 +24,8 @@ class ConversationListSummary implements SourceSummary {
         return this.uniqueUsers.length;
     }
 
-    get totalCrashes() {
-        return this.crashes.length;
+    get totalExceptions() {
+        return this.exceptions.length;
     }
 
     get events(): TimeSeriesDatum[] {
@@ -52,7 +52,7 @@ class ConversationListSummary implements SourceSummary {
 
             if (conversation.hasException) {
                 for (let stackTrace of conversation.stackTraces) {
-                    this.crashes.push({
+                    this.exceptions.push({
                         timestamp: stackTrace.timestamp,
                         stackTrace: stackTrace
                     });
