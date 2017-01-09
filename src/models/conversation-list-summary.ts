@@ -50,7 +50,7 @@ class ConversationListSummary implements SourceSummary {
 
             this.userMap[conversation.userId] = conversation.userId;
 
-            if (conversation.hasCrash) {
+            if (conversation.hasException) {
                 for (let stackTrace of conversation.stackTraces) {
                     this.crashes.push({
                         timestamp: stackTrace.timestamp,
