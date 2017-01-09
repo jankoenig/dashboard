@@ -27,7 +27,7 @@ export default class Conversation implements ConversationProperties {
         this.stackTraces = props.stackTraces ? props.stackTraces.slice() : [];
     }
 
-    get id(): string {
+    get id(): string | undefined {
 
         let id: string;
 
@@ -40,9 +40,9 @@ export default class Conversation implements ConversationProperties {
         return id;
     }
 
-    get applicationId(): string {
+    get applicationId(): string | undefined {
 
-        let applicationId = "";
+        let applicationId: string;
 
         if (this.request.payload.session && this.request.payload.session.application) {
             // Leaving this in for backwards compatibility
@@ -57,8 +57,8 @@ export default class Conversation implements ConversationProperties {
         return applicationId;
     }
 
-    get sessionId(): string {
-        let sessionId = "";
+    get sessionId(): string | undefined {
+        let sessionId: string;
         if (this.request.payload.session) {
             sessionId = this.request.payload.session.sessionId;
         }
@@ -68,7 +68,7 @@ export default class Conversation implements ConversationProperties {
 
     get userId(): string | undefined {
 
-        let userId: string | undefined = undefined;
+        let userId: string;
 
         if (this.request && typeof this.request.payload === "object") {
             if (this.request.payload.session && this.request.payload.session.user) {
@@ -132,7 +132,7 @@ export default class Conversation implements ConversationProperties {
         }
     }
 
-    get timestamp(): Date {
+    get timestamp(): Date | undefined {
 
         let timeStamp: Date;
 
