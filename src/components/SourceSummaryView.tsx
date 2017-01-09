@@ -45,7 +45,7 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                             <Cell col={4}>
                                 <DataTile
                                     value={this.props.sourceSummary.totalCrashes.toString()}
-                                    label={"Crashes"} />
+                                    label={"Exceptions"} />
                             </Cell>
                         </Grid>
                         <Grid>
