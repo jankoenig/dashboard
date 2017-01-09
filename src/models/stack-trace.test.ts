@@ -30,7 +30,7 @@ describe("StackTrace", function () {
             let log = new Log({
                 stack: javaStackTrace,
                 timestamp: new Date(),
-                payload: "Crash Message",
+                payload: "Exception Message",
                 log_type: "ERROR",
                 source: "source",
                 transaction_id: "transaction_id",
@@ -41,7 +41,7 @@ describe("StackTrace", function () {
             let stackTrace = StackTrace.fromLog(log);
 
             it("parses the payload", function () {
-                expect(stackTrace.message).to.equal("Crash Message");
+                expect(stackTrace.message).to.equal("Exception Message");
             });
             it("parses sets the raw string", function () {
                 expect(stackTrace.raw).to.equal(javaStackTrace);

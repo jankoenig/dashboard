@@ -7,11 +7,13 @@
 
 .filterBar {
     max-height: 500px;
-    transition: max-height 0.25s ease-in;
+    transition: max-height 0.25s ease-in, opacity 0.15s ease-in 0.25s;
+    opacity: 1;
 }
 
 .filterBarHidden {
+    opacity: 0;
     max-height: 0;
-    transition: max-height 0.15s ease-out;
+    transition: max-height 0.25s ease-out, opacity 0.15s ease-out 0.25s;
     z-index: -1;
 }

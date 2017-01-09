@@ -14,7 +14,7 @@ interface SourceSummary {
 
     totalUniqueUsers: number;
 
-    totalCrashes: number;
+    totalExceptions: number;
 
     events: TimeSeriesDatum[];
 

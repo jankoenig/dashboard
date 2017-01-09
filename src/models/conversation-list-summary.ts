@@ -8,9 +8,13 @@ import { TimeSeriesDatum } from "./time-series";
 class ConversationListSummary implements SourceSummary {
 
     private conversationList: ConversationList;
+
     private userMap: { [userId: string]: string } = {};
+
     private requestMap: { [request: string]: number } = {};
-    private crashes: { timestamp: Date, stackTrace: StackTrace }[] = [];
+
+    private exceptions: { timestamp: Date, stackTrace: StackTrace }[] = [];
+
     private conversationEvents: TimeSeriesDatum[] = [];
 
     readonly startTime: Date;
@@ -25,8 +29,8 @@ class ConversationListSummary implements SourceSummary {
         return this.uniqueUsers.length;
     }
 
-    get totalCrashes() {
-        return this.crashes.length;
+    get totalExceptions() {
+        return this.exceptions.length;
     }
 
     get events(): TimeSeriesDatum[] {
@@ -82,10 +86,10 @@ class ConversationListSummary implements SourceSummary {
             }
 
             // if the conversation has a crash
-            if (conversation.hasCrash) {
+            if (conversation.hasException) {
                 for (let stackTrace of conversation.stackTraces) {
                     // add each to the array of crashes
-                    this.crashes.push({
+                    this.exceptions.push({
                         timestamp: stackTrace.timestamp,
                         stackTrace: stackTrace
                     });

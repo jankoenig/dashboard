@@ -30,7 +30,7 @@ var plugins = [];
 if (node_env === "production") {
   // For production postfix min to the file names
   projectName += ".min";
-  buildVariables.GOOGLE_ANALYTICS = "UA-40630247-7";
+  buildVariables.GOOGLE_ANALYTICS = JSON.stringify("UA-40630247-7");
   // Add the production plugins
   plugins.push(new webpack.optimize.UglifyJsPlugin());
 }
