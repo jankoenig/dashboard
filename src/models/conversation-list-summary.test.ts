@@ -27,8 +27,8 @@ describe("ConversationListSummary", function () {
         expect(conversationListSummary.events).to.have.length(3);
         expect(conversationListSummary.events[2].data).to.have.length(5);
     });
-    it("returns total crashes", function() {
-        expect(conversationListSummary.totalCrashes).to.equal(0);
+    it("returns total exceptions", function() {
+        expect(conversationListSummary.totalExceptions).to.equal(0);
     });
     it("returns unique users", function() {
         expect(conversationListSummary.totalUniqueUsers).to.equal(1);

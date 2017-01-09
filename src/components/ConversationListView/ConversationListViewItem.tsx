@@ -102,9 +102,9 @@ export default class ConversationListViewItem extends React.Component<Conversati
                                 error
                             </Pill>
                         ) : undefined}
-                        {this.props.conversation.hasCrash ? (
+                        {this.props.conversation.hasException ? (
                             <Pill>
-                                crash
+                                exception
                             </Pill>
                         ) : undefined}
                     </span>

@@ -48,7 +48,7 @@ class StackTraceListItem extends React.Component<StackTraceListItemProps, StackT
                     style={{ cursor: "pointer" }}
                     onClick={this.onClick.bind(this)}
                     timestamp={this.props.stackTrace.timestamp}
-                    level={"CRASH"}
+                    level={"EXCEPTION"}
                     levelColor={"red"}
                     message={this.props.stackTrace.message} >
                     <FontIcon value={this.state.displayElements ? "expand_less" : "expand_more"} />
