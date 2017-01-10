@@ -58,24 +58,24 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     componentWillReceiveProps(nextProps: FilterProps) {
-        // The first time we get the query,
-        // we set it as the initial start and end dates.
+        // currently not letting the caller override state if it changed.
+        // TODO: It would be preferable to allow this or get rid of query.
         if (!this.state.endDate && nextProps.query) {
             this.setDateRange(nextProps.query.startTime, nextProps.query.endTime);
         }
     }
 
     setDateRange(startDate: Date, endDate: Date) {
-        if (startDate && endDate) {
-            // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
-            this.state.startDate = startDate;
+        this.state.startDate = (startDate) ? new Date(startDate) : undefined;
+        if (this.state.startDate) {
             this.state.startDate.setHours(0, 0, 0, 0);
-
-            this.state.endDate = endDate;
-            this.state.endDate.setHours(23, 59, 59, 999);
-
-            this.setState(this.state);
         }
+
+        this.state.endDate = (endDate) ? new Date(endDate) : undefined;
+        if (this.state.endDate) {
+            this.state.endDate.setHours(23, 59, 59, 999);
+        }
+        this.setState(this.state);
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
@@ -90,7 +90,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleLogTypeChange(value: string) {
-        console.info("HANDLE LOG TYPE " + value);
         this.state.selectedType = value;
         this.setState(this.state);
         this.newFilter(new LogLevelFilter(value));
