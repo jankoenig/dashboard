@@ -13,13 +13,14 @@ import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
-import { FilterType } from "../Filters";
+import { CompositeFilter, FilterType } from "../Filters";
 
 const style = require("./style.scss");
 
 interface LogExplorerProps {
     logMap: LogMap;
     source: Source;
+    onFilter?: (filter: CompositeFilter) => void;
     lockFilterBar?: boolean;
 }
 
@@ -55,7 +56,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
     }
 
-    handleFilter(filter: FilterType) {
+    handleFilter(filter: CompositeFilter) {
+        if (this.props.onFilter) {
+            this.props.onFilter(filter);
+        }
         this.state.filter = filter;
         this.setState(this.state);
     }

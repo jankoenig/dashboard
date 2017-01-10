@@ -14,7 +14,7 @@ const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss"
 
 export interface FilterProps {
     query: LogQuery;
-    onFilter: (filter: FilterType) => void;
+    onFilter: (filter: CompositeFilter) => void;
     className?: string;
 }
 

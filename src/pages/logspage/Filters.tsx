@@ -3,6 +3,8 @@ import * as moment from "moment";
 import Conversation from "../../models/conversation";
 import StringUtils from "../../utils/string";
 
+export const TYPE_DATE: string = "Date";
+
 export interface FilterType {
     type: string;
     filter: (item: Conversation) => boolean;
@@ -13,6 +15,15 @@ export class CompositeFilter implements FilterType {
 
     constructor(filters: FilterType[]) {
         this.filters = filters;
+    }
+
+    getFilter(type: string): FilterType | undefined {
+        for (let filterType of this.filters) {
+            if (filterType.type === type) {
+                return filterType;
+            }
+        }
+        return undefined;
     }
 
     get type(): string {
@@ -75,26 +86,34 @@ export class IDFilter implements FilterType {
 }
 
 export class DateFilter implements FilterType {
-    startDate: moment.Moment;
-    endDate: moment.Moment;
+    startMoment: moment.Moment;
+    endMoment: moment.Moment;
 
     constructor(startDate?: Date, endDate?: Date) {
-        this.startDate = (startDate) ? moment(startDate) : undefined;
-        this.endDate = (endDate) ? moment(endDate) : undefined;
+        this.startMoment = (startDate) ? moment(startDate) : undefined;
+        this.endMoment = (endDate) ? moment(endDate) : undefined;
     }
 
     get type(): string {
-        return "Date";
+        return TYPE_DATE;
+    }
+
+    get startDate(): Date {
+        return this.startMoment.toDate();
+    }
+
+    get endDate(): Date {
+        return this.endMoment.toDate();
     }
 
     get filter(): (item: Conversation) => boolean {
-        let startDate = this.startDate;
-        let endDate = this.endDate;
+        let startMoment = this.startMoment;
+        let endMoment = this.endMoment;
         return function (item: Conversation): boolean {
             if (item) {
                 let created = moment(item.timestamp);
-                let afterStart = startDate === undefined || created.isSameOrAfter(startDate);
-                let beforeEnd = endDate === undefined || created.isSameOrBefore(endDate);
+                let afterStart = startMoment === undefined || created.isSameOrAfter(startMoment);
+                let beforeEnd = endMoment === undefined || created.isSameOrBefore(endMoment);
                 return afterStart && beforeEnd;
             }
             return false;

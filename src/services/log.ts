@@ -3,7 +3,7 @@ import "isomorphic-fetch";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
 
-export namespace log {
+namespace LogService {
 
     export function getLogs(query: LogQuery): Promise<Log[]> {
 
@@ -26,4 +26,4 @@ export namespace log {
     }
 }
 
-export default log;
+export default LogService;
