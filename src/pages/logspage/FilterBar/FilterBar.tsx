@@ -17,18 +17,18 @@ export interface FilterProps {
     className?: string;
 }
 
-interface LogType {
-    value: string;
-    label: string;
-}
-
-interface FilterState {
+export interface FilterState {
     startDate?: Date;
     endDate?: Date;
     logTypes?: LogType[];
     selectedType?: string;
     filterMap: any;
     filterbarHidden: boolean;
+}
+
+interface LogType {
+    value: string;
+    label: string;
 }
 
 class FilterBar extends React.Component<FilterProps, FilterState> {
@@ -90,6 +90,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleLogTypeChange(value: string) {
+        console.info("HANDLE LOG TYPE " + value);
         this.state.selectedType = value;
         this.setState(this.state);
         this.newFilter(new LogLevelFilter(value));
@@ -108,6 +109,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
+        console.log(this.state);
         return (
             <Grid className={this.gridClasses()} >
                 <Cell col={2} tablet={2} phone={4}>
