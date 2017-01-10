@@ -105,11 +105,10 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
 
     render(): JSX.Element {
         let fullEndDate = new Date();
-        let queryEndDate = this.props.query ? this.props.query.endTime : fullEndDate;
+        let queryEndDate = this.state.endDate ? this.state.endDate : fullEndDate;
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
-        console.log(this.state);
         return (
             <Grid className={this.gridClasses()} >
                 <Cell col={2} tablet={2} phone={4}>
