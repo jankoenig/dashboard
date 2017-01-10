@@ -103,7 +103,8 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     render(): JSX.Element {
-        let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
+        let fullEndDate = new Date();
+        let queryEndDate = this.props.query ? this.props.query.endTime : fullEndDate;
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
@@ -123,7 +124,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
-                        maxDate={this.state.endDate}
+                        maxDate={queryEndDate}
                         value={this.state.startDate}
                         onChange={startHandleChange}
                         readonly={this.props.query ? false : true} />
@@ -134,7 +135,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
                         minDate={this.state.startDate}
-                        maxDate={queryEndDate}
+                        maxDate={fullEndDate}
                         value={this.state.endDate}
                         onChange={endHandleChange}
                         readonly={this.props.query ? false : true} />
