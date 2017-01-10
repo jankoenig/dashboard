@@ -148,7 +148,7 @@ describe("Filter Bar", function () {
 
                 startDatePicker.simulate("change", date);
 
-                date.setHours(0, 0, 0);
+                date.setHours(0, 0, 0, 0);
 
                 expect(wrapper.state("startDate")).to.equalDate(date);
                 expect(wrapper.state("startDate")).to.equalTime(date);
@@ -171,7 +171,7 @@ describe("Filter Bar", function () {
 
                 endDatePicker.simulate("change", date);
 
-                date.setHours(59, 59, 59);
+                date.setHours(23, 59, 59, 999);
 
                 expect(wrapper.state("endDate")).to.equalDate(date);
                 expect(wrapper.state("endDate")).to.equalTime(date);
