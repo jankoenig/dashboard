@@ -35,19 +35,23 @@ export function fetchLogsRequest() {
     };
 }
 
-export function getLogs(source: Source) {
+export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
     return function (dispatch: Redux.Dispatch<any>) {
 
         dispatch(fetchLogsRequest());
 
-        // Right now we are only looking for the last seven days
-        let startTime: Date = new Date();
-        startTime.setDate(startTime.getDate() - 7);
+        if (!startTime) {
+            // Right now we are only looking for the last seven days
+            startTime = new Date();
+            startTime.setDate(startTime.getDate() - 7);
+        }
 
         let query: LogQuery = new LogQuery({
             source: source,
-            startTime: startTime
+            startTime: startTime,
+            endTime: endTime
         });
+
         return service.getLogs(query).then(function (logs) {
             dispatch(setLogs(query, logs));
         });
