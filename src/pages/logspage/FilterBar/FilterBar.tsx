@@ -1,5 +1,4 @@
 import * as classNames from "classnames";
-import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
@@ -104,7 +103,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     render(): JSX.Element {
-        let queryStartDate = this.props.query ? moment(this.props.query.startTime).subtract(1, "days").toDate() : new Date();
+        // let queryStartDate = this.props.query ? moment(this.props.query.startTime).subtract(1, "days").toDate() : new Date();
         let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
         let startHandleChange = this.handleDateChange.bind(this, "startDate");
         let endHandleChange = this.handleDateChange.bind(this, "endDate");
@@ -125,7 +124,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
-                        minDate={queryStartDate}
                         maxDate={this.state.endDate}
                         value={this.state.startDate}
                         onChange={startHandleChange}

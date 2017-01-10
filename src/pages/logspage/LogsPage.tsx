@@ -45,10 +45,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onFilter(filter: CompositeFilter) {
-        console.info("On filter " + filter.type);
         let dateFilter = filter.getFilter(TYPE_DATE) as DateFilter;
         if (dateFilter) {
-            console.info("Querying new date");
             const query = new LogQuery({
                 source: this.state.source,
                 startTime: dateFilter.startDate,
@@ -57,7 +55,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             const sourceId = this.state.source.id;
 
             LogService.getLogs(query).then((value: Log[]) => {
-                console.info("New logs " + value.length);
                 this.state.logMap = {
                     [sourceId]: {
                         logs: value,
