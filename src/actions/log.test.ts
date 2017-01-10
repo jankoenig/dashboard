@@ -49,28 +49,72 @@ describe("Log Actions", function () {
             });
         });
 
-        it("Sets the appropriate default query", function () {
-            let initialState = {};
-            let store = mockStore(initialState);
-            let source = new Source({
-                name: "Test"
+        describe("Query tests", function () {
+
+            let initialState: any;
+            let store: any;
+            let source: Source;
+
+            before(function () {
+                source = new Source({
+                    name: "Test"
+                });
             });
 
-            let sevenDaysAgo: Date = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            beforeEach(function () {
+                initialState = {};
+                store = mockStore(initialState);
+            });
 
-            return store.dispatch(log.getLogs(source)).then(function () {
+            it("Sets the appropriate source for the query.", function () {
+                return store.dispatch(log.getLogs(source)).then(function() {
+                    let actions: any[] = store.getActions();
 
-                let actions: any[] = store.getActions();
+                    let setLogAction: log.SetLogsAction = actions[1] as log.SetLogsAction;
+                    let query = setLogAction.query;
+                    expect(query).to.not.be.undefined;
+                    expect(query.source).to.equal(source);
+                });
+            });
 
-                let setLogAction: log.SetLogsAction = actions[1] as log.SetLogsAction;
+            it("Sets the appropriate default date query", function () {
+                let sevenDaysAgo: Date = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-                let query = setLogAction.query;
+                return store.dispatch(log.getLogs(source)).then(function () {
 
-                expect(query).to.not.be.undefined;
-                expect(query.source).to.equal(source);
-                expect(query.startTime).to.not.be.undefined;
-                expect(query.startTime).to.equalDate(sevenDaysAgo);
+                    let actions: any[] = store.getActions();
+
+                    let setLogAction: log.SetLogsAction = actions[1] as log.SetLogsAction;
+
+                    let query = setLogAction.query;
+
+                    expect(query).to.not.be.undefined;
+                    expect(query.startTime).to.not.be.undefined;
+                    expect(query.startTime).to.equalDate(sevenDaysAgo);
+                    expect(query.endTime).to.equalDate(new Date());
+                });
+            });
+
+            it("Sets the appropriate overridden date query.", function () {
+                let startDate = new Date();
+                startDate.setDate(startDate.getDay() - 8);
+
+                let endDate = new Date();
+
+                return store.dispatch(log.getLogs(source, startDate, endDate)).then(function () {
+                    let actions: any[] = store.getActions();
+
+                    let setLogAction: log.SetLogsAction = actions[1] as log.SetLogsAction;
+
+                    let query = setLogAction.query;
+
+                    expect(query).to.not.be.undefined;
+                    expect(query.startTime).to.not.be.undefined;
+                    expect(query.startTime).to.equalDate(startDate);
+                    expect(query.endTime).to.not.be.undefined;
+                    expect(query.endTime).to.equalDate(endDate);
+                });
             });
         });
     });
