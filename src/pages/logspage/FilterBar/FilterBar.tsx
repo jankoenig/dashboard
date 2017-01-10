@@ -33,6 +33,9 @@ interface LogType {
 
 class FilterBar extends React.Component<FilterProps, FilterState> {
 
+    handleStartDateChange: Function;
+    handleEndDateChange: Function;
+
     constructor(props: FilterProps) {
         super(props);
 
@@ -51,6 +54,10 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
             startDate: props.query ? props.query.startTime : undefined,
             endDate: props.query ? props.query.endTime : undefined
         };
+
+        this.handleStartDateChange = this.handleDateChange.bind(this, "startDate");
+        this.handleEndDateChange = this.handleDateChange.bind(this, "endDate");
+        this.handleLogTypeChange = this.handleLogTypeChange.bind(this);
     }
 
     gridClasses() {
@@ -105,8 +112,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     render(): JSX.Element {
         let fullEndDate = new Date();
         let queryEndDate = this.state.endDate ? this.state.endDate : fullEndDate;
-        let startHandleChange = this.handleDateChange.bind(this, "startDate");
-        let endHandleChange = this.handleDateChange.bind(this, "endDate");
 
         return (
             <Grid className={this.gridClasses()} >
@@ -115,7 +120,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         theme={DropdownFilterbarTheme}
                         label="Log Level"
                         auto={false}
-                        onChange={this.handleLogTypeChange.bind(this)}
+                        onChange={this.handleLogTypeChange}
                         source={this.state.logTypes}
                         value={this.state.selectedType}
                         />
@@ -126,7 +131,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         label="Start Date"
                         maxDate={queryEndDate}
                         value={this.state.startDate}
-                        onChange={startHandleChange}
+                        onChange={this.handleStartDateChange}
                         readonly={this.props.query ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
@@ -137,7 +142,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         minDate={this.state.startDate}
                         maxDate={fullEndDate}
                         value={this.state.endDate}
-                        onChange={endHandleChange}
+                        onChange={this.handleEndDateChange}
                         readonly={this.props.query ? false : true} />
                 </Cell>
             </Grid>
