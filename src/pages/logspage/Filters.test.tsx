@@ -1,9 +1,12 @@
-import { expect } from "chai";
+import * as chai from "chai";
 
 import Conversation from "../../models/conversation";
 import { Log, LogProperties } from "../../models/log";
 import { dummyOutputs } from "../../utils/test";
 import * as Filters from "./Filters";
+
+chai.use(require("chai-datetime"));
+let expect = chai.expect;
 
 let requestProps: LogProperties = {
     payload: "Request Payload!",
@@ -88,6 +91,14 @@ describe("Filters.tsx", function() {
             });
 
             expect(filter.filter(convo)).to.be.false;
+        });
+
+        it ("Tests it returns the appropriate filter from getFilter by type.", function() {
+            let success = new SuccessFilter();
+            let fail = new FailFilter();
+            let filter = new Filters.CompositeFilter([success, fail]);
+            expect(filter.getFilter(success.type).type).to.equal(success.type);
+            expect(filter.getFilter(fail.type).type).to.equal(fail.type);
         });
     });
 
@@ -236,6 +247,18 @@ describe("Filters.tsx", function() {
             let filter = new Filters.DateFilter(new Date());
             expect(filter.filter).to.not.be.undefined;
             expect(filter.filter).to.not.be.null;
+        });
+
+        it ("Tests the getStartDate property returns the appropriate value.", function() {
+            let startDate = new Date(2016, 12, 14);
+            let filter = new Filters.DateFilter(startDate, new Date(2016, 12, 16));
+            expect(filter.startDate).to.equalDate(startDate);
+        });
+
+        it ("Tests the getEndDate property returns the appropriate value.", function() {
+            let endDate = new Date(2016, 12, 16);
+            let filter = new Filters.DateFilter(new Date(2016, 12, 14), endDate);
+            expect(filter.endDate).to.equalDate(endDate);
         });
 
         it("Tests the filter will return true if between the start and end date.", function() {
