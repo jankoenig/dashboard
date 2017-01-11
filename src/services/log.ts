@@ -7,7 +7,7 @@ namespace LogService {
 
     export function getLogs(query: LogQuery): Promise<Log[]> {
 
-        let baseUrl = "https://logless.bespoken.tools/v1";
+        let baseUrl = LOGLESS_BASE;
         let url = baseUrl + "/query?" + query.queryString;
 
         return fetch(url).then(function (response) {
