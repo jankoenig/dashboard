@@ -1,5 +1,4 @@
 import * as classNames from "classnames";
-import * as moment from "moment";
 import * as React from "react";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
@@ -14,16 +13,11 @@ const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss"
 
 export interface FilterProps {
     query: LogQuery;
-    onFilter: (filter: FilterType) => void;
+    onFilter: (filter: CompositeFilter) => void;
     className?: string;
 }
 
-interface LogType {
-    value: string;
-    label: string;
-}
-
-interface FilterState {
+export interface FilterState {
     startDate?: Date;
     endDate?: Date;
     logTypes?: LogType[];
@@ -32,7 +26,15 @@ interface FilterState {
     filterbarHidden: boolean;
 }
 
+interface LogType {
+    value: string;
+    label: string;
+}
+
 class FilterBar extends React.Component<FilterProps, FilterState> {
+
+    handleStartDateChange: Function;
+    handleEndDateChange: Function;
 
     constructor(props: FilterProps) {
         super(props);
@@ -52,6 +54,10 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
             startDate: props.query ? props.query.startTime : undefined,
             endDate: props.query ? props.query.endTime : undefined
         };
+
+        this.handleStartDateChange = this.handleDateChange.bind(this, "startDate");
+        this.handleEndDateChange = this.handleDateChange.bind(this, "endDate");
+        this.handleLogTypeChange = this.handleLogTypeChange.bind(this);
     }
 
     gridClasses() {
@@ -59,24 +65,24 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     componentWillReceiveProps(nextProps: FilterProps) {
-        // The first time we get the query,
-        // we set it as the initial start and end dates.
+        // currently not letting the caller override state if it changed.
+        // TODO: It would be preferable to allow this or get rid of query.
         if (!this.state.endDate && nextProps.query) {
             this.setDateRange(nextProps.query.startTime, nextProps.query.endTime);
         }
     }
 
     setDateRange(startDate: Date, endDate: Date) {
-        if (startDate && endDate) {
-            // Right now these don't allow time so going to assume the beginning and the end of whatever day it's at.
-            this.state.startDate = startDate;
+        this.state.startDate = (startDate) ? new Date(startDate) : undefined;
+        if (this.state.startDate) {
             this.state.startDate.setHours(0, 0, 0, 0);
-
-            this.state.endDate = endDate;
-            this.state.endDate.setHours(23, 59, 59, 999);
-
-            this.setState(this.state);
         }
+
+        this.state.endDate = (endDate) ? new Date(endDate) : undefined;
+        if (this.state.endDate) {
+            this.state.endDate.setHours(23, 59, 59, 999);
+        }
+        this.setState(this.state);
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
@@ -104,10 +110,8 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     render(): JSX.Element {
-        let queryStartDate = this.props.query ? moment(this.props.query.startTime).subtract(1, "days").toDate() : new Date();
-        let queryEndDate = this.props.query ? this.props.query.endTime : new Date();
-        let startHandleChange = this.handleDateChange.bind(this, "startDate");
-        let endHandleChange = this.handleDateChange.bind(this, "endDate");
+        let fullEndDate = new Date();
+        let queryEndDate = this.state.endDate ? this.state.endDate : fullEndDate;
 
         return (
             <Grid className={this.gridClasses()} >
@@ -116,7 +120,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         theme={DropdownFilterbarTheme}
                         label="Log Level"
                         auto={false}
-                        onChange={this.handleLogTypeChange.bind(this)}
+                        onChange={this.handleLogTypeChange}
                         source={this.state.logTypes}
                         value={this.state.selectedType}
                         />
@@ -125,10 +129,9 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
-                        minDate={queryStartDate}
-                        maxDate={this.state.endDate}
+                        maxDate={queryEndDate}
                         value={this.state.startDate}
-                        onChange={startHandleChange}
+                        onChange={this.handleStartDateChange}
                         readonly={this.props.query ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
@@ -137,9 +140,9 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
                         minDate={this.state.startDate}
-                        maxDate={queryEndDate}
+                        maxDate={fullEndDate}
                         value={this.state.endDate}
-                        onChange={endHandleChange}
+                        onChange={this.handleEndDateChange}
                         readonly={this.props.query ? false : true} />
                 </Cell>
             </Grid>
