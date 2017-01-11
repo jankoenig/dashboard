@@ -30,6 +30,8 @@ class StaticList extends React.Component<ListProps, ListState> {
         this.state = {
             dimens: undefined
         };
+
+        this.updateDimensions = this.updateDimensions.bind(this);
     }
 
     updateDimensions(dimensions: Dimensions) {
@@ -47,7 +49,7 @@ class StaticList extends React.Component<ListProps, ListState> {
 
         return (
             <Measure
-                onMeasure={this.updateDimensions.bind(this)} >
+                onMeasure={this.updateDimensions} >
                 <div style={parentStyle} onScroll={this.props.onScroll}>
                     <ReactList
                         itemRenderer={this.props.itemRenderer}
