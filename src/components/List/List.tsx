@@ -32,11 +32,19 @@ class StaticList extends React.Component<ListProps, ListState> {
         };
 
         this.updateDimensions = this.updateDimensions.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
     }
 
     updateDimensions(dimensions: Dimensions) {
         this.state.dimens = dimensions;
         this.setState(this.state);
+    }
+
+    handleScroll(event: React.UIEvent) {
+        console.info("SCROLL SCROLL");
+        if (this.props.onScroll) {
+            this.props.onScroll(event);
+        }
     }
 
     render(): JSX.Element {
