@@ -9,11 +9,12 @@ import { LogMap } from "../../reducers/log";
 import { CompositeFilter, DateFilter, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
-import LogService from "../../services/log";
+import { retrieveLogs } from "../../actions/log";
 
 export interface LogsPageProps {
     logMap: LogMap;
     source: Source;
+    getLogs: (query: LogQuery) => Promise<Log[]>;
 }
 
 interface LogsPageState {
@@ -25,6 +26,15 @@ function mapStateToProps(state: State.All) {
     return {
         logMap: state.log.logMap,
         source: state.source.currentSource
+    };
+}
+
+function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+    return {
+        getLogs: function(query: LogQuery) {
+            const fetchLogs = retrieveLogs(query);
+            return fetchLogs(dispatch);
+        }
     };
 }
 
@@ -52,17 +62,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 startTime: dateFilter.startDate,
                 endTime: dateFilter.endDate
             });
-            const sourceId = this.state.source.id;
 
-            LogService.getLogs(query).then((value: Log[]) => {
-                this.state.logMap = {
-                    [sourceId]: {
-                        logs: value,
-                        query: query
-                    }
-                };
-                this.setState(this.state);
-            });
+            this.props.getLogs(query);
         }
     }
 
@@ -74,5 +75,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 }
 
 export default connect(
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(LogsPage);

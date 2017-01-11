@@ -22,7 +22,6 @@ export type FetchLogsRequestAction = {
     type: FETCH_LOGS_REQUEST
 };
 
-
 /**
  * A Log Request was initiated.  Used primarily by the UI to show a network process has started.
  *
@@ -35,25 +34,43 @@ export function fetchLogsRequest() {
     };
 }
 
+/**
+ * Deprecated. Use retrieveLogs.
+ *
+ * This function will retrieve logs with the given source. If a startTime is not given,
+ * then it will retrieve logs from the last seven days.
+ *
+ * After logs are retreived, an to SET_LOGS will be thrown.
+ */
 export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
-    return function (dispatch: Redux.Dispatch<any>) {
+    if (!startTime) {
+        // Right now we are only looking for the last seven days
+        startTime = new Date();
+        startTime.setDate(startTime.getDate() - 7);
+    }
 
+    let query: LogQuery = new LogQuery({
+        source: source,
+        startTime: startTime,
+        endTime: endTime
+    });
+
+    return retrieveLogs(query);
+}
+
+/**
+ * A logs query that will first throw a FETCH_LOGS_REQUEST action then set the global
+ * logs state once logs have been retrieved.
+ *
+ * @param logQuery: The query to perform when retrievings logs.
+ */
+export function retrieveLogs(logQuery: LogQuery): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+    return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
         dispatch(fetchLogsRequest());
 
-        if (!startTime) {
-            // Right now we are only looking for the last seven days
-            startTime = new Date();
-            startTime.setDate(startTime.getDate() - 7);
-        }
-
-        let query: LogQuery = new LogQuery({
-            source: source,
-            startTime: startTime,
-            endTime: endTime
-        });
-
-        return service.getLogs(query).then(function (logs) {
-            dispatch(setLogs(query, logs));
+        return service.getLogs(logQuery).then(function (logs: Log[]) {
+            dispatch(setLogs(logQuery, logs));
+            return logs;
         });
     };
 }
