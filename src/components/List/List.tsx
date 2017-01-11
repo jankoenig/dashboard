@@ -41,7 +41,6 @@ class StaticList extends React.Component<ListProps, ListState> {
     }
 
     handleScroll(event: React.UIEvent) {
-        console.info("SCROLL SCROLL");
         if (this.props.onScroll) {
             this.props.onScroll(event);
         }
