@@ -280,4 +280,27 @@ describe("Conversation", function () {
             expect(conversation.requestPayloadType).to.be.undefined;
         });
     });
+    describe("without a request", function() {
+
+        let response = responseLog;
+        let request = undefined;
+        let output = new Output({
+            message: "message",
+            level: "DEBUG",
+            timestamp: new Date(),
+            transaction_id: "transaction_id",
+            id: "id"
+        });
+        let outputs = [output];
+
+        let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+
+
+        it("returns the id from the response", function() {
+            expect(conversation.id).to.equal(response.id);
+        });
+        it("returns the timestamp from the response", function() {
+            expect(conversation.timestamp).to.equal(response.timestamp);
+        });
+    });
 });
