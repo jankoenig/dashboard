@@ -26,7 +26,6 @@ export default class LogQuery implements LogQueryProperties {
         queryString += "source=" + this.source.secretKey;
 
         if (this.startTime) {
-            console.info("START TIME " + this.startTime);
             queryString += "&start_time=" + this.startTime.toISOString();
         }
 
