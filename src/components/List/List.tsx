@@ -51,7 +51,7 @@ class StaticList extends React.Component<ListProps, ListState> {
     }
 
     render(): JSX.Element {
-        let parentStyle = (this.state.dimens) ? { height: this.state.dimens.height } : {};
+        let parentStyle = (this.state.dimens) ? { overflowY: "scroll", height: this.state.dimens.height } : {};
         // This is crazy, but there's a reason for now.
         // "List" is part of the React-Toolbox which provides styling for the list and list items.
         // "ReactList" is an internal element that provides infinite scrolling so that all the elements aren't loaded instantly.
