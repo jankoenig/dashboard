@@ -11,6 +11,8 @@ import LogsExplorer from "./LogsExplorer";
 
 import { retrieveLogs } from "../../actions/log";
 
+const LIMIT: number = 50;
+
 export interface LogsPageProps {
     logMap: LogMap;
     source: Source;
@@ -23,6 +25,8 @@ interface LogsPageState {
 }
 
 function mapStateToProps(state: State.All) {
+    console.info("NEW STATE");
+    console.info(state.log.logMap);
     return {
         logMap: state.log.logMap,
         source: state.source.currentSource
@@ -31,10 +35,10 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        getLogs: function(query: LogQuery) {
+        getLogs: function (query: LogQuery) {
             const fetchLogs = retrieveLogs(query);
             return fetchLogs(dispatch);
-        }
+        },
     };
 }
 
@@ -46,6 +50,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             logMap: props.logMap,
             source: props.source
         };
+
+        this.onScroll = this.onScroll.bind(this);
+        this.onFilter = this.onFilter.bind(this);
     }
 
     componentWillReceiveProps(props: LogsPageProps, context: any) {
@@ -60,16 +67,42 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             const query = new LogQuery({
                 source: this.state.source,
                 startTime: dateFilter.startDate,
-                endTime: dateFilter.endDate
+                endTime: dateFilter.endDate,
+                limit: LIMIT
             });
 
-            this.props.getLogs(query);
+            this.props.getLogs(query).then(function() {
+                console.info("FILTER");
+            });
+        }
+    }
+
+    onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
+        const allLogs = this.state.logMap[this.state.source.id].logs;
+        const lastQuery = this.state.logMap[this.state.source.id].query;
+        const lastLog = allLogs[allLogs.length - 1];
+
+        if (lastVisibleIndex > total - 5) {
+            const query = new LogQuery({
+                source: this.state.source,
+                startTime: lastQuery.startTime,
+                endTime: new Date(lastLog.timestamp),
+                limit: LIMIT
+            });
+
+            this.props.getLogs(query).then(function() {
+                console.info("NEW PAGE");
+            });
         }
     }
 
     render() {
         return (
-            <LogsExplorer source={this.state.source} logMap={this.state.logMap} onFilter={this.onFilter.bind(this)} />
+            <LogsExplorer
+                source={this.state.source}
+                logMap={this.state.logMap}
+                onFilter={this.onFilter}
+                onScroll={this.onScroll} />
         );
     }
 }

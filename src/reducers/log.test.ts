@@ -38,8 +38,8 @@ describe("Log Reducer", function () {
             let action = setLogs(query, dummyLogs(4));
             let newState = log(state, action);
 
-            expect(newState.logs).to.exist;
-            expect(newState.logs).to.have.length(4);
+            // expect(newState.logs).to.exist;
+            // expect(newState.logs).to.have.length(4);
             expect(newState.logMap[source.id].query).to.equal(query);
             expect(newState.logMap[source.id].logs).to.have.length(4);
 
@@ -57,7 +57,7 @@ describe("Log Reducer", function () {
             let newState = log(state, { type: "" });
 
             expect(newState.isLoading).to.equal(state.isLoading);
-            expect(newState.logs).to.be.undefined;
+            // expect(newState.logs).to.be.undefined;
             expect(newState.error).to.be.undefined;
         });
     });

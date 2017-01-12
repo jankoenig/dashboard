@@ -11,7 +11,7 @@ export interface ConversationListViewProps {
     readonly expandListItemWhenActive?: boolean;
     readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
     readonly onEmpty?: () => JSX.Element;
-    readonly onScroll?: (firstVisibleItem: number, nextVisibleItem: number) => void;
+    readonly onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
 }
 
 export interface ConversationListViewState {

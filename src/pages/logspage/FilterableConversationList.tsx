@@ -15,7 +15,7 @@ export interface FilterableConversationListProps {
     conversations: ConversationList;
     onShowConversation: (conversation: Conversation) => void;
     filter?: FilterType;
-    onScroll?: () => void;
+    onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
 }
 
 interface FilterableConversationListState {

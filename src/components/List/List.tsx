@@ -7,7 +7,7 @@ let ReactList = require("react-list");
 export interface ListProps {
     itemRenderer: (index: number, key: string) => JSX.Element;
     onSelect?: (index: number) => void;
-    onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number) => void;
+    onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
     length: number;
     type?: "simple" | "uniform";
 }
@@ -50,7 +50,7 @@ class StaticList extends React.Component<ListProps, ListState> {
     handleScroll(event: React.UIEvent) {
         const visibleRange: number[] = this.list.getVisibleRange();
         if (this.props.onScroll) {
-            this.props.onScroll(visibleRange[0], visibleRange[1]);
+            this.props.onScroll(visibleRange[0], visibleRange[1], this.props.length);
         }
     }
 
