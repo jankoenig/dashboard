@@ -33,5 +33,8 @@ describe("ConversationListSummary", function () {
     it("returns unique users", function() {
         expect(conversationListSummary.totalUniqueUsers).to.equal(1);
     });
+    it("returns the requests", function() {
+        expect(conversationListSummary.requests).to.have.length(5);
+    });
 });
 
