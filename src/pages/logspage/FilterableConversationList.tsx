@@ -15,7 +15,7 @@ export interface FilterableConversationListProps {
     conversations: ConversationList;
     onShowConversation: (conversation: Conversation) => void;
     filter?: FilterType;
-    onScroll?: (event: React.UIEvent) => void;
+    onScroll?: () => void;
 }
 
 interface FilterableConversationListState {
@@ -67,14 +67,12 @@ export class FilterableConversationList extends React.Component<FilterableConver
 
     render() {
         return (
-            <div style={{ overflowY: "hidden" }}>
-                <ConversationListView
-                    onScroll={this.props.onScroll}
-                    conversations={this.state.shownConversations}
-                    expandListItemWhenActive={browser.isMobileWidth()}
-                    onClick={this.onConversationClicked.bind(this)}
-                    onEmpty={this.onEmpty.bind(this)} />
-            </div>
+            <ConversationListView
+                onScroll={this.props.onScroll}
+                conversations={this.state.shownConversations}
+                expandListItemWhenActive={browser.isMobileWidth()}
+                onClick={this.onConversationClicked.bind(this)}
+                onEmpty={this.onEmpty.bind(this)} />
         );
     }
 }

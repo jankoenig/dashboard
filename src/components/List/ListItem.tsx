@@ -50,17 +50,36 @@ class StaticListItem extends MDLComponent<TwoLineItemProps, TwoLineItemState> {
     }
 
     render() {
-        return (
-            <Link style={{ textDecoration: "none" }} to={this.props.routeTo}>
-                <ListItem
-                    theme={ListItemStyle}
-                    caption={this.props.primaryValue}
-                    legend={this.props.secondaryValue}
-                    to={this.props.linkTo}
-                    onClick={this.click.bind(this)}
-                    />
-            </Link>
+        // Documenting for future refernce:
+        // The top level element should be "</li>".
+        // The "routeTo" method is intended to be used with Router to go to another URL within the app.
+        // Right now, the only way to do that is with "Link", but wrapping the "ListItem" in a "Link" will make
+        // the outside item a </a>.  Ideally, we may have to write our own ListItem that supports this. Or wait until React-toolbox
+        // adds support for this.
+        // https://github.com/react-toolbox/react-toolbox/issues/1059
+
+        const listItem = (
+            <ListItem
+                theme={ListItemStyle}
+                caption={this.props.primaryValue}
+                legend={this.props.secondaryValue}
+                to={this.props.linkTo}
+                onClick={this.click.bind(this)} />
         );
+
+        let fullItem: JSX.Element;
+        if (this.props.routeTo) {
+            fullItem = (
+                <li className={ListItemStyle.listItem}>
+                    <Link to={this.props.routeTo}>
+                        {listItem}
+                    </Link>
+                </li>
+            );
+        } else {
+            fullItem = listItem;
+        }
+        return fullItem;
     }
 }
 

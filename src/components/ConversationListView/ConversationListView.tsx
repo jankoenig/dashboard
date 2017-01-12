@@ -79,8 +79,7 @@ export default class ConversationListView extends React.Component<ConversationLi
             <List
                 onScroll={this.props.onScroll}
                 itemRenderer={this.renderItem.bind(this)}
-                length={this.props.conversations.length}
-                type={"simple"} />
+                length={this.props.conversations.length} />
         );
 
         let finalElement = this.props.conversations.length > 0 ? listElement : emptyElement;
