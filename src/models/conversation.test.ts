@@ -295,7 +295,6 @@ describe("Conversation", function () {
 
         let conversation = new Conversation({ response: response, request: request, outputs: outputs });
 
-
         it("returns the id from the response", function() {
             expect(conversation.id).to.equal(response.id);
         });
