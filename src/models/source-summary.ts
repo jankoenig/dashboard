@@ -1,6 +1,11 @@
 
 import { TimeSeriesDatum } from "./time-series";
 
+export interface SummaryDatum {
+    name: string;
+    total: number;
+}
+
 interface SourceSummary {
 
     startTime: Date;
@@ -16,6 +21,8 @@ interface SourceSummary {
     totalEvents: number;
 
     eventLabel: string;
+
+    requests: SummaryDatum[];
 }
 
 export default SourceSummary;

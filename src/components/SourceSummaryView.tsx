@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
@@ -49,7 +49,7 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                             </Cell>
                         </Grid>
                         <Grid>
-                            <Cell col={12} style={{height: 300}}>
+                            <Cell col={12} style={{ height: 300 }}>
                                 <ResponsiveContainer>
                                     <LineChart data={this.props.sourceSummary.events} >
                                         <XAxis dataKey="time" tickFormatter={this.tickFormat} ticks={DataUtil.getDayTicks(this.props.sourceSummary.events)} />
@@ -57,6 +57,23 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                                         <Tooltip labelFormatter={this.labelFormat} />
                                         <Line dataKey="length" dot={false} />
                                     </LineChart>
+                                </ResponsiveContainer>
+                            </Cell>
+                        </Grid>
+                        <Grid>
+                            <Cell col={12} style={{ height: (this.props.sourceSummary.requests.length * 40) + 100 }} >
+                                <ResponsiveContainer>
+                                    <BarChart
+                                        layout="vertical"
+                                        data={this.props.sourceSummary.requests}
+                                        margin={{ left: 200 }}
+                                        barSize={30}
+                                        barCategoryGap={80}>
+                                        <XAxis type="number" orientation="top" />
+                                        <YAxis type="category" dataKey="name" />
+                                        <Tooltip />
+                                        <Bar dataKey="total" fill="rgb(49, 130, 189)" />
+                                    </BarChart>
                                 </ResponsiveContainer>
                             </Cell>
                         </Grid>
