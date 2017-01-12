@@ -7,7 +7,7 @@ let ReactList = require("react-list");
 export interface ListProps {
     itemRenderer: (index: number, key: string) => JSX.Element;
     onSelect?: (index: number) => void;
-    onScroll?: (event: React.UIEvent) => void;
+    onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number) => void;
     length: number;
     type?: "simple" | "uniform";
 }
@@ -25,6 +25,8 @@ interface ListState {
  */
 class StaticList extends React.Component<ListProps, ListState> {
 
+    list: any;
+
     constructor(props: ListProps) {
         super(props);
         this.state = {
@@ -33,6 +35,7 @@ class StaticList extends React.Component<ListProps, ListState> {
 
         this.updateDimensions = this.updateDimensions.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
+        this.handleListRef = this.handleListRef.bind(this);
     }
 
     static defaultProps = {
@@ -45,9 +48,14 @@ class StaticList extends React.Component<ListProps, ListState> {
     }
 
     handleScroll(event: React.UIEvent) {
+        const visibleRange: number[] = this.list.getVisibleRange();
         if (this.props.onScroll) {
-            this.props.onScroll(event);
+            this.props.onScroll(visibleRange[0], visibleRange[1]);
         }
+    }
+
+    handleListRef(list: Element) {
+        this.list = list;
     }
 
     render(): JSX.Element {
@@ -60,8 +68,9 @@ class StaticList extends React.Component<ListProps, ListState> {
         return (
             <Measure
                 onMeasure={this.updateDimensions} >
-                <div style={parentStyle} onScroll={this.props.onScroll}>
+                <div style={parentStyle} onScroll={this.handleScroll}>
                     <ReactList
+                        ref={this.handleListRef}
                         itemRenderer={this.props.itemRenderer}
                         length={this.props.length}
                         type={this.props.type} />
