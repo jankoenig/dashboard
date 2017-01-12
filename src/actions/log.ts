@@ -19,18 +19,17 @@ export function setLogs(query: LogQuery, logs: Log[]): SetLogsAction {
 }
 
 export type FetchLogsRequestAction = {
-    type: FETCH_LOGS_REQUEST
+    type: FETCH_LOGS_REQUEST,
+    fetching: boolean;
 };
 
 /**
  * A Log Request was initiated.  Used primarily by the UI to show a network process has started.
- *
- * @export
- * @returns
  */
-export function fetchLogsRequest() {
+export function fetchLogsRequest(fetching: boolean) {
     return {
-        type: FETCH_LOGS_REQUEST
+        type: FETCH_LOGS_REQUEST,
+        fetching: fetching
     };
 }
 
@@ -66,11 +65,17 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
  */
 export function retrieveLogs(logQuery: LogQuery): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
     return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
-        dispatch(fetchLogsRequest());
+        dispatch(fetchLogsRequest(true));
 
         return service.getLogs(logQuery).then(function (logs: Log[]) {
             dispatch(setLogs(logQuery, logs));
             return logs;
+        }).then(function(logs: Log[]) {
+            dispatch(fetchLogsRequest(false));
+            return logs;
+        }).catch(function(err: Error) {
+            dispatch(fetchLogsRequest(false));
+            throw err;
         });
     };
 }

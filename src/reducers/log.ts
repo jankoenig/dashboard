@@ -25,7 +25,7 @@ type LogAction = SetLogsAction | FetchLogsRequestAction | { type: "" };
 export function log(state: LogState = INITIAL_STATE, action: LogAction): LogState {
     switch (action.type) {
         case FETCH_LOGS_REQUEST:
-            return {...state, ... { isLoading: true }};
+            return {...state, ... { isLoading: action.fetching }};
 
         case SET_LOGS:
             // Create a new logMap

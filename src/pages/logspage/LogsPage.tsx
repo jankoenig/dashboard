@@ -16,18 +16,16 @@ const LIMIT: number = 50;
 export interface LogsPageProps {
     logMap: LogMap;
     source: Source;
+    isLoading: boolean;
     getLogs: (query: LogQuery) => Promise<Log[]>;
 }
 
 interface LogsPageState {
-    logMap: LogMap;
-    source: Source;
 }
 
 function mapStateToProps(state: State.All) {
-    console.info("NEW STATE");
-    console.info(state.log.logMap);
     return {
+        isLoading: state.log.isLoading,
         logMap: state.log.logMap,
         source: state.source.currentSource
     };
@@ -55,52 +53,43 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.onFilter = this.onFilter.bind(this);
     }
 
-    componentWillReceiveProps(props: LogsPageProps, context: any) {
-        this.state.logMap = props.logMap;
-        this.state.source = props.source;
-        this.setState(this.state);
-    }
-
     onFilter(filter: CompositeFilter) {
         let dateFilter = filter.getFilter(TYPE_DATE) as DateFilter;
         if (dateFilter) {
             const query = new LogQuery({
-                source: this.state.source,
+                source: this.props.source,
                 startTime: dateFilter.startDate,
                 endTime: dateFilter.endDate,
                 limit: LIMIT
             });
 
-            this.props.getLogs(query).then(function() {
-                console.info("FILTER");
-            });
+            this.props.getLogs(query);
         }
     }
 
     onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
-        const allLogs = this.state.logMap[this.state.source.id].logs;
-        const lastQuery = this.state.logMap[this.state.source.id].query;
+        const sourceId = this.props.source.id;
+        const allLogs = this.props.logMap[sourceId].logs;
+        const lastQuery = this.props.logMap[sourceId].query;
         const lastLog = allLogs[allLogs.length - 1];
 
-        if (lastVisibleIndex > total - 5) {
+        if (!this.props.isLoading && lastVisibleIndex > total - 5) {
             const query = new LogQuery({
-                source: this.state.source,
+                source: this.props.source,
                 startTime: lastQuery.startTime,
                 endTime: new Date(lastLog.timestamp),
                 limit: LIMIT
             });
 
-            this.props.getLogs(query).then(function() {
-                console.info("NEW PAGE");
-            });
+            this.props.getLogs(query);
         }
     }
 
     render() {
         return (
             <LogsExplorer
-                source={this.state.source}
-                logMap={this.state.logMap}
+                source={this.props.source}
+                logMap={this.props.logMap}
                 onFilter={this.onFilter}
                 onScroll={this.onScroll} />
         );

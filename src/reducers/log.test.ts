@@ -7,15 +7,25 @@ import { dummyLogs } from "../utils/test";
 import { log } from "./log";
 
 describe("Log Reducer", function () {
-    describe("fetch logs request action", function() {
-        it("sets is loading to true", function() {
+    describe("fetch logs request action", function () {
+        it("sets is loading to true", function () {
             let state = {
                 isLoading: false
             };
 
-            let newState = log(state, fetchLogsRequest());
+            let newState = log(state, fetchLogsRequest(true));
 
             expect(newState.isLoading).to.be.true;
+        });
+
+        it("sets is loading to false", function () {
+            let state = {
+                isLoading: true
+            };
+
+            let newState = log(state, fetchLogsRequest(false));
+
+            expect(newState.isLoading).to.be.false;
         });
     });
     describe("set logs action", function () {
