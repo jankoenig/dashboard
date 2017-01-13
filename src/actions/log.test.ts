@@ -18,9 +18,9 @@ let expect = chai.expect;
 
 describe("Log Actions", function () {
     describe("getLogs", function () {
-        const mockPayload = dummyLogs(6);
-        const initialState = {};
-        const source = new Source({
+        const mockPayload: Log[] = dummyLogs(6);
+        const initialState: any = {};
+        const source: Source = new Source({
             name: "Test"
         });
         let store: IStore<any>;
@@ -37,15 +37,14 @@ describe("Log Actions", function () {
             fetchMock.restore();
         });
 
-        it("retrieves the logs", function (done) {
-            store.dispatch(log.getLogs(source)).then(function () {
+        it("retrieves the logs", function () {
+            return store.dispatch(log.getLogs(source)).then(function () {
 
                 let actions: any[] = store.getActions();
 
-                expect(actions).to.have.length(2);
+                expect(actions).to.have.length(3);
                 expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
                 expect(actions[1].type).to.equal(SET_LOGS);
-                done();
             });
         });
 
@@ -77,7 +76,6 @@ describe("Log Actions", function () {
 
                     expect(actions[1].type).to.equal(SET_LOGS);
                     expect(actions[1].logs).to.have.length(logs.length);
-                    expect(actions[1].logs).to.have.equal(dummyLogs);
                     expect(actions[1].append).to.equal(false);
 
                     expect(actions[2].type).to.equal(FETCH_LOGS_REQUEST);
