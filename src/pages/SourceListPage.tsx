@@ -85,20 +85,14 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
     }
 
     render() {
-        return (
-            <div>
-                {this.props.sources.length === 0 ?
-                    (
-                        <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>
-                    ) :
-                    (
-                        <List
-                            itemRenderer={this.renderItem.bind(this)}
-                            length={this.props.sources.length}
-                            type={"simple"} />
-                    )
-                }
-            </div>
-        );
+        let element = (this.props.sources.length === 0) ?
+            ( <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p> )
+            :
+            (
+                <List
+                    itemRenderer={this.renderItem.bind(this)}
+                    length={this.props.sources.length} />
+            );
+        return element;
     }
 }

@@ -15,7 +15,7 @@ describe("LogsPage", function () {
     it("renders a LogsExplorer", function() {
         const getLogs = Sinon.stub().returns(dummyLogs(4));
 
-        let wrapper = shallow(<LogsPage source={undefined} logMap={undefined} getLogs={getLogs} />);
+        let wrapper = shallow(<LogsPage isLoading source={undefined} logMap={undefined} getLogs={getLogs} />);
         expect(wrapper.find(LogsExplorer)).to.have.length(1);
     });
 });

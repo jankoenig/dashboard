@@ -12,6 +12,7 @@ import ConversationListSummary from "../models/conversation-list-summary";
 import Source from "../models/source";
 import { State } from "../reducers";
 import { LogMap } from "../reducers/log";
+import DateUtils from "../utils/date";
 
 interface SourcePageProps {
     source: Source;
@@ -41,7 +42,11 @@ export class SourcePage extends React.Component<SourcePageProps, any> {
             let logMap = this.props.logMap[this.props.source.id];
             if (logMap) {
                 conversations = ConversationList.fromLogs(logMap.logs);
-                conversationListSummary = new ConversationListSummary(logMap.query, conversations);
+
+                let today = new Date();
+                let sevenDaysAgo = DateUtils.daysAgo(7);
+
+                conversationListSummary = new ConversationListSummary({startTime: sevenDaysAgo, endTime: today}, conversations);
             }
         }
 
