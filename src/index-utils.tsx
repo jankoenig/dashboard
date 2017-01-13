@@ -63,6 +63,7 @@ export namespace IndexUtils {
     export function dispatchSelectedSourceSource(dispatch: Redux.Dispatch<any>,  sourceId: string, sources?: Source[]): Promise<Source> {
         return findSource(sources, sourceId)
                 .then(function (source: Source) {
+                    console.log("index-utils getLogs");
                     dispatch(getLogs(source));
                     dispatch(setCurrentSource(source));
                     return source;

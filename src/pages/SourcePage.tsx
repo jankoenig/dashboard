@@ -33,6 +33,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 export class SourcePage extends React.Component<SourcePageProps, any> {
 
     render() {
+        console.log("renderSourcePage");
 
         let conversations: ConversationList;
         let conversationListSummary: ConversationListSummary;

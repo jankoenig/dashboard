@@ -23,6 +23,8 @@ interface SourceSummary {
     eventLabel: string;
 
     requests: SummaryDatum[];
+
+    sessions: SummaryDatum[];
 }
 
 export default SourceSummary;
