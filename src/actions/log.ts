@@ -7,13 +7,15 @@ import service from "../services/log";
 export type SetLogsAction = {
     type: SET_LOGS,
     query: LogQuery,
+    append: boolean,
     logs: Log[]
 };
 
-export function setLogs(query: LogQuery, logs: Log[]): SetLogsAction {
+export function setLogs(query: LogQuery, logs: Log[], append: boolean = false): SetLogsAction {
     return {
         type: SET_LOGS,
         query: query,
+        append: append,
         logs: logs
     };
 }
@@ -54,7 +56,7 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
         endTime: endTime
     });
 
-    return retrieveLogs(query);
+    return retrieveLogs(query, false);
 }
 
 /**
@@ -63,12 +65,12 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
  *
  * @param logQuery: The query to perform when retrievings logs.
  */
-export function retrieveLogs(logQuery: LogQuery): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
     return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
         dispatch(fetchLogsRequest(true));
 
         return service.getLogs(logQuery).then(function (logs: Log[]) {
-            dispatch(setLogs(logQuery, logs));
+            dispatch(setLogs(logQuery, logs, append));
             return logs;
         }).then(function(logs: Log[]) {
             dispatch(fetchLogsRequest(false));

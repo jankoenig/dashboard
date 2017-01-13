@@ -45,7 +45,7 @@ function setLogs(state: LogState, action: SetLogsAction): LogState {
     let logs: Log[];
     let query: LogQuery;
 
-    if (logObj) {
+    if (logObj && action.append) {
         query = action.query;
         logs = logObj.logs.slice();
         logs = logs.concat(action.logs);

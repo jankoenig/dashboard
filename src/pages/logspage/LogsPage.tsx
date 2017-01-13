@@ -17,7 +17,7 @@ export interface LogsPageProps {
     logMap: LogMap;
     source: Source;
     isLoading: boolean;
-    getLogs: (query: LogQuery) => Promise<Log[]>;
+    getLogs: (query: LogQuery, append: boolean) => Promise<Log[]>;
 }
 
 interface LogsPageState {
@@ -33,8 +33,8 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        getLogs: function (query: LogQuery) {
-            const fetchLogs = retrieveLogs(query);
+        getLogs: function (query: LogQuery, append: boolean) {
+            const fetchLogs = retrieveLogs(query, append);
             return fetchLogs(dispatch);
         },
     };
@@ -63,7 +63,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 limit: LIMIT
             });
 
-            this.props.getLogs(query);
+            this.props.getLogs(query, false);
         }
     }
 
@@ -81,7 +81,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 limit: LIMIT
             });
 
-            this.props.getLogs(query);
+            this.props.getLogs(query, true);
         }
     }
 
