@@ -60,22 +60,27 @@ namespace DataUtil {
         let timeSeriesData: TimeSeriesDatum[] = [];
         let timeSeriesBuckets = DateUtil.timeBuckets(startTime, endTime, bucketSize);
 
+        const keyformat = keyFormat[bucketSize];
+
         // From the time buckets, create a map of empty arrays with a common time stamp
         for (let time of timeSeriesBuckets) {
-            let key = moment(time).format(keyFormat[bucketSize]);
+            let key = moment(time).format(keyformat);
             dataMap[key] = [];
         }
 
         // For each conversation, push the event to the corresponding bucket
         for (let datum of data) {
-            let key = moment(datum.timestamp).format(keyFormat[bucketSize]);
-            dataMap[key].push(datum);
+            let key = moment(datum.timestamp).format(keyformat);
+            const map = dataMap[key];
+            if (map) {
+                map.push(datum);
+            } // Else the conversation time is outside of the range.
         }
 
         // And finally, push each timestamp key to the events array with how many events occured on that day
         for (let key in dataMap) {
             let datum = new TimeSeriesDatum({
-                date: moment(key, keyFormat[bucketSize]).toDate(),
+                date: moment(key, keyformat).toDate(),
                 data: dataMap[key]
             });
             timeSeriesData.push(datum);
