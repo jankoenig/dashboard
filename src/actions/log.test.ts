@@ -76,6 +76,7 @@ describe("Log Actions", function () {
 
                     expect(actions[1].type).to.equal(SET_LOGS);
                     expect(actions[1].logs).to.have.length(logs.length);
+                    // expect(actions[1].logs).to.have.deep.equal(mockPayload);  // TODO: It can't compare the timestamp properly
                     expect(actions[1].append).to.equal(false);
 
                     expect(actions[2].type).to.equal(FETCH_LOGS_REQUEST);
