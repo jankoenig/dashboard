@@ -1,5 +1,7 @@
 import * as chai from "chai";
 import * as fetchMock from "fetch-mock";
+import * as sinon from "sinon";
+
 import configureMockStore, { IStore } from "redux-mock-store";
 import thunk from "redux-thunk";
 
@@ -7,6 +9,7 @@ import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
 import Source from "../models/source";
+import LogsService from "../services/log";
 import { dummyLogs } from "../utils/test";
 import * as log from "./log";
 
@@ -81,6 +84,30 @@ describe("Log Actions", function () {
 
                     expect(actions[2].type).to.equal(FETCH_LOGS_REQUEST);
                     expect(actions[2].fetching).to.equal(false);
+                });
+            });
+
+            it("Tests that the proper dispatches were thrown on failure.", function () {
+
+                const serviceStub = sinon.stub(LogsService, "getLogs").returns(new Promise((resolve, reject) => {
+                    reject(new Error("Error thrown per requirements of the test."));
+                }));
+
+                return store.dispatch(log.retrieveLogs(query)).catch(function (err: Error) {
+                    let actions: any[] = store.getActions();
+
+                    expect(err).to.not.be.undefined;
+
+                    expect(actions).to.have.length(2); // Two fetching dispatches and set logs.
+                    expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                    expect(actions[0].fetching).to.equal(true);
+
+                    expect(actions[1].type).to.equal(FETCH_LOGS_REQUEST);
+                    expect(actions[1].fetching).to.equal(false);
+                }).then(function() {
+                    serviceStub.restore();
+                }).catch(function() {
+                    serviceStub.restore();
                 });
             });
         });

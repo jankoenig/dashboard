@@ -75,9 +75,7 @@ export namespace IndexUtils {
                     endTime: today,
                     limit: 50
                 });
-                dispatch(retrieveLogs(query)).then(function () {
-                    console.info("INDEX");
-                });
+                dispatch(retrieveLogs(query));
 
                 // dispatch(getLogs(source));
                 dispatch(setCurrentSource(source));
