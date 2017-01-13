@@ -76,8 +76,6 @@ export namespace IndexUtils {
                     limit: 50
                 });
                 dispatch(retrieveLogs(query));
-
-                // dispatch(getLogs(source));
                 dispatch(setCurrentSource(source));
                 return source;
             });
