@@ -18,16 +18,22 @@ export function dummyLogs(length: number): Log[] {
 
         let tag: string = "response";
         let transaction_id: string = "" + (i - 1);
+        let payload: string | {} = "payload";
 
-        // if 0 or even
+        // if 0 or even, make it a request.
         if (i === 0 || !(i & 1)) {
             tag = "request";
             transaction_id = "" + i;
+            payload = {
+                request: {
+                    type: "Request." + i
+                }
+            };
         }
 
         // create a new dummy log
         let log = new Log({
-            payload: "payload",
+            payload: payload,
             log_type: "INFO",
             timestamp: new Date(),
             source: "source",

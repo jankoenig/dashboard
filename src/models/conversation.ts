@@ -121,6 +121,11 @@ export default class Conversation implements ConversationProperties {
             requestType = this.request.payload.request.type;
         }
 
+        // if it is an intent request, append the type
+        if (requestType === "IntentRequest") {
+            requestType = requestType + "." + this.intent;
+        }
+
         return requestType;
     }
 

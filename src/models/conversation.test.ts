@@ -29,7 +29,7 @@ describe("Conversation", function () {
         expect(conversation.applicationId).to.equal("amzn1.ask.skill.07dc249f-caf2-4fc0-bdbe-32b6702426ea");
         expect(conversation.sessionId).to.equal("SessionId.c5f6c9d5-e923-4305-9804-defee172386e");
         expect(conversation.userId).to.equal("amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMBGMYLIYKQUSZHAIR7ALWSV5B2MPTYCUZWZBNUJ3GFOZP6NOCGKQCA73Z2CS4II6OO5NQDUH52YC7UFM2ADB4WTMB66R5UONMNIZMS3NRHCTQXEUPMOQDRH3XSBXZWMGGZDSQA7R7E4EPA4IHO7FP6ANM7NFX7U7RQQ37AWQDI334WGWDJ63A");
-        expect(conversation.requestPayloadType).to.equal("IntentRequest");
+        expect(conversation.requestPayloadType).to.equal("IntentRequest.HelloWorldIntent");
         expect(conversation.intent).to.equal("HelloWorldIntent");
         expect(conversation.timestamp).to.equal(request.timestamp);
         expect(conversation.outputs[0]).to.equal(output);
@@ -278,6 +278,28 @@ describe("Conversation", function () {
 
             let conversation = new Conversation({ response: response, request: request, outputs: outputs });
             expect(conversation.requestPayloadType).to.be.undefined;
+        });
+    });
+    describe("without a request", function() {
+
+        let response = responseLog;
+        let request = undefined;
+        let output = new Output({
+            message: "message",
+            level: "DEBUG",
+            timestamp: new Date(),
+            transaction_id: "transaction_id",
+            id: "id"
+        });
+        let outputs = [output];
+
+        let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+
+        it("returns the id from the response", function() {
+            expect(conversation.id).to.equal(response.id);
+        });
+        it("returns the timestamp from the response", function() {
+            expect(conversation.timestamp).to.equal(response.timestamp);
         });
     });
 });

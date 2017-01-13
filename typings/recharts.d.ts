@@ -49,7 +49,7 @@ declare module "recharts" {
 
     export type Scale = "auto" | "linear" | "pow" | "sqrt" | "log" | "identity" | "time" | "band" | "point" | "ordinal" | "quantile" | "quantize" | "utcTime" | "sequential" | "threshold" | Function;
 
-    export type Margin = { bottom: number, left: number, right: number, top: number };
+    export type Margin = { bottom?: number, left?: number, right?: number, top?: number };
 
     export interface LineChartProps {
         layout?: Layout;
@@ -68,14 +68,38 @@ declare module "recharts" {
         dot?: Dot;
     }
 
-    export class Line extends React.Component<any, any> {}
+    export class Line extends React.Component<LineProps, any> { }
+
+    export interface BarChartProps {
+        margin?: Margin;
+        layout?: Layout;
+        width?: number;
+        height?: number;
+        barGap?: string | number;
+        barSize?: number;
+        barCategoryGap?: string | number;
+        data: Data;
+    }
+
+    export class BarChart extends React.Component<BarChartProps, any> { }
+
+    export interface BarProps {
+        layout?: Layout;
+        fill?: string;
+        dataKey: string | number;
+        barSize?: number;
+    }
+
+    export class Bar extends React.Component<BarProps, any> { }
 
     export interface AxisProps {
+        orientation?: Orientation;
         hide?: boolean;
         dataKey?: string | number;
         minTickGap?: number;
         tickCount?: number;
         ticks?: any[];
+        type?: "number" | "category";
         // Not 100% on this one, could just be a number
         tickFormatter?: (tick: number | string) => string;
     }
@@ -84,21 +108,21 @@ declare module "recharts" {
         xAxisId?: string | number;
     }
 
-    export class XAxis extends React.Component<XAxisProps, any> {}
+    export class XAxis extends React.Component<XAxisProps, any> { }
 
     export interface YAxisProps extends AxisProps {
         yAxisId?: string | number;
-     }
+    }
 
-    export class YAxis extends React.Component<YAxisProps, any> {}
+    export class YAxis extends React.Component<YAxisProps, any> { }
 
     export interface CartesianGridProps { }
 
-    export class CartesianGrid extends React.Component<CartesianGridProps, any> {}
+    export class CartesianGrid extends React.Component<CartesianGridProps, any> { }
 
     export interface TooltipProps {
         labelFormatter?: (tick: number | string) => string;
     }
-    export class Tooltip extends React.Component<TooltipProps, any> {}
+    export class Tooltip extends React.Component<TooltipProps, any> { }
 
 }
