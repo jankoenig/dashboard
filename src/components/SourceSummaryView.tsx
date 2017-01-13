@@ -77,6 +77,20 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                                 </ResponsiveContainer>
                             </Cell>
                         </Grid>
+                        <Grid>
+                            <Cell col={12} style={{ height: 500 }} >
+                                <ResponsiveContainer>
+                                    <BarChart
+                                        data={this.props.sourceSummary.sessions}
+                                        margin={{  }}>
+                                        <XAxis type="category" dataKey="name"/>
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="total" fill="rgb(49, 130, 189)" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </Cell>
+                        </Grid>
                     </span>
                 );
             } else {
