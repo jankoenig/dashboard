@@ -67,8 +67,8 @@ describe("SourceSummaryView", function () {
         it("renders the line chart", function() {
             expect(wrapper.find(LineChart)).to.have.length(1);
         });
-        it("renders the bar chart", function() {
-            expect(wrapper.find(BarChart)).to.have.length(1);
+        it("renders the bar charts", function() {
+            expect(wrapper.find(BarChart)).to.have.length(2);
         });
     });
 });

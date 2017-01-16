@@ -1,13 +1,17 @@
 import * as chai from "chai";
 import * as fetchMock from "fetch-mock";
-import configureMockStore from "redux-mock-store";
+import * as sinon from "sinon";
+
+import configureMockStore, { IStore } from "redux-mock-store";
 import thunk from "redux-thunk";
 
 import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
+import Log from "../models/log";
+import LogQuery from "../models/log-query";
+import Source from "../models/source";
+import LogsService from "../services/log";
 import { dummyLogs } from "../utils/test";
 import * as log from "./log";
-
-import Source from "../models/source";
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -17,35 +21,94 @@ let expect = chai.expect;
 
 describe("Log Actions", function () {
     describe("getLogs", function () {
-
-        let mockPayload = dummyLogs(6);
+        const mockPayload: Log[] = dummyLogs(6);
+        const initialState: any = {};
+        const source: Source = new Source({
+            name: "Test"
+        });
+        let store: IStore<any>;
 
         beforeEach(function () {
             fetchMock.get("*", {
                 "data": mockPayload
             });
+
+            store = mockStore(initialState);
         });
 
         afterEach(function () {
             fetchMock.restore();
         });
 
-        it("retrieves the logs", function (done) {
-
-            let initialState = {};
-            let store = mockStore(initialState);
-            let source = new Source({
-                name: "Test"
-            });
-
-            store.dispatch(log.getLogs(source)).then(function () {
+        it("retrieves the logs", function () {
+            return store.dispatch(log.getLogs(source)).then(function () {
 
                 let actions: any[] = store.getActions();
 
-                expect(actions).to.have.length(2);
+                expect(actions).to.have.length(3);
                 expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
                 expect(actions[1].type).to.equal(SET_LOGS);
-                done();
+            });
+        });
+
+        describe("RetrieveLogs", function () {
+
+            let sevenDaysAgo: Date;
+            let today: Date;
+            let query: LogQuery;
+
+            before(function () {
+                sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                today = new Date();
+
+                query = new LogQuery({
+                    source: source,
+                    startTime: sevenDaysAgo,
+                    endTime: today
+                });
+            });
+
+            it("Tests that the proper dispatches were thrown on success.", function () {
+                return store.dispatch(log.retrieveLogs(query)).then(function (logs: Log[]) {
+                    let actions: any[] = store.getActions();
+
+                    expect(actions).to.have.length(3); // Two fetching dispatches and set logs.
+                    expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                    expect(actions[0].fetching).to.equal(true);
+
+                    expect(actions[1].type).to.equal(SET_LOGS);
+                    expect(actions[1].logs).to.have.length(logs.length);
+                    // expect(actions[1].logs).to.have.deep.equal(mockPayload);  // TODO: It can't compare the timestamp properly
+                    expect(actions[1].append).to.equal(false);
+
+                    expect(actions[2].type).to.equal(FETCH_LOGS_REQUEST);
+                    expect(actions[2].fetching).to.equal(false);
+                });
+            });
+
+            it("Tests that the proper dispatches were thrown on failure.", function () {
+
+                const serviceStub = sinon.stub(LogsService, "getLogs").returns(new Promise((resolve, reject) => {
+                    reject(new Error("Error thrown per requirements of the test."));
+                }));
+
+                return store.dispatch(log.retrieveLogs(query)).catch(function (err: Error) {
+                    let actions: any[] = store.getActions();
+
+                    expect(err).to.not.be.undefined;
+
+                    expect(actions).to.have.length(2); // Two fetching dispatches and set logs.
+                    expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                    expect(actions[0].fetching).to.equal(true);
+
+                    expect(actions[1].type).to.equal(FETCH_LOGS_REQUEST);
+                    expect(actions[1].fetching).to.equal(false);
+                }).then(function() {
+                    serviceStub.restore();
+                }).catch(function() {
+                    serviceStub.restore();
+                });
             });
         });
 
@@ -67,7 +130,7 @@ describe("Log Actions", function () {
             });
 
             it("Sets the appropriate source for the query.", function () {
-                return store.dispatch(log.getLogs(source)).then(function() {
+                return store.dispatch(log.getLogs(source)).then(function () {
                     let actions: any[] = store.getActions();
 
                     let setLogAction: log.SetLogsAction = actions[1] as log.SetLogsAction;

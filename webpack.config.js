@@ -20,7 +20,8 @@ var buildVariables = {
   'GOOGLE_ANALYTICS': JSON.stringify(""),
   'VERSION': JSON.stringify(version),
   'BUILD_NUMBER': JSON.stringify(buildNumber),
-  'BUILD_ID': JSON.stringify(buildId)
+  'BUILD_ID': JSON.stringify(buildId),
+  'LOGLESS_BASE': JSON.stringify("https://logless-dev.bespoken.tools/v1")
 }
 
 // A list of plugins
@@ -31,6 +32,7 @@ if (node_env === "production") {
   // For production postfix min to the file names
   projectName += ".min";
   buildVariables.GOOGLE_ANALYTICS = JSON.stringify("UA-40630247-7");
+  buildVariables.LOGLESS_BASE = JSON.stringify("https://logless.bespoken.tools/v1")
   // Add the production plugins
   plugins.push(new webpack.optimize.UglifyJsPlugin());
 }

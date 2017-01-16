@@ -1,5 +1,6 @@
-import { getLogs } from "./actions/log";
+import { retrieveLogs } from "./actions/log";
 import { setCurrentSource } from "./actions/source";
+import LogQuery from "./models/log-query";
 import Source from "./models/source";
 import source from "./services/source";
 
@@ -60,14 +61,24 @@ export namespace IndexUtils {
      * @param {string} The source ID to search for.
      * @param {Source} The sources to search through. Can be undefined in which case they will be pulled form the server.
      */
-    export function dispatchSelectedSourceSource(dispatch: Redux.Dispatch<any>,  sourceId: string, sources?: Source[]): Promise<Source> {
+    export function dispatchSelectedSourceSource(dispatch: Redux.Dispatch<any>, sourceId: string, sources?: Source[]): Promise<Source> {
         return findSource(sources, sourceId)
-                .then(function (source: Source) {
-                    console.log("index-utils getLogs");
-                    dispatch(getLogs(source));
-                    dispatch(setCurrentSource(source));
-                    return source;
+            .then(function (source: Source) {
+
+                const today = new Date();
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(today.getDate() - 7);
+
+                const query = new LogQuery({
+                    source: source,
+                    startTime: sevenDaysAgo,
+                    endTime: today,
+                    limit: 50
                 });
+                dispatch(retrieveLogs(query));
+                dispatch(setCurrentSource(source));
+                return source;
+            });
     }
 
     /**

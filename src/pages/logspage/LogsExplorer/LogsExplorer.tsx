@@ -3,7 +3,7 @@ import * as React from "react";
 
 import Button from "../../../components/Button";
 import Interaction from "../../../components/Interaction";
-import { TwoPane } from "../../../components/TwoPane";
+import TwoPane from "../../../components/TwoPane";
 import Conversation from "../../../models/conversation";
 import ConversationList from "../../../models/conversation-list";
 import Log from "../../../models/log";
@@ -22,6 +22,7 @@ interface LogExplorerProps {
     source: Source;
     onFilter?: (filter: CompositeFilter) => void;
     lockFilterBar?: boolean;
+    onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
 }
 
 interface LogExplorerState {
@@ -49,10 +50,13 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.setState(this.state);
     }
 
-    onScroll(event: React.UIEvent) {
+    onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
         if (!this.state.filterBarHidden && browser.isMobileWidth() && !this.props.lockFilterBar) {
             this.state.filterBarHidden = true;
             this.setState(this.state);
+        }
+        if (this.props.onScroll) {
+            this.props.onScroll(firstVisibleIndex, lastVisibleIndex, total);
         }
     }
 

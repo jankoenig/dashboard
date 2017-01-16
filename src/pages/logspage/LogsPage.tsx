@@ -11,19 +11,21 @@ import LogsExplorer from "./LogsExplorer";
 
 import { retrieveLogs } from "../../actions/log";
 
+const LIMIT: number = 50;
+
 export interface LogsPageProps {
     logMap: LogMap;
     source: Source;
-    getLogs: (query: LogQuery) => Promise<Log[]>;
+    isLoading: boolean;
+    getLogs: (query: LogQuery, append: boolean) => Promise<Log[]>;
 }
 
 interface LogsPageState {
-    logMap: LogMap;
-    source: Source;
 }
 
 function mapStateToProps(state: State.All) {
     return {
+        isLoading: state.log.isLoading,
         logMap: state.log.logMap,
         source: state.source.currentSource
     };
@@ -31,10 +33,10 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        getLogs: function(query: LogQuery) {
-            const fetchLogs = retrieveLogs(query);
+        getLogs: function (query: LogQuery, append: boolean) {
+            const fetchLogs = retrieveLogs(query, append);
             return fetchLogs(dispatch);
-        }
+        },
     };
 }
 
@@ -46,30 +48,50 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             logMap: props.logMap,
             source: props.source
         };
-    }
 
-    componentWillReceiveProps(props: LogsPageProps, context: any) {
-        this.state.logMap = props.logMap;
-        this.state.source = props.source;
-        this.setState(this.state);
+        this.onScroll = this.onScroll.bind(this);
+        this.onFilter = this.onFilter.bind(this);
     }
 
     onFilter(filter: CompositeFilter) {
         let dateFilter = filter.getFilter(TYPE_DATE) as DateFilter;
         if (dateFilter) {
             const query = new LogQuery({
-                source: this.state.source,
+                source: this.props.source,
                 startTime: dateFilter.startDate,
-                endTime: dateFilter.endDate
+                endTime: dateFilter.endDate,
+                limit: LIMIT
             });
 
-            this.props.getLogs(query);
+            this.props.getLogs(query, false);
+        }
+    }
+
+    onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
+        const sourceId = this.props.source.id;
+        const allLogs = this.props.logMap[sourceId].logs;
+        const lastQuery = this.props.logMap[sourceId].query;
+        const lastLog = allLogs[allLogs.length - 1];
+
+        if (!this.props.isLoading && lastVisibleIndex > total - 5) {
+            const query = new LogQuery({
+                source: this.props.source,
+                startTime: lastQuery.startTime,
+                endTime: new Date(lastLog.timestamp),
+                limit: LIMIT
+            });
+
+            this.props.getLogs(query, true);
         }
     }
 
     render() {
         return (
-            <LogsExplorer source={this.state.source} logMap={this.state.logMap} onFilter={this.onFilter.bind(this)} />
+            <LogsExplorer
+                source={this.props.source}
+                logMap={this.props.logMap}
+                onFilter={this.onFilter}
+                onScroll={this.onScroll} />
         );
     }
 }

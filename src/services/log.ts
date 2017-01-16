@@ -7,6 +7,7 @@ namespace LogService {
 
     export function getLogs(query: LogQuery): Promise<Log[]> {
 
+        // let baseUrl = LOGLESS_BASE; // TODO: Get this to work with Mocha
         let baseUrl = "https://logless.bespoken.tools/v1";
         let url = baseUrl + "/query?" + query.queryString;
 
