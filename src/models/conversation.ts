@@ -158,6 +158,37 @@ export default class Conversation implements ConversationProperties {
         return this.stackTraces.length > 0;
     }
 
+    get hasCard(): boolean {
+
+        let hasCard: boolean = false;
+
+        if (this.response && this.response.payload.response && this.response.payload.response.card) {
+            hasCard = true;
+            console.log(this.response.payload.response.card);
+        }
+
+        return hasCard;
+    }
+
+    get audioUrl(): string | undefined {
+
+        let audioUrl: string | undefined;
+        if (this.response && this.response.payload.response && this.response.payload.response.directives) {
+            let directives = this.response.payload.response.directives as any[];
+            for (let item of directives) {
+                if (item.audioItem && item.audioItem.stream) {
+                    audioUrl = item.audioItem.stream.url;
+                }
+            }
+        }
+
+        return audioUrl;
+    }
+
+    get hasAudio(): boolean {
+        return this.audioUrl ? true : false;
+    }
+
     hasOutputType(type: string): boolean {
         for (let output of this.outputs) {
             if (output.level === type) {

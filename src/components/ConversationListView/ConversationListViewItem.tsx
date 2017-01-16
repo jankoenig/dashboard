@@ -104,6 +104,16 @@ export default class ConversationListViewItem extends React.Component<Conversati
                                 exception
                             </Pill>
                         ) : undefined}
+                        {this.props.conversation.hasCard ? (
+                            <Pill style={{backgroundColor: "blue"}}>
+                                card
+                            </Pill>
+                        ) : undefined}
+                        {this.props.conversation.hasAudio ? (
+                            <Pill style={{backgroundColor: "green"}}>
+                                audio
+                            </Pill>
+                        ) : undefined}
                     </span>
                 </div>
                 {this.props.showInteractionOnActive && this.props.active ? (
