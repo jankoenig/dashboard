@@ -164,7 +164,6 @@ export default class Conversation implements ConversationProperties {
 
         if (this.response && this.response.payload.response && this.response.payload.response.card) {
             hasCard = true;
-            console.log(this.response.payload.response.card);
         }
 
         return hasCard;
