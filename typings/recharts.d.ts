@@ -65,6 +65,7 @@ declare module "recharts" {
 
     export interface LineProps {
         dataKey: string | number;
+        type?: 'basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter' | Function
         dot?: Dot;
     }
 

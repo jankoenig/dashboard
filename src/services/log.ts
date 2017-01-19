@@ -28,7 +28,8 @@ namespace LogService {
     }
 
     // let BASE_URL = LOGLESS_BASE; // TODO: Get this to work with Mocha
-    const BASE_URL = "https://logless.bespoken.tools/v1";
+    // const BASE_URL = "https://logless.bespoken.tools/v1";
+    const BASE_URL = "https://logless-dev.bespoken.tools/v1";
 
     export function getLogs(query: LogQuery): Promise<Log[]> {
 
