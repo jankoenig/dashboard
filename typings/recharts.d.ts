@@ -102,7 +102,7 @@ declare module "recharts" {
         ticks?: any[];
         type?: "number" | "category";
         // Not 100% on this one, could just be a number
-        tickFormatter?: (tick: number | string) => string;
+        tickFormatter?: (tick: any) => string;
     }
 
     export interface XAxisProps extends AxisProps {
