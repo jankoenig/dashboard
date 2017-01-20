@@ -55,8 +55,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     componentWillReceiveProps(nextProps: SourcePageProps, context: any) {
-        this.retrieveTimeSummary(nextProps.source);
-        this.retrieveIntentSummary(nextProps.source);
+        if (!this.props.source || this.props.source.id !== this.props.source.id ) {
+            this.retrieveTimeSummary(nextProps.source);
+            this.retrieveIntentSummary(nextProps.source);
+        }
     }
 
     retrieveTimeSummary(source: Source) {
@@ -64,16 +66,18 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new SourceParameter(source));
         query.add(new TimeSortParameter("asc"));
 
+        console.time("timeQuery");
         LogService.getTimeSummary(query)
             .then((summary: LogService.TimeSummary) => {
+                console.timeEnd("timeQuery");
                 this.state.timeSummaryData = summary.buckets
-                    .map(function(value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
+                    .map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
                         let timeData: TimeData = {
                             time: value.date,
                             value: value.count
                         };
                         return timeData;
-                });
+                    });
                 this.setState(this.state);
             });
     }
@@ -83,10 +87,12 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new SourceParameter(source));
         query.add(new IntentSortParameter("desc"));
 
+        console.time("intentQuery");
         LogService.getIntentSummary(query)
             .then((summary: LogService.IntentSummary) => {
+                console.timeEnd("intentQuery");
                 this.state.intentSummaryData = summary.count
-                    .map(function(value: LogService.IntentBucket, index: number, array: LogService.IntentBucket[]) {
+                    .map(function (value: LogService.IntentBucket, index: number, array: LogService.IntentBucket[]) {
                         let intentData: IntentCountData = {
                             count: value.count,
                             intent: value.name
@@ -233,41 +239,6 @@ class IntentCountChart extends React.Component<IntentCountChartProps, IntentCoun
     }
 }
 
-interface SummaryHeaderProps {
-    eventLabel: string;
-    totalEvents: number;
-    totalUniqueUsers: number;
-    totalExceptions: number;
-}
-
-interface SummaryHeaderState {
-
-}
-
-class SummaryHeader extends React.Component<SummaryHeaderProps, SummaryHeaderState> {
-    render() {
-        return (
-            <Grid>
-                <Cell col={4}>
-                    <DataTile
-                        value={this.props.totalEvents.toString()}
-                        label={this.props.eventLabel} />
-                </Cell>
-                <Cell col={4}>
-                    <DataTile
-                        value={this.props.totalUniqueUsers.toString()}
-                        label={"Unique Users"} />
-                </Cell>
-                <Cell col={4}>
-                    <DataTile
-                        value={this.props.totalExceptions.toString()}
-                        label={"Exceptions"} />
-                </Cell>
-            </Grid>
-        );
-    }
-}
-
 interface SummaryViewProps {
     timeData: TimeData[];
     intentData: IntentCountData[];
@@ -298,29 +269,39 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
         // Depending on if there is data available, we display a different message to the user
         // Graph help from help from http://jsfiddle.net/1vzc18qt/ &
         // if (this.props.totalEvents > 0) {
-            summary = (
-                <span>
-                    <Grid>
-                        <SummaryHeader
-                            eventLabel={this.props.eventLabel}
-                            totalEvents={this.props.totalEvents}
-                            totalUniqueUsers={this.props.totalUniqueUsers}
-                            totalExceptions={this.props.totalExceptions} />
-                    </Grid>
-                    <Grid>
-                        <Cell col={12} style={{ height: 300 }}>
-                            <TimeChart
-                                data={this.props.timeData} />
-                        </Cell>
-                    </Grid>
-                    <Grid>
-                        <Cell col={12} style={{ height: (this.props.intentData.length * 40) + 100 }} >
-                            <IntentCountChart
-                                data={this.props.intentData} />
-                        </Cell>
-                    </Grid>
-                </span>
-            );
+        summary = (
+            <span>
+                <Grid>
+                    <Cell col={4}>
+                        <DataTile
+                            value={this.props.totalEvents.toString()}
+                            label={this.props.eventLabel} />
+                    </Cell>
+                    <Cell col={4}>
+                        <DataTile
+                            value={this.props.totalUniqueUsers.toString()}
+                            label={"Unique Users"} />
+                    </Cell>
+                    <Cell col={4}>
+                        <DataTile
+                            value={this.props.totalExceptions.toString()}
+                            label={"Exceptions"} />
+                    </Cell>
+                </Grid>
+                <Grid>
+                    <Cell col={12} style={{ height: 300 }}>
+                        <TimeChart
+                            data={this.props.timeData} />
+                    </Cell>
+                </Grid>
+                <Grid>
+                    <Cell col={12} style={{ height: (this.props.intentData.length * 40) + 100 }} >
+                        <IntentCountChart
+                            data={this.props.intentData} />
+                    </Cell>
+                </Grid>
+            </span>
+        );
         // } else {
         //     summary = (<Grid><p> no recent data </p></Grid>);
         // }
