@@ -2,10 +2,10 @@ import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import Button from "../components/Button";
 import DataTile from "../components/DataTile";
+import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
 import Source from "../models/source";
@@ -22,7 +22,7 @@ interface SourcePageProps {
 
 interface SourcePageState {
     timeSummaryData: TimeData[];
-    intentSummaryData: IntentCountData[];
+    intentSummaryData: CountData[];
 }
 
 function mapStateToProps(state: State.All) {
@@ -94,9 +94,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                 console.timeEnd("intentQuery");
                 this.state.intentSummaryData = summary.count
                     .map(function (value: LogService.IntentBucket, index: number, array: LogService.IntentBucket[]) {
-                        let intentData: IntentCountData = {
+                        let intentData: CountData = {
                             count: value.count,
-                            intent: value.name
+                            title: value.name
                         };
                         return intentData;
                     });
@@ -166,43 +166,9 @@ export default connect(
     mapDispatchToProps
 )(SourcePage);
 
-interface IntentCountData {
-    intent: string;
-    count: number;
-}
-
-interface IntentCountChartProps {
-    data: IntentCountData[];
-}
-
-interface IntentCountChartState {
-
-}
-
-class IntentCountChart extends React.Component<IntentCountChartProps, IntentCountChartState> {
-
-    render() {
-        return (
-            <ResponsiveContainer>
-                <BarChart
-                    layout="vertical"
-                    data={this.props.data}
-                    margin={{ left: 200 }}
-                    barSize={30}
-                    barCategoryGap={80}>
-                    <XAxis type="number" orientation="top" />
-                    <YAxis type="category" dataKey="intent" />
-                    <Tooltip />
-                    <Bar dataKey="count" fill="rgb(49, 130, 189)" />
-                </BarChart>
-            </ResponsiveContainer>
-        );
-    }
-}
-
 interface SummaryViewProps {
     timeData: TimeData[];
-    intentData: IntentCountData[];
+    intentData: CountData[];
     eventLabel: string;
     totalEvents: number;
     totalUniqueUsers: number;
@@ -257,7 +223,7 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                 </Grid>
                 <Grid>
                     <Cell col={12} style={{ height: (this.props.intentData.length * 40) + 100 }} >
-                        <IntentCountChart
+                        <BarChart
                             data={this.props.intentData} />
                     </Cell>
                 </Grid>
