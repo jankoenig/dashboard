@@ -2,10 +2,11 @@ import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
-import { Bar, BarChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import Button from "../components/Button";
 import DataTile from "../components/DataTile";
+import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
 import Source from "../models/source";
 import { State } from "../reducers";
@@ -164,46 +165,6 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(SourcePage);
-
-interface TimeData {
-    time: string;
-    value: number;
-}
-
-interface TimeChartProps {
-    data: TimeData[];
-}
-
-interface TimeChartState {
-}
-
-class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
-
-    constructor(props: TimeChartProps) {
-        super(props);
-    }
-
-    tickFormat(time: string): string {
-        return moment(time).format("MM/DD");
-    }
-
-    labelFormat(time: string): string {
-        return moment(time).format("MM/DD h:mm A");
-    }
-
-    render() {
-        return (
-            <ResponsiveContainer>
-                <LineChart data={this.props.data} >
-                    <XAxis dataKey="time" tickFormatter={this.tickFormat} />
-                    <YAxis />
-                    <Tooltip labelFormatter={this.labelFormat} />
-                    <Line type="monotone" dataKey="value" dot={false} />
-                </LineChart>
-            </ResponsiveContainer>
-        );
-    }
-}
 
 interface IntentCountData {
     intent: string;
