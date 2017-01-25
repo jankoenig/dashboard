@@ -23,6 +23,7 @@ interface SourcePageProps {
 interface SourcePageState {
     timeSummaryData: TimeData[];
     intentSummaryData: CountData[];
+    sourceStats: LogService.SourceStats;
 }
 
 function mapStateToProps(state: State.All) {
@@ -51,7 +52,15 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         super(props);
         this.state = {
             timeSummaryData: [],
-            intentSummaryData: []
+            intentSummaryData: [],
+            sourceStats: {
+                source: "",
+                stats: {
+                    totalEvents: 0,
+                    totalExceptions: 0,
+                    totalUsers: 0
+                }
+            }
         };
     }
 
@@ -59,6 +68,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         if (!this.props.source || this.props.source.id !== this.props.source.id ) {
             this.retrieveTimeSummary(nextProps.source);
             this.retrieveIntentSummary(nextProps.source);
+            this.retrieveSourceStats(nextProps.source);
         }
     }
 
@@ -80,6 +90,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                         return timeData;
                     });
                 this.setState(this.state);
+            }).catch(function(err: Error) {
+                console.timeEnd("timeQuery");
+                console.log(err);
             });
     }
 
@@ -101,6 +114,26 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                         return intentData;
                     });
                 this.setState(this.state);
+            }).catch(function(err: Error) {
+                console.timeEnd("intentQuery");
+                console.log(err);
+            });
+    }
+
+    retrieveSourceStats(source: Source) {
+        const query: Query = new Query();
+        query.add(new SourceParameter(source));
+
+        console.time("sourceStats");
+        LogService.getSourceSummary(query)
+            .then((stats: LogService.SourceStats) => {
+                console.timeEnd("sourceStats");
+                console.log(stats);
+                this.state.sourceStats = stats;
+                this.setState(this.state);
+            }).catch(function(err: Error) {
+                console.timeEnd("sourceStats");
+                console.log(err);
             });
     }
 
@@ -152,10 +185,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                 <SummaryView
                     timeData={this.state.timeSummaryData}
                     intentData={this.state.intentSummaryData}
-                    eventLabel="Event"
-                    totalEvents={0}
-                    totalUniqueUsers={0}
-                    totalExceptions={0} />
+                    totalEvents={this.state.sourceStats.stats.totalEvents}
+                    totalUniqueUsers={this.state.sourceStats.stats.totalUsers}
+                    totalExceptions={this.state.sourceStats.stats.totalExceptions} />
             </span>
         );
     }
@@ -169,7 +201,6 @@ export default connect(
 interface SummaryViewProps {
     timeData: TimeData[];
     intentData: CountData[];
-    eventLabel: string;
     totalEvents: number;
     totalUniqueUsers: number;
     totalExceptions: number;
@@ -202,7 +233,7 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                     <Cell col={4}>
                         <DataTile
                             value={this.props.totalEvents.toString()}
-                            label={this.props.eventLabel} />
+                            label={"Total Events"} />
                     </Cell>
                     <Cell col={4}>
                         <DataTile
@@ -212,7 +243,7 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                     <Cell col={4}>
                         <DataTile
                             value={this.props.totalExceptions.toString()}
-                            label={"Exceptions"} />
+                            label={"Total Errors"} />
                     </Cell>
                 </Grid>
                 <Grid>

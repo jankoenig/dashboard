@@ -27,6 +27,15 @@ namespace LogService {
         count: IntentBucket[];
     }
 
+    export interface SourceStats {
+        source: string;
+        stats: {
+            totalUsers: number,
+            totalExceptions: number,
+            totalEvents: number
+        };
+    }
+
     // let BASE_URL = LOGLESS_BASE; // TODO: Get this to work with Mocha
     // const BASE_URL = "https://logless.bespoken.tools/v1";
     const BASE_URL = "https://logless-dev.bespoken.tools/v1";
@@ -55,6 +64,11 @@ namespace LogService {
 
     export function getIntentSummary(query: Query): Promise<IntentSummary> {
         let url = BASE_URL + "/intentCount?" + query.query();
+        return fetchJson(url);
+    }
+
+    export function getSourceSummary(query: Query): Promise<SourceStats> {
+        let url = BASE_URL + "/sourceStats?" + query.query();
         return fetchJson(url);
     }
 
