@@ -12,7 +12,7 @@ import Source from "../models/source";
 import { State } from "../reducers";
 import { LogMap } from "../reducers/log";
 
-import Query, { SortParameter, SourceParameter } from "../models/query";
+import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import LogService from "../services/log";
 
 enum DataState {
@@ -98,11 +98,20 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             },
         };
 
-        const callback: GenericStateHandler<TimeData> = new GenericStateHandler(this.state, "timeLoaded", "timeSummaryData", this.setState.bind(this));
+        const callback: GenericStateHandler<TimeData[]> = new GenericStateHandler(this.state, "timeLoaded", "timeSummaryData", this.setState.bind(this));
+        const onLoaded = callback.onLoaded.bind(callback);
+        callback.onLoaded = function(data: TimeData[]) {
+            if (data.length === 0) {
+                data = defaultTimeData(daysAgo(7), daysAgo(0));
+            }
+            onLoaded(data);
+        };
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(daysAgo(7)));
+        query.add(new EndTimeParameter(daysAgo(0)));
         query.add(new TimeSortParameter("asc"));
 
         loader.load(query);
@@ -130,6 +139,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(daysAgo(7)));
+        query.add(new EndTimeParameter(daysAgo(0)));
         query.add(new IntentSortParameter("desc"));
 
         loader.load(query);
@@ -150,6 +161,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(daysAgo(7)));
+        query.add(new EndTimeParameter(daysAgo(0)));
 
         loader.load(query);
     }
