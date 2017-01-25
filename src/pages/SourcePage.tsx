@@ -15,6 +15,10 @@ import { LogMap } from "../reducers/log";
 import Query, { SortParameter, SourceParameter } from "../models/query";
 import LogService from "../services/log";
 
+enum DataState {
+    LOADING, ERROR, LOADED
+}
+
 interface SourcePageProps {
     source: Source;
     logMap: LogMap;
@@ -24,6 +28,9 @@ interface SourcePageState {
     timeSummaryData: TimeData[];
     intentSummaryData: CountData[];
     sourceStats: LogService.SourceStats;
+    timeLoaded: DataState;
+    intentLoaded: DataState;
+    statsLoaded: DataState;
 }
 
 function mapStateToProps(state: State.All) {
@@ -53,6 +60,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         this.state = {
             timeSummaryData: [],
             intentSummaryData: [],
+            timeLoaded: DataState.LOADING,
+            intentLoaded: DataState.LOADING,
+            statsLoaded: DataState.LOADING,
             sourceStats: {
                 source: "",
                 stats: {
@@ -65,7 +75,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     componentWillReceiveProps(nextProps: SourcePageProps, context: any) {
-        if (!this.props.source || this.props.source.id !== this.props.source.id ) {
+        if (!this.props.source || this.props.source.id !== this.props.source.id) {
             this.retrieveTimeSummary(nextProps.source);
             this.retrieveIntentSummary(nextProps.source);
             this.retrieveSourceStats(nextProps.source);
@@ -78,6 +88,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new TimeSortParameter("asc"));
 
         console.time("timeQuery");
+
+        this.state.timeLoaded = DataState.LOADING;
+        this.setState(this.state);
+
         LogService.getTimeSummary(query)
             .then((summary: LogService.TimeSummary) => {
                 console.timeEnd("timeQuery");
@@ -89,10 +103,13 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                         };
                         return timeData;
                     });
+                this.state.timeLoaded = DataState.LOADED;
                 this.setState(this.state);
-            }).catch(function(err: Error) {
+            }).catch(function (err: Error) {
                 console.timeEnd("timeQuery");
                 console.log(err);
+                this.state.timeLoaded = DataState.ERROR;
+                this.setState(this.state);
             });
     }
 
@@ -102,6 +119,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new IntentSortParameter("desc"));
 
         console.time("intentQuery");
+        this.state.intentLoaded = DataState.LOADING;
+        this.setState(this.state);
+
         LogService.getIntentSummary(query)
             .then((summary: LogService.IntentSummary) => {
                 console.timeEnd("intentQuery");
@@ -113,10 +133,13 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                         };
                         return intentData;
                     });
+                this.state.intentLoaded = DataState.LOADED;
                 this.setState(this.state);
-            }).catch(function(err: Error) {
+            }).catch(function (err: Error) {
                 console.timeEnd("intentQuery");
                 console.log(err);
+                this.state.intentLoaded = DataState.ERROR;
+                this.setState(this.state);
             });
     }
 
@@ -125,15 +148,21 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new SourceParameter(source));
 
         console.time("sourceStats");
+        this.state.statsLoaded = DataState.LOADING;
+        this.setState(this.state);
+
         LogService.getSourceSummary(query)
             .then((stats: LogService.SourceStats) => {
                 console.timeEnd("sourceStats");
                 console.log(stats);
                 this.state.sourceStats = stats;
+                this.state.statsLoaded = DataState.LOADED;
                 this.setState(this.state);
-            }).catch(function(err: Error) {
+            }).catch(function (err: Error) {
                 console.timeEnd("sourceStats");
                 console.log(err);
+                this.state.statsLoaded = DataState.ERROR;
+                this.setState(this.state);
             });
     }
 
@@ -187,7 +216,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     intentData={this.state.intentSummaryData}
                     totalEvents={this.state.sourceStats.stats.totalEvents}
                     totalUniqueUsers={this.state.sourceStats.stats.totalUsers}
-                    totalExceptions={this.state.sourceStats.stats.totalExceptions} />
+                    totalExceptions={this.state.sourceStats.stats.totalExceptions}
+                    timeLoaded={this.state.timeLoaded}
+                    intentLoaded={this.state.intentLoaded}
+                    statsLoaded={this.state.statsLoaded} />
             </span>
         );
     }
@@ -204,13 +236,56 @@ interface SummaryViewProps {
     totalEvents: number;
     totalUniqueUsers: number;
     totalExceptions: number;
+    timeLoaded: DataState;
+    intentLoaded: DataState;
+    statsLoaded: DataState;
 }
 
 interface SummaryDataState {
-
+    eventsLabel: string;
+    usersLabel: string;
+    errorsLabel: string;
 }
 
 class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
+
+    constructor(props: SummaryViewProps) {
+        super(props);
+        this.state = {
+            eventsLabel: "",
+            usersLabel: "",
+            errorsLabel: ""
+        };
+        this.setLabels(props, this.state);
+        this.setState(this.state);
+    }
+
+    componentWillReceiveProps(nextProps: SummaryViewProps, context: any) {
+        this.setLabels(nextProps, this.state);
+        this.setState(this.state);
+    }
+
+    setLabels(props: SummaryViewProps, state: SummaryDataState) {
+        if (props.statsLoaded === DataState.LOADING) {
+            this.state = {
+                eventsLabel: "Loading...",
+                usersLabel: "Loading...",
+                errorsLabel: "Loading..."
+            };
+        } else if (props.statsLoaded === DataState.ERROR) {
+            this.state = {
+                eventsLabel: "N/A",
+                usersLabel: "N/A",
+                errorsLabel: "N/A"
+            };
+        } else {
+            this.state = {
+                eventsLabel: props.totalEvents.toString(),
+                usersLabel: props.totalUniqueUsers.toString(),
+                errorsLabel: props.totalExceptions.toString()
+            };
+        }
+    }
 
     tickFormat(time: number): string {
         return moment(time).format("MM/DD");
@@ -232,17 +307,17 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                 <Grid>
                     <Cell col={4}>
                         <DataTile
-                            value={this.props.totalEvents.toString()}
+                            value={this.state.eventsLabel}
                             label={"Total Events"} />
                     </Cell>
                     <Cell col={4}>
                         <DataTile
-                            value={this.props.totalUniqueUsers.toString()}
+                            value={this.state.usersLabel}
                             label={"Unique Users"} />
                     </Cell>
                     <Cell col={4}>
                         <DataTile
-                            value={this.props.totalExceptions.toString()}
+                            value={this.state.errorsLabel}
                             label={"Total Errors"} />
                     </Cell>
                 </Grid>
