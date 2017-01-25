@@ -32,7 +32,6 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     };
 
     tickFormat(time: Date): string {
-        console.info("TIME " + this.props.tickFormat);
         return moment(time).format(this.props.tickFormat);
     }
 
@@ -41,6 +40,7 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     }
 
     render() {
+        console.log(this.props);
         return (
             <ResponsiveContainer>
                 <LineChart data={this.props.data} >

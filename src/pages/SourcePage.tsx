@@ -83,34 +83,69 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     retrieveTimeSummary(source: Source) {
-        const query: Query = new Query();
-        query.add(new SourceParameter(source));
-        query.add(new TimeSortParameter("asc"));
-
-        console.time("timeQuery");
-
-        this.state.timeLoaded = DataState.LOADING;
-        this.setState(this.state);
-
-        LogService.getTimeSummary(query)
-            .then((summary: LogService.TimeSummary) => {
-                console.timeEnd("timeQuery");
-                this.state.timeSummaryData = summary.buckets
-                    .map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
+        const arr: any = {
+            loadData: function (query: Query): Promise<LogService.TimeSummary> {
+                console.info("LOADING");
+                return LogService.getTimeSummary(query);
+            },
+            map: function (data: LogService.TimeSummary): TimeData[] {
+                console.info("MAPPING");
+                return data.buckets.map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
                         let timeData: TimeData = {
                             time: value.date,
                             count: value.count
                         };
                         return timeData;
                     });
-                this.state.timeLoaded = DataState.LOADED;
+            },
+            stateChange: (state: DataState) => {
+                console.info("CHANGING");
+                this.state.timeLoaded = state;
                 this.setState(this.state);
-            }).catch(function (err: Error) {
-                console.timeEnd("timeQuery");
-                console.log(err);
-                this.state.timeLoaded = DataState.ERROR;
+            },
+            onLoaded: (data: TimeData[]) => {
+                console.info("ONLOADED");
+                this.state.timeSummaryData = data;
                 this.setState(this.state);
-            });
+            },
+            onError: (err: Error) => {
+                console.info("ERROR");
+                console.info("Error downloading time summary.", err.message);
+            }
+        };
+
+        const loader: Loader = new Loader(arr);
+
+        const query: Query = new Query();
+        query.add(new SourceParameter(source));
+        query.add(new TimeSortParameter("asc"));
+
+        loader.load(query);
+
+        // console.time("timeQuery");
+
+        // this.state.timeLoaded = DataState.LOADING;
+        // this.setState(this.state);
+
+        // LogService.getTimeSummary(query)
+        //     .then((summary: LogService.TimeSummary) => {
+        //         console.timeEnd("timeQuery");
+        //         this.state.timeSummaryData = summary.buckets
+        //             .map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
+        //                 let timeData: TimeData = {
+        //                     time: value.date,
+        //                     count: value.count
+        //                 };
+        //                 return timeData;
+        //             });
+        //         this.state.timeLoaded = DataState.LOADED;
+        //         this.setState(this.state);
+        //     }).catch(function (err: Error) {
+        //         console.timeEnd("timeQuery");
+        //         console.log(err);
+        //         this.state.timeLoaded = DataState.ERROR;
+        //         this.setState(this.state);
+        //     });
     }
 
     retrieveIntentSummary(source: Source) {
@@ -257,7 +292,6 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
             errorsLabel: ""
         };
         this.setLabels(props, this.state);
-        this.setState(this.state);
     }
 
     componentWillReceiveProps(nextProps: SummaryViewProps, context: any) {
@@ -287,16 +321,7 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
         }
     }
 
-    tickFormat(time: number): string {
-        return moment(time).format("MM/DD");
-    }
-
-    labelFormat(time: number): string {
-        return moment(time).format("MM/DD h:mm A");
-    }
-
     render() {
-
         let summary: JSX.Element;
         summary = (
             <span>
@@ -364,4 +389,33 @@ function daysAgo(days: number) {
 function defaultIntentData(): CountData[] {
     const data: CountData[] = [];
     return data;
+}
+
+
+interface DataLoader<ServerData, ClientData> {
+    loadData: (query: Query) => Promise<ServerData>;
+    map: (data: ServerData) => ClientData;
+    stateChange: (state: DataState) => void;
+    onLoaded: (data: ClientData) => void;
+    onError: (err: Error) => void;
+}
+
+class Loader {
+    dataLoader: DataLoader<any, any>;
+
+    constructor(dataLoader: DataLoader<any, any>) {
+        this.dataLoader = dataLoader;
+    }
+
+    load(query: Query) {
+        this.dataLoader.stateChange(DataState.LOADED);
+        this.dataLoader.loadData(query).then((value: any) => {
+            const loadedData: any = this.dataLoader.map(value);
+            this.dataLoader.stateChange(DataState.LOADED);
+            this.dataLoader.onLoaded(loadedData);
+        }).catch((err: Error) => {
+            this.dataLoader.stateChange(DataState.ERROR);
+            this.dataLoader.onError(err);
+        });
+    }
 }
