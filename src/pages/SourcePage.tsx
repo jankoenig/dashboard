@@ -58,8 +58,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     constructor(props: SourcePageProps) {
         super(props);
         this.state = {
-            timeSummaryData: [],
-            intentSummaryData: [],
+            timeSummaryData: defaultTimeData(daysAgo(7), daysAgo(0)),
+            intentSummaryData: defaultIntentData(),
             timeLoaded: DataState.LOADING,
             intentLoaded: DataState.LOADING,
             statsLoaded: DataState.LOADING,
@@ -99,7 +99,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     .map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
                         let timeData: TimeData = {
                             time: value.date,
-                            value: value.count
+                            count: value.count
                         };
                         return timeData;
                     });
@@ -298,10 +298,6 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
     render() {
 
         let summary: JSX.Element;
-
-        // Depending on if there is data available, we display a different message to the user
-        // Graph help from help from http://jsfiddle.net/1vzc18qt/ &
-        // if (this.props.totalEvents > 0) {
         summary = (
             <span>
                 <Grid>
@@ -335,9 +331,6 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                 </Grid>
             </span>
         );
-        // } else {
-        //     summary = (<Grid><p> no recent data </p></Grid>);
-        // }
 
         return (
             <div>
@@ -348,4 +341,27 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
             </div>
         );
     }
+}
+
+function defaultTimeData(start: Date, end: Date): TimeData[] {
+    let data: TimeData[] = [];
+    let currentDate: Date = new Date(start);
+    while (currentDate.getDate() < end.getDate()) {
+        data.push({
+            time: currentDate.toISOString()
+        });
+        currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return data;
+}
+
+function daysAgo(days: number) {
+    const date: Date = new Date();
+    date.setDate(date.getDate() - days);
+    return date;
+}
+
+function defaultIntentData(): CountData[] {
+    const data: CountData[] = [];
+    return data;
 }

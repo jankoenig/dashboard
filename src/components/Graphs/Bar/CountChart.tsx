@@ -1,8 +1,9 @@
+import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export interface CountData {
     title: string;
-    count: number;
+    count?: number;
 }
 
 interface IntentCountChartProps {
