@@ -35,4 +35,17 @@ describe("CountChart", function() {
         expect(responsiveContainer.find(XAxis)).to.have.length(1);
         expect(responsiveContainer.find(YAxis)).to.have.length(1);
     });
+
+    describe("Props tests", function() {
+
+        let wrapper: ShallowWrapper<any, any>;
+
+        before(function() {
+            wrapper = shallow(<CountChart data={data} />);
+        });
+
+        it ("Tests that the data passed from props makes it to it's desired destination.", function() {
+            expect(wrapper.find(BarChart).prop("data")).to.equal(data);
+        });
+    });
 });

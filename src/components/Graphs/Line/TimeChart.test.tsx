@@ -36,4 +36,16 @@ describe("CountChart", function() {
         expect(responsiveContainer.find(XAxis)).to.have.length(1);
         expect(responsiveContainer.find(YAxis)).to.have.length(1);
     });
+
+    describe("Props test", function() {
+        let wrapper: ShallowWrapper<any, any>;
+
+        before(function() {
+            wrapper = shallow(<TimeChart data={data} />);
+        });
+
+        it ("Tests that the data sent in props makes it to it's final destination.", function() {
+            expect(wrapper.find(LineChart).prop("data")).to.equal(data);
+        });
+    });
 });
