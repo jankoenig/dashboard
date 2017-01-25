@@ -40,14 +40,14 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     }
 
     render() {
-        console.log(this.props);
+        console.info("CHART RENDER");
         return (
             <ResponsiveContainer>
                 <LineChart data={this.props.data} >
                     <XAxis dataKey="time" tickFormatter={this.tickFormat} />
-                    <YAxis />
+                    <YAxis dataKey="count" />
                     <Tooltip labelFormatter={this.labelFormat} />
-                    <Line type="monotone" dataKey="value" dot={false} />
+                    <Line type="monotone" dataKey="count" dot={false} />
                 </LineChart>
             </ResponsiveContainer>
         );

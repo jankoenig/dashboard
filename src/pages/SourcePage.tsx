@@ -83,84 +83,38 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     retrieveTimeSummary(source: Source) {
-        const arr: any = {
+        const dataLoader: DataLoader<LogService.TimeSummary, TimeData[]> = {
             loadData: function (query: Query): Promise<LogService.TimeSummary> {
-                console.info("LOADING");
                 return LogService.getTimeSummary(query);
             },
             map: function (data: LogService.TimeSummary): TimeData[] {
-                console.info("MAPPING");
                 return data.buckets.map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
-                        let timeData: TimeData = {
-                            time: value.date,
-                            count: value.count
-                        };
-                        return timeData;
-                    });
+                    let timeData: TimeData = {
+                        time: value.date,
+                        count: value.count
+                    };
+                    return timeData;
+                });
             },
-            stateChange: (state: DataState) => {
-                console.info("CHANGING");
-                this.state.timeLoaded = state;
-                this.setState(this.state);
-            },
-            onLoaded: (data: TimeData[]) => {
-                console.info("ONLOADED");
-                this.state.timeSummaryData = data;
-                this.setState(this.state);
-            },
-            onError: (err: Error) => {
-                console.info("ERROR");
-                console.info("Error downloading time summary.", err.message);
-            }
         };
 
-        const loader: Loader = new Loader(arr);
+        const callback: GenericStateHandler<TimeData> = new GenericStateHandler(this.state, "timeLoaded", "timeSummaryData", this.setState.bind(this));
+        const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
         query.add(new TimeSortParameter("asc"));
 
         loader.load(query);
-
-        // console.time("timeQuery");
-
-        // this.state.timeLoaded = DataState.LOADING;
-        // this.setState(this.state);
-
-        // LogService.getTimeSummary(query)
-        //     .then((summary: LogService.TimeSummary) => {
-        //         console.timeEnd("timeQuery");
-        //         this.state.timeSummaryData = summary.buckets
-        //             .map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
-        //                 let timeData: TimeData = {
-        //                     time: value.date,
-        //                     count: value.count
-        //                 };
-        //                 return timeData;
-        //             });
-        //         this.state.timeLoaded = DataState.LOADED;
-        //         this.setState(this.state);
-        //     }).catch(function (err: Error) {
-        //         console.timeEnd("timeQuery");
-        //         console.log(err);
-        //         this.state.timeLoaded = DataState.ERROR;
-        //         this.setState(this.state);
-        //     });
     }
 
     retrieveIntentSummary(source: Source) {
-        const query: Query = new Query();
-        query.add(new SourceParameter(source));
-        query.add(new IntentSortParameter("desc"));
-
-        console.time("intentQuery");
-        this.state.intentLoaded = DataState.LOADING;
-        this.setState(this.state);
-
-        LogService.getIntentSummary(query)
-            .then((summary: LogService.IntentSummary) => {
-                console.timeEnd("intentQuery");
-                this.state.intentSummaryData = summary.count
+        const dataLoader: DataLoader<LogService.IntentSummary, CountData[]> = {
+            loadData: function (query: Query): Promise<LogService.IntentSummary> {
+                return LogService.getIntentSummary(query);
+            },
+            map: function (data: LogService.IntentSummary): CountData[] {
+                return data.count
                     .map(function (value: LogService.IntentBucket, index: number, array: LogService.IntentBucket[]) {
                         let intentData: CountData = {
                             count: value.count,
@@ -168,37 +122,36 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                         };
                         return intentData;
                     });
-                this.state.intentLoaded = DataState.LOADED;
-                this.setState(this.state);
-            }).catch(function (err: Error) {
-                console.timeEnd("intentQuery");
-                console.log(err);
-                this.state.intentLoaded = DataState.ERROR;
-                this.setState(this.state);
-            });
+            }
+        };
+
+        const callback: GenericStateHandler<TimeData> = new GenericStateHandler(this.state, "intentLoaded", "intentSummaryData", this.setState.bind(this));
+        const loader: Loader = new Loader(dataLoader, callback, callback);
+
+        const query: Query = new Query();
+        query.add(new SourceParameter(source));
+        query.add(new IntentSortParameter("desc"));
+
+        loader.load(query);
     }
 
     retrieveSourceStats(source: Source) {
+        const dataLoader: DataLoader<LogService.SourceStats, LogService.SourceStats> = {
+            loadData: function (query: Query): Promise<LogService.SourceStats> {
+                return LogService.getSourceSummary(query);
+            },
+            map: function (data: LogService.SourceStats): LogService.SourceStats {
+                return data;
+            }
+        };
+
+        const callback: GenericStateHandler<TimeData> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState.bind(this));
+        const loader: Loader = new Loader(dataLoader, callback, callback);
+
         const query: Query = new Query();
         query.add(new SourceParameter(source));
 
-        console.time("sourceStats");
-        this.state.statsLoaded = DataState.LOADING;
-        this.setState(this.state);
-
-        LogService.getSourceSummary(query)
-            .then((stats: LogService.SourceStats) => {
-                console.timeEnd("sourceStats");
-                console.log(stats);
-                this.state.sourceStats = stats;
-                this.state.statsLoaded = DataState.LOADED;
-                this.setState(this.state);
-            }).catch(function (err: Error) {
-                console.timeEnd("sourceStats");
-                console.log(err);
-                this.state.statsLoaded = DataState.ERROR;
-                this.setState(this.state);
-            });
+        loader.load(query);
     }
 
     render() {
@@ -391,31 +344,71 @@ function defaultIntentData(): CountData[] {
     return data;
 }
 
-
 interface DataLoader<ServerData, ClientData> {
     loadData: (query: Query) => Promise<ServerData>;
     map: (data: ServerData) => ClientData;
-    stateChange: (state: DataState) => void;
+}
+
+interface LoadCallback<ClientData> {
     onLoaded: (data: ClientData) => void;
     onError: (err: Error) => void;
 }
 
+interface StateHandler {
+    stateChange: (state: DataState) => void;
+}
+
+class GenericStateHandler<Data> implements StateHandler, LoadCallback<Data> {
+    readonly dataStateVariable: string;
+    readonly dataVariable: string;
+    readonly setState: (state: any) => void;
+    state: any;
+
+    constructor(state: any, dataStateVarable: string, dataVariable: string, setState: (state: any) => void) {
+        this.dataVariable = dataVariable;
+        this.dataStateVariable = dataStateVarable;
+        this.state = state;
+        this.setState = setState;
+    }
+
+    stateChange(state: DataState) {
+        console.log(this.state);
+        this.state[this.dataStateVariable] = state;
+        console.log(this.state);
+        this.setState(this.state);
+    }
+
+    onLoaded(data: Data) {
+        console.info("ONLOADED");
+        this.state[this.dataVariable] = data;
+        this.setState(this.state);
+    }
+
+    onError(err: Error) {
+        console.info("Error downloading time summary.", err.message);
+    }
+}
+
 class Loader {
     dataLoader: DataLoader<any, any>;
+    stateHandler: StateHandler;
+    loadCallback: LoadCallback<any>;
 
-    constructor(dataLoader: DataLoader<any, any>) {
+    constructor(dataLoader: DataLoader<any, any>, stateHandler: StateHandler, loadCallback: LoadCallback<any>) {
         this.dataLoader = dataLoader;
+        this.stateHandler = stateHandler;
+        this.loadCallback = loadCallback;
     }
 
     load(query: Query) {
-        this.dataLoader.stateChange(DataState.LOADED);
+        this.stateHandler.stateChange(DataState.LOADED);
         this.dataLoader.loadData(query).then((value: any) => {
             const loadedData: any = this.dataLoader.map(value);
-            this.dataLoader.stateChange(DataState.LOADED);
-            this.dataLoader.onLoaded(loadedData);
+            this.stateHandler.stateChange(DataState.LOADED);
+            this.loadCallback.onLoaded(loadedData);
         }).catch((err: Error) => {
-            this.dataLoader.stateChange(DataState.ERROR);
-            this.dataLoader.onError(err);
+            this.stateHandler.stateChange(DataState.ERROR);
+            this.loadCallback.onError(err);
         });
     }
 }
