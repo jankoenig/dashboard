@@ -385,20 +385,17 @@ class GenericStateHandler<Data> implements StateHandler, LoadCallback<Data> {
     }
 
     stateChange(state: DataState) {
-        console.log(this.state);
         this.state[this.dataStateVariable] = state;
-        console.log(this.state);
         this.setState(this.state);
     }
 
     onLoaded(data: Data) {
-        console.info("ONLOADED");
         this.state[this.dataVariable] = data;
         this.setState(this.state);
     }
 
     onError(err: Error) {
-        console.info("Error downloading time summary.", err.message);
+        // Error is caught in the state change. Nothing we need to do.
     }
 }
 

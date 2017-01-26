@@ -40,7 +40,6 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     }
 
     render() {
-        console.info("CHART RENDER");
         return (
             <ResponsiveContainer>
                 <LineChart data={this.props.data} >
