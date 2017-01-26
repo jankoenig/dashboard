@@ -93,6 +93,31 @@ describe("Source Page", function () {
             expect(dataTile.prop("hidden")).to.equal(true);
             expect(dataTile.prop("showable")).to.equal(true);
         });
+
+        it ("Tests that the summary view is there.", function() {
+            const wrapper = shallow((
+                <SourcePage source={source} />
+            ));
+
+            expect(wrapper.find("SummaryView")).to.have.length(1);
+        });
+
+        it ("Tests that the summary view is linked to the source pages' state.", function() {
+            const wrapper = shallow((<SourcePage source={source} />));
+
+            const summaryView = wrapper.find("SummaryView").at(0);
+            expect(summaryView.prop("timeData")).to.equal(wrapper.state("timeSummaryData"));
+            expect(summaryView.prop("intentData")).to.equal(wrapper.state("intentSummaryData"));
+            expect(summaryView.prop("timeLoaded")).to.equal(wrapper.state("timeLoaded"));
+            expect(summaryView.prop("intentLoaded")).to.equal(wrapper.state("intentLoaded"));
+            expect(summaryView.prop("statsLoaded")).to.equal(wrapper.state("statsLoaded"));
+
+            const stats = wrapper.state("sourceStats").stats;
+
+            expect(summaryView.prop("totalEvents")).to.equal(stats.totalEvents);
+            expect(summaryView.prop("totalUniqueUsers")).to.equal(stats.totalUsers);
+            expect(summaryView.prop("totalExceptions")).to.equal(stats.totalExceptions);
+        });
     });
 
     describe("Logs loaded.", function () {
