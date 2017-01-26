@@ -1,6 +1,5 @@
 import * as moment from "moment";
 import * as React from "react";
-
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export interface TimeData {

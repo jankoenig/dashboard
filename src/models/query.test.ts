@@ -1,11 +1,11 @@
 import * as chai from "chai";
 
-import * as Q from "./query";
+import { EndTimeParameter, LimitParameter, Query, QueryParameter,  SortParameter, SourceParameter, StartTimeParameter, TimeParameter } from "./query";
 import Source from "./source";
 
 const expect = chai.expect;
 
-class TestParameter implements Q.QueryParameter {
+class TestParameter implements QueryParameter {
 
     value: any;
 
@@ -20,7 +20,7 @@ class TestParameter implements Q.QueryParameter {
 describe("Query objects.", function() {
     describe("SourceParameter", function() {
         it ("Tests the query values are correct with a string key.", function() {
-            const param: Q.SourceParameter = new Q.SourceParameter("ABC123");
+            const param: SourceParameter = new SourceParameter("ABC123");
             expect(param.value).to.equal("ABC123");
             expect(param.parameter).to.equal("source");
         });
@@ -31,7 +31,7 @@ describe("Query objects.", function() {
                 secretKey: "ABC123"
             });
 
-            const param: Q.SourceParameter = new Q.SourceParameter(source);
+            const param: SourceParameter = new SourceParameter(source);
             expect(param.value).to.equal("ABC123");
             expect(param.parameter).to.equal("source");
         });
@@ -40,7 +40,7 @@ describe("Query objects.", function() {
     describe("Time Parameter", function() {
         it ("Tests the time parameter uses ISO date as the value.", function() {
             const date: Date = new Date();
-            const param: Q.TimeParameter = new Q.TimeParameter(date);
+            const param: TimeParameter = new TimeParameter(date);
 
             expect(param.value).to.equal(date.toISOString());
             expect(param.parameter).to.equal("time");
@@ -48,7 +48,7 @@ describe("Query objects.", function() {
 
         describe("Start Time Paramter", function() {
             it ("Tests the start time parameter uses the correct name.", function() {
-                const param: Q.StartTimeParameter = new Q.StartTimeParameter(new Date());
+                const param: StartTimeParameter = new StartTimeParameter(new Date());
 
                 expect(param.parameter).to.equal("start_time");
             });
@@ -56,7 +56,7 @@ describe("Query objects.", function() {
 
         describe("End Time Paramter", function() {
             it ("Tests the start time parameter uses the correct name.", function() {
-                const param: Q.EndTimeParameter = new Q.EndTimeParameter(new Date());
+                const param: EndTimeParameter = new EndTimeParameter(new Date());
 
                 expect(param.parameter).to.equal("end_time");
             });
@@ -65,7 +65,7 @@ describe("Query objects.", function() {
 
     describe("Limit Paramter", function() {
         it ("tests the Limit parameter contains the correct value and parameter name.", function() {
-            const param: Q.LimitParameter = new Q.LimitParameter(123);
+            const param: LimitParameter = new LimitParameter(123);
             expect(param.value).to.equal(123);
             expect(param.parameter).to.equal("limit");
         });
@@ -73,7 +73,7 @@ describe("Query objects.", function() {
 
     describe("Sort Parameter", function() {
         it("Tests the sort parameter contains the correct valueand parmaeter", function() {
-            const param: Q.SortParameter = new Q.SortParameter("asc");
+            const param: SortParameter = new SortParameter("asc");
             expect(param.value).to.equal("asc");
             expect(param.parameter).to.equal("sortBy");
         });
@@ -81,7 +81,7 @@ describe("Query objects.", function() {
 
     describe("Query", function() {
         it ("Tests the query string is produced in appropriate order.", function() {
-            const query: Q.Query = new Q.Query();
+            const query: Query = new Query();
             query.add(new TestParameter("1", "p1"))
                 .add(new TestParameter("2", "p2"))
                 .add(new TestParameter(3, "p3"));

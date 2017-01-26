@@ -1,7 +1,6 @@
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
-
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import TimeChart, { TimeData } from "./TimeChart";
