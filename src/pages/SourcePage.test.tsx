@@ -146,16 +146,6 @@ describe("Source Page", function () {
             wrapper.update();
         });
 
-        // beforeEach(function () {
-        // });
-
-        // afterEach(function () {
-        //     getLogs.reset();
-        //     getTimeSummary.reset();
-        //     getIntentSummary.reset();
-        //     getSourceSummary.reset();
-        // });
-
         after(function () {
             getLogs.restore();
             getTimeSummary.restore();
