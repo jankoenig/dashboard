@@ -1,7 +1,10 @@
+import { LOG_LEVELS } from "../constants";
 import Color from "../utils/color";
 import Log from "./log";
 import Output from "./output";
 import StackTrace from "./stack-trace";
+
+export type ConversationLevel = LOG_LEVELS;
 
 export interface ConversationProperties {
     request: Log;
@@ -151,11 +154,15 @@ export default class Conversation implements ConversationProperties {
     }
 
     get hasError(): boolean {
-        return this.hasOutputType("ERROR");
+        return this.isType("ERROR") || this.hasOutputType("ERROR");
     }
 
     get hasException(): boolean {
         return this.stackTraces.length > 0;
+    }
+
+    isType(type: ConversationLevel | string): boolean {
+        return (this.request && this.request.log_type === type) || (this.response && this.response.log_type === type);
     }
 
     hasOutputType(type: string): boolean {

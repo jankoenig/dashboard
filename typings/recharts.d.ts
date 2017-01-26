@@ -65,6 +65,7 @@ declare module "recharts" {
 
     export interface LineProps {
         dataKey: string | number;
+        type?: 'basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter' | Function
         dot?: Dot;
     }
 
@@ -101,7 +102,7 @@ declare module "recharts" {
         ticks?: any[];
         type?: "number" | "category";
         // Not 100% on this one, could just be a number
-        tickFormatter?: (tick: number | string) => string;
+        tickFormatter?: (tick: any) => string;
     }
 
     export interface XAxisProps extends AxisProps {
