@@ -3,6 +3,8 @@ import * as chai from "chai";
 import Conversation from "../../models/conversation";
 import { Log, LogProperties } from "../../models/log";
 import { dummyOutputs } from "../../utils/test";
+
+import { TYPE_COMPOSITE, TYPE_DATE, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, } from "./Filters";
 import * as Filters from "./Filters";
 
 chai.use(require("chai-datetime"));
@@ -311,6 +313,22 @@ describe("Filters.tsx", function() {
             let endDate = new Date(2016, 12, 15, 23, 59, 59);
             let filter = new Filters.DateFilter(startDate, endDate);
             expect(filter.filter(convo)).to.be.true;
+        });
+    });
+
+    describe("Intent filter", function() {
+        let convo: Conversation;
+
+        before(function() {
+            convo = new Conversation({
+                request: new Log(requestProps),
+                response: new Log(responseProps)
+            });
+        });
+
+        it ("Tests the intent filter is the correct type.", function() {
+            const filter: Filters.IntentFilter = new Filters.IntentFilter("ERROR");
+            expect(filter.type).to.equal(Filters.TYPE_INTENT);
         });
     });
 });

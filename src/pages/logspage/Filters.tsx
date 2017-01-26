@@ -3,7 +3,11 @@ import * as moment from "moment";
 import Conversation from "../../models/conversation";
 import StringUtils from "../../utils/string";
 
+export const TYPE_COMPOSITE: string = "Composite";
+export const TYPE_LOG_LEVEL: string = "Log Level";
+export const TYPE_ID: string = "ID";
 export const TYPE_DATE: string = "Date";
+export const TYPE_INTENT: string = "Intent";
 
 export interface FilterType {
     type: string;
@@ -12,6 +16,7 @@ export interface FilterType {
 
 export class CompositeFilter implements FilterType {
     filters: FilterType[];
+    type: string = TYPE_COMPOSITE;
 
     constructor(filters: FilterType[]) {
         this.filters = filters;
@@ -24,10 +29,6 @@ export class CompositeFilter implements FilterType {
             }
         }
         return undefined;
-    }
-
-    get type(): string {
-        return "Composite";
     }
 
     get filter(): (item: Conversation) => boolean {
@@ -45,13 +46,10 @@ export class CompositeFilter implements FilterType {
 
 export class LogLevelFilter implements FilterType {
     logType?: string;
+    type: string = TYPE_LOG_LEVEL;
 
     constructor(type?: string) {
         this.logType = type;
-    }
-
-    get type(): string {
-        return "Log Level";
     }
 
     get filter(): (item: Conversation) => boolean {
@@ -67,13 +65,10 @@ export class LogLevelFilter implements FilterType {
 
 export class IDFilter implements FilterType {
     id: string;
+    type: string = "ID";
 
     constructor(id?: string) {
         this.id = id;
-    }
-
-    get type(): string {
-        return "ID";
     }
 
     get filter(): (item: Conversation) => boolean {
@@ -88,14 +83,11 @@ export class IDFilter implements FilterType {
 export class DateFilter implements FilterType {
     startMoment: moment.Moment;
     endMoment: moment.Moment;
+    type: string = TYPE_DATE;
 
     constructor(startDate?: Date, endDate?: Date) {
         this.startMoment = (startDate) ? moment(startDate) : undefined;
         this.endMoment = (endDate) ? moment(endDate) : undefined;
-    }
-
-    get type(): string {
-        return TYPE_DATE;
     }
 
     get startDate(): Date {
@@ -117,6 +109,22 @@ export class DateFilter implements FilterType {
                 return afterStart && beforeEnd;
             }
             return false;
+        };
+    }
+}
+
+export class IntentFilter implements FilterType {
+    intent: string;
+    type: string = TYPE_INTENT;
+
+    constructor(intent?: string) {
+        this.intent = intent;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const intent = this.intent;
+        return function(item: Conversation): boolean {
+            return item && item.intent === intent;
         };
     }
 }
