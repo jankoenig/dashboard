@@ -60,7 +60,7 @@ export class LogLevelFilter implements FilterType {
             if (type === undefined || type.trim() === "") {
                 return true;
             }
-            return item !== undefined && item.hasOutputType(type);
+            return item !== undefined && (item.isType(type) || item.hasOutputType(type));
         };
     }
 }

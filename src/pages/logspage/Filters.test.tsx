@@ -127,7 +127,7 @@ describe("Filters.tsx", function() {
         });
 
         it ("Tests the filter will return false when neither log is correct.", function() {
-            let filter = new Filters.LogLevelFilter("DEBUG");
+            let filter = new Filters.LogLevelFilter("ERROR");
 
             let convo = new Conversation({
                 request: new Log(requestProps),
