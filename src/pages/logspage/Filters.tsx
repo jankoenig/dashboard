@@ -124,8 +124,16 @@ export class IntentFilter implements FilterType {
     get filter(): (item: Conversation) => boolean {
         const intent = this.intent;
         return function(item: Conversation): boolean {
-            if (item) {
-                return item.intent === intent;
+            if (!intent) {
+                return true;
+            }
+            if (item && item.intent) {
+                const regex = new RegExp(intent.replace(/(\W)/g, "\\$1"), "gi");
+                const match = item.intent.match(regex);
+                // Match throws a null instead of undefined so we're going to have to go with that.
+                /* tslint:disable:no-null-keyword */
+                return match !== null && match.length > 0;
+                /* tslint:enable:no-null-keyword*/
             }
             return false;
         };

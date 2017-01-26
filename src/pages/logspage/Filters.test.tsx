@@ -12,7 +12,13 @@ chai.use(require("chai-datetime"));
 let expect = chai.expect;
 
 let requestProps: LogProperties = {
-    payload: "Request Payload!",
+    payload: {
+        request: {
+            intent: {
+                name: "Testing Request Intent"
+            }
+        }
+    },
     stack: "Request Test Stack",
     log_type: "DEBUG",
     source: "Source123",
@@ -321,6 +327,8 @@ describe("Filters.tsx", function() {
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
+
+            console.log(convo.intent);
         });
 
         it ("Tests the intent filter is the correct type.", function() {
@@ -333,8 +341,28 @@ describe("Filters.tsx", function() {
             expect(filter.filter).to.exist;
         });
 
+        it ("Tests a true filter with undefined", function() {
+            const filter: IntentFilter = new IntentFilter(undefined);
+            expect(filter.filter(convo)).to.be.true;
+        });
+
         it ("Tests a true filter", function() {
             const filter: IntentFilter = new IntentFilter(convo.intent);
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests a like filter from the beginning", function() {
+            const filter: IntentFilter = new IntentFilter(convo.intent.substr(0, 2));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests a like filter from the end", function() {
+            const filter: IntentFilter = new IntentFilter(convo.intent.substr(convo.intent.length - 2));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests a like filter from the middle", function() {
+            const filter: IntentFilter = new IntentFilter(convo.intent.substr(2, convo.intent.length - 2));
             expect(filter.filter(convo)).to.be.true;
         });
 
@@ -347,5 +375,15 @@ describe("Filters.tsx", function() {
             const filter: IntentFilter = new IntentFilter(convo.intent);
             expect(filter.filter(undefined)).to.be.false;
         });
+
+        it ("Tests a false filter when convo doesn't have an intent", function() {
+            const newConvo = new Conversation({
+                request: new Log(responseProps),
+                response: new Log(responseProps)
+            });
+
+            const filter: IntentFilter = new IntentFilter("Test Convo");
+            expect(filter.filter(newConvo)).to.be.false;
+        })
     });
 });

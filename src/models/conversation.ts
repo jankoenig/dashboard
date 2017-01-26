@@ -133,6 +133,7 @@ export default class Conversation implements ConversationProperties {
     }
 
     get intent(): string | undefined {
+        console.log(this.request);
         if (this.request && this.request.payload.request && this.request.payload.request.intent) {
             return this.request.payload.request.intent.name;
         } else {
