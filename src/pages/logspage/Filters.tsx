@@ -124,7 +124,10 @@ export class IntentFilter implements FilterType {
     get filter(): (item: Conversation) => boolean {
         const intent = this.intent;
         return function(item: Conversation): boolean {
-            return item && item.intent === intent;
+            if (item) {
+                return item.intent === intent;
+            }
+            return false;
         };
     }
 }

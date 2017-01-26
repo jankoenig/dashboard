@@ -327,5 +327,25 @@ describe("Filters.tsx", function() {
             const filter: IntentFilter = new IntentFilter("ERROR");
             expect(filter.type).to.equal(TYPE_INTENT);
         });
+
+        it ("Tests the intent filter returns a filter.", function() {
+            const filter: IntentFilter = new IntentFilter("ERROR");
+            expect(filter.filter).to.exist;
+        });
+
+        it ("Tests a true filter", function() {
+            const filter: IntentFilter = new IntentFilter(convo.intent);
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests a false filter", function() {
+            const filter: IntentFilter = new IntentFilter("Really weird intent that it could not accidentally have.");
+            expect(filter.filter(convo)).to.be.false;
+        });
+
+        it ("Tests a true filter", function() {
+            const filter: IntentFilter = new IntentFilter(convo.intent);
+            expect(filter.filter(undefined)).to.be.false;
+        });
     });
 });
