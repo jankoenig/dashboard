@@ -8,10 +8,9 @@ import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
+import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import Source from "../models/source";
 import { State } from "../reducers";
-
-import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import LogService from "../services/log";
 
 enum DataState {
