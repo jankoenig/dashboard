@@ -10,7 +10,6 @@ import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
 import Source from "../models/source";
 import { State } from "../reducers";
-import { LogMap } from "../reducers/log";
 
 import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import LogService from "../services/log";
@@ -21,7 +20,6 @@ enum DataState {
 
 interface SourcePageProps {
     source: Source;
-    logMap: LogMap;
 }
 
 interface SourcePageState {
@@ -35,7 +33,6 @@ interface SourcePageState {
 
 function mapStateToProps(state: State.All) {
     return {
-        logMap: state.log.logMap,
         source: state.source.currentSource
     };
 }
