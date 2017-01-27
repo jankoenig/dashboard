@@ -144,7 +144,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         value={this.state.intentValue}
                         onChange={this.handleIntentChange} />
                 </Cell>
-                <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={8} phone={2} offsetPhone={0}>
+                <Cell col={2} offsetDesktop={4} tablet={2} offsetTablet={8} phone={2} offsetPhone={0}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"

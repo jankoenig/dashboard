@@ -30,7 +30,6 @@ $label-filled-padding-left: 0;
 .input:not(.disabled) > .inputElement {
     font-size: $input-font-size;
     color: $input-color-light;
-    padding-left: $input-padding-left;
     padding-bottom: $input-padding-bottom;
     padding-top: $input-padding-top;
     transition-property: top, font-size, color, padding;
@@ -46,6 +45,5 @@ $label-filled-padding-left: 0;
     font-size: $label-font-size;
     color: $label-color-light;
     top: $label-top;
-    padding-left: $label-padding-left;
     transition-property: top, font-size, color, padding;
 }
