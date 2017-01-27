@@ -1,9 +1,13 @@
 @import "dashboard";
 
-$input-filled-padding-bottom: 5px;
+$input-padding-bottom: 0;
+$input-padding-top: 0.7em;
+$input-filled-padding-bottom: 0.35em;
 $input-filled-padding-top: $input-filled-padding-bottom;
 
 $label-top: 1.3em;
+$label-filled-padding-top: 0;
+$label-filled-padding-left: 0;
 
 .inputElement {
     &:focus:not([disabled]):not([readonly]), &.filled {
@@ -11,8 +15,8 @@ $label-top: 1.3em;
             padding-top: $input-filled-padding-top;
 
         ~ .label:not(.fixed) {
-            top: 0;
-            padding-left: 0;
+            top: $label-filled-padding-top;
+            padding-left: $label-filled-padding-left;
             font-size: $label-font-size-active;
         }
     }
@@ -27,8 +31,8 @@ $label-top: 1.3em;
     font-size: $input-font-size;
     color: $input-color-light;
     padding-left: $input-padding-left;
-    padding-bottom: 0;
-    padding-top: 0.7em;
+    padding-bottom: $input-padding-bottom;
+    padding-top: $input-padding-top;
     transition-property: top, font-size, color, padding;
 
     &:focus,
