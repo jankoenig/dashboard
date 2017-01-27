@@ -1,9 +1,9 @@
-@import "./dropdown-dark.scss";
-
-.inputLabel {
-    max-height: 0px;
-}
+@import "./dropdown-nolabel.scss";
 
 .value {
-    padding-top: 0px;
+    color: $input-color-dark;
+}
+
+.inputInputElement {
+    color: $input-color-dark;
 }
