@@ -384,6 +384,6 @@ describe("Filters.tsx", function() {
 
             const filter: IntentFilter = new IntentFilter("Test Convo");
             expect(filter.filter(newConvo)).to.be.false;
-        })
+        });
     });
 });
