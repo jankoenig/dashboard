@@ -22,6 +22,7 @@ interface LogExplorerProps {
     source: Source;
     onFilter?: (filter: FilterType) => boolean;
     lockFilterBar?: boolean;
+    onItemsFiltered?: (visible: ConversationList) => void;
     onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
 }
 
@@ -103,7 +104,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                 conversations={ConversationList.fromLogs(logs)}
                 filter={this.state.filter}
                 onScroll={this.onScroll.bind(this)}
-                onShowConversation={this.onConversationClicked.bind(this)} />
+                onShowConversation={this.onConversationClicked.bind(this)}
+                onItemsFiltered={this.props.onItemsFiltered} />
         );
 
         let rightSide = this.state.selectedConvo ?
