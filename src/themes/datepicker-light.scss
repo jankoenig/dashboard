@@ -1,28 +1,28 @@
-@import "dashboard";
+@import "input-light";
 
-.inputElement {
-    &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
-        ~ .label:not(.fixed) {
-            color: $label-color-light;
-            top: 10px;
-            font-size: $input-font-size;
-        }
-    }
-}
+// .inputElement {
+//     &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
+//         ~ .label:not(.fixed) {
+//             color: $label-color-light;
+//             top: 10px;
+//             font-size: $input-font-size;
+//         }
+//     }
+// }
 
-.input:not(.disabled) > .inputElement {
-    border-bottom-color: $label-color-light;
-    font-size: $input-font-size;
-    color: $input-color-light;
-    padding: 0px;
-}
+// .input:not(.disabled) > .inputElement {
+//     border-bottom-color: $label-color-light;
+//     font-size: $input-font-size;
+//     color: $input-color-light;
+//     padding: 0px;
+// }
 
-.label {
-    font-size: $label-font-size;
-    color: $label-color-light;
-}
+// .label {
+//     font-size: $label-font-size;
+//     color: $label-color-light;
+// }
 
-.title {
-    font-size: $input-font-size;
-    color: $input-color-light;
-}
+// .title {
+//     font-size: $input-font-size;
+//     color: $input-color-light;
+// }

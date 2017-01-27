@@ -11,6 +11,7 @@ import { CompositeFilter, DateFilter, FilterType, IntentFilter, LogLevelFilter }
 const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
 const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss");
+const InputTheme = require("../../../themes/input-light.scss");
 
 export interface FilterProps {
     query: LogQuery;
@@ -136,14 +137,14 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                 </Cell>
                 <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={3} phone={2} offsetPhone={0} >
                     <Input
-                        theme={DatePickerFilterbarTheme}
+                        theme={InputTheme}
                         type="text"
                         label="Intent"
                         name="Intent"
                         value={this.state.intentValue}
                         onChange={this.handleIntentChange} />
                 </Cell>
-                <Cell col={2} offsetDesktop={4} tablet={2} offsetTablet={8} phone={2} offsetPhone={0}>
+                <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={8} phone={2} offsetPhone={0}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"

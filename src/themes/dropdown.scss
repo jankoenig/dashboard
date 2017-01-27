@@ -1,14 +1,23 @@
 @import "dashboard";
+@import "input";
 
 .dropdown {
-  &:not(.up) > .values {
-    top: 100%;
-    margin-top: 0px;
-  }
+
+    outline: none;
+
+    &:not(.up) > .values {
+        top: 100%;
+        margin-top: 0px;
+    }
 }
 
 .inputInputElement {
     font-size: $input-font-size;
+    color: $input-color-light;
+    padding-left: $input-padding-left;
+    padding-bottom: $input-filled-padding-bottom;
+    padding-top: $input-filled-padding-top;
+    transition-property: opacity;
 }
 
 .value {
@@ -21,5 +30,9 @@
 }
 
 .inputLabel {
+    top: 10px;
+    font-size: $label-font-size-active;
+    padding-left: 0;
     font-size: $label-font-size;
+    transition-property: opacity;
 }

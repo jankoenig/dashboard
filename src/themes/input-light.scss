@@ -1,0 +1,51 @@
+@import "input";
+
+.bar {
+    &::before,
+    &::after {
+        background-color: $input-color-light;
+    }
+}
+
+.inputElement {
+    &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
+        ~ .label:not(.fixed) {
+            color: $label-color-light;
+        }
+    }
+}
+
+.input:not(.disabled) > .inputElement {
+    border-bottom-color: $label-color-light;
+    color: $input-color-light;
+}
+
+.title {
+    color: $input-color-light;
+}
+
+// .inputElement {
+//     &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
+//         ~ .label:not(.fixed) {
+//             font-size: 0.9rem;
+//         }
+//     }
+// }
+
+// .input {
+//     padding: 1.8em 0 0 0; // This removes the bottom where the error typically is
+// }
+
+// .input:not(.disabled) > .inputElement {
+//     font-size: 1.0rem;
+// }
+
+// .label {
+//     font-size: 1.0rem;
+//     top: 1.5rem;
+// }
+
+
+// .title {
+//     font-size: 1.3rem;
+// }
