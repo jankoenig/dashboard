@@ -20,7 +20,7 @@ const style = require("./style.scss");
 interface LogExplorerProps {
     logMap: LogMap;
     source: Source;
-    onFilter?: (filter: CompositeFilter) => void;
+    onFilter?: (filter: FilterType) => boolean;
     lockFilterBar?: boolean;
     onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
 }
@@ -28,7 +28,7 @@ interface LogExplorerProps {
 interface LogExplorerState {
     filterBarHidden: boolean;
     selectedConvo?: Conversation;
-    filter?: FilterType;
+    filter?: CompositeFilter;
 }
 
 export default class LogExplorer extends React.Component<LogExplorerProps, LogExplorerState> {
@@ -38,6 +38,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.state = {
             filterBarHidden: false
         };
+
+        this.handleFilter = this.handleFilter.bind(this);
     }
 
     componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
@@ -60,11 +62,15 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
     }
 
-    handleFilter(filter: CompositeFilter) {
-        if (this.props.onFilter) {
-            this.props.onFilter(filter);
+    handleFilter(filter: FilterType) {
+        if (this.props.onFilter && this.props.onFilter(filter)) {
+            return;
         }
-        this.state.filter = filter;
+        if (!this.state.filter) {
+            this.state.filter = new CompositeFilter([filter]);
+        } else {
+            this.state.filter = this.state.filter.copyAndAddOrReplace(filter);
+        }
         this.setState(this.state);
     }
 
@@ -113,7 +119,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
         return (
             <span>
-                <FilterBar className={this.filterBarClasses()} onFilter={this.handleFilter.bind(this)} query={query} />
+                <FilterBar className={this.filterBarClasses()}
+                    onFilterDate={this.handleFilter}
+                    onFilterIntent={this.handleFilter}
+                    onFilterLogLevel={this.handleFilter}
+                    query={query} />
                 <TwoPane
                     leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}
                     rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}

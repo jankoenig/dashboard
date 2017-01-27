@@ -6,7 +6,7 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap } from "../../reducers/log";
-import { CompositeFilter, DateFilter, TYPE_DATE } from "./Filters";
+import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
 import { retrieveLogs } from "../../actions/log";
@@ -53,9 +53,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.onFilter = this.onFilter.bind(this);
     }
 
-    onFilter(filter: CompositeFilter) {
-        let dateFilter = filter.getFilter(TYPE_DATE) as DateFilter;
-        if (dateFilter) {
+    onFilter(filter: FilterType): boolean {
+        if (filter.type === TYPE_DATE) {
+            const dateFilter = filter as DateFilter;
             const query = new LogQuery({
                 source: this.props.source,
                 startTime: dateFilter.startDate,
@@ -64,7 +64,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             });
 
             this.props.getLogs(query, false);
+            return true;
         }
+        return false;
     }
 
     onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
