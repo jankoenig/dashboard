@@ -1,7 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
-// import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
 import LogQuery from "../../models/log-query";

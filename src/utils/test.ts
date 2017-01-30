@@ -14,16 +14,21 @@ export function dummyLogs(length: number): Log[] {
 
     let logs: Log[] = [];
 
-    for (let i = 0; i < length; i++) {
+    const date: Date = new Date();
 
+    for (let i = 0; i < length; i++) {
         let tag: string = "response";
         let transaction_id: string = "" + (i - 1);
         let payload: string | {} = "payload";
 
+        const dateCopy = new Date();
+        dateCopy.setSeconds(date.getSeconds() - i);
+
         // if 0 or even, make it a request.
-        if (i === 0 || !(i & 1)) {
+        if (i % 2 === 0) {
             tag = "request";
             transaction_id = "" + i;
+            dateCopy.setSeconds(dateCopy.getSeconds() - 1);
             payload = {
                 request: {
                     type: "Request." + i
@@ -35,7 +40,7 @@ export function dummyLogs(length: number): Log[] {
         let log = new Log({
             payload: payload,
             log_type: "INFO",
-            timestamp: new Date(),
+            timestamp: dateCopy,
             source: "source",
             transaction_id: transaction_id,
             tags: [tag],

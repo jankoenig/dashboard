@@ -27,8 +27,9 @@ describe("LogsPage", function () {
 
     describe("Paging", function () {
         let source: Source = dummySources(1)[0];
-        let firstPage: Log[] = dummyLogs(10);
-        let secondPage: Log[] = dummyLogs(5);
+        let allPages: Log[] = dummyLogs(15);
+        let firstPage: Log[] = allPages.slice(0, 10);
+        let secondPage: Log[] = allPages.slice(10);
 
         let logMap: LogMap = {};
         logMap[source.id] = {
@@ -39,7 +40,9 @@ describe("LogsPage", function () {
         let getLogs: Sinon.SinonStub;
 
         before(function () {
-            getLogs = sinon.stub().returns(Promise.resolve(secondPage));
+            getLogs = sinon.stub();
+            getLogs.returns(Promise.resolve(dummyLogs(0)));
+            getLogs.onCall(0).returns(Promise.resolve(secondPage));
         });
 
         afterEach(function () {
@@ -66,6 +69,28 @@ describe("LogsPage", function () {
             expect(logQuery.source).to.equal(source);
             expect(logQuery.startTime).to.equalDate(logQuery.startTime);
             expect(logQuery.endTime).to.be.equalDate(firstPage[firstPage.length - 1].timestamp);
+        });
+
+        it ("Tests that the query is not called when there have been no new logs pulled.", function() {
+            let wrapper = shallow(<LogsPage isLoading={false} source={source} logMap={logMap} getLogs={getLogs} />);
+
+            let logExplorer = wrapper.find("LogExplorer").at(0);
+            logExplorer.simulate("scroll", 0, 10, firstPage.length); // Will return four dummylogs.
+
+            logMap[source.id].logs = allPages;
+
+            wrapper.setProps({ isLoading: false, source: source, logMap: logMap, getLogs: getLogs });
+
+            logExplorer = wrapper.find("LogExplorer").at(0);
+            logExplorer.simulate("scroll", 10, allPages.length, allPages.length); // Will attempt get get more.
+
+            // Simulate nothing returned.
+            wrapper.setProps({ isLoading: false, source: source, logMap: logMap, getLogs: getLogs });
+
+            logExplorer = wrapper.find("LogExplorer").at(0);
+            logExplorer.simulate("scroll", 10, allPages.length, allPages.length); // Will not even attempt to get logs.
+
+            expect(getLogs).to.have.been.calledTwice;
         });
 
         it("Tests that the get logs is not retrieved when not within range.", function () {
