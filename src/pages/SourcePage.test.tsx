@@ -142,7 +142,6 @@ describe("Source Page", function () {
             wrapper.setProps({
                 source: source
             });
-            console.info("UPDATE");
             wrapper.update();
         });
 

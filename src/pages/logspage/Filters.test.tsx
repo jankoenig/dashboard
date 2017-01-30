@@ -383,8 +383,6 @@ describe("Filters.tsx", function () {
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
-
-            console.log(convo.intent);
         });
 
         it("Tests the intent filter is the correct type.", function () {

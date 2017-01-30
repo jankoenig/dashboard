@@ -49,13 +49,11 @@ export class FilterableConversationList extends React.Component<FilterableConver
                     me.state.shownConversations = items;
                     me.setState(me.state);
 
-                    console.info("WOOO");
                     if (me.props.onItemsFiltered) {
                         me.props.onItemsFiltered(items);
                     }
                 }
             }).catch(function (err: Error) {
-                console.error(err);
                 me.state.shownConversations = new ConversationList();
                 me.setState(me.state);
             });
