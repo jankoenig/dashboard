@@ -14,12 +14,34 @@ export interface FilterType {
     filter: (item: Conversation) => boolean;
 }
 
+/**
+ * Composite filter is an immutable object of Filters in which it will only return "true"
+ * when all filters pass.
+ *
+ * It is designed with the assumption that there will only be one filter for each type.
+ * This is not enforced in the constructor, but the other methods assume this so it is the user's
+ * responsibility to ensure that it is true.
+ */
 export class CompositeFilter implements FilterType {
     filters: FilterType[];
     type: string = TYPE_COMPOSITE;
 
     constructor(filters: FilterType[]) {
         this.filters = filters;
+    }
+
+    /**
+     * creates a new CompositeFilter with the added filter.
+     */
+    copyAndAddOrReplace(filter: FilterType): CompositeFilter {
+        let copy = this.filters.slice();
+        for (let i = 0; i < this.filters.length; ++i) {
+            if (this.filters[i].type === filter.type) {
+                copy.splice(i, 1);
+            }
+        }
+        copy.push(filter);
+        return new CompositeFilter(copy);
     }
 
     getFilter(type: string): FilterType | undefined {

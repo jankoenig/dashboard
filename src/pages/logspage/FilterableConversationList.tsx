@@ -1,13 +1,11 @@
 import * as React from "react";
 
-import ERROR from "../../constants/error";
-
 import { ConversationListView } from "../../components/ConversationListView";
 import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 
 import browser from "../../utils/browser";
-import { filter } from "../../utils/promise";
+import { filter, FilterResult } from "../../utils/promise";
 
 import { FilterType } from "./Filters";
 
@@ -15,6 +13,7 @@ export interface FilterableConversationListProps {
     conversations: ConversationList;
     onShowConversation: (conversation: Conversation) => void;
     filter?: FilterType;
+    onItemsFiltered: (shownConversations: ConversationList) => void;
     onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
 }
 
@@ -44,14 +43,17 @@ export class FilterableConversationList extends React.Component<FilterableConver
         let filterToUse = (filterType) ? filterType.filter : undefined;
         let me = this;
         filter(list, filterToUse)
-            .then(function (items: ConversationList) {
-                me.state.shownConversations = items;
-                me.setState(me.state);
-            }).catch(function (err: Error) {
-                // only print out errors that are NOT the no items found error
-                if (err.message !== ERROR.FILTER.NO_ITEMS_FOUND) {
-                    console.error(err);
+            .then(function (result: FilterResult<Conversation>) {
+                if (result.changed) {
+                    let items = result.result;
+                    me.state.shownConversations = items;
+                    me.setState(me.state);
+
+                    if (me.props.onItemsFiltered) {
+                        me.props.onItemsFiltered(items);
+                    }
                 }
+            }).catch(function (err: Error) {
                 me.state.shownConversations = new ConversationList();
                 me.setState(me.state);
             });

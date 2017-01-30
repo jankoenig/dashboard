@@ -6,7 +6,7 @@ import Input from "react-toolbox/lib/input";
 
 import { Cell, Grid } from "../../../components/Grid";
 import LogQuery from "../../../models/log-query";
-import { CompositeFilter, DateFilter, FilterType, IntentFilter, LogLevelFilter } from "../Filters";
+import { DateFilter, IntentFilter, LogLevelFilter } from "../Filters";
 
 const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
@@ -15,7 +15,9 @@ const InputTheme = require("../../../themes/input-light.scss");
 
 export interface FilterProps {
     query: LogQuery;
-    onFilter: (filter: CompositeFilter) => void;
+    onFilterLogLevel: (filter: LogLevelFilter) => void;
+    onFilterIntent: (filter: IntentFilter) => void;
+    onFilterDate: (filter: DateFilter) => void;
     className?: string;
 }
 
@@ -97,26 +99,19 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
             this.setDateRange(this.state.startDate, value);
         }
 
-        this.newFilter(new DateFilter(this.state.startDate, this.state.endDate));
+        this.props.onFilterDate(new DateFilter(this.state.startDate, this.state.endDate));
     }
 
     handleLogTypeChange(value: string) {
         this.state.selectedType = value;
         this.setState(this.state);
-        this.newFilter(new LogLevelFilter(value));
+        this.props.onFilterLogLevel(new LogLevelFilter(value));
     }
 
     handleIntentChange(value: string) {
         this.state.intentValue = value;
         this.setState(this.state);
-        this.newFilter(new IntentFilter(value));
-    }
-
-    newFilter(filter: FilterType) {
-        this.state.filterMap[filter.type] = filter;
-        let filterMap = this.state.filterMap;
-        let filters = Object.keys(this.state.filterMap).map(function (key) { return filterMap[key]; });
-        this.props.onFilter(new CompositeFilter(filters));
+        this.props.onFilterIntent(new IntentFilter(value));
     }
 
     render(): JSX.Element {

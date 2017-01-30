@@ -9,7 +9,7 @@ describe("Promise Utils", function () {
             return Utils.filter([1, 2, 3, 4, 5, 6], function (item: number, index: number): boolean {
                 caughtIndexes.push(index);
                 return item < 3;
-            }).then(function (filteredItems: number[]) {
+            }).then(function (result: Utils.FilterResult<number>) {
                 expect(caughtIndexes.length).to.equal(6);
                 for (let i = 0; i < caughtIndexes.length; ++i) {
                     expect(caughtIndexes[i]).to.equal(i);
@@ -20,31 +20,49 @@ describe("Promise Utils", function () {
         it("Tests if filters the series of numbers", function () {
             return Utils.filter([1, 2, 3, 4, 5, 6], function (item: number, index: number): boolean {
                 return item < 3;
-            }).then(function (filteredItems: number[]) {
-                expect(filteredItems.length).to.equal(2);
-                expect(filteredItems[0]).to.equal(1);
-                expect(filteredItems[1]).to.equal(2);
+            }).then(function (result: Utils.FilterResult<number>) {
+                expect(result.result.length).to.equal(2);
+                expect(result.result[0]).to.equal(1);
+                expect(result.result[1]).to.equal(2);
+                expect(result.changed).to.be.true;
             });
         });
 
-        it("Tests an error is thrown if no items were found.", function () {
+        it("Tests if filters the series of numbers when nothing gets filtered", function () {
             return Utils.filter([1, 2, 3, 4, 5, 6], function (item: number, index: number): boolean {
-                return item > 7;
-            }).catch(function (err: Error) {
-                expect(err).to.not.be.undefined;
+                return true;
+            }).then(function (result: Utils.FilterResult<number>) {
+                expect(result.result.length).to.equal(6);
+                expect(result.result[0]).to.equal(1);
+                expect(result.result[1]).to.equal(2);
+                expect(result.result[2]).to.equal(3);
+                expect(result.result[3]).to.equal(4);
+                expect(result.result[4]).to.equal(5);
+                expect(result.result[5]).to.equal(6);
+                expect(result.changed).to.be.false;
+            });
+        });
+
+        it("Tests condition if no items were found.", function () {
+            return Utils.filter([1, 2, 3, 4, 5, 6], function (item: number, index: number): boolean {
+                return false;
+            }).then(function (result: Utils.FilterResult<number>) {
+                expect(result.result.length).to.equal(0);
+                expect(result.changed).to.be.true;
             });
         });
 
         it("Tests the items are returned if the filter was undefined.", function () {
             return Utils.filter([1, 2, 3, 4, 5, 6], undefined)
-                .then(function (items: number[]) {
-                    expect(items.length).to.equal(6);
-                    expect(items[0]).to.equal(1);
-                    expect(items[1]).to.equal(2);
-                    expect(items[2]).to.equal(3);
-                    expect(items[3]).to.equal(4);
-                    expect(items[4]).to.equal(5);
-                    expect(items[5]).to.equal(6);
+                .then(function (result: Utils.FilterResult<number>) {
+                    expect(result.result.length).to.equal(6);
+                    expect(result.result[0]).to.equal(1);
+                    expect(result.result[1]).to.equal(2);
+                    expect(result.result[2]).to.equal(3);
+                    expect(result.result[3]).to.equal(4);
+                    expect(result.result[4]).to.equal(5);
+                    expect(result.result[5]).to.equal(6);
+                    expect(result.changed).to.be.false;
                 });
         });
     });
