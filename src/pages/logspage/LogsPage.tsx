@@ -23,6 +23,7 @@ export interface LogsPageProps {
 }
 
 interface LogsPageState {
+    lastQuery: LogQuery;
 }
 
 function mapStateToProps(state: State.All) {
@@ -47,8 +48,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     constructor(props: LogsPageProps) {
         super(props);
         this.state = {
-            logMap: props.logMap,
-            source: props.source
+            lastQuery: undefined
         };
 
         this.onScroll = this.onScroll.bind(this);
@@ -59,7 +59,16 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     onItemsFiltered(list: ConversationList) {
         console.info(list.length);
         if (list.length < 50) {
-            // this.getMoreItems();
+            console.info("GET MORE");
+            if (!this.props.isLoading) {
+                const logQuery: LogQuery = this.getNextPageQuery();
+                if (this.lastQueryDoesNotMatch(logQuery)) {
+                    this.getMoreItems(logQuery);
+                } else {
+                    console.log(logQuery);
+                    console.info("1. Matches last");
+                }
+            }
         }
     }
 
@@ -81,24 +90,38 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
         if (!this.props.isLoading && lastVisibleIndex > total - 5) {
-            this.getMoreItems();
+            const logQuery: LogQuery = this.getNextPageQuery();
+            if (this.lastQueryDoesNotMatch(logQuery)) {
+                this.getMoreItems(logQuery);
+            } else {
+                console.log(logQuery);
+                console.info("2. Matches last");
+            }
         }
     }
 
-    getMoreItems() {
+    getMoreItems(query: LogQuery) {
+        this.props.getLogs(query, true);
+        this.state.lastQuery = query;
+        this.setState(this.state);
+    }
+
+    getNextPageQuery(): LogQuery {
         const sourceId = this.props.source.id;
         const allLogs = this.props.logMap[sourceId].logs;
 
         const lastQuery = this.props.logMap[sourceId].query;
         const lastLog = allLogs[allLogs.length - 1];
-        const query = new LogQuery({
+        return new LogQuery({
             source: this.props.source,
             startTime: lastQuery.startTime,
             endTime: new Date(lastLog.timestamp),
             limit: LIMIT
         });
+    }
 
-        this.props.getLogs(query, true);
+    lastQueryDoesNotMatch(query: LogQuery) {
+        return JSON.stringify(this.state.lastQuery) !== JSON.stringify(query);
     }
 
     render() {
