@@ -164,21 +164,11 @@ export class IntentFilter implements FilterType {
 }
 
 export class ExceptionFilter implements FilterType {
-    hasException: boolean;
     type: string = TYPE_EXCEPTION;
 
-    constructor(hasException?: boolean) {
-        this.hasException = (hasException !== undefined) ? hasException : true;
-    }
-
     get filter(): (item: Conversation) => boolean {
-        const hasException = this.hasException;
         return function(item: Conversation): boolean {
-            if (hasException) {
-                return item.hasException;
-            } else {
-                return !item.hasException;
-            }
+            return item.hasException;
         };
     }
 }

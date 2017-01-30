@@ -468,44 +468,6 @@ describe("Filters.tsx", function () {
             expect(filter.filter(newConvo)).to.be.true;
         });
 
-        it("Tests the Exception Filter returns correct value with true constructor and exception exists.", function () {
-            const filter: ExceptionFilter = new ExceptionFilter(true);
-            const trace: StackTrace = new StackTrace({
-                id: "trace0",
-                timestamp: new Date(),
-                raw: "Really long stack trace",
-                message: "Stack trace message",
-                elements: []
-            });
-
-            const newConvo = new Conversation({
-                request: new Log(responseProps),
-                response: new Log(responseProps),
-                stackTraces: [ trace ]
-            });
-
-            expect(filter.filter(newConvo)).to.be.true;
-        });
-
-        it("Tests the Exception Filter returns correct value with false constructor and exception exists.", function () {
-            const filter: ExceptionFilter = new ExceptionFilter(false);
-            const trace: StackTrace = new StackTrace({
-                id: "trace0",
-                timestamp: new Date(),
-                raw: "Really long stack trace",
-                message: "Stack trace message",
-                elements: []
-            });
-
-            const newConvo = new Conversation({
-                request: new Log(responseProps),
-                response: new Log(responseProps),
-                stackTraces: [ trace ]
-            });
-
-            expect(filter.filter(newConvo)).to.be.false;
-        });
-
         it("Tests the Exception Filter returns correct value with default constructor and exception does not exist.", function () {
             const filter: ExceptionFilter = new ExceptionFilter();
             const newConvo = new Conversation({
@@ -514,26 +476,6 @@ describe("Filters.tsx", function () {
             });
 
             expect(filter.filter(newConvo)).to.be.false;
-        });
-
-        it("Tests the Exception Filter returns correct value with true constructor and exception does not exist.", function () {
-            const filter: ExceptionFilter = new ExceptionFilter(true);
-            const newConvo = new Conversation({
-                request: new Log(responseProps),
-                response: new Log(responseProps)
-            });
-
-            expect(filter.filter(newConvo)).to.be.false;
-        });
-
-        it("Tests the Exception Filter returns correct value with default constructor and exception does not exist.", function () {
-            const filter: ExceptionFilter = new ExceptionFilter(false);
-            const newConvo = new Conversation({
-                request: new Log(responseProps),
-                response: new Log(responseProps)
-            });
-
-            expect(filter.filter(newConvo)).to.be.true;
         });
     });
 });
