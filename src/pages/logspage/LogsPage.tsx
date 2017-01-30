@@ -57,16 +57,11 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onItemsFiltered(list: ConversationList) {
-        console.info(list.length);
-        if (list.length < 50) {
-            console.info("GET MORE");
+        if (list.length < LIMIT) {
             if (!this.props.isLoading) {
                 const logQuery: LogQuery = this.getNextPageQuery();
                 if (this.lastQueryDoesNotMatch(logQuery)) {
                     this.getMoreItems(logQuery);
-                } else {
-                    console.log(logQuery);
-                    console.info("1. Matches last");
                 }
             }
         }
@@ -93,9 +88,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             const logQuery: LogQuery = this.getNextPageQuery();
             if (this.lastQueryDoesNotMatch(logQuery)) {
                 this.getMoreItems(logQuery);
-            } else {
-                console.log(logQuery);
-                console.info("2. Matches last");
             }
         }
     }
