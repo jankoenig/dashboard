@@ -133,7 +133,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
 
         return (
             <Grid className={this.gridClasses()} >
-                <Cell col={2} tablet={2} phone={2}>
+                <Cell col={2} tablet={3} phone={2}>
                     <Dropdown
                         theme={DropdownFilterbarTheme}
                         label="Log Level"
@@ -143,7 +143,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         value={this.state.selectedType}
                     />
                 </Cell>
-                <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={3} phone={2} offsetPhone={0} >
+                <Cell col={2} offsetDesktop={0} tablet={3} offsetTablet={0} phone={2} offsetPhone={0} >
                     <Input
                         theme={InputTheme}
                         type="text"
@@ -152,14 +152,14 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         value={this.state.intentValue}
                         onChange={this.handleIntentChange} />
                 </Cell>
-                <Cell col={1} offsetDesktop={0} tablet={1} offsetTablet={0} phone={2} offsetPhone={0}>
+                <Cell col={1} offsetDesktop={0} tablet={1} offsetTablet={0} phone={4} offsetPhone={0}>
                     <Checkbox
                         theme={CheckboxTheme}
                         checked={this.state.exceptionsOnly}
                         label="Only with Exceptions"
                         onChange={this.handleExceptionOnlyChange} />
                 </Cell>
-                <Cell col={2} offsetDesktop={4} tablet={2} offsetTablet={8} phone={2} offsetPhone={0}>
+                <Cell col={2} offsetDesktop={3} tablet={4} offsetTablet={0} phone={2} offsetPhone={0}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
@@ -169,7 +169,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         readonly={this.props.query ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
-                <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={0} phone={2} offsetPhone={0}>
+                <Cell col={2} offsetDesktop={0} tablet={4} offsetTablet={0} phone={2} offsetPhone={0}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
