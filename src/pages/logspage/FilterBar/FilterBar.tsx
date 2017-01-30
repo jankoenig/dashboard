@@ -7,7 +7,7 @@ import Input from "react-toolbox/lib/input";
 
 import { Cell, Grid } from "../../../components/Grid";
 import LogQuery from "../../../models/log-query";
-import { DateFilter, IntentFilter, LogLevelFilter } from "../Filters";
+import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter } from "../Filters";
 
 const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
@@ -20,6 +20,7 @@ export interface FilterProps {
     onFilterLogLevel: (filter: LogLevelFilter) => void;
     onFilterIntent: (filter: IntentFilter) => void;
     onFilterDate: (filter: DateFilter) => void;
+    onFilterException: (filter: ExceptionFilter) => void;
     className?: string;
 }
 
@@ -121,6 +122,9 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     handleExceptionOnlyChange(value: boolean) {
         this.state.exceptionsOnly = value;
         this.setState(this.state);
+
+        let filter: ExceptionFilter = (value) ? new ExceptionFilter() : new FakeExceptionFilter();
+        this.props.onFilterException(filter);
     }
 
     render(): JSX.Element {
@@ -181,3 +185,12 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
 }
 
 export default FilterBar;
+
+class FakeExceptionFilter extends ExceptionFilter {
+
+    get filter(): (item: any) => boolean {
+        return function(item: any): boolean {
+            return true;
+        };
+    }
+}
