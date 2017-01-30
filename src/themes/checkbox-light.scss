@@ -1,0 +1,30 @@
+@import "dashboard";
+@import "checkbox";
+
+$checkbox-text-color: $color-white;
+
+@import "~react-toolbox/lib/checkbox/theme.scss";
+
+.check {
+  &.checked {
+    &:after {
+      animation: custom-checkmark-expand 140ms ease-out forwards;
+    }
+  }
+}
+
+@keyframes custom-checkmark-expand {
+  0% {
+    top: .9 * $unit;
+    left: .6 * $unit;
+    width: 0;
+    height: 0;
+  }
+
+  100% {
+    top: -.1 * $unit;
+    left: .3 * $unit;
+    width: .3 * $unit;
+    height: 0.9 * $unit;
+  }
+}

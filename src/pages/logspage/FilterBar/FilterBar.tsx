@@ -1,5 +1,6 @@
 import * as classNames from "classnames";
 import * as React from "react";
+import Checkbox from "react-toolbox/lib/checkbox";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
 import Input from "react-toolbox/lib/input";
@@ -12,6 +13,7 @@ const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
 const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss");
 const InputTheme = require("../../../themes/input-light.scss");
+const CheckboxTheme = require("../../../themes/checkbox-light.scss");
 
 export interface FilterProps {
     query: LogQuery;
@@ -27,6 +29,7 @@ export interface FilterState {
     logTypes?: LogType[];
     selectedType?: string;
     intentValue?: string;
+    exceptionsOnly?: boolean;
     filterMap: any;
     filterbarHidden: boolean;
 }
@@ -62,6 +65,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
 
         this.handleStartDateChange = this.handleDateChange.bind(this, "startDate");
         this.handleEndDateChange = this.handleDateChange.bind(this, "endDate");
+        this.handleExceptionOnlyChange = this.handleExceptionOnlyChange.bind(this);
         this.handleLogTypeChange = this.handleLogTypeChange.bind(this);
         this.handleIntentChange = this.handleIntentChange.bind(this);
     }
@@ -114,6 +118,11 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.props.onFilterIntent(new IntentFilter(value));
     }
 
+    handleExceptionOnlyChange(value: boolean) {
+        this.state.exceptionsOnly = value;
+        this.setState(this.state);
+    }
+
     render(): JSX.Element {
         let fullEndDate = new Date();
         let queryEndDate = this.state.endDate ? this.state.endDate : fullEndDate;
@@ -138,6 +147,13 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         name="Intent"
                         value={this.state.intentValue}
                         onChange={this.handleIntentChange} />
+                </Cell>
+                <Cell col={1} offsetDesktop={0} tablet={1} offsetTablet={0} phone={2} offsetPhone={0}>
+                    <Checkbox
+                        theme={CheckboxTheme}
+                        checked={this.state.exceptionsOnly}
+                        label="Only with Exceptions"
+                        onChange={this.handleExceptionOnlyChange} />
                 </Cell>
                 <Cell col={2} offsetDesktop={4} tablet={2} offsetTablet={8} phone={2} offsetPhone={0}>
                     <DatePicker

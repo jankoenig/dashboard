@@ -3,15 +3,20 @@
 
 // Shared styles for the dashboard project
 
-$input-font-size: 1.0em;
+$color-primary: rgb(255, 69, 69);
+
+$font-size-tiny: 0.8em;
+$font-size-small: 1.0em;
+
+$input-font-size: $font-size-small;
 $input-color-light: rgba(255, 255, 255, 1.0);
 $input-icon-color-light: $input-color-light;
 $input-color-dark: rgba(117, 117, 117, 1.0);
 $input-bar-color-light: $input-color-light;
 $input-padding-left: 0.5em;
 
-$label-font-size: 1.0em;
-$label-font-size-active: 0.8em;
+$label-font-size: $font-size-small;
+$label-font-size-active: $font-size-tiny;
 $label-color-light: rgba(255, 255, 255, 0.5);
 $label-color-dark: rgba(255, 255, 255, 0.5);
 $label-padding-left: $input-padding-left;
