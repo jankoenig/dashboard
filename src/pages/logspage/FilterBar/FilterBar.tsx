@@ -153,11 +153,13 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         onChange={this.handleIntentChange} />
                 </Cell>
                 <Cell col={1} offsetDesktop={0} tablet={1} offsetTablet={0} phone={4} offsetPhone={0}>
-                    <Checkbox
-                        theme={CheckboxTheme}
-                        checked={this.state.exceptionsOnly}
-                        label="Only with Exceptions"
-                        onChange={this.handleExceptionOnlyChange} />
+                    <div style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} >
+                        <Checkbox
+                            theme={CheckboxTheme}
+                            checked={this.state.exceptionsOnly}
+                            label="Only with Exceptions"
+                            onChange={this.handleExceptionOnlyChange} />
+                    </div>
                 </Cell>
                 <Cell col={2} offsetDesktop={3} tablet={4} offsetTablet={0} phone={2} offsetPhone={0}>
                     <DatePicker
@@ -169,7 +171,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         readonly={this.props.query ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
-                <Cell col={2} offsetDesktop={0} tablet={4} offsetTablet={0} phone={2} offsetPhone={0}>
+                <Cell col={2} offsetDesktop={0} tablet={4} offsetTablet={0} phone={1} offsetPhone={0}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
@@ -189,7 +191,7 @@ export default FilterBar;
 class FakeExceptionFilter extends ExceptionFilter {
 
     get filter(): (item: any) => boolean {
-        return function(item: any): boolean {
+        return function (item: any): boolean {
             return true;
         };
     }
