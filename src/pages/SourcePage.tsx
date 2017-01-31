@@ -85,10 +85,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             },
             map: function (data: LogService.TimeSummary): TimeData[] {
                 return data.buckets.map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
-                    let timeData: TimeData = {
-                        time: value.date,
+                    let timeData: TimeData = new TimeData({
+                        isoDate: value.date,
                         count: value.count
-                    };
+                    });
                     return timeData;
                 });
             },
@@ -337,9 +337,9 @@ function defaultTimeData(start: Date, end: Date): TimeData[] {
     let data: TimeData[] = [];
     let currentDate: Date = new Date(start);
     while (currentDate.getDate() < end.getDate()) {
-        data.push({
-            time: currentDate.toISOString()
-        });
+        data.push(new TimeData({
+            isoDate: currentDate.toISOString()
+        }));
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return data;
