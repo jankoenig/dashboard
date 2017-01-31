@@ -26,12 +26,12 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow(<Filterbar
+        let wrapper = shallow((<Filterbar
             onFilterDate={onFilter}
             onFilterIntent={onFilter}
             onFilterLogLevel={onFilter}
             onFilterException={onFilter}
-            query={logQuery} />);
+            query={logQuery} />));
 
         expect(wrapper.find(Dropdown)).to.have.length(1); // Filter by type.
         expect(wrapper.find(DatePicker)).to.have.length(2); // filter by date range
@@ -44,12 +44,12 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow(<Filterbar
+        let wrapper = shallow((<Filterbar
             onFilterDate={onFilter}
             onFilterIntent={onFilter}
             onFilterLogLevel={onFilter}
             onFilterException={onFilter}
-            query={logQuery} />);
+            query={logQuery} />));
 
         const dropdown = wrapper.find(Dropdown);
         expect(dropdown.prop("label")).to.equal("Log Level");
@@ -68,12 +68,12 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow(<Filterbar
+        let wrapper = shallow((<Filterbar
             onFilterDate={onFilter}
             onFilterIntent={onFilter}
             onFilterLogLevel={onFilter}
             onFilterException={onFilter}
-            query={logQuery} />);
+            query={logQuery} />));
 
         const startDatePicker = wrapper.find(DatePicker).at(0);
 
@@ -92,12 +92,12 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow(<Filterbar
+        let wrapper = shallow((<Filterbar
             onFilterDate={onFilter}
             onFilterIntent={onFilter}
             onFilterLogLevel={onFilter}
             onFilterException={onFilter}
-            query={logQuery} />);
+            query={logQuery} />));
 
         const endDatePicker = wrapper.find(DatePicker).at(1);
 
