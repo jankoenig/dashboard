@@ -166,7 +166,8 @@ describe("Source Page", function () {
             expect(timeData).to.have.length(timeBuckets.length);
 
             for (let i = 0; i < timeData.length; ++i) {
-                expect(timeData[i].time).to.equal(timeBuckets[i].date);
+                expect(timeData[i].date).to.equalDate(new Date(timeBuckets[i].date));
+                expect(timeData[i].time).to.equal(new Date(timeBuckets[i].date).getTime());
                 expect(timeData[i].count).to.equal(timeBuckets[i].count);
             }
         });
