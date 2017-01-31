@@ -44,8 +44,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
-        this.state.selectedConvo = undefined;
-        this.setState(this.state);
+        if (!this.props.source || this.props.source.id !== nextProps.source.id) {
+            this.state.selectedConvo = undefined;
+            this.setState(this.state);
+        }
     }
 
     onConversationClicked(conversation: Conversation) {
