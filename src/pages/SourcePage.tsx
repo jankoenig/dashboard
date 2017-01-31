@@ -104,12 +104,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         };
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
-        const start = new Date(2016, 11, 31);
-        const end = new Date(2017, 0, 6);
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(start));
-        query.add(new EndTimeParameter(end));
+        query.add(new StartTimeParameter(daysAgo(7)));
+        query.add(new EndTimeParameter(daysAgo(0)));
         query.add(new GranularityParameter("hour"));
         query.add(new TimeSortParameter("asc"));
         loader.load(query);
