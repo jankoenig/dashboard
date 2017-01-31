@@ -85,7 +85,6 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     }
 
     render() {
-        console.log(this.state.ticks);
         return (
             <ResponsiveContainer>
                 <LineChart data={this.props.data} >
