@@ -8,7 +8,7 @@ import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
-import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
+import Query, { EndTimeParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
@@ -85,10 +85,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             },
             map: function (data: LogService.TimeSummary): TimeData[] {
                 return data.buckets.map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
-                    let timeData: TimeData = {
-                        time: value.date,
+                    let timeData: TimeData = new TimeData({
+                        isoDate: value.date,
                         count: value.count
-                    };
+                    });
                     return timeData;
                 });
             },
@@ -108,10 +108,11 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new SourceParameter(source));
         query.add(new StartTimeParameter(daysAgo(7)));
         query.add(new EndTimeParameter(daysAgo(0)));
+        query.add(new GranularityParameter("hour"));
         query.add(new TimeSortParameter("asc"));
-
         loader.load(query);
     }
+
 
     retrieveIntentSummary(source: Source) {
         const dataLoader: DataLoader<LogService.IntentSummary, CountData[]> = {
@@ -334,9 +335,9 @@ function defaultTimeData(start: Date, end: Date): TimeData[] {
     let data: TimeData[] = [];
     let currentDate: Date = new Date(start);
     while (currentDate.getDate() < end.getDate()) {
-        data.push({
-            time: currentDate.toISOString()
-        });
+        data.push(new TimeData({
+            isoDate: currentDate.toISOString()
+        }));
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return data;

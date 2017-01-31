@@ -16,10 +16,10 @@ describe("CountChart", function() {
     before(function() {
         let date: Date = new Date();
         for (let i = 0; i < DATA_LENGTH; ++i) {
-            data.push({
-                time: date.toISOString(),
+            data.push(new TimeData({
+                isoDate: date.toISOString(),
                 count: i
-            });
+            }));
         }
     });
 

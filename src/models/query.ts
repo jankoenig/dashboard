@@ -83,3 +83,13 @@ export class SortParameter implements QueryParameter {
 
     parameter = "sortBy";
 }
+
+export class GranularityParameter implements QueryParameter {
+    constructor(granularity: "day" | "hour") {
+        this.value = granularity;
+    }
+
+    value: "day" | "hour";
+
+    parameter = "granularity";
+}
