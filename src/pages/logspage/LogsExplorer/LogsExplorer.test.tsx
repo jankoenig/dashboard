@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { shallow } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
@@ -36,11 +36,16 @@ describe("LogExplorer", function () {
         let logs: Log[] = dummyLogs(4);
         let outputs: Output[] = dummyOutputs(2);
         let source = new Source({ name: "name", id: "id" });
+        let source2 = new Source({ name: "name", id: "id2" });
         let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
         let logMap: LogMap = { id: { logs: logs, query: logQuery } };
         let convo: Conversation = new Conversation({ request: logs[0], response: logs[1], outputs: outputs });
 
-        let wrapper = shallow(<LogsExplorer source={source} logMap={logMap} />);
+        let wrapper: ShallowWrapper<any, any>;
+
+        beforeEach(function () {
+            wrapper = shallow(<LogsExplorer source={source} logMap={logMap} />);
+        });
 
         it("renders a FilterBar", function () {
             expect(wrapper.find("FilterBar")).to.have.length(1);
@@ -88,13 +93,31 @@ describe("LogExplorer", function () {
                 expect(wrapper.state("selectedConvo").outputs[1]).to.equal(outputs[1]);
             });
 
-            it("clears conversation on new props.", function () {
+            it("clears conversation on new source in props.", function () {
+                wrapper.setProps({
+                    source: source2,
+                    logMap: logMap
+                });
+
+                expect(wrapper.state("selectedConvo")).to.be.undefined;
+            });
+
+            it("clears conversation on undefined source in props.", function () {
+                wrapper.setProps({
+                    source: undefined,
+                    logMap: logMap
+                });
+
+                expect(wrapper.state("selectedConvo")).to.be.undefined;
+            });
+
+            it("does not clear conversation when new props contains same source.", function () {
                 wrapper.setProps({
                     source: source,
                     logMap: logMap
                 });
 
-                expect(wrapper.state("selectedConvo")).to.be.undefined;
+                expect(wrapper.state("selectedConvo")).to.exist;
             });
         });
     });
