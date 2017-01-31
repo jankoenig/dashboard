@@ -26,12 +26,14 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow((<Filterbar
-            onFilterDate={onFilter}
-            onFilterIntent={onFilter}
-            onFilterLogLevel={onFilter}
-            onFilterException={onFilter}
-            query={logQuery} />));
+        let wrapper = shallow((
+            <Filterbar
+                onFilterDate={onFilter}
+                onFilterIntent={onFilter}
+                onFilterLogLevel={onFilter}
+                onFilterException={onFilter}
+                query={logQuery} />
+        ));
 
         expect(wrapper.find(Dropdown)).to.have.length(1); // Filter by type.
         expect(wrapper.find(DatePicker)).to.have.length(2); // filter by date range
@@ -44,12 +46,14 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow((<Filterbar
-            onFilterDate={onFilter}
-            onFilterIntent={onFilter}
-            onFilterLogLevel={onFilter}
-            onFilterException={onFilter}
-            query={logQuery} />));
+        let wrapper = shallow((
+            <Filterbar
+                onFilterDate={onFilter}
+                onFilterIntent={onFilter}
+                onFilterLogLevel={onFilter}
+                onFilterException={onFilter}
+                query={logQuery} />
+        ));
 
         const dropdown = wrapper.find(Dropdown);
         expect(dropdown.prop("label")).to.equal("Log Level");
@@ -68,12 +72,14 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow((<Filterbar
-            onFilterDate={onFilter}
-            onFilterIntent={onFilter}
-            onFilterLogLevel={onFilter}
-            onFilterException={onFilter}
-            query={logQuery} />));
+        let wrapper = shallow((
+            <Filterbar
+                onFilterDate={onFilter}
+                onFilterIntent={onFilter}
+                onFilterLogLevel={onFilter}
+                onFilterException={onFilter}
+                query={logQuery} />
+        ));
 
         const startDatePicker = wrapper.find(DatePicker).at(0);
 
@@ -92,12 +98,14 @@ describe("Filter Bar", function () {
         let onFilter = sinon.spy();
         let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow((<Filterbar
-            onFilterDate={onFilter}
-            onFilterIntent={onFilter}
-            onFilterLogLevel={onFilter}
-            onFilterException={onFilter}
-            query={logQuery} />));
+        let wrapper = shallow((
+            <Filterbar
+                onFilterDate={onFilter}
+                onFilterIntent={onFilter}
+                onFilterLogLevel={onFilter}
+                onFilterException={onFilter}
+                query={logQuery} />
+        ));
 
         const endDatePicker = wrapper.find(DatePicker).at(1);
 
@@ -126,12 +134,14 @@ describe("Filter Bar", function () {
 
         beforeEach(function () {
             onFilter.reset();
-            wrapper = shallow(<Filterbar
-                onFilterDate={onFilter}
-                onFilterIntent={onFilter}
-                onFilterLogLevel={onFilter}
-                onFilterException={onFilter}
-                query={logQuery} />) as ShallowWrapper<FilterProps, FilterState>;
+            wrapper = shallow((
+                <Filterbar
+                    onFilterDate={onFilter}
+                    onFilterIntent={onFilter}
+                    onFilterLogLevel={onFilter}
+                    onFilterException={onFilter}
+                    query={logQuery} />
+            )) as ShallowWrapper<FilterProps, FilterState>;
         });
 
         describe("Type Filters", function () {
