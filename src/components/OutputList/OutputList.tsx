@@ -18,7 +18,6 @@ export default class OutputList extends React.Component<OutputListProps, any> {
     style() {
         return {
             listStyle: "none",
-            userSelect: "none",
             paddingTop: "10px",
             paddingBottom: "10px",
             paddingLeft: "0px",
