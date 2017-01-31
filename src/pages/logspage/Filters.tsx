@@ -8,6 +8,7 @@ export const TYPE_LOG_LEVEL: string = "Log Level";
 export const TYPE_ID: string = "ID";
 export const TYPE_DATE: string = "Date";
 export const TYPE_INTENT: string = "Intent";
+export const TYPE_EXCEPTION: string = "Exception";
 
 export interface FilterType {
     type: string;
@@ -158,6 +159,16 @@ export class IntentFilter implements FilterType {
                 /* tslint:enable:no-null-keyword*/
             }
             return false;
+        };
+    }
+}
+
+export class ExceptionFilter implements FilterType {
+    type: string = TYPE_EXCEPTION;
+
+    get filter(): (item: Conversation) => boolean {
+        return function(item: Conversation): boolean {
+            return item.hasException;
         };
     }
 }

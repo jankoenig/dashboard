@@ -1,23 +1,26 @@
 import * as classNames from "classnames";
 import * as React from "react";
+import Checkbox from "react-toolbox/lib/checkbox";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
 import Input from "react-toolbox/lib/input";
 
 import { Cell, Grid } from "../../../components/Grid";
 import LogQuery from "../../../models/log-query";
-import { DateFilter, IntentFilter, LogLevelFilter } from "../Filters";
+import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter } from "../Filters";
 
 const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
 const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss");
 const InputTheme = require("../../../themes/input-light.scss");
+const CheckboxTheme = require("../../../themes/checkbox-light.scss");
 
 export interface FilterProps {
     query: LogQuery;
     onFilterLogLevel: (filter: LogLevelFilter) => void;
     onFilterIntent: (filter: IntentFilter) => void;
     onFilterDate: (filter: DateFilter) => void;
+    onFilterException: (filter: ExceptionFilter) => void;
     className?: string;
 }
 
@@ -27,6 +30,7 @@ export interface FilterState {
     logTypes?: LogType[];
     selectedType?: string;
     intentValue?: string;
+    exceptionsOnly?: boolean;
     filterMap: any;
     filterbarHidden: boolean;
 }
@@ -62,6 +66,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
 
         this.handleStartDateChange = this.handleDateChange.bind(this, "startDate");
         this.handleEndDateChange = this.handleDateChange.bind(this, "endDate");
+        this.handleExceptionOnlyChange = this.handleExceptionOnlyChange.bind(this);
         this.handleLogTypeChange = this.handleLogTypeChange.bind(this);
         this.handleIntentChange = this.handleIntentChange.bind(this);
     }
@@ -114,13 +119,21 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.props.onFilterIntent(new IntentFilter(value));
     }
 
+    handleExceptionOnlyChange(value: boolean) {
+        this.state.exceptionsOnly = value;
+        this.setState(this.state);
+
+        let filter: ExceptionFilter = (value) ? new ExceptionFilter() : new FakeExceptionFilter();
+        this.props.onFilterException(filter);
+    }
+
     render(): JSX.Element {
         let fullEndDate = new Date();
         let queryEndDate = this.state.endDate ? this.state.endDate : fullEndDate;
 
         return (
             <Grid className={this.gridClasses()} >
-                <Cell col={2} tablet={2} phone={2}>
+                <Cell col={2} tablet={3} phone={2}>
                     <Dropdown
                         theme={DropdownFilterbarTheme}
                         label="Log Level"
@@ -130,7 +143,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         value={this.state.selectedType}
                     />
                 </Cell>
-                <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={3} phone={2} offsetPhone={0} >
+                <Cell col={2} offsetDesktop={0} tablet={3} offsetTablet={0} phone={2} offsetPhone={0} >
                     <Input
                         theme={InputTheme}
                         type="text"
@@ -139,7 +152,16 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         value={this.state.intentValue}
                         onChange={this.handleIntentChange} />
                 </Cell>
-                <Cell col={2} offsetDesktop={4} tablet={2} offsetTablet={8} phone={2} offsetPhone={0}>
+                <Cell col={1} offsetDesktop={0} tablet={1} offsetTablet={0} phone={4} offsetPhone={0}>
+                    <div style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} >
+                        <Checkbox
+                            theme={CheckboxTheme}
+                            checked={this.state.exceptionsOnly}
+                            label="With Exceptions"
+                            onChange={this.handleExceptionOnlyChange} />
+                    </div>
+                </Cell>
+                <Cell col={2} offsetDesktop={3} tablet={4} offsetTablet={0} phone={2} offsetPhone={0}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
@@ -149,7 +171,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         readonly={this.props.query ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
-                <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={0} phone={2} offsetPhone={0}>
+                <Cell col={2} offsetDesktop={0} tablet={4} offsetTablet={0} phone={1} offsetPhone={0}>
                     <DatePicker
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
@@ -165,3 +187,12 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
 }
 
 export default FilterBar;
+
+class FakeExceptionFilter extends ExceptionFilter {
+
+    get filter(): (item: any) => boolean {
+        return function (item: any): boolean {
+            return true;
+        };
+    }
+}

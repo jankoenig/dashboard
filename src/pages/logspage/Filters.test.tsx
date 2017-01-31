@@ -2,10 +2,11 @@ import * as chai from "chai";
 
 import Conversation from "../../models/conversation";
 import { Log, LogProperties } from "../../models/log";
+import StackTrace from "../../models/stack-trace";
 import { dummyOutputs } from "../../utils/test";
 
-import { TYPE_COMPOSITE, TYPE_DATE, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, } from "./Filters";
-import { CompositeFilter, DateFilter, IDFilter, IntentFilter, LogLevelFilter } from "./Filters";
+import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL } from "./Filters";
+import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter } from "./Filters";
 import { FilterType } from "./Filters";
 
 chai.use(require("chai-datetime"));
@@ -134,7 +135,7 @@ describe("Filters.tsx", function () {
                 expect(newFilter.getFilter("Brand New Type")).to.equal(newSuccess);
             });
 
-            it ("Tests the replace at beginning.", function() {
+            it("Tests the replace at beginning.", function () {
                 let newSuccess = new SuccessFilter();
                 newSuccess.type = arr[0].type;
 
@@ -144,7 +145,7 @@ describe("Filters.tsx", function () {
                 expect(newFilter.getFilter(arr[0].type)).to.not.equal(arr[0]);
             });
 
-            it ("Tests the replace in middle.", function() {
+            it("Tests the replace in middle.", function () {
                 let newSuccess = new SuccessFilter();
                 newSuccess.type = arr[5].type;
 
@@ -154,7 +155,7 @@ describe("Filters.tsx", function () {
                 expect(newFilter.getFilter(arr[0].type)).to.not.equal(arr[5]);
             });
 
-            it ("Tests the replace at end.", function() {
+            it("Tests the replace at end.", function () {
                 let newSuccess = new SuccessFilter();
                 newSuccess.type = arr[arr.length - 1].type;
 
@@ -437,6 +438,43 @@ describe("Filters.tsx", function () {
             });
 
             const filter: IntentFilter = new IntentFilter("Test Convo");
+            expect(filter.filter(newConvo)).to.be.false;
+        });
+    });
+
+    describe("Has Exception filter", function () {
+
+        it("Tests the Exception Filter returns the correct type.", function () {
+            const filter: ExceptionFilter = new ExceptionFilter();
+            expect(filter.type).to.equal(TYPE_EXCEPTION);
+        });
+
+        it("Tests the Exception Filter returns correct value with default constructor and exception exists.", function () {
+            const filter: ExceptionFilter = new ExceptionFilter();
+            const trace: StackTrace = new StackTrace({
+                id: "trace0",
+                timestamp: new Date(),
+                raw: "Really long stack trace",
+                message: "Stack trace message",
+                elements: []
+            });
+
+            const newConvo = new Conversation({
+                request: new Log(responseProps),
+                response: new Log(responseProps),
+                stackTraces: [ trace ]
+            });
+
+            expect(filter.filter(newConvo)).to.be.true;
+        });
+
+        it("Tests the Exception Filter returns correct value with default constructor and exception does not exist.", function () {
+            const filter: ExceptionFilter = new ExceptionFilter();
+            const newConvo = new Conversation({
+                request: new Log(responseProps),
+                response: new Log(responseProps)
+            });
+
             expect(filter.filter(newConvo)).to.be.false;
         });
     });
