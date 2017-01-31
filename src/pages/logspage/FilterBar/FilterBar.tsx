@@ -157,7 +157,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         <Checkbox
                             theme={CheckboxTheme}
                             checked={this.state.exceptionsOnly}
-                            label="Only with Exceptions"
+                            label="With Exceptions"
                             onChange={this.handleExceptionOnlyChange} />
                     </div>
                 </Cell>
