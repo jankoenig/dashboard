@@ -8,7 +8,7 @@ import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
-import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
+import Query, { EndTimeParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
@@ -104,14 +104,17 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         };
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
+        const start = new Date(2016, 11, 31);
+        const end = new Date(2017, 0, 6);
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(daysAgo(7)));
-        query.add(new EndTimeParameter(daysAgo(0)));
+        query.add(new StartTimeParameter(start));
+        query.add(new EndTimeParameter(end));
+        query.add(new GranularityParameter("hour"));
         query.add(new TimeSortParameter("asc"));
-
         loader.load(query);
     }
+
 
     retrieveIntentSummary(source: Source) {
         const dataLoader: DataLoader<LogService.IntentSummary, CountData[]> = {
