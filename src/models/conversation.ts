@@ -168,8 +168,8 @@ export default class Conversation implements ConversationProperties {
             return this.request.payload.request.intent.name;
         } else {
             const requestType = this.rawRequestType;
-            const splitTypes = requestType.split(".", 2);
-            if (splitTypes.length > 1) {
+            const splitTypes = (requestType) ? requestType.split(".", 2) : undefined;
+            if (splitTypes !== undefined && splitTypes.length > 1) {
                 return splitTypes[1];
             } else {
                 return undefined;

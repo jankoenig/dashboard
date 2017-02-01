@@ -5,8 +5,8 @@ import { Log, LogProperties } from "../../models/log";
 import StackTrace from "../../models/stack-trace";
 import { dummyOutputs } from "../../utils/test";
 
-import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL } from "./Filters";
-import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter } from "./Filters";
+import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, TYPE_REQUEST } from "./Filters";
+import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter, RequestFilter } from "./Filters";
 import { FilterType } from "./Filters";
 
 chai.use(require("chai-datetime"));
@@ -17,7 +17,8 @@ let requestProps: LogProperties = {
         request: {
             intent: {
                 name: "Testing Request Intent"
-            }
+            },
+            type: "TestRequest"
         }
     },
     stack: "Request Test Stack",
@@ -442,6 +443,57 @@ describe("Filters.tsx", function () {
         });
     });
 
+    describe("Request filter", function () {
+        let convo: Conversation;
+
+        before(function () {
+            convo = new Conversation({
+                request: new Log(requestProps),
+                response: new Log(responseProps)
+            });
+        });
+
+        it("Tests the request filter returns the correct type.", function() {
+            const filter = new RequestFilter();
+            expect(filter.type).to.equal(TYPE_REQUEST);
+        });
+
+        it ("Tests the request filter returns the correct value with default constructor", function() {
+            const filter = new RequestFilter();
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests the request filter returns the correct value when undefined is passed in.", function() {
+            const filter = new RequestFilter();
+            expect(filter.filter(undefined)).to.be.true;
+        });
+
+        it ("Tests the request filter returns the correct value when request exists.", function() {
+            const filter = new RequestFilter("TestRequest");
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests the request filter returns the correct value when request exists and with partial value.", function() {
+            const filter = new RequestFilter("estReques");
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests the request filter returns the correct value when request does not exist.", function() {
+            const filter = new RequestFilter("Does not exist request");
+            expect(filter.filter(convo)).to.be.false;
+        });
+
+        it ("Tests the request filter returns the correct value when there is no type.", function() {
+            const filter = new RequestFilter("TestRequest");
+            const newConvo = new Conversation({
+                request: new Log(responseProps), // Response doesn't have a type so we'll just use that.
+                response: new Log(responseProps)
+            });
+
+            expect(filter.filter(newConvo)).to.be.false;
+        });
+    });
+
     describe("Has Exception filter", function () {
 
         it("Tests the Exception Filter returns the correct type.", function () {
@@ -462,7 +514,7 @@ describe("Filters.tsx", function () {
             const newConvo = new Conversation({
                 request: new Log(responseProps),
                 response: new Log(responseProps),
-                stackTraces: [ trace ]
+                stackTraces: [trace]
             });
 
             expect(filter.filter(newConvo)).to.be.true;

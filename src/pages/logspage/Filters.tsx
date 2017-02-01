@@ -152,7 +152,11 @@ export class IntentFilter implements FilterType {
                 return true;
             }
 
-            return item && item.intent && checkString(intent, item.intent);
+            if (item && item.intent) {
+                return checkString(intent, item.intent);
+            } else {
+                return false;
+            }
         };
     }
 }
@@ -171,7 +175,11 @@ export class RequestFilter implements FilterType {
             if (!request) {
                 return true;
             }
-            return item && item.requestPayloadType && checkString(request, item.requestType);
+            if (item && item.requestType) {
+                return checkString(request, item.requestType);
+            } else {
+                return false;
+            }
         };
     }
 }
