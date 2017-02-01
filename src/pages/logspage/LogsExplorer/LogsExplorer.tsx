@@ -128,6 +128,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                     onFilterIntent={this.handleFilter}
                     onFilterLogLevel={this.handleFilter}
                     onFilterException={this.handleFilter}
+                    onFilterRequest={this.handleFilter}
                     query={query} />
                 <TwoPane
                     leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}

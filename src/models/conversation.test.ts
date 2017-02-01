@@ -193,7 +193,7 @@ describe("Conversation", function () {
             expect(conversation.userColors.background).to.equal("#4fff0f");
         });
 
-        it("returns the appropriate request type.", function () {
+        it("returns the appropriate request payload type.", function () {
             let request = new Log({
                 payload: {
                     session: {

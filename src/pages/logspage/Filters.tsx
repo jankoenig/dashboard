@@ -7,6 +7,7 @@ export const TYPE_COMPOSITE: string = "Composite";
 export const TYPE_LOG_LEVEL: string = "Log Level";
 export const TYPE_ID: string = "ID";
 export const TYPE_DATE: string = "Date";
+export const TYPE_REQUEST: string = "Request";
 export const TYPE_INTENT: string = "Intent";
 export const TYPE_EXCEPTION: string = "Exception";
 
@@ -56,7 +57,7 @@ export class CompositeFilter implements FilterType {
 
     get filter(): (item: Conversation) => boolean {
         let filters = this.filters;
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             for (let filter of filters) {
                 if (!filter.filter(item)) {
                     return false;
@@ -77,7 +78,7 @@ export class LogLevelFilter implements FilterType {
 
     get filter(): (item: Conversation) => boolean {
         let type = this.logType;
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             if (type === undefined || type.trim() === "") {
                 return true;
             }
@@ -137,7 +138,7 @@ export class DateFilter implements FilterType {
 }
 
 export class IntentFilter implements FilterType {
-    intent: string;
+    intent: string | undefined;
     type: string = TYPE_INTENT;
 
     constructor(intent?: string) {
@@ -146,19 +147,39 @@ export class IntentFilter implements FilterType {
 
     get filter(): (item: Conversation) => boolean {
         const intent = this.intent;
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             if (!intent) {
                 return true;
             }
+
             if (item && item.intent) {
-                const regex = new RegExp(intent.replace(/(\W)/g, "\\$1"), "gi");
-                const match = item.intent.match(regex);
-                // Match throws a null instead of undefined so we're going to have to go with that.
-                /* tslint:disable:no-null-keyword */
-                return match !== null && match.length > 0;
-                /* tslint:enable:no-null-keyword*/
+                return checkString(intent, item.intent);
+            } else {
+                return false;
             }
-            return false;
+        };
+    }
+}
+
+export class RequestFilter implements FilterType {
+    request: string | undefined;
+    type: string = TYPE_REQUEST;
+
+    constructor(request?: string) {
+        this.request = request;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const request = this.request;
+        return function (item: Conversation): boolean {
+            if (!request) {
+                return true;
+            }
+            if (item && item.requestType) {
+                return checkString(request, item.requestType);
+            } else {
+                return false;
+            }
         };
     }
 }
@@ -167,8 +188,17 @@ export class ExceptionFilter implements FilterType {
     type: string = TYPE_EXCEPTION;
 
     get filter(): (item: Conversation) => boolean {
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             return item.hasException;
         };
     }
+}
+
+function checkString(original: string, isLike: string): boolean {
+    const regex = new RegExp(original.replace(/(\W)/g, "\\$1"), "gi");
+    const match = isLike.match(regex);
+    // Match throws a null instead of undefined so we're going to have to go with that.
+    /* tslint:disable:no-null-keyword */
+    return match !== null && match.length > 0;
+    /* tslint:enable:no-null-keyword*/
 }

@@ -32,6 +32,7 @@ describe("Filter Bar", function () {
                 onFilterIntent={onFilter}
                 onFilterLogLevel={onFilter}
                 onFilterException={onFilter}
+                onFilterRequest={onFilter}
                 query={logQuery} />
         ));
 
@@ -52,6 +53,7 @@ describe("Filter Bar", function () {
                 onFilterIntent={onFilter}
                 onFilterLogLevel={onFilter}
                 onFilterException={onFilter}
+                onFilterRequest={onFilter}
                 query={logQuery} />
         ));
 
@@ -78,6 +80,7 @@ describe("Filter Bar", function () {
                 onFilterIntent={onFilter}
                 onFilterLogLevel={onFilter}
                 onFilterException={onFilter}
+                onFilterRequest={onFilter}
                 query={logQuery} />
         ));
 
@@ -104,6 +107,7 @@ describe("Filter Bar", function () {
                 onFilterIntent={onFilter}
                 onFilterLogLevel={onFilter}
                 onFilterException={onFilter}
+                onFilterRequest={onFilter}
                 query={logQuery} />
         ));
 
@@ -140,6 +144,7 @@ describe("Filter Bar", function () {
                     onFilterIntent={onFilter}
                     onFilterLogLevel={onFilter}
                     onFilterException={onFilter}
+                    onFilterRequest={onFilter}
                     query={logQuery} />
             )) as ShallowWrapper<FilterProps, FilterState>;
         });
