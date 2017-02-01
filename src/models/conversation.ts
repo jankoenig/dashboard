@@ -117,12 +117,43 @@ export default class Conversation implements ConversationProperties {
         return colors;
     }
 
-    get requestPayloadType(): string | undefined {
+    /**
+     * The raw request type unmodified as it is in the conversation.
+     */
+    get rawRequestType(): string | undefined {
         let requestType: string;
 
         if (this.request && this.request.payload.request) {
             requestType = this.request.payload.request.type;
         }
+
+        return requestType;
+    }
+
+    /**
+     * The type of the request.  This is the item that goes before the "." of a name;
+     *
+     * In an Amazon generated request/intent generally looks like this:
+     *
+     * "request.intent".
+     *
+     * This is the "request" part of the string.
+     */
+    get requestType(): string | undefined {
+        let requestType: string = this.rawRequestType;
+
+        if (requestType) {
+            requestType = requestType.split(".")[0];
+        }
+
+        return requestType;
+    }
+
+    /**
+     * The request type and if it is an "IntentRequest", will include the intent as well.
+     */
+    get requestPayloadType(): string | undefined {
+        let requestType: string = this.rawRequestType;
 
         // if it is an intent request, append the type
         if (requestType === "IntentRequest") {
@@ -136,7 +167,13 @@ export default class Conversation implements ConversationProperties {
         if (this.request && this.request.payload.request && this.request.payload.request.intent) {
             return this.request.payload.request.intent.name;
         } else {
-            return undefined;
+            const requestType = this.rawRequestType;
+            const splitTypes = requestType.split(".", 2);
+            if (splitTypes.length > 1) {
+                return splitTypes[1];
+            } else {
+                return undefined;
+            }
         }
     }
 
