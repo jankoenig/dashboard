@@ -5,7 +5,7 @@ import Dropdown from "react-toolbox/lib/dropdown";
 
 import { Menu, MenuItem } from "../components/Menu";
 
-import Noop from "../utils/NoOp";
+import Noop from "../utils/Noop";
 
 const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
 const IconButtonTheme = require("../themes/icon-button-primary.scss");
