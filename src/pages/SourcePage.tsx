@@ -71,10 +71,18 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     componentWillReceiveProps(nextProps: SourcePageProps, context: any) {
-        if (!this.props.source || this.props.source.id !== this.props.source.id) {
+        if (!this.props.source || !nextProps.source.id || this.props.source.id !== nextProps.source.id) {
             this.retrieveTimeSummary(nextProps.source);
             this.retrieveIntentSummary(nextProps.source);
             this.retrieveSourceStats(nextProps.source);
+        }
+    }
+
+    componentDidMount() {
+        if (this.props.source) {
+            this.retrieveTimeSummary(this.props.source);
+            this.retrieveIntentSummary(this.props.source);
+            this.retrieveSourceStats(this.props.source);
         }
     }
 
@@ -96,7 +104,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
         const callback: GenericStateHandler<TimeData[]> = new GenericStateHandler(this.state, "timeLoaded", "timeSummaryData", this.setState.bind(this));
         const onLoaded = callback.onLoaded.bind(callback);
-        callback.onLoaded = function(data: TimeData[]) {
+        callback.onLoaded = function (data: TimeData[]) {
             if (data.length === 0) {
                 data = defaultTimeData(daysAgo(7), daysAgo(0));
             }
