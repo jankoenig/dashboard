@@ -5,6 +5,8 @@ import Dropdown from "react-toolbox/lib/dropdown";
 
 import { Menu, MenuItem } from "../components/Menu";
 
+import Noop from "../utils/NoOp";
+
 const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
 
 export interface Dropdownable {
@@ -14,7 +16,7 @@ export interface Dropdownable {
 
 export interface HeaderProps {
   currentSourceId?: string;
-  sources?: Array<Dropdownable>;
+  sources?: Dropdownable[];
   onSourceSelected?: (source: Dropdownable) => void;
   displayHomeButton?: boolean;
   className?: string;
@@ -58,23 +60,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render() {
-    let title: JSX.Element = undefined;
-    if (this.props.sources && this.props.sources.length > 0) {
-      if (this.props.sources.length === 1) {
-        title = (<span className="mdl-layout-title">{this.props.sources[0].label}</span>);
-      } else {
-        title = (
-          <Dropdown
-            theme={DropdownDarkTheme}
-            auto
-            onChange={this.handleItemSelect}
-            source={this.props.sources}
-            value={this.state.selectedSourceId}
-            />
-        );
-      }
-    }
-
     return (
       <header className={this.classes()}>
         <div className="mdl-layout__header-row" style={{ paddingLeft: "0px" }}>
@@ -83,7 +68,10 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               <i className="material-icons" role="presentation">home</i>
             </Link>
           ) : undefined}
-          {title}
+          <Title
+            sources={this.props.sources}
+            handleItemSelect={this.handleItemSelect}
+            selectedSourceId={this.state.selectedSourceId} />
           <div className="mdl-layout-spacer" />
           {this.props.children}
 
@@ -94,7 +82,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             <MenuItem
               to="https://github.com/bespoken/dashboard/issues/new?labels=bug"
               icon="bug_report"
-              caption="File Bug"/>
+              caption="File Bug" />
             <MenuItem
               to="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body="
               icon="build"
@@ -115,3 +103,47 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 }
 
 export default Header;
+
+interface TitleProps {
+  handleItemSelect: (value: string) => void;
+  sources: Dropdownable[];
+  selectedSourceId: string;
+}
+
+class Title extends React.Component<TitleProps, any> {
+
+  static defaultProps: TitleProps = {
+    handleItemSelect: Noop,
+    sources: [],
+    selectedSourceId: ""
+  };
+
+  constructor(props: TitleProps) {
+    super(props);
+
+    this.state = {
+      selectedSourceId: undefined
+    };
+  }
+
+  render() {
+    let title: JSX.Element = (<div/>);
+    if (this.props.sources.length > 0) {
+      if (this.props.sources.length === 1) {
+        title = (<span className="mdl-layout-title">{this.props.sources[0].label}</span>);
+      } else {
+        title = (
+          <Dropdown
+            theme={DropdownDarkTheme}
+            auto
+            onChange={this.props.handleItemSelect}
+            source={this.props.sources}
+            value={this.props.selectedSourceId}
+          />
+        );
+      }
+    }
+
+    return title;
+  }
+}
