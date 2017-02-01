@@ -129,7 +129,7 @@ interface HomeProps {
   showHome: boolean;
 }
 
-class Home extends React.Component<HomeProps, any> {
+export class Home extends React.Component<HomeProps, any> {
   render() {
     let home: JSX.Element = (<div />);
     if (this.props.showHome) {
@@ -152,7 +152,7 @@ interface TitleProps {
   selectedSourceId: string;
 }
 
-class Title extends React.Component<TitleProps, any> {
+export class Title extends React.Component<TitleProps, any> {
 
   static defaultProps: TitleProps = {
     handleItemSelect: Noop,
@@ -199,7 +199,7 @@ interface PageSwapState {
   buttons: JSX.Element[];
 }
 
-class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
+export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 
   static defaultProps: PageSwapProps = {
     pageButtons: [],
