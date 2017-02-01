@@ -1,6 +1,6 @@
 import * as classNames from "classnames";
 import * as React from "react";
-import { Link } from "react-router";
+// import { Link } from "react-router";
 import { IconButton } from "react-toolbox/lib/button";
 import Dropdown from "react-toolbox/lib/dropdown";
 
@@ -23,6 +23,7 @@ export interface PageButton {
 export interface HeaderProps {
   currentSourceId?: string;
   sources?: Dropdownable[];
+  onHomeClicked?: () => void;
   onSourceSelected?: (source: Dropdownable) => void;
   pageButtons?: PageButton[];
   onPageSelected?: (button: PageButton) => void;
@@ -71,41 +72,49 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
     return (
       <header className={this.classes()}>
         <div className="mdl-layout__header-row" style={{ paddingLeft: "0px" }}>
-          {this.props.displayHomeButton ? (
-            <Link to={"/"} style={{ paddingLeft: "15px", paddingRight: "15px" }}>
-              <i className="material-icons" role="presentation">home</i>
-            </Link>
-          ) : undefined}
+
+          <Home
+            handleHomeClick={this.props.onHomeClicked}
+            showHome={this.props.displayHomeButton} />
+
           <Title
             sources={this.props.sources}
             handleItemSelect={this.handleItemSelect}
             selectedSourceId={this.state.selectedSourceId} />
+
           <PageSwap
             pageButtons={this.props.pageButtons}
             onPageSelected={this.props.onPageSelected} />
+
           <div className="mdl-layout-spacer" />
+
           {this.props.children}
 
           <Menu
             icon="help_outline"
             position="topRight"
             menuRipple>
+
             <MenuItem
               to="https://github.com/bespoken/dashboard/issues/new?labels=bug"
               icon="bug_report"
               caption="File Bug" />
+
             <MenuItem
               to="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body="
               icon="build"
               caption="Request Feature" />
+
             <MenuItem
               to="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"
               icon="question_answer"
               caption="Talk to Us" />
+
             <MenuItem
               to="mailto:contact@bespoken.tools"
               icon="email"
               caption="Email" />
+
           </Menu>
         </div>
       </header>
@@ -114,6 +123,27 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 }
 
 export default Header;
+
+interface HomeProps {
+  handleHomeClick: () => void;
+  showHome: boolean;
+}
+
+class Home extends React.Component<HomeProps, any> {
+  render() {
+    let home: JSX.Element = (<div />);
+    if (this.props.showHome) {
+      home = (
+        <IconButton
+          accent
+          onClick={this.props.handleHomeClick}
+          icon="home" />
+      );
+    }
+
+    return home;
+  }
+}
 
 interface TitleProps {
   handleItemSelect: (value: string) => void;

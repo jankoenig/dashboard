@@ -82,6 +82,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
     this.handlePageSwap = this.handlePageSwap.bind(this);
+    this.handleHomeClick = this.handleHomeClick.bind(this);
   }
 
   drawerClasses() {
@@ -153,6 +154,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     }
   }
 
+  handleHomeClick() {
+    this.props.goTo("/");
+  }
+
   render() {
     return (
       <Layout header={true}>
@@ -163,6 +168,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           pageButtons={this.pageButtons()}
           onPageSelected={this.handlePageSwap}
           onSourceSelected={this.handleSelectedSource}
+          onHomeClicked={this.handleHomeClick}
           displayHomeButton={this.props.location.pathname !== "/"}>
           <UserControl
             login={this.props.login}
