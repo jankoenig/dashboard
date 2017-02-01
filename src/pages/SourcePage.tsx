@@ -71,7 +71,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     componentWillReceiveProps(nextProps: SourcePageProps, context: any) {
-        if (!this.props.source || this.props.source.id !== nextProps.source.id) {
+        if (!this.props.source || !nextProps.source.id || this.props.source.id !== nextProps.source.id) {
             this.retrieveTimeSummary(nextProps.source);
             this.retrieveIntentSummary(nextProps.source);
             this.retrieveSourceStats(nextProps.source);
