@@ -171,6 +171,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     render() {
+        const tileColor = "#ECEFF1";
         return (
             <span>
                 {this.props.source ? (
@@ -178,25 +179,25 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                         <Grid style={{ backgroundColor: "rgb(36, 48, 54)", paddingBottom: "0px", paddingTop: "0px" }}>
                             <Cell col={3} hidePhone={true}>
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={this.props.source.name}
                                     label={"Name"} />
                             </Cell>
                             <Cell col={3} hidePhone={true} >
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={this.props.source.id}
                                     label={"ID"} />
                             </Cell>
                             <Cell col={3} hidePhone={true} >
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={moment(this.props.source.created).format("MMM Do, YYYY")}
                                     label={"Created"} />
                             </Cell>
                             <Cell col={3} hidePhone={true} >
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={this.props.source.secretKey}
                                     label={"Secret Key"}
                                     hidden={true}

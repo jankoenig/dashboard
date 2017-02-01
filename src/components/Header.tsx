@@ -1,6 +1,5 @@
 import * as classNames from "classnames";
 import * as React from "react";
-// import { Link } from "react-router";
 import { IconButton } from "react-toolbox/lib/button";
 import Dropdown from "react-toolbox/lib/dropdown";
 
@@ -9,6 +8,7 @@ import { Menu, MenuItem } from "../components/Menu";
 import Noop from "../utils/NoOp";
 
 const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
+const IconButtonTheme = require("../themes/icon-button-primary.scss");
 
 export interface Dropdownable {
   value: string;
@@ -135,6 +135,7 @@ class Home extends React.Component<HomeProps, any> {
     if (this.props.showHome) {
       home = (
         <IconButton
+          theme={IconButtonTheme}
           accent
           onClick={this.props.handleHomeClick}
           icon="home" />
@@ -230,6 +231,7 @@ class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
       this.state.buttons.push(
         (
           <IconButton
+            theme={IconButtonTheme}
             accent
             key={button.name}
             icon={button.icon}
