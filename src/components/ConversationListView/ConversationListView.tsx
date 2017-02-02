@@ -15,7 +15,7 @@ export interface ConversationListViewProps {
 
 export interface ConversationListViewState {
     activeConversations?: ConversationMap;
-    listType: ListType;
+    listType?: ListType;
 }
 
 export default class ConversationListView extends React.Component<ConversationListViewProps, ConversationListViewState> {

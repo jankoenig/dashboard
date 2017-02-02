@@ -69,9 +69,10 @@ export class Interaction extends React.Component<InteractionProps, any> {
     getTree(log: Log): JSX.Element {
         let tree: JSX.Element;
         if (log) {
+            const payload = (typeof log.payload === "object") ? log.payload : { message: log.payload };
             tree = (
                 <JSONTree
-                    data={log.payload}
+                    data={payload}
                     hideRoot={true}
                     invertTheme={false}
                     theme={this.getTheme()}
