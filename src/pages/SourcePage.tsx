@@ -1,9 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router";
 
-import Button from "../components/Button";
 import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
@@ -71,7 +69,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     componentWillReceiveProps(nextProps: SourcePageProps, context: any) {
-        if (!this.props.source || !nextProps.source.id || this.props.source.id !== nextProps.source.id) {
+        if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
             this.retrieveTimeSummary(nextProps.source);
             this.retrieveIntentSummary(nextProps.source);
             this.retrieveSourceStats(nextProps.source);
@@ -173,6 +171,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     render() {
+        const tileColor = "#ECEFF1";
         return (
             <span>
                 {this.props.source ? (
@@ -180,39 +179,29 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                         <Grid style={{ backgroundColor: "rgb(36, 48, 54)", paddingBottom: "0px", paddingTop: "0px" }}>
                             <Cell col={3} hidePhone={true}>
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={this.props.source.name}
                                     label={"Name"} />
                             </Cell>
                             <Cell col={3} hidePhone={true} >
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={this.props.source.id}
                                     label={"ID"} />
                             </Cell>
                             <Cell col={3} hidePhone={true} >
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={moment(this.props.source.created).format("MMM Do, YYYY")}
                                     label={"Created"} />
                             </Cell>
                             <Cell col={3} hidePhone={true} >
                                 <DataTile
-                                    theme={{ inputTextColor: "#ECEFF1" }}
+                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
                                     value={this.props.source.secretKey}
                                     label={"Secret Key"}
                                     hidden={true}
                                     showable={true} />
-                            </Cell>
-                        </Grid>
-                        <Grid>
-                            <Cell col={3}>
-                                <p style={{ fontSize: "16px", fontFamily: "Roboto, Helvetica" }}>What would you like to do? </p>
-                            </Cell>
-                            <Cell col={3}>
-                                <Link to={"/skills/" + this.props.source.id + "/logs"}>
-                                    <Button raised={true} ripple={true}>View Logs</Button>
-                                </Link>
                             </Cell>
                         </Grid>
                     </span>

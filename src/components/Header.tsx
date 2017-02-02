@@ -1,21 +1,33 @@
 import * as classNames from "classnames";
 import * as React from "react";
-import { Link } from "react-router";
+import { IconButton } from "react-toolbox/lib/button";
 import Dropdown from "react-toolbox/lib/dropdown";
+import Tooltip from "react-toolbox/lib/tooltip";
 
 import { Menu, MenuItem } from "../components/Menu";
 
+import Noop from "../utils/Noop";
+
 const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
+const IconButtonTheme = require("../themes/icon-button-primary.scss");
 
 export interface Dropdownable {
   value: string;
   label: string;
 }
 
+export interface PageButton {
+  name: string;
+  icon: string | JSX.Element; // String or <svg/>
+}
+
 export interface HeaderProps {
   currentSourceId?: string;
-  sources?: Array<Dropdownable>;
+  sources?: Dropdownable[];
+  onHomeClicked?: () => void;
   onSourceSelected?: (source: Dropdownable) => void;
+  pageButtons?: PageButton[];
+  onPageSelected?: (button: PageButton) => void;
   displayHomeButton?: boolean;
   className?: string;
 }
@@ -58,55 +70,52 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   render() {
-    let title: JSX.Element = undefined;
-    if (this.props.sources && this.props.sources.length > 0) {
-      if (this.props.sources.length === 1) {
-        title = (<span className="mdl-layout-title">{this.props.sources[0].label}</span>);
-      } else {
-        title = (
-          <Dropdown
-            theme={DropdownDarkTheme}
-            auto
-            onChange={this.handleItemSelect}
-            source={this.props.sources}
-            value={this.state.selectedSourceId}
-            />
-        );
-      }
-    }
-
     return (
       <header className={this.classes()}>
         <div className="mdl-layout__header-row" style={{ paddingLeft: "0px" }}>
-          {this.props.displayHomeButton ? (
-            <Link to={"/"} style={{ paddingLeft: "15px", paddingRight: "15px" }}>
-              <i className="material-icons" role="presentation">home</i>
-            </Link>
-          ) : undefined}
-          {title}
+
+          <Home
+            handleHomeClick={this.props.onHomeClicked}
+            showHome={this.props.displayHomeButton} />
+
+          <Title
+            sources={this.props.sources}
+            handleItemSelect={this.handleItemSelect}
+            selectedSourceId={this.state.selectedSourceId} />
+
+          <PageSwap
+            pageButtons={this.props.pageButtons}
+            onPageSelected={this.props.onPageSelected} />
+
           <div className="mdl-layout-spacer" />
+
           {this.props.children}
 
           <Menu
             icon="help_outline"
             position="topRight"
             menuRipple>
+
             <MenuItem
               to="https://github.com/bespoken/dashboard/issues/new?labels=bug"
               icon="bug_report"
-              caption="File Bug"/>
+              caption="File Bug" />
+
             <MenuItem
               to="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body="
               icon="build"
               caption="Request Feature" />
+
             <MenuItem
               to="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"
               icon="question_answer"
               caption="Talk to Us" />
+
             <MenuItem
               to="mailto:contact@bespoken.tools"
               icon="email"
               caption="Email" />
+
           </Menu>
         </div>
       </header>
@@ -115,3 +124,133 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 }
 
 export default Header;
+
+interface HomeProps {
+  handleHomeClick: () => void;
+  showHome: boolean;
+}
+
+export class Home extends React.Component<HomeProps, any> {
+  render() {
+    let home: JSX.Element = (<div />);
+    if (this.props.showHome) {
+      home = (
+        <IconButton
+          theme={IconButtonTheme}
+          accent
+          onClick={this.props.handleHomeClick}
+          icon="home" />
+      );
+    }
+
+    return home;
+  }
+}
+
+interface TitleProps {
+  handleItemSelect: (value: string) => void;
+  sources: Dropdownable[];
+  selectedSourceId: string;
+}
+
+export class Title extends React.Component<TitleProps, any> {
+
+  static defaultProps: TitleProps = {
+    handleItemSelect: Noop,
+    sources: [],
+    selectedSourceId: ""
+  };
+
+  constructor(props: TitleProps) {
+    super(props);
+
+    this.state = {
+      selectedSourceId: undefined
+    };
+  }
+
+  render() {
+    let title: JSX.Element = (<div />);
+    if (this.props.sources.length > 0) {
+      if (this.props.sources.length === 1) {
+        title = (<span className="mdl-layout-title">{this.props.sources[0].label}</span>);
+      } else {
+        title = (
+          <Dropdown
+            theme={DropdownDarkTheme}
+            auto
+            onChange={this.props.handleItemSelect}
+            source={this.props.sources}
+            value={this.props.selectedSourceId}
+          />
+        );
+      }
+    }
+
+    return title;
+  }
+}
+
+interface PageSwapProps {
+  pageButtons?: PageButton[];
+  onPageSelected?: (button: PageButton) => void | undefined;
+}
+
+interface PageSwapState {
+  buttons: JSX.Element[];
+}
+
+const TooltipButton = Tooltip(IconButton);
+
+export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
+
+  static defaultProps: PageSwapProps = {
+    pageButtons: [],
+    onPageSelected: Noop
+  };
+
+  constructor(props: PageSwapProps) {
+    super(props);
+
+    this.state = { buttons: [] };
+  }
+
+  componentWillReceiveProps(props: PageSwapProps, context: any) {
+    this.buildButtons(props);
+  }
+
+  componentWillMount() {
+    this.buildButtons(this.props);
+  }
+
+  handleSelected(button: PageButton) {
+    this.props.onPageSelected(button);
+  }
+
+  buildButtons(props: PageSwapProps) {
+    const buttons = props.pageButtons;
+    this.state.buttons = [];
+    for (let button of buttons) {
+      this.state.buttons.push(
+        (
+          <TooltipButton
+            theme={IconButtonTheme}
+            accent
+            key={button.name}
+            tooltip={button.name}
+            icon={button.icon}
+            tooltipDelay={1000}
+            onClick={this.handleSelected.bind(this, button)} />
+        )
+      );
+    };
+  }
+
+  render() {
+    return (
+      <div>
+        {this.state.buttons}
+      </div>
+    );
+  }
+}
