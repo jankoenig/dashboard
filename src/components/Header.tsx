@@ -239,7 +239,6 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
             key={button.name}
             tooltip={button.name}
             icon={button.icon}
-            tooltipDelay={1000}
             onClick={this.handleSelected.bind(this, button)} />
         )
       );
