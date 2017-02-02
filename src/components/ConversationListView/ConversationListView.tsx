@@ -1,7 +1,6 @@
-import * as objectAssign from "object-assign";
 import * as React from "react";
 
-import List from "../../components/List/List";
+import List, { ListType } from "../../components/List/List";
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";
@@ -15,7 +14,8 @@ export interface ConversationListViewProps {
 }
 
 export interface ConversationListViewState {
-    readonly activeConversations?: ConversationMap;
+    activeConversations?: ConversationMap;
+    listType: ListType;
 }
 
 export default class ConversationListView extends React.Component<ConversationListViewProps, ConversationListViewState> {
@@ -23,7 +23,8 @@ export default class ConversationListView extends React.Component<ConversationLi
     constructor(props: ConversationListViewProps) {
         super(props);
         this.state = {
-            activeConversations: {}
+            activeConversations: {},
+            listType: "uniform"
         };
     }
 
@@ -35,7 +36,7 @@ export default class ConversationListView extends React.Component<ConversationLi
 
         if (this.props.expandListItemWhenActive) {
             // mobile mode, clone the existing
-            activeConversations = objectAssign({}, this.state.activeConversations);
+            activeConversations = {...{}, ...this.state.activeConversations};
 
             if (activeConversations[conversation.id]) {
                 // if it exists remove it
@@ -50,9 +51,8 @@ export default class ConversationListView extends React.Component<ConversationLi
             activeConversations = { [conversation.id]: conversation };
         }
 
-        this.setState({
-            activeConversations: activeConversations
-        });
+        this.state.activeConversations = activeConversations;
+        this.setState(this.state);
         this.props.onClick(conversation, event);
     }
 
@@ -64,7 +64,7 @@ export default class ConversationListView extends React.Component<ConversationLi
         let conversation = this.props.conversations[index];
         return (
             <ConversationListViewItem
-                key={conversation.id}
+                key={index + "." + conversation.id}
                 conversation={conversation}
                 onClick={this.onClick.bind(this)}
                 active={this.isConversationActive(conversation)}
@@ -73,13 +73,15 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     render() {
-        let emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div />);
+        const emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div />);
+        const listType = this.props.expandListItemWhenActive ? "variable" : "uniform";
 
         let listElement = (
             <List
                 onScroll={this.props.onScroll}
                 itemRenderer={this.renderItem.bind(this)}
-                length={this.props.conversations.length} />
+                length={this.props.conversations.length}
+                type={listType} />
         );
 
         let finalElement = this.props.conversations.length > 0 ? listElement : emptyElement;

@@ -4,12 +4,14 @@ import { Dimensions, Measure } from "../Measure";
 
 let ReactList = require("react-list");
 
+export type ListType = "simple" | "uniform" | "variable";
+
 export interface ListProps {
     itemRenderer: (index: number, key: string) => JSX.Element;
     onSelect?: (index: number) => void;
     onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
     length: number;
-    type?: "simple" | "uniform";
+    type?: ListType;
 }
 
 interface ListState {
