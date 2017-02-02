@@ -214,11 +214,11 @@ describe("Header", function () {
             });
 
             it("Tests the buttons are rendered properly.", function() {
-                expect(wrapper.find(IconButton)).to.have.length(pages.length);
+                expect(wrapper.find("Themed")).to.have.length(pages.length);
             });
 
             it ("Tests the callback", function() {
-                const buttons = wrapper.find(IconButton).at(0);
+                const buttons = wrapper.find("Themed").at(0);
                 buttons.simulate("click", pages[0]);
                 expect(onPageSelected).to.have.been.calledOnce;
                 expect(onPageSelected).to.have.been.calledWith(pages[0]);
