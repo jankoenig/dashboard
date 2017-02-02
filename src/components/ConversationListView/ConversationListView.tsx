@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import List, { ListType } from "../../components/List/List";
+import List from "../../components/List/List";
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
 import ConversationListViewItem from "./ConversationListViewItem";
@@ -15,7 +15,6 @@ export interface ConversationListViewProps {
 
 export interface ConversationListViewState {
     activeConversations?: ConversationMap;
-    listType?: ListType;
 }
 
 export default class ConversationListView extends React.Component<ConversationListViewProps, ConversationListViewState> {
@@ -23,9 +22,9 @@ export default class ConversationListView extends React.Component<ConversationLi
     constructor(props: ConversationListViewProps) {
         super(props);
         this.state = {
-            activeConversations: {},
-            listType: "uniform"
+            activeConversations: {}
         };
+        this.renderItem = this.renderItem.bind(this);
     }
 
     onClick(conversation: Conversation, event: React.MouseEvent) {
@@ -74,14 +73,13 @@ export default class ConversationListView extends React.Component<ConversationLi
 
     render() {
         const emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div />);
-        const listType = this.props.expandListItemWhenActive ? "variable" : "uniform";
 
         let listElement = (
             <List
                 onScroll={this.props.onScroll}
-                itemRenderer={this.renderItem.bind(this)}
+                itemRenderer={this.renderItem}
                 length={this.props.conversations.length}
-                type={listType} />
+                type={"simple"} />
         );
 
         let finalElement = this.props.conversations.length > 0 ? listElement : emptyElement;

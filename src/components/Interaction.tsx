@@ -20,7 +20,7 @@ export class Interaction extends React.Component<InteractionProps, any> {
      * For more info read http://chriskempson.com/projects/base16/
      * and themes http://chriskempson.github.io/base16/
      */
-    monokaiTheme = {
+    static monokaiTheme = {
         scheme: "monokai",
         author: "wimer hazenberg (http://www.monokai.nl)",
         base00: "#272822",
@@ -53,7 +53,7 @@ export class Interaction extends React.Component<InteractionProps, any> {
         return this.props.theme ?
             this.props.theme :
             {
-                extend: this.monokaiTheme,
+                extend: Interaction.monokaiTheme,
                 tree: this.getJSONTreeStyle()
             };
     }
