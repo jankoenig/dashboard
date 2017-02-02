@@ -2,6 +2,7 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
 import Dropdown from "react-toolbox/lib/dropdown";
+import Tooltip from "react-toolbox/lib/tooltip";
 
 import { Menu, MenuItem } from "../components/Menu";
 
@@ -199,6 +200,8 @@ interface PageSwapState {
   buttons: JSX.Element[];
 }
 
+const TooltipButton = Tooltip(IconButton);
+
 export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 
   static defaultProps: PageSwapProps = {
@@ -230,11 +233,13 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
     for (let button of buttons) {
       this.state.buttons.push(
         (
-          <IconButton
+          <TooltipButton
             theme={IconButtonTheme}
             accent
             key={button.name}
+            tooltip={button.name}
             icon={button.icon}
+            tooltipDelay={1000}
             onClick={this.handleSelected.bind(this, button)} />
         )
       );
