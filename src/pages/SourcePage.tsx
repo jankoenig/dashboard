@@ -84,10 +84,40 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         }
     }
 
+    fillGaps(summary: LogService.TimeSummary): Promise<LogService.TimeSummary> {
+        const buckets = summary.buckets;
+        if (buckets.length === 0) {
+            return Promise.resolve(summary);
+        }
+
+        let bucketCopy = buckets.slice();
+        let bucketDate = moment(buckets[0].date);
+        let currentDate = moment(buckets[0].date).startOf("day");
+        let lastDate = moment(); // now
+        let bucketIndex = 0;
+        let copyIndex = 0;
+        while (currentDate.isSameOrBefore(lastDate)) {
+            if (bucketDate === undefined || currentDate.isBefore(bucketDate)) {
+                bucketCopy.splice(copyIndex, 0, {
+                    date: currentDate.toISOString(),
+                    count: 0
+                });
+            } else {
+                const currentBucket = buckets[++bucketIndex];
+                bucketDate = (currentBucket) ? moment(currentBucket.date) : undefined;
+            }
+
+            ++copyIndex;
+            currentDate.add(1, "hours");
+        }
+        return Promise.resolve({ ... summary, ...{ buckets: bucketCopy }});
+    }
+
     retrieveTimeSummary(source: Source) {
+        const fillGaps = this.fillGaps;
         const dataLoader: DataLoader<LogService.TimeSummary, TimeData[]> = {
             loadData: function (query: Query): Promise<LogService.TimeSummary> {
-                return LogService.getTimeSummary(query);
+                return LogService.getTimeSummary(query).then(fillGaps);
             },
             map: function (data: LogService.TimeSummary): TimeData[] {
                 return data.buckets.map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
