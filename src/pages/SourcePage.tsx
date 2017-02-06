@@ -6,7 +6,7 @@ import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
-import Query, { EndTimeParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
+import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
@@ -116,6 +116,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new EndTimeParameter(daysAgo(0)));
         query.add(new GranularityParameter("hour"));
         query.add(new TimeSortParameter("asc"));
+        query.add(new FillGapsParameter(true));
+
         loader.load(query);
     }
 
