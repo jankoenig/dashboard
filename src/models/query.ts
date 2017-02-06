@@ -34,6 +34,15 @@ export class Query {
 
 export default Query;
 
+export class BooleanParameter implements QueryParameter {
+    readonly value: boolean;
+    parameter: string;
+
+    constructor(value: boolean) {
+        this.value = value;
+    }
+}
+
 export class SourceParameter implements QueryParameter {
     constructor(source: string | Source) {
         this.value = (source instanceof Source) ? source.secretKey : source;
@@ -92,4 +101,12 @@ export class GranularityParameter implements QueryParameter {
     value: "day" | "hour";
 
     parameter = "granularity";
+}
+
+export class FillGapsParameter extends BooleanParameter {
+    constructor(value: boolean) {
+        super(value);
+    }
+
+    parameter = "fill_gaps";
 }

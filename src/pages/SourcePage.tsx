@@ -6,7 +6,7 @@ import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
-import Query, { EndTimeParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
+import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
@@ -84,40 +84,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         }
     }
 
-    fillGaps(summary: LogService.TimeSummary): Promise<LogService.TimeSummary> {
-        const buckets = summary.buckets;
-        if (buckets.length === 0) {
-            return Promise.resolve(summary);
-        }
-
-        let bucketCopy = buckets.slice();
-        let bucketDate = moment(buckets[0].date);
-        let currentDate = moment(buckets[0].date).startOf("day");
-        let lastDate = moment(); // now
-        let bucketIndex = 0;
-        let copyIndex = 0;
-        while (currentDate.isSameOrBefore(lastDate)) {
-            if (bucketDate === undefined || currentDate.isBefore(bucketDate)) {
-                bucketCopy.splice(copyIndex, 0, {
-                    date: currentDate.toISOString(),
-                    count: 0
-                });
-            } else {
-                const currentBucket = buckets[++bucketIndex];
-                bucketDate = (currentBucket) ? moment(currentBucket.date) : undefined;
-            }
-
-            ++copyIndex;
-            currentDate.add(1, "hours");
-        }
-        return Promise.resolve({ ... summary, ...{ buckets: bucketCopy }});
-    }
-
     retrieveTimeSummary(source: Source) {
-        const fillGaps = this.fillGaps;
         const dataLoader: DataLoader<LogService.TimeSummary, TimeData[]> = {
             loadData: function (query: Query): Promise<LogService.TimeSummary> {
-                return LogService.getTimeSummary(query).then(fillGaps);
+                return LogService.getTimeSummary(query);
             },
             map: function (data: LogService.TimeSummary): TimeData[] {
                 return data.buckets.map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
@@ -146,6 +116,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         query.add(new EndTimeParameter(daysAgo(0)));
         query.add(new GranularityParameter("hour"));
         query.add(new TimeSortParameter("asc"));
+        query.add(new FillGapsParameter(true));
+
         loader.load(query);
     }
 
