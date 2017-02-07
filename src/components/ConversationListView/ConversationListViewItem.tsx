@@ -75,16 +75,14 @@ export default class ConversationListViewItem extends React.Component<Conversati
                     style={this.listItemStyle()}
                     onClick={this.props.onClick.bind(this, this.props.conversation)}>
                     <span style={this.primaryContentStyle()}>
-                        {this.props.conversation.userId ? (
-                            <div style={this.iconWrapperStyle()}>
-                                <Icon
-                                    style={{ fill: this.props.conversation.userColors.fill, marginTop: "4px" }}
-                                    width={30}
-                                    height={30}
-                                    icon={ICON.DEFAULT_USER}
-                                    />
-                            </div>
-                        ) : undefined}
+                        <div style={this.iconWrapperStyle()}>
+                            <Icon
+                                style={{ fill: this.props.conversation.userColors.fill, marginTop: "4px" }}
+                                width={30}
+                                height={30}
+                                icon={ICON.DEFAULT_USER}
+                            />
+                        </div>
                         <span>
                             {this.props.conversation.requestPayloadType}
                         </span>

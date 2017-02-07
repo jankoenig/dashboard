@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { requestIntentLog, requestLaunchIntentLog, requestPlayerLog, responseLog, responsePlayerLog } from "../utils/test";
-import Conversation from "./conversation";
+import { createConvo } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 
@@ -19,7 +19,7 @@ describe("Conversation", function () {
         });
         let outputs = [output];
 
-        let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+        let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
         expect(conversation).to.exist;
         expect(conversation.request).to.exist;
@@ -42,7 +42,7 @@ describe("Conversation", function () {
             let response = responseLog;
             let request = requestLaunchIntentLog;
 
-            let conversation = new Conversation({ response: response, request: request });
+            let conversation = createConvo({ response: response, request: request });
 
             expect(conversation.intent).to.be.undefined;
 
@@ -50,7 +50,7 @@ describe("Conversation", function () {
     });
     describe("with request from player", function () {
         it("sets the userId", function () {
-            let conversation = new Conversation({ response: responsePlayerLog, request: requestPlayerLog });
+            let conversation = createConvo({ response: responsePlayerLog, request: requestPlayerLog });
             expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
         });
     });
@@ -67,7 +67,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.hasError).to.be.true;
         });
     });
@@ -93,7 +93,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
@@ -125,7 +125,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
@@ -156,7 +156,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#A234b6");
             expect(conversation.userColors.background).to.equal("#48b634");
@@ -187,7 +187,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#bf0fff");
             expect(conversation.userColors.background).to.equal("#4fff0f");
@@ -222,7 +222,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.requestPayloadType).to.equal("TestRequest");
         });
 
@@ -252,7 +252,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.requestPayloadType).to.be.undefined;
         });
 
@@ -276,7 +276,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.requestPayloadType).to.be.undefined;
         });
     });
@@ -293,7 +293,7 @@ describe("Conversation", function () {
         });
         let outputs = [output];
 
-        let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+        let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
         it("returns the id from the response", function() {
             expect(conversation.id).to.equal(response.id);

@@ -6,6 +6,15 @@ import StackTrace from "./stack-trace";
 
 export type ConversationLevel = LOG_LEVELS;
 
+export enum Source {
+    AmazonAlexa, GoogleHome, Unknown
+}
+
+export interface ConvoColors {
+    fill: string;
+    background: string;
+}
+
 export interface ConversationProperties {
     request: Log;
     response: Log;
@@ -13,7 +22,52 @@ export interface ConversationProperties {
     stackTraces?: StackTrace[];
 }
 
-export default class Conversation implements ConversationProperties {
+export interface Conversation {
+    request: Log;
+    response: Log;
+    outputs: Output[];
+    stackTraces: StackTrace[];
+    source: Source;
+    id: string | undefined;
+    applicationId: string | undefined;
+    sessionId: string | undefined;
+    userId: string | undefined;
+    userColors: ConvoColors;
+    /**
+     * The raw request type unmodified as it is in the conversation.
+     */
+    rawRequestType: string | undefined;
+
+    /**
+     * The type of the request.  This is the item that goes before the "." of a name;
+     *
+     * In an Amazon generated request/intent generally looks like this:
+     *
+     * "request.intent".
+     *
+     * This is the "request" part of the string.
+     */
+    requestType: string | undefined;
+
+    /**
+     * The request type and if it is an "IntentRequest", will include the intent as well.
+     */
+    requestPayloadType: string | undefined;
+    intent: string | undefined;
+    timestamp: Date | undefined;
+    hasError: boolean;
+    hasException: boolean;
+    isType(type: ConversationLevel | string): boolean;
+    hasOutputType(type: string): boolean;
+}
+
+export function createConvo(props: ConversationProperties): Conversation {
+    return new AlexaConversation(props);
+}
+
+export default Conversation;
+
+class AlexaConversation implements Conversation {
 
     readonly request: Log;
 
@@ -28,6 +82,12 @@ export default class Conversation implements ConversationProperties {
         this.response = props.response;
         this.outputs = props.outputs ? props.outputs.slice() : [];
         this.stackTraces = props.stackTraces ? props.stackTraces.slice() : [];
+
+        console.log(this);
+    }
+
+    get source(): Source {
+        return Source.Unknown;
     }
 
     get id(): string | undefined {
@@ -211,4 +271,3 @@ export default class Conversation implements ConversationProperties {
         return false;
     }
 }
-
