@@ -283,7 +283,7 @@ class GoogleHomeConversation extends GenericConversation {
     get sessionId(): string | undefined {
         let sessionId: string;
         if (this.request) {
-            if (this.request.payload === "object") {
+            if (typeof this.request.payload === "object") {
                 sessionId = this.request.payload.sessionId;
             }
         }
