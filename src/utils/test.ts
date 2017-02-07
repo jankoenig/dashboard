@@ -308,7 +308,7 @@ export function alexaResponsePlayerLog(): Log {
     });
 }
 
-export function googleHomeRequestLog(): Log {
+export function googleHomeRequestLog(type: LOG_LEVELS = "INFO"): Log {
     return new Log({
         payload: {
             id: "a3912826-9a00-490b-b8ca-966c59d23a09",
@@ -355,7 +355,7 @@ export function googleHomeRequestLog(): Log {
                         }
                     }],
                     user: {
-                        userId: "HhH6aw5nfy3E4CPHJwX5URGaDs6pUs4vtcCK2ys8CIc="
+                        user_id: "HhH6aw5nfy3E4CPHJwX5URGaDs6pUs4vtcCK2ys8CIc="
                     },
                     conversation: {
                         conversation_id: "1486421163972",
@@ -364,7 +364,7 @@ export function googleHomeRequestLog(): Log {
                 }
             }
         },
-        log_type: "INFO",
+        log_type: type,
         source: "source",
         transaction_id: "bf1e8de6-2d40-40d2-8392-0e47672eea64",
         timestamp: new Date("2016-11-10T23:59:50.112Z"),
@@ -375,7 +375,7 @@ export function googleHomeRequestLog(): Log {
     });
 }
 
-export function googleHomeResponseLog() {
+export function googleHomeResponseLog(type: LOG_LEVELS = "INFO") {
     return new Log({
         payload: {
             speech: "<speak> <audio src=\"https://s3.amazonaws.com/xapp-files/Voice+Apps/Progressive/Progressive-Home_Page.mp3\" /> <break time=\"0.2s\"/> Which would you like to hear? </speak>",
@@ -413,7 +413,7 @@ export function googleHomeResponseLog() {
                 }
             }]
         },
-        log_type: "INFO",
+        log_type: type,
         source: "source",
         transaction_id: "bf1e8de6-2d40-40d2-8392-0e47672eea64",
         timestamp: new Date("2016-11-10T23:59:50.112Z"),

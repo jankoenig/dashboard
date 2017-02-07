@@ -345,20 +345,17 @@ class GoogleHomeConversation extends GenericConversation {
     }
 
     get userId(): string | undefined {
-
         let userId: string;
-
         const payload = this.request.payload;
         if (payload.originalRequest) {
             const originalRequest = payload.originalRequest;
             if (originalRequest.data) {
                 const data = originalRequest.data;
                 if (data.user) {
-                    userId = data.user.userId;
+                    userId = data.user.user_id;
                 }
             }
         }
-
         return userId;
     }
 

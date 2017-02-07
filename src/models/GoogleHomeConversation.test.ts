@@ -79,6 +79,22 @@ describe("Google Conversation", function () {
             let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.hasError).to.be.true;
         });
+
+        it("Returns true when an error log exists for request.", function () {
+            let request = googleHomeRequestLog("ERROR");
+            let response = googleHomeResponseLog();
+
+            let conversation = createConvo({ response: response, request: request });
+            expect(conversation.hasError).to.be.true;
+        });
+
+        it("Returns true when an error log exists for request.", function () {
+            let request = googleHomeRequestLog();
+            let response = googleHomeResponseLog("ERROR");
+
+            let conversation = createConvo({ response: response, request: request });
+            expect(conversation.hasError).to.be.true;
+        });
     });
 
     describe("userColors", function () {
@@ -112,9 +128,11 @@ describe("Google Conversation", function () {
         it("returns the default colors for an empty string userId", function () {
             let request = new Log({
                 payload: {
-                    session: {
-                        user: {
-                            userId: ""
+                    originalRequest: {
+                        data: {
+                            user: {
+                                user_id: ""
+                            },
                         }
                     }
                 },
@@ -144,9 +162,11 @@ describe("Google Conversation", function () {
         it("returns the hex color for a hex userId", function () {
             let request = new Log({
                 payload: {
-                    session: {
-                        user: {
-                            userId: "A234b6"
+                    originalRequest: {
+                        data: {
+                            user: {
+                                user_id: "A234b6"
+                            },
                         }
                     }
                 },
@@ -176,9 +196,11 @@ describe("Google Conversation", function () {
         it("returns the hex value for a base 36 userId", function () {
             let request = new Log({
                 payload: {
-                    session: {
-                        user: {
-                            userId: "ZZZZZZ"
+                    originalRequest: {
+                        data: {
+                            user: {
+                                user_id: "ZZZZZZ"
+                            },
                         }
                     }
                 },
@@ -203,69 +225,6 @@ describe("Google Conversation", function () {
 
             expect(conversation.userColors.fill).to.equal("#bf0fff");
             expect(conversation.userColors.background).to.equal("#4fff0f");
-        });
-
-        it("returns the appropriate request payload type.", function () {
-            let request = new Log({
-                payload: {
-                    session: {
-                        user: {
-                            userId: "ZZZZZZ"
-                        }
-                    },
-                    request: {
-                        type: "TestRequest"
-                    }
-                },
-                log_type: "DEBUG",
-                source: "source",
-                transaction_id: "transaction_id",
-                timestamp: new Date(),
-                tags: [],
-                id: ""
-            });
-            let response = googleHomeRequestLog();
-            let output = new Output({
-                message: "message",
-                level: "DEBUG",
-                timestamp: new Date(),
-                transaction_id: "transaction_id",
-                id: "id"
-            });
-            let outputs = [output];
-
-            let conversation = createConvo({ response: response, request: request, outputs: outputs });
-            expect(conversation.requestPayloadType).to.equal("TestRequest");
-        });
-
-        it("returns undefined if the request payload does not have a request object.", function () {
-            let request = new Log({
-                payload: {
-                    session: {
-                        user: {
-                            userId: "ZZZZZZ"
-                        }
-                    }
-                },
-                log_type: "DEBUG",
-                source: "source",
-                transaction_id: "transaction_id",
-                timestamp: new Date(),
-                tags: [],
-                id: ""
-            });
-            let response = googleHomeRequestLog();
-            let output = new Output({
-                message: "message",
-                level: "DEBUG",
-                timestamp: new Date(),
-                transaction_id: "transaction_id",
-                id: "id"
-            });
-            let outputs = [output];
-
-            let conversation = createConvo({ response: response, request: request, outputs: outputs });
-            expect(conversation.requestPayloadType).to.be.undefined;
         });
 
         it("returns undefined if the request payload does not exist.", function () {
