@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { googleHomeRequestLog, googleHomeResponseLog } from "../utils/test";
-import Conversation, { createConvo } from "./conversation";
+import Conversation, { createConvo, Origin } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 
@@ -32,6 +32,10 @@ describe("Google Conversation", function () {
             expect(conversation.request).to.exist;
             expect(conversation.response).to.exist;
             expect(conversation.outputs).to.have.length(outputs.length);
+        });
+
+        it ("Tests the origin", function() {
+            expect(conversation.origin).to.equal(Origin.GoogleHome);
         });
 
         it("Tests the session ID", function () {

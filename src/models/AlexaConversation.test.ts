@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { alexaRequestIntentLog, alexaRequestLaunchIntentLog, alexaRequestPlayerLog, alexaResponseLog, alexaResponsePlayerLog } from "../utils/test";
-import { createConvo } from "./conversation";
+import { createConvo, Origin } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 
@@ -25,6 +25,7 @@ describe("Alexa Conversation", function () {
         expect(conversation.response).to.exist;
         expect(conversation.outputs).to.have.length(1);
 
+        expect(conversation.origin).to.equal(Origin.AmazonAlexa);
         expect(conversation.sessionId).to.equal("SessionId.c5f6c9d5-e923-4305-9804-defee172386e");
         expect(conversation.userId).to.equal("amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMBGMYLIYKQUSZHAIR7ALWSV5B2MPTYCUZWZBNUJ3GFOZP6NOCGKQCA73Z2CS4II6OO5NQDUH52YC7UFM2ADB4WTMB66R5UONMNIZMS3NRHCTQXEUPMOQDRH3XSBXZWMGGZDSQA7R7E4EPA4IHO7FP6ANM7NFX7U7RQQ37AWQDI334WGWDJ63A");
         expect(conversation.requestPayloadType).to.equal("IntentRequest.HelloWorldIntent");
@@ -32,8 +33,8 @@ describe("Alexa Conversation", function () {
         expect(conversation.timestamp).to.equal(request.timestamp);
         expect(conversation.outputs[0]).to.equal(output);
         expect(conversation.hasError).to.be.false;
-
     });
+
     describe("with launch intent request", function () {
         it("returns undefined for intent", function () {
 

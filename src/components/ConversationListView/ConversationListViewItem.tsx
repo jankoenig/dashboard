@@ -1,9 +1,10 @@
 import * as moment from "moment";
 import * as React from "react";
 
-import Conversation from "../../models/conversation";
+import Conversation, { Origin } from "../../models/conversation";
 import Button from "../Button";
-import { Icon, ICON } from "../Icon";
+import AmazonEchoIcon from "../Icon/AmazonEcho";
+import GoogleHomeIcon from "../Icon/GoogleHome";
 import Interaction from "../Interaction";
 import Pill from "../Pill";
 
@@ -50,7 +51,6 @@ export default class ConversationListViewItem extends React.Component<Conversati
 
     iconWrapperStyle(): React.CSSProperties {
         return {
-            backgroundColor: this.props.conversation.userColors.background,
             borderRadius: "20px",
             width: "40px",
             height: "40px",
@@ -69,6 +69,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
     }
 
     render() {
+        console.info(this.props.conversation.origin);
         return (
             <li key={this.props.conversation.id} style={{ listStyle: "none" }}>
                 <div
@@ -76,12 +77,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
                     onClick={this.props.onClick.bind(this, this.props.conversation)}>
                     <span style={this.primaryContentStyle()}>
                         <div style={this.iconWrapperStyle()}>
-                            <Icon
-                                style={{ fill: this.props.conversation.userColors.fill, marginTop: "4px" }}
-                                width={30}
-                                height={30}
-                                icon={ICON.DEFAULT_USER}
-                            />
+                            <Icon fill={this.props.conversation.userColors.fill} origin={this.props.conversation.origin} />
                         </div>
                         <span>
                             {this.props.conversation.requestPayloadType}
@@ -119,5 +115,24 @@ export default class ConversationListViewItem extends React.Component<Conversati
                 ) : undefined}
             </li>
         );
+    }
+}
+
+interface IconProps {
+    origin: Origin;
+    fill: string;
+}
+
+class Icon extends React.Component<IconProps, any> {
+    render() {
+        const iconStyle = { fill: this.props.fill, marginTop: "4px" };
+
+        let icon: JSX.Element;
+        if (this.props.origin === Origin.GoogleHome) {
+            icon = (<GoogleHomeIcon style={iconStyle} width={"30px"} height={"30px"} color={this.props.fill} />);
+        } else {
+            icon = (<AmazonEchoIcon style={iconStyle} width={"30px"} height={"30px"} color={this.props.fill}  />);
+        }
+        return icon;
     }
 }

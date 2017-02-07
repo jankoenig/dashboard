@@ -333,7 +333,7 @@ class AlexaConversation extends GenericConversation {
 
 class GoogleHomeConversation extends GenericConversation {
 
-    readonly source: Origin = Origin.GoogleHome;
+    readonly origin: Origin = Origin.GoogleHome;
 
     constructor(props: ConversationProperties) {
         super(props);
