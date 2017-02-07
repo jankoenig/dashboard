@@ -82,7 +82,7 @@ export function dummyOutputs(length: number): Output[] {
     return outputs;
 }
 
-export const alexaRequestLaunchIntentLog: Log = new Log({
+export const AlexaRequestLaunchIntentLog: Log = new Log({
     payload: {
         "version": "1.0",
         "session": {
@@ -125,7 +125,7 @@ export const alexaRequestLaunchIntentLog: Log = new Log({
     id: "581baaae7a0db10022c0805b"
 });
 
-export const alexaRequestIntentLog: Log = new Log({
+export const AlexaRequestIntentLog: Log = new Log({
     payload: {
         "version": "1.0",
         "session": {
@@ -158,7 +158,7 @@ export const alexaRequestIntentLog: Log = new Log({
     id: "581cd1047a0db10022c081e7"
 });
 
-export const alexaResponseLog: Log = new Log({
+export const AlexaResponseLog: Log = new Log({
     payload: {
         "version": "1.0",
         "type": "INFO",
@@ -180,7 +180,7 @@ export const alexaResponseLog: Log = new Log({
     id: "581cd1047a0db10022c081e8"
 });
 
-export const alrexaRequestPlayerLog: Log = new Log({
+export const AlrexaRequestPlayerLog: Log = new Log({
     payload: {
         "request": {
             "type": "LaunchRequest",
@@ -230,7 +230,7 @@ export const alrexaRequestPlayerLog: Log = new Log({
     id: "582509f77a0db10022c0886b"
 });
 
-export const alexaResponsePlayerLog: Log = new Log({
+export const AlexaResponsePlayerLog: Log = new Log({
     payload: {
         "version": "1.0",
         "response": {
@@ -261,6 +261,41 @@ export const alexaResponsePlayerLog: Log = new Log({
     timestamp: new Date("2016-11-10T23:59:50.112Z"),
     tags: [
         "response"
+    ],
+    id: "582509f77a0db10022c0886c"
+});
+
+export const GoogleHomeRequestLog: Log = new Log({
+    payload: {
+        "version": "1.0",
+        "response": {
+            "shouldEndSession": false,
+            "outputSpeech": {
+                "type": "SSML",
+                "ssml": "<speak> <audio src=\"https://s3.amazonaws.com/bespoken/streaming/bespokenspodcast-INTRODUCTION.mp3\" />You can say play, scan titles, or about the podcast </speak>"
+            },
+            "reprompt": {
+                "outputSpeech": {
+                    "type": "SSML",
+                    "ssml": "<speak> You can say play, scan titles, or about the podcast </speak>"
+                }
+            }
+        },
+        "sessionAttributes": {
+            "STATE": "",
+            "index": 0,
+            "offsetInMilliseconds": 0,
+            "playbackFinished": false,
+            "playbackIndexChanged": true,
+            "enqueuedToken": false
+        }
+    },
+    log_type: "INFO",
+    source: "source",
+    transaction_id: "bf1e8de6-2d40-40d2-8392-0e47672eea64",
+    timestamp: new Date("2016-11-10T23:59:50.112Z"),
+    tags: [
+        "request"
     ],
     id: "582509f77a0db10022c0886c"
 });
