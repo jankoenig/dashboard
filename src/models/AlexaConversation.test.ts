@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { alexaRequestIntentLog, alexaRequestLaunchIntentLog, alrexaRequestPlayerLog, alexaResponseLog, alexaResponsePlayerLog } from "../utils/test";
+import { alexaRequestIntentLog, alexaRequestLaunchIntentLog, alexaResponseLog, alexaResponsePlayerLog, alrexaRequestPlayerLog } from "../utils/test";
 import { createConvo } from "./conversation";
 import Log from "./log";
 import Output from "./output";

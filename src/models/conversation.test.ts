@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import { requestIntentLog, requestLaunchIntentLog, requestPlayerLog, responseLog, responsePlayerLog } from "../utils/test";
+import { alexaRequestIntentLog, alexaRequestLaunchIntentLog, alexaResponseLog, alexaResponsePlayerLog, alrexaRequestPlayerLog } from "../utils/test";
 import { createConvo } from "./conversation";
 import Log from "./log";
 import Output from "./output";
@@ -8,8 +8,8 @@ import Output from "./output";
 describe("Conversation", function () {
     it("sets the properties", function () {
 
-        let response = responseLog;
-        let request = requestIntentLog;
+        let response = alexaResponseLog;
+        let request = alexaRequestIntentLog;
         let output = new Output({
             message: "message",
             level: "DEBUG",
@@ -39,8 +39,8 @@ describe("Conversation", function () {
     describe("with launch intent request", function () {
         it("returns undefined for intent", function () {
 
-            let response = responseLog;
-            let request = requestLaunchIntentLog;
+            let response = alexaResponseLog;
+            let request = alexaRequestLaunchIntentLog;
 
             let conversation = createConvo({ response: response, request: request });
 
@@ -50,14 +50,14 @@ describe("Conversation", function () {
     });
     describe("with request from player", function () {
         it("sets the userId", function () {
-            let conversation = createConvo({ response: responsePlayerLog, request: requestPlayerLog });
+            let conversation = createConvo({ response: alexaResponsePlayerLog, request: alrexaRequestPlayerLog });
             expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
         });
     });
     describe("hasError", function () {
         it("returns true when an error output exists", function () {
-            let response = responseLog;
-            let request = requestIntentLog;
+            let response = alexaResponseLog;
+            let request = alexaRequestIntentLog;
             let output = new Output({
                 message: "message",
                 level: "ERROR",
@@ -83,7 +83,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog;
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -115,7 +115,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog;
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -146,7 +146,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog;
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -177,7 +177,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog;
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -212,7 +212,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog;
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -242,7 +242,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog;
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -266,7 +266,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog;
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -282,7 +282,7 @@ describe("Conversation", function () {
     });
     describe("without a request", function() {
 
-        let response = responseLog;
+        let response = alexaResponseLog;
         let request = undefined;
         let output = new Output({
             message: "message",
