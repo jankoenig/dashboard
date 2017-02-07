@@ -6,7 +6,7 @@ import * as sinonChai from "sinon-chai";
 
 import { createConvo } from "../../models/conversation";
 import Output from "../../models/output";
-import { AlexaRequestIntentLog, AlexaResponseLog } from "../../utils/test";
+import { alexaRequestIntentLog, alexaResponseLog } from "../../utils/test";
 import ConversationListItem from "./ConversationListViewItem";
 
 // Setup chai with sinon-chai
@@ -15,7 +15,7 @@ let expect = chai.expect;
 
 describe("ConversationListViewItem", function () {
     let onClick = sinon.spy();
-    let conversation = createConvo({ request: AlexaRequestIntentLog, response: AlexaResponseLog });
+    let conversation = createConvo({ request: alexaRequestIntentLog(), response: alexaResponseLog() });
     let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} />);
     let li = wrapper.find("li");
     let div = li.find("div").first();
@@ -41,7 +41,7 @@ describe("ConversationListViewItem", function () {
 
     describe("when active", function () {
         let onClick = sinon.spy();
-        let conversation = createConvo({ request: AlexaRequestIntentLog, response: AlexaResponseLog });
+        let conversation = createConvo({ request: alexaRequestIntentLog(), response: alexaResponseLog() });
         let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} active={true} />);
         let li = wrapper.find("li");
         let div = li.find("div").first();
@@ -70,11 +70,11 @@ describe("ConversationListViewItem", function () {
                 message: "Error!",
                 level: "ERROR",
                 timestamp: new Date(),
-                transaction_id: AlexaRequestIntentLog.id,
+                transaction_id: alexaRequestIntentLog().id,
                 id: "123"
             });
 
-            let conversation = createConvo({ request: AlexaRequestIntentLog, response: AlexaResponseLog, outputs: [output] });
+            let conversation = createConvo({ request: alexaRequestIntentLog(), response: alexaResponseLog(), outputs: [output] });
             let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} active={true} />);
 
             expect(wrapper.find("Pill")).to.have.length(1);

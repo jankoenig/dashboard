@@ -1,63 +1,72 @@
 import { expect } from "chai";
 
-import { AlexaRequestIntentLog, AlexaRequestLaunchIntentLog, AlexaResponseLog, AlexaResponsePlayerLog, AlrexaRequestPlayerLog } from "../utils/test";
-import { createConvo } from "./conversation";
+import { googleHomeRequestLog, googleHomeResponseLog } from "../utils/test";
+import Conversation, { createConvo } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 
 describe("Google Conversation", function () {
-    it("sets the properties", function () {
+    describe("Construction", function () {
+        let response: Log;
+        let request: Log;
+        let output: Output;
+        let outputs: Output[];
+        let conversation: Conversation;
 
-        let response = AlexaResponseLog;
-        let request = AlexaRequestIntentLog;
-        let output = new Output({
-            message: "message",
-            level: "DEBUG",
-            timestamp: new Date(),
-            transaction_id: "transaction_id",
-            id: "id"
+        before(function () {
+            request = googleHomeRequestLog();
+            response = googleHomeResponseLog();
+            output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            outputs = [output];
+            conversation = createConvo({ request: request, response: response, outputs: outputs });
         });
-        let outputs = [output];
 
-        let conversation = createConvo({ response: response, request: request, outputs: outputs });
+        it("tests that all basic properties were set.", function () {
+            expect(conversation).to.exist;
+            expect(conversation.request).to.exist;
+            expect(conversation.response).to.exist;
+            expect(conversation.outputs).to.have.length(outputs.length);
+        });
 
-        expect(conversation).to.exist;
-        expect(conversation.request).to.exist;
-        expect(conversation.response).to.exist;
-        expect(conversation.outputs).to.have.length(1);
+        it("Tests the session ID", function () {
+            expect(conversation.sessionId).to.equal("1486421163972");
+        });
 
-        expect(conversation.applicationId).to.equal("amzn1.ask.skill.07dc249f-caf2-4fc0-bdbe-32b6702426ea");
-        expect(conversation.sessionId).to.equal("SessionId.c5f6c9d5-e923-4305-9804-defee172386e");
-        expect(conversation.userId).to.equal("amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMBGMYLIYKQUSZHAIR7ALWSV5B2MPTYCUZWZBNUJ3GFOZP6NOCGKQCA73Z2CS4II6OO5NQDUH52YC7UFM2ADB4WTMB66R5UONMNIZMS3NRHCTQXEUPMOQDRH3XSBXZWMGGZDSQA7R7E4EPA4IHO7FP6ANM7NFX7U7RQQ37AWQDI334WGWDJ63A");
-        expect(conversation.requestPayloadType).to.equal("IntentRequest.HelloWorldIntent");
-        expect(conversation.intent).to.equal("HelloWorldIntent");
-        expect(conversation.timestamp).to.equal(request.timestamp);
-        expect(conversation.outputs[0]).to.equal(output);
-        expect(conversation.hasError).to.be.false;
+        it("Tests the user ID", function () {
+            expect(conversation.userId).to.equal("HhH6aw5nfy3E4CPHJwX5URGaDs6pUs4vtcCK2ys8CIc=");
+        });
 
-    });
-    describe("with launch intent request", function () {
-        it("returns undefined for intent", function () {
+        it("Tests the request payload type", function () {
+            expect(conversation.requestPayloadType).to.equal("assistant.intent.action.MAIN");
+        });
 
-            let response = AlexaResponseLog;
-            let request = AlexaRequestLaunchIntentLog;
+        it("Tests the intent", function () {
+            expect(conversation.intent).to.equal("assistant.intent.action.MAIN");
+        });
 
-            let conversation = createConvo({ response: response, request: request });
+        it("Tests the timestamp", function () {
+            expect(conversation.timestamp).to.equal(request.timestamp);
+        });
 
-            expect(conversation.intent).to.be.undefined;
+        it("Tests the output", function () {
+            expect(conversation.outputs[0]).to.equal(output);
+        });
 
+        it("Tests the has error", function () {
+            expect(conversation.hasError).to.be.false;
         });
     });
-    describe("with request from player", function () {
-        it("sets the userId", function () {
-            let conversation = createConvo({ response: AlexaResponsePlayerLog, request: AlrexaRequestPlayerLog });
-            expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
-        });
-    });
+
     describe("hasError", function () {
         it("returns true when an error output exists", function () {
-            let response = AlexaResponseLog;
-            let request = AlexaRequestIntentLog;
+            let request = googleHomeRequestLog();
+            let response = googleHomeResponseLog();
             let output = new Output({
                 message: "message",
                 level: "ERROR",
@@ -71,6 +80,7 @@ describe("Google Conversation", function () {
             expect(conversation.hasError).to.be.true;
         });
     });
+
     describe("userColors", function () {
         it("returns default colors for an undefined userId", function () {
 
@@ -83,7 +93,7 @@ describe("Google Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -97,8 +107,8 @@ describe("Google Conversation", function () {
 
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
-
         });
+
         it("returns the default colors for an empty string userId", function () {
             let request = new Log({
                 payload: {
@@ -115,7 +125,7 @@ describe("Google Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -130,6 +140,7 @@ describe("Google Conversation", function () {
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
         });
+
         it("returns the hex color for a hex userId", function () {
             let request = new Log({
                 payload: {
@@ -146,7 +157,7 @@ describe("Google Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -161,6 +172,7 @@ describe("Google Conversation", function () {
             expect(conversation.userColors.fill).to.equal("#A234b6");
             expect(conversation.userColors.background).to.equal("#48b634");
         });
+
         it("returns the hex value for a base 36 userId", function () {
             let request = new Log({
                 payload: {
@@ -177,7 +189,7 @@ describe("Google Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -212,7 +224,7 @@ describe("Google Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -242,7 +254,7 @@ describe("Google Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -266,7 +278,7 @@ describe("Google Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -280,9 +292,9 @@ describe("Google Conversation", function () {
             expect(conversation.requestPayloadType).to.be.undefined;
         });
     });
-    describe("without a request", function() {
 
-        let response = AlexaResponseLog;
+    describe("without a request", function () {
+        let response = googleHomeRequestLog();
         let request = undefined;
         let output = new Output({
             message: "message",
@@ -295,10 +307,11 @@ describe("Google Conversation", function () {
 
         let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
-        it("returns the id from the response", function() {
+        it("returns the id from the response", function () {
             expect(conversation.id).to.equal(response.id);
         });
-        it("returns the timestamp from the response", function() {
+
+        it("returns the timestamp from the response", function () {
             expect(conversation.timestamp).to.equal(response.timestamp);
         });
     });

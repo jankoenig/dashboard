@@ -1,14 +1,14 @@
 import { expect } from "chai";
 
-import { AlexaRequestIntentLog, AlexaRequestLaunchIntentLog, AlexaResponseLog, AlexaResponsePlayerLog, AlrexaRequestPlayerLog } from "../utils/test";
+import { alexaRequestIntentLog, alexaRequestLaunchIntentLog, alexaRequestPlayerLog, alexaResponseLog, alexaResponsePlayerLog } from "../utils/test";
 import { createConvo } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 
 describe("Alexa Conversation", function () {
     it("sets the properties", function () {
-        let response = AlexaResponseLog;
-        let request = AlexaRequestIntentLog;
+        let response = alexaResponseLog();
+        let request = alexaRequestIntentLog();
         let output = new Output({
             message: "message",
             level: "DEBUG",
@@ -25,7 +25,6 @@ describe("Alexa Conversation", function () {
         expect(conversation.response).to.exist;
         expect(conversation.outputs).to.have.length(1);
 
-        expect(conversation.applicationId).to.equal("amzn1.ask.skill.07dc249f-caf2-4fc0-bdbe-32b6702426ea");
         expect(conversation.sessionId).to.equal("SessionId.c5f6c9d5-e923-4305-9804-defee172386e");
         expect(conversation.userId).to.equal("amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMBGMYLIYKQUSZHAIR7ALWSV5B2MPTYCUZWZBNUJ3GFOZP6NOCGKQCA73Z2CS4II6OO5NQDUH52YC7UFM2ADB4WTMB66R5UONMNIZMS3NRHCTQXEUPMOQDRH3XSBXZWMGGZDSQA7R7E4EPA4IHO7FP6ANM7NFX7U7RQQ37AWQDI334WGWDJ63A");
         expect(conversation.requestPayloadType).to.equal("IntentRequest.HelloWorldIntent");
@@ -38,8 +37,8 @@ describe("Alexa Conversation", function () {
     describe("with launch intent request", function () {
         it("returns undefined for intent", function () {
 
-            let response = AlexaResponseLog;
-            let request = AlexaRequestLaunchIntentLog;
+            let response = alexaResponseLog();
+            let request = alexaRequestLaunchIntentLog();
 
             let conversation = createConvo({ response: response, request: request });
 
@@ -49,14 +48,14 @@ describe("Alexa Conversation", function () {
     });
     describe("with request from player", function () {
         it("sets the userId", function () {
-            let conversation = createConvo({ response: AlexaResponsePlayerLog, request: AlrexaRequestPlayerLog });
+            let conversation = createConvo({ response: alexaResponsePlayerLog(), request: alexaRequestPlayerLog() });
             expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
         });
     });
     describe("hasError", function () {
         it("returns true when an error output exists", function () {
-            let response = AlexaResponseLog;
-            let request = AlexaRequestIntentLog;
+            let response = alexaResponseLog();
+            let request = alexaRequestIntentLog();
             let output = new Output({
                 message: "message",
                 level: "ERROR",
@@ -82,7 +81,7 @@ describe("Alexa Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -114,7 +113,7 @@ describe("Alexa Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -145,7 +144,7 @@ describe("Alexa Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -176,7 +175,7 @@ describe("Alexa Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -211,7 +210,7 @@ describe("Alexa Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -241,7 +240,7 @@ describe("Alexa Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -265,7 +264,7 @@ describe("Alexa Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = AlexaResponseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -281,7 +280,7 @@ describe("Alexa Conversation", function () {
     });
     describe("without a request", function() {
 
-        let response = AlexaResponseLog;
+        let response = alexaResponseLog();
         let request = undefined;
         let output = new Output({
             message: "message",

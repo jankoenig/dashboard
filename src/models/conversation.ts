@@ -29,7 +29,6 @@ export interface Conversation {
     stackTraces: StackTrace[];
     origin: Origin;
     id: string | undefined;
-    applicationId: string | undefined;
     sessionId: string | undefined;
     userId: string | undefined;
     userColors: ConvoColors;
@@ -100,7 +99,6 @@ class GenericConversation implements Conversation {
 
     origin: Origin = Origin.AmazonAlexa;
 
-    applicationId: string | undefined;
     sessionId: string | undefined;
     userId: string | undefined;
     rawRequestType: string | undefined;
@@ -339,11 +337,6 @@ class GoogleHomeConversation extends GenericConversation {
 
     constructor(props: ConversationProperties) {
         super(props);
-    }
-
-    get applicationId(): string | undefined {
-        let applicationId: string;
-        return applicationId;
     }
 
     get sessionId(): string | undefined {
