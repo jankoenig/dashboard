@@ -20,19 +20,24 @@ describe("ConversationListSummary", function () {
     it("returns the event label", function (){
         expect(conversationListSummary.eventLabel).to.equal("Conversations");
     });
+
     it("returns the total number of events", function() {
         expect(conversationListSummary.totalEvents).to.equal(5);
     });
+
     it("returns the correct event data", function() {
         expect(conversationListSummary.events).to.have.length(3);
         expect(conversationListSummary.events[2].data).to.have.length(5);
     });
+
     it("returns total exceptions", function() {
         expect(conversationListSummary.totalExceptions).to.equal(0);
     });
+
     it("returns unique users", function() {
         expect(conversationListSummary.totalUniqueUsers).to.equal(1);
     });
+
     it("returns the requests", function() {
         expect(conversationListSummary.requests).to.have.length(5);
     });

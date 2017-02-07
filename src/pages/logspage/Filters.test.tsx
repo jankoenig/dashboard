@@ -19,6 +19,9 @@ let requestProps: LogProperties = {
                 name: "Testing Request Intent"
             },
             type: "TestRequest"
+        },
+        session: {
+            applicationId: "ABC123"
         }
     },
     stack: "Request Test Stack",

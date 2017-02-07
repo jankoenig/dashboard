@@ -6,7 +6,7 @@ import StackTrace from "./stack-trace";
 
 export type ConversationLevel = LOG_LEVELS;
 
-export enum Source {
+export enum Origin {
     AmazonAlexa, GoogleHome, Unknown
 }
 
@@ -27,7 +27,7 @@ export interface Conversation {
     response: Log;
     outputs: Output[];
     stackTraces: StackTrace[];
-    source: Source;
+    origin: Origin;
     id: string | undefined;
     applicationId: string | undefined;
     sessionId: string | undefined;
@@ -62,12 +62,42 @@ export interface Conversation {
 }
 
 export function createConvo(props: ConversationProperties): Conversation {
-    return new AlexaConversation(props);
+    console.info("CREATING CONVO");
+    if (props.request) {
+        console.info("REQUEST");
+        const requestPayload = props.request.payload;
+        console.log(requestPayload);
+        if (requestPayload.session) { // amazon
+            console.info("CREATING ALEXA");
+            return new AlexaConversation(props);
+        } else if (requestPayload.originalRequest) { // google
+            console.info("CREATING HOME");
+            return new GoogleHomeConversation(props);
+        }
+    } else if (props.response) {
+        const responsePayload = props.response.payload;
+        console.info("RESPONSE");
+        if (responsePayload.response) {
+            console.info("CREATING ALEXA");
+            return new AlexaConversation(props);
+        } else if (responsePayload.speech) {
+            console.info("CREATING HOME");
+            return new GoogleHomeConversation(props);
+        }
+    }
+    console.info("GIVING UP");
+    return new GenericConversation(props); // Give up
 }
 
 export default Conversation;
 
-class AlexaConversation implements Conversation {
+/**
+ * A Generic Conversation is a conversation that does not have a known point of origin.
+ * As such, we can't figure out what any of the data is based on the results, so we have a default
+ * parameters supplied instead.  Some things are common among all logs, so they will be provided through this
+ * class. Other Conversation classes can inherit from this class to use as for default values.
+ */
+class GenericConversation implements Conversation {
 
     readonly request: Log;
 
@@ -77,77 +107,41 @@ class AlexaConversation implements Conversation {
 
     readonly stackTraces: StackTrace[];
 
+    origin: Origin = Origin.AmazonAlexa;
+
+    applicationId: string | undefined;
+    sessionId: string | undefined;
+    userId: string | undefined;
+    rawRequestType: string | undefined;
+    requestType: string | undefined;
+    requestPayloadType: string | undefined;
+    intent: string | undefined;
+
     constructor(props: ConversationProperties) {
         this.request = props.request;
         this.response = props.response;
         this.outputs = props.outputs ? props.outputs.slice() : [];
         this.stackTraces = props.stackTraces ? props.stackTraces.slice() : [];
-
-        console.log(this);
-    }
-
-    get source(): Source {
-        return Source.Unknown;
+        // console.log(this);
     }
 
     get id(): string | undefined {
-
         let id: string;
-
+        console.info("GETTING ID");
+        console.log(this.request);
+        console.log(this.response);
         if (this.request) {
             id = this.request.id;
         } else if (this.response) {
             id = this.response.id;
         }
-
         return id;
     }
 
-    get applicationId(): string | undefined {
-
-        let applicationId: string;
-
-        if (this.request.payload.session && this.request.payload.session.application) {
-            // Leaving this in for backwards compatibility
-            applicationId = this.request.payload.session.application.applicationId;
-        }
-
-        if (this.request.payload.context) {
-            // This is the preferred applicationId
-            applicationId = this.request.payload.context.System.application.applicationId;
-        }
-
-        return applicationId;
-    }
-
-    get sessionId(): string | undefined {
-        let sessionId: string;
-        if (this.request.payload.session) {
-            sessionId = this.request.payload.session.sessionId;
-        }
-
-        return sessionId;
-    }
-
-    get userId(): string | undefined {
-
-        let userId: string;
-
-        if (this.request && typeof this.request.payload === "object") {
-            if (this.request.payload.session && this.request.payload.session.user) {
-                userId = this.request.payload.session.user.userId;
-            } else if (this.request.payload.context && this.request.payload.context.System.user) {
-                userId = this.request.payload.context.System.user.userId;
-            }
-        }
-
-        return userId;
-    }
-
-    get userColors(): { fill: string, background: string } {
+    get userColors(): ConvoColors {
 
         // set the default
-        let colors = {
+        let colors: ConvoColors = {
             fill: "#ffffff",
             background: "#000000"
         };
@@ -175,6 +169,86 @@ class AlexaConversation implements Conversation {
         }
 
         return colors;
+    }
+
+    get timestamp(): Date | undefined {
+
+        let timeStamp: Date;
+
+        if (this.request) {
+            timeStamp = this.request.timestamp;
+        } else if (this.response) {
+            timeStamp = this.response.timestamp;
+        }
+
+        return timeStamp;
+    }
+
+    get hasError(): boolean {
+        return this.isType("ERROR") || this.hasOutputType("ERROR");
+    }
+
+    get hasException(): boolean {
+        return this.stackTraces.length > 0;
+    }
+
+    isType(type: ConversationLevel | string): boolean {
+        return (this.request && this.request.log_type === type) || (this.response && this.response.log_type === type);
+    }
+
+    hasOutputType(type: string): boolean {
+        for (let output of this.outputs) {
+            if (output.level === type) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+class AlexaConversation extends GenericConversation {
+
+    readonly source: Origin = Origin.AmazonAlexa;
+
+    constructor(props: ConversationProperties) {
+        super(props);
+    }
+
+    get applicationId(): string | undefined {
+
+        let applicationId: string;
+
+        if (this.request.payload.session && this.request.payload.session.application) {
+            // Leaving this in for backwards compatibility
+            applicationId = this.request.payload.session.application.applicationId;
+        }
+
+        if (this.request.payload.context) {
+            // This is the preferred applicationId
+            applicationId = this.request.payload.context.System.application.applicationId;
+        }
+
+        return applicationId;
+    }
+
+    get sessionId(): string | undefined {
+        let sessionId: string = this.request.payload.session.sessionId;
+        return sessionId;
+    }
+
+    get userId(): string | undefined {
+
+        let userId: string;
+
+        if (typeof this.request.payload === "object") {
+            if (this.request.payload.session && this.request.payload.session.user) {
+                userId = this.request.payload.session.user.userId;
+            } else if (this.request.payload.context && this.request.payload.context.System.user) {
+                userId = this.request.payload.context.System.user.userId;
+            }
+        }
+
+        return userId;
     }
 
     /**
@@ -271,3 +345,100 @@ class AlexaConversation implements Conversation {
         return false;
     }
 }
+
+class GoogleHomeConversation extends GenericConversation {
+
+    readonly source: Origin = Origin.GoogleHome;
+
+    constructor(props: ConversationProperties) {
+        super(props);
+    }
+
+    get applicationId(): string | undefined {
+        let applicationId: string;
+        return applicationId;
+    }
+
+    get sessionId(): string | undefined {
+        let sessionId: string = this.request.payload.sessionId;
+        return sessionId;
+    }
+
+    get userId(): string | undefined {
+
+        let userId: string;
+
+        const payload = this.request.payload;
+        if (payload.originalRequest) {
+            const originalRequest = payload.originalRequest;
+            if (originalRequest.data) {
+                const data = originalRequest.data;
+                if (data.user) {
+                    userId = data.user.userId;
+                }
+            }
+        }
+
+        return userId;
+    }
+
+    get rawRequestType(): string | undefined {
+        return this.intent; // Turns out they may be the same thing for Google Home.
+    }
+
+    get requestType(): string | undefined {
+        let requestType: string = this.rawRequestType;
+
+        if (requestType) {
+            requestType = requestType.split(".")[0];
+        }
+
+        return requestType;
+    }
+
+    get requestPayloadType(): string | undefined {
+        let requestType: string = this.rawRequestType;
+
+        // if it is an intent request, append the type
+        if (requestType === "IntentRequest") {
+            requestType = requestType + "." + this.intent;
+        }
+
+        return requestType;
+    }
+
+    get intent(): string | undefined {
+        const payload = this.request.payload;
+
+        let intent: string;
+
+        if (payload.originalRequest) {
+            const originalRequest = payload.originalRequest;
+            if (originalRequest.data) {
+                const data = originalRequest.data;
+                if (data.inputs && data.inputs.length > 0) {
+                    const firstInput = data.inputs[0];
+                    intent = firstInput.intent;
+                }
+            }
+        }
+
+        return intent;
+    }
+}
+
+// class AlexaPayload {
+//     session: {
+//         application: {
+//             applicationId: string;
+//         }
+//     };
+
+//     context: {
+//         System: {
+//             application: {
+//                 applicationId: string;
+//             }
+//         }
+//     };
+// }

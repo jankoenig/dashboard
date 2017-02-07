@@ -1,7 +1,13 @@
+import * as uuid from "uuid";
+
 import { LOG_LEVELS } from "../constants";
 import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
+
+export enum LogType {
+    Alexa, Home
+}
 
 /**
  * Returns a specified amount of dummy logs for unit testing
@@ -10,7 +16,7 @@ import Source from "../models/source";
  * @param {number} length The number of logs
  * @returns {Log[]}
  */
-export function dummyLogs(length: number): Log[] {
+export function dummyLogs(length: number, type: LogType = LogType.Alexa): Log[] {
 
     let logs: Log[] = [];
 
@@ -19,7 +25,7 @@ export function dummyLogs(length: number): Log[] {
     for (let i = 0; i < length; i++) {
         let tag: string = "response";
         let transaction_id: string = "" + (i - 1);
-        let payload: string | {} = "payload";
+        let payload: any = responsePayload(type);
 
         const dateCopy = new Date();
         dateCopy.setSeconds(date.getSeconds() - i);
@@ -29,11 +35,7 @@ export function dummyLogs(length: number): Log[] {
             tag = "request";
             transaction_id = "" + i;
             dateCopy.setSeconds(dateCopy.getSeconds() - 1);
-            payload = {
-                request: {
-                    type: "Request." + i
-                }
-            };
+            payload = requestPayload(i, type);
         }
 
         // create a new dummy log
@@ -294,4 +296,69 @@ export function dummySources(length: number): Source[] {
     }
 
     return sources;
+}
+
+function requestPayload(index: number, logType: LogType) {
+    switch (logType) {
+        case LogType.Alexa:
+        default:
+            return alexaRequestPayload(index);
+    }
+}
+
+function responsePayload(logType: LogType) {
+    switch (logType) {
+        case LogType.Alexa:
+        default:
+            return alexaResponsePayload();
+    }
+}
+
+function alexaRequestPayload(index: number): any {
+    return {
+        version: "1.0",
+        session: {
+            new: true,
+            sessionId: "amzn1.echo-api.session." + uuid.v4(),
+            application: {
+                applicationId: "amzn1.ask.skill.07dc249f-caf2-4fc0-bdbe-32b6702426ea"
+            },
+            user: {
+                userId: "amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMBGMYLIYKQUSZHAIR7ALWSV5B2MPTYCUZWZBNUJ3GFOZP6NOCGKQCA73Z2CS4II6OO5NQDUH52YC7UFM2ADB4WTMB66R5UONMNIZMS3NRHCTQXEUPMOQDRH3XSBXZWMGGZDSQA7R7E4EPA4IHO7FP6ANM7NFX7U7RQQ37AWQDI334WGWDJ63A"
+            }
+        },
+        context: {
+            AudioPlayer: {
+                playerActivity: "IDLE"
+            },
+            System: {
+                application: {
+                    applicationId: "amzn1.ask.skill.07dc249f-caf2-4fc0-bdbe-32b6702426ea"
+                },
+                user: {
+                    userId: "amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMBGMYLIYKQUSZHAIR7ALWSV5B2MPTYCUZWZBNUJ3GFOZP6NOCGKQCA73Z2CS4II6OO5NQDUH52YC7UFM2ADB4WTMB66R5UONMNIZMS3NRHCTQXEUPMOQDRH3XSBXZWMGGZDSQA7R7E4EPA4IHO7FP6ANM7NFX7U7RQQ37AWQDI334WGWDJ63A"
+                }
+            }
+        },
+        request: {
+            type: "LaunchRequest " + index,
+            requestId: "amzn1.echo-api.request." + uuid.v4(),
+            timestamp: "2016-11-03T21:22:53Z",
+            locale: "en-US"
+        }
+    };
+}
+
+function alexaResponsePayload(): any {
+    return {
+        version: "1.0",
+        type: "INFO",
+        response: {
+            outputSpeech: {
+                type: "SSML",
+                ssml: "<speak> Oh boy, what a demo </speak>"
+            },
+            shouldEndSession: true
+        }
+    };
 }
