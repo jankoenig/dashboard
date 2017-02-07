@@ -199,25 +199,13 @@ class AlexaConversation extends GenericConversation {
         super(props);
     }
 
-    get applicationId(): string | undefined {
-
-        let applicationId: string;
-
-        if (this.request.payload.session && this.request.payload.session.application) {
-            // Leaving this in for backwards compatibility
-            applicationId = this.request.payload.session.application.applicationId;
-        }
-
-        if (this.request.payload.context) {
-            // This is the preferred applicationId
-            applicationId = this.request.payload.context.System.application.applicationId;
-        }
-
-        return applicationId;
-    }
-
     get sessionId(): string | undefined {
-        let sessionId: string = this.request.payload.session.sessionId;
+        let sessionId: string;
+        if (this.request) {
+            if (typeof this.request.payload === "object") {
+                sessionId = this.request.payload.session.sessionId;
+            }
+        }
         return sessionId;
     }
 
@@ -225,20 +213,19 @@ class AlexaConversation extends GenericConversation {
 
         let userId: string;
 
-        if (typeof this.request.payload === "object") {
-            if (this.request.payload.session && this.request.payload.session.user) {
-                userId = this.request.payload.session.user.userId;
-            } else if (this.request.payload.context && this.request.payload.context.System.user) {
-                userId = this.request.payload.context.System.user.userId;
+        if (this.request) {
+            if (typeof this.request.payload === "object") {
+                if (this.request.payload.session && this.request.payload.session.user) {
+                    userId = this.request.payload.session.user.userId;
+                } else if (this.request.payload.context && this.request.payload.context.System.user) {
+                    userId = this.request.payload.context.System.user.userId;
+                }
             }
         }
 
         return userId;
     }
 
-    /**
-     * The raw request type unmodified as it is in the conversation.
-     */
     get rawRequestType(): string | undefined {
         let requestType: string;
 
@@ -249,15 +236,6 @@ class AlexaConversation extends GenericConversation {
         return requestType;
     }
 
-    /**
-     * The type of the request.  This is the item that goes before the "." of a name;
-     *
-     * In an Amazon generated request/intent generally looks like this:
-     *
-     * "request.intent".
-     *
-     * This is the "request" part of the string.
-     */
     get requestType(): string | undefined {
         let requestType: string = this.rawRequestType;
 
@@ -268,9 +246,6 @@ class AlexaConversation extends GenericConversation {
         return requestType;
     }
 
-    /**
-     * The request type and if it is an "IntentRequest", will include the intent as well.
-     */
     get requestPayloadType(): string | undefined {
         let requestType: string = this.rawRequestType;
 
@@ -295,40 +270,6 @@ class AlexaConversation extends GenericConversation {
             }
         }
     }
-
-    get timestamp(): Date | undefined {
-
-        let timeStamp: Date;
-
-        if (this.request) {
-            timeStamp = this.request.timestamp;
-        } else if (this.response) {
-            timeStamp = this.response.timestamp;
-        }
-
-        return timeStamp;
-    }
-
-    get hasError(): boolean {
-        return this.isType("ERROR") || this.hasOutputType("ERROR");
-    }
-
-    get hasException(): boolean {
-        return this.stackTraces.length > 0;
-    }
-
-    isType(type: ConversationLevel | string): boolean {
-        return (this.request && this.request.log_type === type) || (this.response && this.response.log_type === type);
-    }
-
-    hasOutputType(type: string): boolean {
-        for (let output of this.outputs) {
-            if (output.level === type) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
 
 class GoogleHomeConversation extends GenericConversation {
@@ -340,19 +281,28 @@ class GoogleHomeConversation extends GenericConversation {
     }
 
     get sessionId(): string | undefined {
-        let sessionId: string = this.request.payload.sessionId;
+        let sessionId: string;
+        if (this.request) {
+            if (this.request.payload === "object") {
+                sessionId = this.request.payload.sessionId;
+            }
+        }
         return sessionId;
     }
 
     get userId(): string | undefined {
         let userId: string;
-        const payload = this.request.payload;
-        if (payload.originalRequest) {
-            const originalRequest = payload.originalRequest;
-            if (originalRequest.data) {
-                const data = originalRequest.data;
-                if (data.user) {
-                    userId = data.user.user_id;
+        if (this.request) {
+            if (this.request.payload) {
+                const payload = this.request.payload;
+                if (payload.originalRequest) {
+                    const originalRequest = payload.originalRequest;
+                    if (originalRequest.data) {
+                        const data = originalRequest.data;
+                        if (data.user) {
+                            userId = data.user.user_id;
+                        }
+                    }
                 }
             }
         }
@@ -385,17 +335,21 @@ class GoogleHomeConversation extends GenericConversation {
     }
 
     get intent(): string | undefined {
-        const payload = this.request.payload;
 
         let intent: string;
 
-        if (payload.originalRequest) {
-            const originalRequest = payload.originalRequest;
-            if (originalRequest.data) {
-                const data = originalRequest.data;
-                if (data.inputs && data.inputs.length > 0) {
-                    const firstInput = data.inputs[0];
-                    intent = firstInput.intent;
+        if (this.request) {
+            if (this.request.payload) {
+                const payload = this.request.payload;
+                if (payload.originalRequest) {
+                    const originalRequest = payload.originalRequest;
+                    if (originalRequest.data) {
+                        const data = originalRequest.data;
+                        if (data.inputs && data.inputs.length > 0) {
+                            const firstInput = data.inputs[0];
+                            intent = firstInput.intent;
+                        }
+                    }
                 }
             }
         }
@@ -403,19 +357,3 @@ class GoogleHomeConversation extends GenericConversation {
         return intent;
     }
 }
-
-// class AlexaPayload {
-//     session: {
-//         application: {
-//             applicationId: string;
-//         }
-//     };
-
-//     context: {
-//         System: {
-//             application: {
-//                 applicationId: string;
-//             }
-//         }
-//     };
-// }
