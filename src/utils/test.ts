@@ -82,7 +82,7 @@ export function dummyOutputs(length: number): Output[] {
     return outputs;
 }
 
-export const requestLaunchIntentLog: Log = new Log({
+export const alexaRequestLaunchIntentLog: Log = new Log({
     payload: {
         "version": "1.0",
         "session": {
@@ -125,7 +125,7 @@ export const requestLaunchIntentLog: Log = new Log({
     id: "581baaae7a0db10022c0805b"
 });
 
-export const requestIntentLog: Log = new Log({
+export const alexaRequestIntentLog: Log = new Log({
     payload: {
         "version": "1.0",
         "session": {
@@ -158,7 +158,7 @@ export const requestIntentLog: Log = new Log({
     id: "581cd1047a0db10022c081e7"
 });
 
-export const responseLog: Log = new Log({
+export const alexaResponseLog: Log = new Log({
     payload: {
         "version": "1.0",
         "type": "INFO",
@@ -180,7 +180,7 @@ export const responseLog: Log = new Log({
     id: "581cd1047a0db10022c081e8"
 });
 
-export const requestPlayerLog: Log = new Log({
+export const alrexaRequestPlayerLog: Log = new Log({
     payload: {
         "request": {
             "type": "LaunchRequest",
@@ -230,7 +230,7 @@ export const requestPlayerLog: Log = new Log({
     id: "582509f77a0db10022c0886b"
 });
 
-export const responsePlayerLog: Log = new Log({
+export const alexaResponsePlayerLog: Log = new Log({
     payload: {
         "version": "1.0",
         "response": {
@@ -341,7 +341,7 @@ function alexaRequestPayload(index: number): any {
             }
         },
         request: {
-            type: "LaunchRequest " + index,
+            type: "IntentRequest.Main." + index,
             requestId: "amzn1.echo-api.request." + uuid.v4(),
             timestamp: "2016-11-03T21:22:53Z",
             locale: "en-US"

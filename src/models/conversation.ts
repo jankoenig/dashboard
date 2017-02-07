@@ -62,30 +62,21 @@ export interface Conversation {
 }
 
 export function createConvo(props: ConversationProperties): Conversation {
-    console.info("CREATING CONVO");
     if (props.request) {
-        console.info("REQUEST");
         const requestPayload = props.request.payload;
-        console.log(requestPayload);
         if (requestPayload.session) { // amazon
-            console.info("CREATING ALEXA");
             return new AlexaConversation(props);
         } else if (requestPayload.originalRequest) { // google
-            console.info("CREATING HOME");
             return new GoogleHomeConversation(props);
         }
     } else if (props.response) {
         const responsePayload = props.response.payload;
-        console.info("RESPONSE");
         if (responsePayload.response) {
-            console.info("CREATING ALEXA");
             return new AlexaConversation(props);
         } else if (responsePayload.speech) {
-            console.info("CREATING HOME");
             return new GoogleHomeConversation(props);
         }
     }
-    console.info("GIVING UP");
     return new GenericConversation(props); // Give up
 }
 
@@ -122,14 +113,10 @@ class GenericConversation implements Conversation {
         this.response = props.response;
         this.outputs = props.outputs ? props.outputs.slice() : [];
         this.stackTraces = props.stackTraces ? props.stackTraces.slice() : [];
-        // console.log(this);
     }
 
     get id(): string | undefined {
         let id: string;
-        console.info("GETTING ID");
-        console.log(this.request);
-        console.log(this.response);
         if (this.request) {
             id = this.request.id;
         } else if (this.response) {
