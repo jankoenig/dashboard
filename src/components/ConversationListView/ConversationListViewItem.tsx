@@ -69,7 +69,6 @@ export default class ConversationListViewItem extends React.Component<Conversati
     }
 
     render() {
-        console.info(this.props.conversation.origin);
         return (
             <li key={this.props.conversation.id} style={{ listStyle: "none" }}>
                 <div
