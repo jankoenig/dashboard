@@ -1,15 +1,14 @@
 import { expect } from "chai";
 
-import { requestIntentLog, requestLaunchIntentLog, requestPlayerLog, responseLog, responsePlayerLog } from "../utils/test";
-import Conversation from "./conversation";
+import { alexaRequestIntentLog, alexaRequestLaunchIntentLog, alexaRequestPlayerLog, alexaResponseLog, alexaResponsePlayerLog } from "../utils/test";
+import { createConvo, Origin } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 
-describe("Conversation", function () {
+describe("Alexa Conversation", function () {
     it("sets the properties", function () {
-
-        let response = responseLog;
-        let request = requestIntentLog;
+        let response = alexaResponseLog();
+        let request = alexaRequestIntentLog();
         let output = new Output({
             message: "message",
             level: "DEBUG",
@@ -19,14 +18,14 @@ describe("Conversation", function () {
         });
         let outputs = [output];
 
-        let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+        let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
         expect(conversation).to.exist;
         expect(conversation.request).to.exist;
         expect(conversation.response).to.exist;
         expect(conversation.outputs).to.have.length(1);
 
-        expect(conversation.applicationId).to.equal("amzn1.ask.skill.07dc249f-caf2-4fc0-bdbe-32b6702426ea");
+        expect(conversation.origin).to.equal(Origin.AmazonAlexa);
         expect(conversation.sessionId).to.equal("SessionId.c5f6c9d5-e923-4305-9804-defee172386e");
         expect(conversation.userId).to.equal("amzn1.ask.account.AFP3ZWPOS2BGJR7OWJZ3DHPKMOMBGMYLIYKQUSZHAIR7ALWSV5B2MPTYCUZWZBNUJ3GFOZP6NOCGKQCA73Z2CS4II6OO5NQDUH52YC7UFM2ADB4WTMB66R5UONMNIZMS3NRHCTQXEUPMOQDRH3XSBXZWMGGZDSQA7R7E4EPA4IHO7FP6ANM7NFX7U7RQQ37AWQDI334WGWDJ63A");
         expect(conversation.requestPayloadType).to.equal("IntentRequest.HelloWorldIntent");
@@ -34,15 +33,15 @@ describe("Conversation", function () {
         expect(conversation.timestamp).to.equal(request.timestamp);
         expect(conversation.outputs[0]).to.equal(output);
         expect(conversation.hasError).to.be.false;
-
     });
+
     describe("with launch intent request", function () {
         it("returns undefined for intent", function () {
 
-            let response = responseLog;
-            let request = requestLaunchIntentLog;
+            let response = alexaResponseLog();
+            let request = alexaRequestLaunchIntentLog();
 
-            let conversation = new Conversation({ response: response, request: request });
+            let conversation = createConvo({ response: response, request: request });
 
             expect(conversation.intent).to.be.undefined;
 
@@ -50,14 +49,14 @@ describe("Conversation", function () {
     });
     describe("with request from player", function () {
         it("sets the userId", function () {
-            let conversation = new Conversation({ response: responsePlayerLog, request: requestPlayerLog });
+            let conversation = createConvo({ response: alexaResponsePlayerLog(), request: alexaRequestPlayerLog() });
             expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
         });
     });
     describe("hasError", function () {
         it("returns true when an error output exists", function () {
-            let response = responseLog;
-            let request = requestIntentLog;
+            let response = alexaResponseLog();
+            let request = alexaRequestIntentLog();
             let output = new Output({
                 message: "message",
                 level: "ERROR",
@@ -67,7 +66,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.hasError).to.be.true;
         });
     });
@@ -83,7 +82,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -93,7 +92,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
@@ -115,7 +114,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -125,7 +124,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
@@ -146,7 +145,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -156,7 +155,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#A234b6");
             expect(conversation.userColors.background).to.equal("#48b634");
@@ -177,7 +176,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -187,7 +186,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
             expect(conversation.userColors.fill).to.equal("#bf0fff");
             expect(conversation.userColors.background).to.equal("#4fff0f");
@@ -212,7 +211,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -222,7 +221,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.requestPayloadType).to.equal("TestRequest");
         });
 
@@ -242,7 +241,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -252,7 +251,7 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.requestPayloadType).to.be.undefined;
         });
 
@@ -266,7 +265,7 @@ describe("Conversation", function () {
                 tags: [],
                 id: ""
             });
-            let response = responseLog;
+            let response = alexaResponseLog();
             let output = new Output({
                 message: "message",
                 level: "DEBUG",
@@ -276,13 +275,13 @@ describe("Conversation", function () {
             });
             let outputs = [output];
 
-            let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
             expect(conversation.requestPayloadType).to.be.undefined;
         });
     });
     describe("without a request", function() {
 
-        let response = responseLog;
+        let response = alexaResponseLog();
         let request = undefined;
         let output = new Output({
             message: "message",
@@ -293,7 +292,7 @@ describe("Conversation", function () {
         });
         let outputs = [output];
 
-        let conversation = new Conversation({ response: response, request: request, outputs: outputs });
+        let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
         it("returns the id from the response", function() {
             expect(conversation.id).to.equal(response.id);

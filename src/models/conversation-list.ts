@@ -1,10 +1,14 @@
-import Conversation, {ConversationProperties} from "./conversation";
+import Conversation, { ConversationProperties, createConvo } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 import StackTrace from "./stack-trace";
 
 export type ConversationMap = {
-    [id: string]: ConversationProperties
+    [id: string]: Conversation
+};
+
+type PropsMap = {
+    [id: string]: ConversationProperties;
 };
 
 class ConversationList extends Array<Conversation> {
@@ -12,7 +16,7 @@ class ConversationList extends Array<Conversation> {
     static fromLogs(logs: Log[]): ConversationList {
 
         let conversations = new ConversationList();
-        let conversationMap: ConversationMap = {};
+        let conversationMap: PropsMap = {};
 
         if (logs) {
             for (let log of logs) {
@@ -44,7 +48,7 @@ class ConversationList extends Array<Conversation> {
 
             // convert to an array
             conversations = Object.keys(conversationMap).map(function (key) {
-                return new Conversation(conversationMap[key]);
+                return createConvo(conversationMap[key]);
             });
         }
 

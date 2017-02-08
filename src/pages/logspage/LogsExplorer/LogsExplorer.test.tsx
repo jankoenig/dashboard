@@ -4,7 +4,7 @@ import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import Conversation from "../../../models/conversation";
+import Conversation, { createConvo } from "../../../models/conversation";
 import Log from "../../../models/log";
 import LogQuery from "../../../models/log-query";
 import Output from "../../../models/output";
@@ -39,7 +39,7 @@ describe("LogExplorer", function () {
         let source2 = new Source({ name: "name", id: "id2" });
         let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
         let logMap: LogMap = { id: { logs: logs, query: logQuery } };
-        let convo: Conversation = new Conversation({ request: logs[0], response: logs[1], outputs: outputs });
+        let convo: Conversation = createConvo({ request: logs[0], response: logs[1], outputs: outputs });
 
         let wrapper: ShallowWrapper<any, any>;
 

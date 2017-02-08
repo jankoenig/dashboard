@@ -1,6 +1,6 @@
 import * as chai from "chai";
 
-import Conversation from "../../models/conversation";
+import Conversation, { createConvo } from "../../models/conversation";
 import { Log, LogProperties } from "../../models/log";
 import StackTrace from "../../models/stack-trace";
 import { dummyOutputs } from "../../utils/test";
@@ -19,6 +19,9 @@ let requestProps: LogProperties = {
                 name: "Testing Request Intent"
             },
             type: "TestRequest"
+        },
+        session: {
+            applicationId: "ABC123"
         }
     },
     stack: "Request Test Stack",
@@ -75,7 +78,7 @@ describe("Filters.tsx", function () {
 
         it("Tests it returns true with empty filters.", function () {
             let filter = new CompositeFilter([]);
-            let convo = new Conversation({
+            let convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -85,7 +88,7 @@ describe("Filters.tsx", function () {
 
         it("Tests it returns true with only true filters.", function () {
             let filter = new CompositeFilter([new SuccessFilter(), new SuccessFilter(), new SuccessFilter()]);
-            let convo = new Conversation({
+            let convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -95,7 +98,7 @@ describe("Filters.tsx", function () {
 
         it("Tests it returns false with one failing filter.", function () {
             let filter = new CompositeFilter([new SuccessFilter(), new FailFilter(), new SuccessFilter()]);
-            let convo = new Conversation({
+            let convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -182,7 +185,7 @@ describe("Filters.tsx", function () {
         it("Tests the filter will return true with a positive response.", function () {
             let filter = new LogLevelFilter("DEBUG");
 
-            let convo = new Conversation({
+            let convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps),
                 outputs: dummyOutputs(6)
@@ -194,7 +197,7 @@ describe("Filters.tsx", function () {
         it("Tests the filter will return false when neither log is correct.", function () {
             let filter = new LogLevelFilter("ERROR");
 
-            let convo = new Conversation({
+            let convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -205,7 +208,7 @@ describe("Filters.tsx", function () {
         it("Tests the filter will return true when searching for undefined log type.", function () {
             let filter = new LogLevelFilter(undefined);
 
-            let convo = new Conversation({
+            let convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -216,7 +219,7 @@ describe("Filters.tsx", function () {
         it("Tests the filter will return true when searching for empty log type.", function () {
             let filter = new LogLevelFilter("");
 
-            let convo = new Conversation({
+            let convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -232,7 +235,7 @@ describe("Filters.tsx", function () {
     });
 
     describe("IDFilter", function () {
-        let convo = new Conversation({
+        let convo = createConvo({
             request: new Log(requestProps),
             response: new Log(responseProps)
         });
@@ -295,7 +298,7 @@ describe("Filters.tsx", function () {
         before(function () {
             requestProps.timestamp.setFullYear(2016, 12, 15);
             responseProps.timestamp.setFullYear(2016, 12, 15);
-            convo = new Conversation({
+            convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -381,7 +384,7 @@ describe("Filters.tsx", function () {
         let convo: Conversation;
 
         before(function () {
-            convo = new Conversation({
+            convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -433,7 +436,7 @@ describe("Filters.tsx", function () {
         });
 
         it("Tests a false filter when convo doesn't have an intent", function () {
-            const newConvo = new Conversation({
+            const newConvo = createConvo({
                 request: new Log(responseProps),
                 response: new Log(responseProps)
             });
@@ -447,7 +450,7 @@ describe("Filters.tsx", function () {
         let convo: Conversation;
 
         before(function () {
-            convo = new Conversation({
+            convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
@@ -485,7 +488,7 @@ describe("Filters.tsx", function () {
 
         it ("Tests the request filter returns the correct value when there is no type.", function() {
             const filter = new RequestFilter("TestRequest");
-            const newConvo = new Conversation({
+            const newConvo = createConvo({
                 request: new Log(responseProps), // Response doesn't have a type so we'll just use that.
                 response: new Log(responseProps)
             });
@@ -511,7 +514,7 @@ describe("Filters.tsx", function () {
                 elements: []
             });
 
-            const newConvo = new Conversation({
+            const newConvo = createConvo({
                 request: new Log(responseProps),
                 response: new Log(responseProps),
                 stackTraces: [trace]
@@ -522,7 +525,7 @@ describe("Filters.tsx", function () {
 
         it("Tests the Exception Filter returns correct value with default constructor and exception does not exist.", function () {
             const filter: ExceptionFilter = new ExceptionFilter();
-            const newConvo = new Conversation({
+            const newConvo = createConvo({
                 request: new Log(responseProps),
                 response: new Log(responseProps)
             });
