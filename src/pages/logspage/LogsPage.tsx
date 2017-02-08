@@ -6,11 +6,11 @@ import Log from "../../models/log";
 import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
-import { LogMap } from "../../reducers/log";
+import { LogMap, LogQueryEvent } from "../../reducers/log";
 import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
-import { retrieveLogs } from "../../actions/log";
+import { nextPage, retrieveLogs } from "../../actions/log";
 
 const LIMIT: number = 50;
 
@@ -19,6 +19,7 @@ export interface LogsPageProps {
     source: Source;
     isLoading: boolean;
     getLogs: (query: LogQuery, append: boolean) => Promise<Log[]>;
+    newPage: (logMap: LogQueryEvent, limit: number) => Promise<Log[]>;
 }
 
 interface LogsPageState {
@@ -39,6 +40,10 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
             const fetchLogs = retrieveLogs(query, append);
             return fetchLogs(dispatch);
         },
+        newPage: function (query: LogQueryEvent, limit: number): Promise<Log[]> {
+            const fetchLogs = nextPage(query, limit);
+            return fetchLogs(dispatch);
+        }
     };
 }
 
@@ -58,10 +63,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     onItemsFiltered(list: ConversationList) {
         if (list.length < LIMIT) {
             if (!this.props.isLoading) {
-                const logQuery: LogQuery = this.getNextPageQuery();
-                if (this.lastQueryDoesNotMatch(logQuery)) {
-                    this.getMoreItems(logQuery);
-                }
+                this.getNextPage();
             }
         }
     }
@@ -84,11 +86,19 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
         if (!this.props.isLoading && lastVisibleIndex > total - 5) {
-            const logQuery: LogQuery = this.getNextPageQuery();
-            if (this.lastQueryDoesNotMatch(logQuery)) {
-                this.getMoreItems(logQuery);
-            }
+            this.getNextPage();
+            // const logQuery: LogQuery = this.getNextPageQuery();
+            // if (this.lastQueryDoesNotMatch(logQuery)) {
+            //     this.getMoreItems(logQuery);
+            // }
         }
+    }
+
+    getNextPage() {
+        console.info("Getting next");
+        const sourceId = this.props.source.id;
+        const event: LogQueryEvent = this.props.logMap[sourceId];
+        this.props.newPage(event, LIMIT);
     }
 
     getMoreItems(query: LogQuery) {

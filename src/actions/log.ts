@@ -2,6 +2,7 @@ import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
 import Source from "../models/source";
+import { LogQueryEvent } from "../reducers/log";
 import service from "../services/log";
 
 export type SetLogsAction = {
@@ -72,12 +73,49 @@ export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: R
         return service.getLogs(logQuery).then(function (logs: Log[]) {
             dispatch(setLogs(logQuery, logs, append));
             return logs;
-        }).then(function(logs: Log[]) {
+        }).then(function (logs: Log[]) {
             dispatch(fetchLogsRequest(false));
             return logs;
-        }).catch(function(err: Error) {
+        }).catch(function (err: Error) {
             dispatch(fetchLogsRequest(false));
             throw err;
         });
+    };
+}
+
+/**
+ * Retrieves the next page of logs and appends them to the current set of logs.  This will also set the global state
+ * with the newly appended logs.
+ *
+ * @param logMap: The last query.
+ * @param limit: the maximum number of logs to retrieve in this page.
+ */
+export function nextPage(logMap: LogQueryEvent, limit: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+    const logs = logMap.logs;
+    const lastLog = (logs !== undefined && logs.length > 0) ? logs[logs.length - 1] : undefined;
+    const endTime = (lastLog) ? new Date(lastLog.timestamp) : new Date();
+    const query = new LogQuery({
+        source: logMap.query.source,
+        startTime: logMap.query.startTime,
+        endTime: endTime,
+        limit: limit
+    });
+
+    return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
+        dispatch(fetchLogsRequest(true));
+
+        return service.getLogs(query).
+            then(function (newLogs: Log[]) {
+                return logs.slice().concat(newLogs);
+            }).then(function (logs: Log[]) {
+                dispatch(setLogs(logMap.query, logs, false));
+                return logs;
+            }).then(function (logs: Log[]) {
+                dispatch(fetchLogsRequest(false));
+                return logs;
+            }).catch(function (err: Error) {
+                dispatch(fetchLogsRequest(false));
+                throw err;
+            });
     };
 }

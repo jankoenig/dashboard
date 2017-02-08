@@ -3,11 +3,13 @@ import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
 
+export type LogQueryEvent = {
+    logs: Log[];
+    query: LogQuery;
+};
+
 export type LogMap = {
-    [sourceId: string]: {
-        logs: Log[];
-        query: LogQuery;
-    }
+    [sourceId: string]: LogQueryEvent;
 };
 
 export type LogState = {
