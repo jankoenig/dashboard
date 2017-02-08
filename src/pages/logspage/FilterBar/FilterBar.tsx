@@ -6,8 +6,9 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import Input from "react-toolbox/lib/input";
 
 import { Cell, Grid } from "../../../components/Grid";
+import { Origin } from "../../../models/conversation";
 import LogQuery from "../../../models/log-query";
-import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter, RequestFilter } from "../Filters";
+import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter } from "../Filters";
 
 const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
@@ -22,6 +23,7 @@ export interface FilterProps {
     onFilterIntent: (filter: IntentFilter) => void;
     onFilterDate: (filter: DateFilter) => void;
     onFilterException: (filter: ExceptionFilter) => void;
+    onFilterOrigin: (filter: OriginFilter) => void;
     className?: string;
 }
 
@@ -29,8 +31,10 @@ export interface FilterState {
     startDate?: Date;
     endDate?: Date;
     logTypes?: LogType[];
+    origins?: LogType[];
     selectedType?: string;
-    requestvalue?: string;
+    selectedOrigin?: string;
+    requestValue?: string;
     intentValue?: string;
     exceptionsOnly?: boolean;
     filterMap: any;
@@ -51,16 +55,23 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         super(props);
 
         let types: LogType[] = [];
-        types.push({ value: "", label: "All Logs" });
+        types.push({ value: "", label: "Any" });
         types.push({ value: "DEBUG", label: "Debug" });
         types.push({ value: "INFO", label: "Info" });
         types.push({ value: "WARN", label: "Warning" });
         types.push({ value: "ERROR", label: "Error" });
 
+        let origins: LogType[] = [];
+        origins.push({ value: "", label: "Any" });
+        origins.push({ value: "Alexa", label: "Alexa" });
+        origins.push({ value: "Home", label: "Home" });
+
         this.state = {
             filterMap: {},
             selectedType: types[0].value,
+            selectedOrigin: origins[0].value,
             logTypes: types,
+            origins: origins,
             filterbarHidden: false,
             startDate: props.query ? props.query.startTime : undefined,
             endDate: props.query ? props.query.endTime : undefined
@@ -72,6 +83,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.handleLogTypeChange = this.handleLogTypeChange.bind(this);
         this.handleIntentChange = this.handleIntentChange.bind(this);
         this.handleRequestChange = this.handleRequestChange.bind(this);
+        this.handleOriginChange = this.handleOriginChange.bind(this);
     }
 
     gridClasses() {
@@ -117,7 +129,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleRequestChange(value: string) {
-        this.state.requestvalue = value;
+        this.state.requestValue = value;
         this.setState(this.state);
         this.props.onFilterRequest(new RequestFilter(value));
     }
@@ -136,13 +148,42 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.props.onFilterException(filter);
     }
 
+    handleOriginChange(value: string) {
+        this.state.selectedOrigin = value;
+        this.setState(this.state);
+
+        let origin: Origin;
+        switch (value) {
+            case "Alexa":
+                origin = Origin.AmazonAlexa;
+                break;
+            case "Home":
+                origin = Origin.GoogleHome;
+                break;
+            default:
+                origin = undefined;
+        }
+        let filter: OriginFilter = new OriginFilter(origin);
+        this.props.onFilterOrigin(filter);
+    }
+
     render(): JSX.Element {
         let fullEndDate = new Date();
         let queryEndDate = this.state.endDate ? this.state.endDate : fullEndDate;
 
         return (
             <Grid className={this.gridClasses()} >
-                <Cell col={2} tablet={2} phone={2}>
+                <Cell col={1} tablet={1} phone={1}>
+                    <Dropdown
+                        theme={DropdownFilterbarTheme}
+                        label="Origin"
+                        auto={false}
+                        onChange={this.handleOriginChange}
+                        source={this.state.origins}
+                        value={this.state.selectedOrigin}
+                    />
+                </Cell>
+                <Cell col={1} tablet={1} phone={1}>
                     <Dropdown
                         theme={DropdownFilterbarTheme}
                         label="Log Level"
@@ -158,7 +199,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         type="text"
                         label="Request"
                         name="Request"
-                        value={this.state.requestvalue}
+                        value={this.state.requestValue}
                         onChange={this.handleRequestChange} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>.</p>

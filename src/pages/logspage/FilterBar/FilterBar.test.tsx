@@ -4,8 +4,10 @@ import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
+import Checkbox from "react-toolbox/lib/checkbox";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
+import Input from "react-toolbox/lib/input";
 
 import Filterbar, { FilterProps, FilterState } from "./FilterBar";
 
@@ -18,6 +20,32 @@ chai.use(require("chai-datetime"));
 const expect = chai.expect;
 
 describe("Filter Bar", function () {
+    let source: Source;
+    let onFilter: Sinon.SinonSpy;
+    let logQuery: LogQuery;
+    let wrapper: ShallowWrapper<FilterProps, FilterState>;
+
+    before(function () {
+        source = new Source({
+            name: "TestSource"
+        });
+        onFilter = sinon.spy();
+        logQuery = new LogQuery({ source: source });
+    });
+
+    beforeEach(function () {
+        onFilter.reset();
+        wrapper = shallow((
+            <Filterbar
+                onFilterDate={onFilter}
+                onFilterIntent={onFilter}
+                onFilterLogLevel={onFilter}
+                onFilterException={onFilter}
+                onFilterRequest={onFilter}
+                onFilterOrigin={onFilter}
+                query={logQuery} />
+        )) as ShallowWrapper<FilterProps, FilterState>;
+    });
 
     it("Renders correctly", function () {
         let source = new Source({
@@ -33,120 +61,118 @@ describe("Filter Bar", function () {
                 onFilterLogLevel={onFilter}
                 onFilterException={onFilter}
                 onFilterRequest={onFilter}
+                onFilterOrigin={onFilter}
                 query={logQuery} />
         ));
 
-        expect(wrapper.find(Dropdown)).to.have.length(1); // Filter by type.
-        expect(wrapper.find(DatePicker)).to.have.length(2); // filter by date range
+        expect(wrapper.find(Dropdown)).to.have.length(2); // Filter by type and origin
+        expect(wrapper.find(DatePicker)).to.have.length(2); // Filter by date range
+        expect(wrapper.find(Checkbox)).to.have.length(1); // Filter by exception
+        expect(wrapper.find(Input)).to.have.length(2); // Filter by request and intent
     });
 
-    it("Gives the appropriate props to the dropdown component.", function () {
-        let source = new Source({
-            name: "TestSource"
+    describe("Props passing.", function () {
+        it("Gives the appropriate props to the origin dropdown component.", function () {
+            const dropdown = wrapper.find(Dropdown).at(0);
+            expect(dropdown.prop("label")).to.equal("Origin");
+            expect(dropdown.prop("onChange")).to.not.be.undefined;
+
+            const origins = wrapper.state("origins");
+
+            expect(dropdown.prop("source")).to.equal(origins);
+            expect(dropdown.prop("value")).to.equal(origins[0].value);
         });
-        let onFilter = sinon.spy();
-        let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow((
-            <Filterbar
-                onFilterDate={onFilter}
-                onFilterIntent={onFilter}
-                onFilterLogLevel={onFilter}
-                onFilterException={onFilter}
-                onFilterRequest={onFilter}
-                query={logQuery} />
-        ));
+        it("Gives the appropriate props to the origin dropdown component.", function () {
+            const dropdown = wrapper.find(Dropdown).at(0);
+            expect(dropdown.prop("label")).to.equal("Origin");
+            expect(dropdown.prop("onChange")).to.not.be.undefined;
 
-        const dropdown = wrapper.find(Dropdown);
-        expect(dropdown.prop("label")).to.equal("Log Level");
-        expect(dropdown.prop("onChange")).to.not.be.undefined;
+            const origins = wrapper.state("origins");
 
-        const logtypes = wrapper.state("logTypes");
-
-        expect(dropdown.prop("source")).to.equal(logtypes);
-        expect(dropdown.prop("value")).to.equal(logtypes[0].value);
-    });
-
-    it("Gives the appropriate props to the start date picker.", function () {
-        let source = new Source({
-            name: "TestSource"
+            expect(dropdown.prop("source")).to.equal(origins);
+            expect(dropdown.prop("value")).to.equal(origins[0].value);
         });
-        let onFilter = sinon.spy();
-        let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow((
-            <Filterbar
-                onFilterDate={onFilter}
-                onFilterIntent={onFilter}
-                onFilterLogLevel={onFilter}
-                onFilterException={onFilter}
-                onFilterRequest={onFilter}
-                query={logQuery} />
-        ));
+        it("Gives the appropriate props to the log level dropdown component.", function () {
+            const dropdown = wrapper.find(Dropdown).at(1);
+            expect(dropdown.prop("label")).to.equal("Log Level");
+            expect(dropdown.prop("onChange")).to.not.be.undefined;
 
-        const startDatePicker = wrapper.find(DatePicker).at(0);
+            const logtypes = wrapper.state("logTypes");
 
-        expect(startDatePicker.prop("label")).to.equal("Start Date");
-        expect(startDatePicker.prop("minDate")).to.be.undefined;
-        expect(startDatePicker.prop("maxDate")).to.equalDate(new Date());
-        expect(startDatePicker.prop("value")).to.equal(wrapper.state("startDate"));
-        expect(startDatePicker.prop("onChange")).to.not.be.undefined;
-        expect(startDatePicker.prop("readonly")).to.equal(false);
-    });
-
-    it("Gives the appropriate props to the end date picker.", function () {
-        let source = new Source({
-            name: "TestSource"
+            expect(dropdown.prop("source")).to.equal(logtypes);
+            expect(dropdown.prop("value")).to.equal(logtypes[0].value);
         });
-        let onFilter = sinon.spy();
-        let logQuery = new LogQuery({ source: source });
 
-        let wrapper = shallow((
-            <Filterbar
-                onFilterDate={onFilter}
-                onFilterIntent={onFilter}
-                onFilterLogLevel={onFilter}
-                onFilterException={onFilter}
-                onFilterRequest={onFilter}
-                query={logQuery} />
-        ));
+        it("Gives the appropriate props to the request input component.", function () {
+            const input = wrapper.find(Input).at(0);
+            expect(input.prop("label")).to.equal("Request");
+            expect(input.prop("type")).to.equal("text");
+            expect(input.prop("onChange")).to.not.be.undefined;
+            expect(input.prop("value")).to.be.undefined;
+        });
 
-        const endDatePicker = wrapper.find(DatePicker).at(1);
+        it("Gives the appropriate props to the intent input component.", function () {
+            const input = wrapper.find(Input).at(1);
+            expect(input.prop("label")).to.equal("Intent");
+            expect(input.prop("type")).to.equal("text");
+            expect(input.prop("onChange")).to.not.be.undefined;
+            expect(input.prop("value")).to.be.undefined;
+        });
 
-        expect(endDatePicker.prop("label")).to.equal("End Date");
-        expect(endDatePicker.prop("minDate")).to.equal(wrapper.state("startDate"));
-        expect(endDatePicker.prop("maxDate")).to.equalDate(new Date());
-        expect(endDatePicker.prop("value")).to.be.equal(wrapper.state("endDate"));
-        expect(endDatePicker.prop("onChange")).to.not.be.undefined;
-        expect(endDatePicker.prop("readonly")).to.equal(false);
+        it("Gives the appropriate props to the exceptions checkbox component.", function () {
+            const checkbox = wrapper.find(Checkbox).at(0);
+            expect(checkbox.prop("label")).to.equal("With Exceptions");
+            expect(checkbox.prop("checked")).to.be.false;
+            expect(checkbox.prop("onChange")).to.not.be.null;
+        });
+
+        it("Gives the appropriate props to the start date picker.", function () {
+            const startDatePicker = wrapper.find(DatePicker).at(0);
+
+            expect(startDatePicker.prop("label")).to.equal("Start Date");
+            expect(startDatePicker.prop("minDate")).to.be.undefined;
+            expect(startDatePicker.prop("maxDate")).to.equalDate(new Date());
+            expect(startDatePicker.prop("value")).to.equal(wrapper.state("startDate"));
+            expect(startDatePicker.prop("onChange")).to.not.be.undefined;
+            expect(startDatePicker.prop("readonly")).to.equal(false);
+        });
+
+        it("Gives the appropriate props to the end date picker.", function () {
+            const endDatePicker = wrapper.find(DatePicker).at(1);
+            expect(endDatePicker.prop("label")).to.equal("End Date");
+            expect(endDatePicker.prop("minDate")).to.equal(wrapper.state("startDate"));
+            expect(endDatePicker.prop("maxDate")).to.equalDate(new Date());
+            expect(endDatePicker.prop("value")).to.be.equal(wrapper.state("endDate"));
+            expect(endDatePicker.prop("onChange")).to.not.be.undefined;
+            expect(endDatePicker.prop("readonly")).to.equal(false);
+        });
     });
 
     describe("Filters", function () {
 
-        let source: Source;
-        let onFilter: Sinon.SinonSpy;
-        let logQuery: LogQuery;
-        let wrapper: ShallowWrapper<FilterProps, FilterState>;
+        describe("Origin Filters", function () {
 
-        before(function () {
-            source = new Source({
-                name: "TestSource"
+            let dropdown: ShallowWrapper<any, any>;
+            let logTypes: any;
+
+            beforeEach(function () {
+                dropdown = wrapper.find(Dropdown).at(0);
+                logTypes = wrapper.state("logTypes");
             });
-            onFilter = sinon.spy();
-            logQuery = new LogQuery({ source: source });
-        });
 
-        beforeEach(function () {
-            onFilter.reset();
-            wrapper = shallow((
-                <Filterbar
-                    onFilterDate={onFilter}
-                    onFilterIntent={onFilter}
-                    onFilterLogLevel={onFilter}
-                    onFilterException={onFilter}
-                    onFilterRequest={onFilter}
-                    query={logQuery} />
-            )) as ShallowWrapper<FilterProps, FilterState>;
+            it("Tests the state after a type filter change.", function () {
+                dropdown.simulate("change", "Alexa");
+
+                expect(wrapper.state("selectedOrigin")).to.equal("Alexa");
+            });
+
+            it("Tests the callback is called on type filter change.", function () {
+                dropdown.simulate("change", "Alexa");
+
+                expect(onFilter).to.have.been.calledOnce;
+            });
         });
 
         describe("Type Filters", function () {
@@ -155,7 +181,7 @@ describe("Filter Bar", function () {
             let logTypes: any;
 
             beforeEach(function () {
-                dropdown = wrapper.find(Dropdown);
+                dropdown = wrapper.find(Dropdown).at(1);
                 logTypes = wrapper.state("logTypes");
             });
 
@@ -226,6 +252,79 @@ describe("Filter Bar", function () {
                 endDatePicker = wrapper.find(DatePicker).at(1); // It re-renders so need the new one.
 
                 expect(endDatePicker.prop("minDate")).to.equalDate(date);
+            });
+        });
+
+        describe("Exception Filters", function () {
+
+            let checkboxWrapper: ShallowWrapper<any, any>;
+
+            beforeEach(function () {
+                checkboxWrapper = wrapper.find(Checkbox).at(0);
+            });
+
+            it("Tests state after an exceptions change.", function () {
+                checkboxWrapper.simulate("change", true);
+
+                expect(wrapper.state("exceptionsOnly")).to.be.true;
+
+                checkboxWrapper = wrapper.find(Checkbox).at(0);
+
+                expect(checkboxWrapper.prop("checked")).to.be.true;
+            });
+
+            it("Tests callback was called after exceptions change.", function () {
+                checkboxWrapper.simulate("change", true);
+
+                expect(onFilter).to.be.calledOnce;
+            });
+        });
+
+        describe("Request Filter", function () {
+            let requestWrapper: ShallowWrapper<any, any>;
+
+            beforeEach(function () {
+                requestWrapper = wrapper.find(Input).at(0);
+            });
+
+            it("Tests state after an input change.", function () {
+                requestWrapper.simulate("change", "new value");
+
+                expect(wrapper.state("requestValue")).to.equal("new value");
+
+                // It re-renders so need the new one.
+                requestWrapper = wrapper.find(Input).at(0);
+
+                expect(requestWrapper.prop("value")).to.equal("new value");
+            });
+
+            it("Tests callback was called after input change.", function () {
+                requestWrapper.simulate("change", "new value");
+
+                expect(onFilter).to.be.calledOnce;
+            });
+        });
+
+        describe("Intent Filter", function () {
+            let intentWrapper: ShallowWrapper<any, any>;
+
+            beforeEach(function () {
+                intentWrapper = wrapper.find(Input).at(1);
+            });
+
+            it("Tests state after an input change.", function () {
+                intentWrapper.simulate("change", "new value");
+
+                expect(wrapper.state("intentValue")).to.equal("new value");
+
+                intentWrapper = wrapper.find(Input).at(1);
+                expect(intentWrapper.prop("value")).to.equal("new value");
+            });
+
+            it("Tests callback was called after input change.", function () {
+                intentWrapper.simulate("change", "new value");
+
+                expect(onFilter).to.be.calledOnce;
             });
         });
     });
