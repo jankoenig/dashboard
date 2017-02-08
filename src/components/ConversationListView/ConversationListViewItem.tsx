@@ -92,7 +92,8 @@ export default class ConversationListViewItem extends React.Component<Conversati
                     onClick={this.props.onClick.bind(this, this.props.conversation)}>
                     <span style={ConversationListViewItem.primaryContentStyle}>
                         <div style={ConversationListViewItem.iconWrapperStyle}>
-                            <Icon fill={this.props.conversation.userColors.background} origin={this.props.conversation.origin} />
+                            <Icon fill={this.props.conversation.userColors.fill}
+                                origin={this.props.conversation.origin} />
                         </div>
                         <span>
                             {this.props.conversation.requestPayloadType}
@@ -140,7 +141,7 @@ interface IconProps {
 
 class Icon extends React.Component<IconProps, any> {
     render() {
-        const iconStyle = { fill: this.props.fill, marginTop: "4px" };
+        const iconStyle = { marginTop: "4px" };
 
         let icon: JSX.Element;
         if (this.props.origin === Origin.GoogleHome) {
