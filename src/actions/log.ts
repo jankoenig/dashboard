@@ -69,7 +69,6 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
 export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
     return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
         dispatch(fetchLogsRequest(true));
-
         return service.getLogs(logQuery).then(function (logs: Log[]) {
             dispatch(setLogs(logQuery, logs, append));
             return logs;
@@ -90,7 +89,7 @@ export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: R
  * @param logMap: The last query.
  * @param limit: the maximum number of logs to retrieve in this page.
  */
-export function nextPage(logMap: LogQueryEvent, limit: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+export function nextPage(logMap: LogQueryEvent, limit?: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
     const logs = logMap.logs;
     const lastLog = (logs !== undefined && logs.length > 0) ? logs[logs.length - 1] : undefined;
     const endTime = (lastLog) ? new Date(lastLog.timestamp) : new Date();

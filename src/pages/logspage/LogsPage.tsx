@@ -7,6 +7,7 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap, LogQueryEvent } from "../../reducers/log";
+import Interval from "../../utils/Interval";
 import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
@@ -49,6 +50,8 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 
 export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
+    refresher: Interval.Executor;
+
     constructor(props: LogsPageProps) {
         super(props);
         this.state = {
@@ -58,6 +61,16 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.onScroll = this.onScroll.bind(this);
         this.onFilter = this.onFilter.bind(this);
         this.onItemsFiltered = this.onItemsFiltered.bind(this);
+
+        this.refresher = Interval.newExecutor(2000, this.refresh.bind(this));
+    }
+
+    componentDidMount() {
+        this.refresher.start();
+    }
+
+    componentWillUnmount() {
+        this.refresher.end();
     }
 
     onItemsFiltered(list: ConversationList) {
@@ -87,11 +100,14 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
         if (!this.props.isLoading && lastVisibleIndex > total - 5) {
             this.getNextPage();
-            // const logQuery: LogQuery = this.getNextPageQuery();
-            // if (this.lastQueryDoesNotMatch(logQuery)) {
-            //     this.getMoreItems(logQuery);
-            // }
         }
+    }
+
+    refresh() {
+        console.info("REFRESHING");
+        const sourceId = this.props.source.id;
+        const event: LogQueryEvent = this.props.logMap[sourceId];
+        this.props.getLogs(event.query, false);
     }
 
     getNextPage() {
@@ -99,26 +115,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         const sourceId = this.props.source.id;
         const event: LogQueryEvent = this.props.logMap[sourceId];
         this.props.newPage(event, LIMIT);
-    }
-
-    getMoreItems(query: LogQuery) {
-        this.props.getLogs(query, true);
-        this.state.lastQuery = query;
-        this.setState(this.state);
-    }
-
-    getNextPageQuery(): LogQuery {
-        const sourceId = this.props.source.id;
-        const allLogs = this.props.logMap[sourceId].logs;
-
-        const lastQuery = this.props.logMap[sourceId].query;
-        const lastLog = allLogs[allLogs.length - 1];
-        return new LogQuery({
-            source: this.props.source,
-            startTime: lastQuery.startTime,
-            endTime: new Date(lastLog.timestamp),
-            limit: LIMIT
-        });
     }
 
     lastQueryDoesNotMatch(query: LogQuery) {
