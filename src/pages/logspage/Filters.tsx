@@ -1,6 +1,6 @@
 import * as moment from "moment";
 
-import Conversation from "../../models/conversation";
+import Conversation, { Origin } from "../../models/conversation";
 import StringUtils from "../../utils/string";
 
 export const TYPE_COMPOSITE: string = "Composite";
@@ -10,6 +10,7 @@ export const TYPE_DATE: string = "Date";
 export const TYPE_REQUEST: string = "Request";
 export const TYPE_INTENT: string = "Intent";
 export const TYPE_EXCEPTION: string = "Exception";
+export const TYPE_ORIGIN: string = "Origin";
 
 export interface FilterType {
     type: string;
@@ -190,6 +191,22 @@ export class ExceptionFilter implements FilterType {
     get filter(): (item: Conversation) => boolean {
         return function (item: Conversation): boolean {
             return item.hasException;
+        };
+    }
+}
+
+export class OriginFilter implements FilterType {
+    type: string = TYPE_ORIGIN;
+    origin: Origin;
+
+    constructor(origin: Origin) {
+        this.origin = origin;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const origin = this.origin;
+        return function(item: Conversation): boolean {
+            return origin === undefined || origin === item.origin;
         };
     }
 }

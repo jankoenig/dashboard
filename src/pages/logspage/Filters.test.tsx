@@ -1,12 +1,12 @@
 import * as chai from "chai";
 
-import Conversation, { createConvo } from "../../models/conversation";
+import Conversation, { createConvo, Origin } from "../../models/conversation";
 import { Log, LogProperties } from "../../models/log";
 import StackTrace from "../../models/stack-trace";
 import { dummyOutputs } from "../../utils/test";
 
-import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, TYPE_REQUEST } from "./Filters";
-import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter, RequestFilter } from "./Filters";
+import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, TYPE_ORIGIN, TYPE_REQUEST } from "./Filters";
+import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter } from "./Filters";
 import { FilterType } from "./Filters";
 
 chai.use(require("chai-datetime"));
@@ -531,6 +531,43 @@ describe("Filters.tsx", function () {
             });
 
             expect(filter.filter(newConvo)).to.be.false;
+        });
+    });
+
+    describe("Origin filter", function() {
+        it ("Tests the Origin filter returns the correct type.", function() {
+            const filter: OriginFilter = new OriginFilter(Origin.AmazonAlexa);
+            expect(filter.type).to.equal(TYPE_ORIGIN);
+        });
+
+        it ("Tests the Origin filter returns true on correct origin.", function() {
+            const filter: OriginFilter = new OriginFilter(Origin.AmazonAlexa);
+            const newConvo = createConvo({
+                request: new Log(responseProps),
+                response: new Log(responseProps)
+            });
+
+            expect(filter.filter(newConvo)).to.be.true;
+        });
+
+        it ("Tests the Origin filter returns true on bad origin.", function() {
+            const filter: OriginFilter = new OriginFilter(Origin.GoogleHome);
+            const newConvo = createConvo({
+                request: new Log(responseProps),
+                response: new Log(responseProps)
+            });
+
+            expect(filter.filter(newConvo)).to.be.false;
+        });
+
+        it ("Tests the Origin filter returns true on undefined origin.", function() {
+            const filter: OriginFilter = new OriginFilter(undefined);
+            const newConvo = createConvo({
+                request: new Log(responseProps),
+                response: new Log(responseProps)
+            });
+
+            expect(filter.filter(newConvo)).to.be.true;
         });
     });
 });
