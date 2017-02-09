@@ -112,7 +112,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
-
         if (item === "startDate") {
             this.setDateRange(value, this.state.endDate);
         } else if (item === "endDate") {
@@ -223,6 +222,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                 </Cell>
                 <Cell col={2} offsetDesktop={1} tablet={2} offsetTablet={3} phone={1} offsetPhone={1}>
                     <DatePicker
+                        autoOk
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
                         maxDate={queryEndDate}
@@ -233,6 +233,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
                 <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={0} phone={1} offsetPhone={0}>
                     <DatePicker
+                        autoOk
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
                         minDate={this.state.startDate}
