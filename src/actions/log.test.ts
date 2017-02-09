@@ -163,11 +163,7 @@ describe("Log Actions", function () {
 
                     originalQuery = {
                         logs: mockPayload,
-                        query: new LogQuery({
-                            source: source,
-                            startTime: sevenDaysAgo,
-                            endTime: today
-                        })
+                        query: query
                     };
                 });
 
@@ -235,6 +231,128 @@ describe("Log Actions", function () {
 
                 it("Checks the dispatches were shown.", function () {
                     return store.dispatch(log.nextPage(originalQuery, 50)).catch(function (logs: Log[]) {
+                        let actions: any[] = store.getActions();
+
+                        expect(actions).to.have.length(2); // Two fetching dispatches.
+                        expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[0].fetching).to.equal(true);
+
+                        expect(actions[1].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[1].fetching).to.equal(false);
+                    });
+                });
+            });
+        });
+
+        describe("FindLatest", function () {
+            let sevenDaysAgo: Date;
+            let yesterday: Date;
+            let query: LogQuery;
+
+            before(function () {
+                sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+                yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+
+                query = new LogQuery({
+                    source: source,
+                    startTime: sevenDaysAgo,
+                    endTime: yesterday
+                });
+            });
+
+            describe("Success", function () {
+                let serviceStub: Sinon.SinonStub;
+
+                let originalQueryEvent: LogQueryEvent;
+
+                let nextPage: Log[] = dummyLogs(5);
+
+                before(function () {
+                    serviceStub = sinon.stub(LogsService, "getLogs").returns(new Promise((resolve, reject) => {
+                        resolve(nextPage);
+                    }));
+
+                    originalQueryEvent = {
+                        logs: mockPayload,
+                        query: query
+                    };
+                });
+
+                afterEach(function () {
+                    serviceStub.reset();
+                });
+
+                after(function () {
+                    serviceStub.restore();
+                });
+
+                it("Tests the appropriate actions were dispatched.", function () {
+                    const today = new Date();
+                    return store.dispatch(log.findLatest(originalQueryEvent)).then(function (logs: Log[]) {
+                        let actions: any[] = store.getActions();
+
+                        expect(actions).to.have.length(3); // Two fetching dispatches and set logs.
+                        expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[0].fetching).to.equal(true);
+
+                        expect(actions[1].type).to.equal(SET_LOGS);
+                        expect(actions[1].logs).to.deep.equal(logs);
+                        expect(actions[1].append).to.equal(false);
+
+                        // Test the query was updated.
+                        const actionsQuery: LogQuery = actions[1].query;
+                        const query: LogQuery = originalQueryEvent.query;
+
+                        expect(actionsQuery.source).to.deep.equal(query.source);
+                        expect(actionsQuery.startTime).to.deep.equal(query.startTime);
+                        expect(actionsQuery.endTime).to.deep.equal(today);
+
+                        expect(actions[2].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[2].fetching).to.equal(false);
+                    });
+                });
+
+                it ("Tests the logs were prepended to the current ones.", function() {
+                    const joined: Log[] = nextPage.slice().concat(mockPayload);
+
+                    return store.dispatch(log.findLatest(originalQueryEvent)).then(function (logs: Log[]) {
+                        expect(logs).to.deep.equal(joined);
+                    });
+                });
+            });
+
+            describe("Failure", function () {
+                let serviceStub: Sinon.SinonStub;
+
+                let originalQuery: LogQueryEvent;
+
+                before(function () {
+                    serviceStub = sinon.stub(LogsService, "getLogs").returns(new Promise((resolve, reject) => {
+                        reject(new Error("Error out as a requirement for the test."));
+                    }));
+
+                    originalQuery = {
+                        logs: mockPayload,
+                        query: new LogQuery({
+                            source: source,
+                            startTime: sevenDaysAgo,
+                            endTime: yesterday
+                        })
+                    };
+                });
+
+                afterEach(function () {
+                    serviceStub.reset();
+                });
+
+                after(function () {
+                    serviceStub.restore();
+                });
+
+                it("Checks the dispatches were shown.", function () {
+                    return store.dispatch(log.findLatest(originalQuery)).catch(function (logs: Log[]) {
                         let actions: any[] = store.getActions();
 
                         expect(actions).to.have.length(2); // Two fetching dispatches.
