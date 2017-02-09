@@ -20,6 +20,8 @@ import { CompositeFilter, DateFilter, FilterType } from "../Filters";
 
 const style = require("./style.scss");
 
+const UPDATE_TIME_MS = 5000;
+
 interface LogExplorerProps {
     logMap: LogMap;
     source: Source;
@@ -64,7 +66,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleDateFilter = this.handleDateFilter.bind(this);
         this.handleTailChecked = this.handleTailChecked.bind(this);
 
-        this.refresher = Interval.newExecutor(2000, this.refresh.bind(this));
+        this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
     }
 
     componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
