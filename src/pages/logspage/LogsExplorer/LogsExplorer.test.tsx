@@ -248,6 +248,20 @@ describe("LogExplorer", function () {
 
                     expect(wrapper.state("tailOn")).to.be.false;
                 });
+
+                it ("Tests the filterbar live update is disabled when the dates go out of range.", function() {
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    filterBar = wrapper.find(FilterBar).at(0);
+
+                    expect(filterBar.prop("disableLiveUpdateCheckbox")).to.be.true;
+                });
             });
         });
     });

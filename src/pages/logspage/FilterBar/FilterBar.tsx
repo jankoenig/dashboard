@@ -26,6 +26,7 @@ export interface FilterProps {
     onFilterException: (filter: ExceptionFilter) => void;
     onFilterOrigin: (filter: OriginFilter) => void;
     onLiveUpdate: (enabled: boolean) => void;
+    disableLiveUpdateCheckbox?: boolean;
     className?: string;
 }
 
@@ -250,6 +251,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                             theme={CheckboxTheme}
                             label="Live Update"
                             checked={this.props.liveUpdateEnabled}
+                            disabled={this.props.disableLiveUpdateCheckbox}
                             onChange={this.props.onLiveUpdate} />
                     </div>
                 </Cell>

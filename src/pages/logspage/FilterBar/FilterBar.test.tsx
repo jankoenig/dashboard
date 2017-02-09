@@ -351,6 +351,14 @@ describe("Filter Bar", function () {
                 expect(onFilter).to.be.calledOnce;
                 expect(onFilter).to.be.calledWith(true);
             });
+
+            it ("Tests the live update is disabled when props set.", function() {
+                const newProps = { ...wrapper.props(), ...{disableLiveUpdateCheckbox: true} };
+                wrapper.setProps(newProps);
+
+                updateWrapper = wrapper.find(Checkbox).at(1);
+                expect(updateWrapper.prop("disabled")).to.be.true;
+            });
         });
     });
 });

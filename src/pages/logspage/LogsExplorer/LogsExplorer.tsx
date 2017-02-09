@@ -34,6 +34,7 @@ interface LogExplorerState {
     filterBarHidden: boolean;
     tailOn: boolean;
     savedTailValue?: boolean;
+    dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
     filter?: CompositeFilter;
 }
@@ -87,8 +88,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             if (savedTail) {
                 this.enableTail();
             }
+            this.state.dateOutOfRange = false;
         } else {
             this.state.savedTailValue = this.state.tailOn;
+            this.state.dateOutOfRange = true;
             this.disableTail();
         }
     }
@@ -202,6 +205,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                     onFilterRequest={this.handleFilter}
                     onFilterOrigin={this.handleFilter}
                     onLiveUpdate={this.handleTailChecked}
+                    disableLiveUpdateCheckbox={this.state.dateOutOfRange}
                     query={query} />
                 <TwoPane
                     leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}
