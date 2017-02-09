@@ -15,6 +15,9 @@ import Interval from "../../../utils/Interval";
 import { dummyLogs, dummyOutputs } from "../../../utils/test";
 import LogsExplorer from "./LogsExplorer";
 
+import { FilterBar } from "../FilterBar";
+import { DateFilter } from "../Filters";
+
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
@@ -167,6 +170,45 @@ describe("LogExplorer", function () {
             it ("Tests the callback when the executor executes the callback.", function() {
                 stubExecutor.callback();
                 expect(onRefresh).to.have.been.calledOnce;
+            });
+
+            describe("Tests the auto turn off when date filters.", function() {
+
+                let filterBar: ShallowWrapper<any, any>;
+
+                beforeEach(function() {
+                    filterBar = wrapper.find(FilterBar).at(0);
+                });
+
+                it ("Tests that the auto-refresh ends when the date filter goes away from today.", function() {
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    expect(stubExecutor.end).to.be.calledOnce;
+                });
+
+                it ("Tests that the auto-refresh restarts when the date filter comes back to today.", function() {
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    // get the new one when it re-renders
+                    filterBar = wrapper.find(FilterBar).at(0);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, new Date()));
+
+                    expect(stubExecutor.end).to.be.calledOnce;
+                    expect(stubExecutor.start).to.be.calledTwice;
+                });
             });
         });
     });
