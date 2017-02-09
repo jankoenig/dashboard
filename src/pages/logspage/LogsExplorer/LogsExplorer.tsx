@@ -1,4 +1,5 @@
 import * as classNames from "classnames";
+import * as moment from "moment";
 import * as React from "react";
 
 import Button from "../../../components/Button";
@@ -11,10 +12,11 @@ import LogQuery from "../../../models/log-query";
 import Source from "../../../models/source";
 import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
+import Interval from "../../../utils/Interval";
 import Noop, { falseBoolNoop } from "../../../utils/Noop";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
-import { CompositeFilter, FilterType } from "../Filters";
+import { CompositeFilter, DateFilter, FilterType } from "../Filters";
 
 const style = require("./style.scss");
 
@@ -25,6 +27,7 @@ interface LogExplorerProps {
     lockFilterBar?: boolean;
     onItemsFiltered?: (visible: ConversationList) => void;
     onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
+    onGetNewLogs?: () => void;
 }
 
 interface LogExplorerState {
@@ -41,8 +44,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         onFilter: falseBoolNoop,
         lockFilterBar: false,
         onItemsFiltered: Noop,
-        onScroll: Noop
+        onScroll: Noop,
+        onGetNewLogs: Noop
     };
+
+    refresher: Interval.Executor;
 
     constructor(props: any) {
         super(props);
@@ -51,6 +57,9 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         };
 
         this.handleFilter = this.handleFilter.bind(this);
+        this.handleDateFilter = this.handleDateFilter.bind(this);
+
+        this.refresher = Interval.newExecutor(2000, this.refresh.bind(this));
     }
 
     componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
@@ -58,6 +67,30 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             this.state.selectedConvo = undefined;
             this.setState(this.state);
         }
+    }
+
+    componentDidMount() {
+        this.enableTail();
+    }
+
+    componentWillUnmount() {
+        this.disableTail();
+    }
+
+    disableTailIfNotToday(date: Date) {
+        if (isToday(date)) {
+            this.enableTail();
+        } else {
+            this.disableTail();
+        }
+    }
+
+    enableTail() {
+        this.refresher.start();
+    }
+
+    disableTail() {
+        this.refresher.end();
     }
 
     onConversationClicked(conversation: Conversation) {
@@ -85,6 +118,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.setState(this.state);
     }
 
+    handleDateFilter(filter: DateFilter) {
+        this.disableTailIfNotToday(filter.endDate);
+        this.handleFilter(filter);
+    }
+
     handleFilterButtonClicked(event: React.MouseEvent) {
         this.state.filterBarHidden = !this.state.filterBarHidden;
         this.setState(this.state);
@@ -94,6 +132,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         return classNames(style.filterBar, {
             [style.filterBarHidden]: this.state.filterBarHidden
         });
+    }
+
+    refresh() {
+        this.props.onGetNewLogs();
     }
 
     render(): JSX.Element {
@@ -132,7 +174,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         return (
             <span>
                 <FilterBar className={this.filterBarClasses()}
-                    onFilterDate={this.handleFilter}
+                    onFilterDate={this.handleDateFilter}
                     onFilterIntent={this.handleFilter}
                     onFilterLogLevel={this.handleFilter}
                     onFilterException={this.handleFilter}
@@ -158,4 +200,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             </span>
         );
     }
+}
+
+function isToday(date: Date): boolean {
+    return moment(date).isSame(moment(), "days");
 }

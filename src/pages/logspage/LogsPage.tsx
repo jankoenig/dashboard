@@ -8,7 +8,6 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap, LogQueryEvent } from "../../reducers/log";
-import Interval from "../../utils/Interval";
 import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
@@ -56,8 +55,6 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 
 export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
-    refresher: Interval.Executor;
-
     constructor(props: LogsPageProps) {
         super(props);
         this.state = {
@@ -67,32 +64,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.onScroll = this.onScroll.bind(this);
         this.onFilter = this.onFilter.bind(this);
         this.onItemsFiltered = this.onItemsFiltered.bind(this);
-
-        this.refresher = Interval.newExecutor(2000, this.refresh.bind(this));
-    }
-
-    componentDidMount() {
-        this.enableTail();
-    }
-
-    componentWillUnmount() {
-        this.disableTail();
-    }
-
-    disableTailIfNotToday(date: Date) {
-        if (isToday(date)) {
-            this.enableTail();
-        } else {
-            this.disableTail();
-        }
-    }
-
-    enableTail() {
-        this.refresher.start();
-    }
-
-    disableTail() {
-        this.refresher.end();
+        this.refresh = this.refresh.bind(this);
     }
 
     onItemsFiltered(list: ConversationList) {
@@ -112,8 +84,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 endTime: dateFilter.endDate,
                 limit: LIMIT
             });
-
-            this.disableTailIfNotToday(query.endTime);
             this.props.getLogs(query, false);
             return true;
         }
@@ -162,7 +132,8 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 logMap={this.props.logMap}
                 onFilter={this.onFilter}
                 onScroll={this.onScroll}
-                onItemsFiltered={this.onItemsFiltered} />
+                onItemsFiltered={this.onItemsFiltered}
+                onGetNewLogs={this.refresh} />
         );
     }
 }
@@ -171,7 +142,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(LogsPage);
-
-function isToday(date: Date): boolean {
-    return moment(date).isSame(moment(), "days");
-}
