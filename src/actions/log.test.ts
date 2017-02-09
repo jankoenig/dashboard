@@ -204,6 +204,48 @@ describe("Log Actions", function () {
                     });
                 });
             });
+
+            describe("Failure", function () {
+                let serviceStub: Sinon.SinonStub;
+
+                let originalQuery: LogQueryEvent;
+
+                before(function () {
+                    serviceStub = sinon.stub(LogsService, "getLogs").returns(new Promise((resolve, reject) => {
+                        reject(new Error("Error out as a requirement for the test."));
+                    }));
+
+                    originalQuery = {
+                        logs: mockPayload,
+                        query: new LogQuery({
+                            source: source,
+                            startTime: sevenDaysAgo,
+                            endTime: today
+                        })
+                    };
+                });
+
+                afterEach(function () {
+                    serviceStub.reset();
+                });
+
+                after(function () {
+                    serviceStub.restore();
+                });
+
+                it("Checks the dispatches were shown.", function () {
+                    return store.dispatch(log.nextPage(originalQuery, 50)).catch(function (logs: Log[]) {
+                        let actions: any[] = store.getActions();
+
+                        expect(actions).to.have.length(2); // Two fetching dispatches.
+                        expect(actions[0].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[0].fetching).to.equal(true);
+
+                        expect(actions[1].type).to.equal(FETCH_LOGS_REQUEST);
+                        expect(actions[1].fetching).to.equal(false);
+                    });
+                });
+            });
         });
 
         describe("Query tests", function () {
@@ -227,7 +269,7 @@ describe("Log Actions", function () {
                 store = mockStore(initialState);
             });
 
-            afterEach(function() {
+            afterEach(function () {
                 serviceStub.reset();
             });
 
