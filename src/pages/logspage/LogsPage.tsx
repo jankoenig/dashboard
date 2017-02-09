@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 
@@ -78,6 +79,14 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.disableTail();
     }
 
+    disableTailIfNotToday(date: Date) {
+        if (isToday(date)) {
+            this.enableTail();
+        } else {
+            this.disableTail();
+        }
+    }
+
     enableTail() {
         this.refresher.start();
     }
@@ -104,6 +113,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 limit: LIMIT
             });
 
+            this.disableTailIfNotToday(query.endTime);
             this.props.getLogs(query, false);
             return true;
         }
@@ -118,16 +128,27 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
 
     refresh() {
         console.info("REFRESHING");
-        const sourceId = this.props.source.id;
-        const event: LogQueryEvent = this.props.logMap[sourceId];
-        this.props.refresh(event);
+        const event: LogQueryEvent = this.getLogQueryEvent();
+        if (event) {
+            this.props.refresh(event);
+        }
     }
 
     getNextPage() {
         console.info("Getting next");
-        const sourceId = this.props.source.id;
-        const event: LogQueryEvent = this.props.logMap[sourceId];
-        this.props.newPage(event, LIMIT);
+        const event: LogQueryEvent = this.getLogQueryEvent();
+        if (event) {
+            this.props.newPage(event, LIMIT);
+        }
+    }
+
+    getLogQueryEvent(): LogQueryEvent | undefined {
+        if (this.props.source) {
+            if (this.props.logMap) {
+                return this.props.logMap[this.props.source.id];
+            }
+        }
+        return undefined;
     }
 
     lastQueryDoesNotMatch(query: LogQuery) {
@@ -150,3 +171,7 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(LogsPage);
+
+function isToday(date: Date): boolean {
+    return moment(date).isSame(moment(), "days");
+}
