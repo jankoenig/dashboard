@@ -49,7 +49,7 @@ describe("LogExplorer", function () {
 
         let wrapper: ShallowWrapper<any, any>;
 
-        before(function() {
+        before(function () {
             onRefresh = sinon.stub();
         });
 
@@ -132,55 +132,68 @@ describe("LogExplorer", function () {
             });
         });
 
-        describe("Tests the refreshing.", function() {
+        describe("Tests the refreshing.", function () {
 
             let stubExecutor: StubExecutor;
             let intervalStub: Sinon.SinonStub;
 
-            before(function() {
+            before(function () {
                 intervalStub = sinon.stub(Interval, "newExecutor", (ms: number, callback: () => void): Interval.Executor => {
                     return stubExecutor = new StubExecutor(ms, callback);
                 });
             });
 
-            afterEach(function() {
+            afterEach(function () {
                 stubExecutor.reset();
                 intervalStub.reset();
             });
 
-            after(function() {
+            after(function () {
                 intervalStub.reset();
             });
 
-            it ("Tests there is a value and callback passed to the exectuor.", function() {
+            it("Tests there is a value and callback passed to the exectuor.", function () {
                 expect(stubExecutor).to.exist;
                 expect(stubExecutor.ms).to.be.greaterThan(0);
                 expect(stubExecutor.callback).to.exist;
             });
 
-            it ("Tests the interval executor is started by default.", function() {
+            it("Tests the interval executor is started by default.", function () {
                 expect(stubExecutor.start).to.have.been.calledOnce;
+                expect(wrapper.state("tailOn")).to.be.true;
             });
 
-            it ("Tests the interval executor is ended when unmounted.", function() {
+            it("Tests the interval executor is ended when unmounted.", function () {
                 wrapper.unmount();
                 expect(stubExecutor.end).to.have.been.calledOnce;
             });
 
-            it ("Tests the callback when the executor executes the callback.", function() {
+            it("Tests the callback when the executor executes the callback.", function () {
                 stubExecutor.callback();
                 expect(onRefresh).to.have.been.calledOnce;
             });
 
-            describe("Tests the auto turn off when date filters.", function() {
+            it("Tests the auto-refresh is turned off when filterbar activates it.", function () {
+                let filterBar = wrapper.find("FilterBar").at(0);
+                filterBar.simulate("liveUpdate", false);
+
+                expect(wrapper.state("tailOn")).to.be.false;
+
+                filterBar = wrapper.find("FilterBar").at(0);
+                filterBar.simulate("liveUpdate", true);
+
+                expect(wrapper.state("tailOn")).to.be.true;
+            });
+
+            describe("Tests the auto turn off when date filters.", function () {
 
                 let filterBar: ShallowWrapper<any, any>;
 
-                beforeEach(function() {
+                beforeEach(function () {
                     filterBar = wrapper.find(FilterBar).at(0);
                 });
 
-                it ("Tests that the auto-refresh ends when the date filter goes away from today.", function() {
+                it("Tests that the auto-refresh ends when the date filter goes away from today.", function () {
                     const startDate = new Date();
                     startDate.setDate(startDate.getDate() - 12);
 
@@ -190,9 +203,10 @@ describe("LogExplorer", function () {
                     filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
 
                     expect(stubExecutor.end).to.be.calledOnce;
+                    expect(wrapper.state("tailOn")).to.be.false;
                 });
 
-                it ("Tests that the auto-refresh restarts when the date filter comes back to today.", function() {
+                it("Tests that the auto-refresh restarts when the date filter comes back to today.", function () {
                     const startDate = new Date();
                     startDate.setDate(startDate.getDate() - 12);
 
@@ -208,6 +222,7 @@ describe("LogExplorer", function () {
 
                     expect(stubExecutor.end).to.be.calledOnce;
                     expect(stubExecutor.start).to.be.calledTwice;
+                    expect(wrapper.state("tailOn")).to.be.true;
                 });
             });
         });

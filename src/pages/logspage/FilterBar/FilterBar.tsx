@@ -18,12 +18,14 @@ const CheckboxTheme = require("../../../themes/checkbox-light.scss");
 
 export interface FilterProps {
     query: LogQuery;
+    liveUpdateEnabled: boolean;
     onFilterLogLevel: (filter: LogLevelFilter) => void;
     onFilterRequest: (filter: RequestFilter) => void;
     onFilterIntent: (filter: IntentFilter) => void;
     onFilterDate: (filter: DateFilter) => void;
     onFilterException: (filter: ExceptionFilter) => void;
     onFilterOrigin: (filter: OriginFilter) => void;
+    onLiveUpdate: (enabled: boolean) => void;
     className?: string;
 }
 
@@ -241,6 +243,15 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         value={this.state.endDate}
                         onChange={this.handleEndDateChange}
                         readonly={this.props.query ? false : true} />
+                </Cell>
+                <Cell col={1} tablet={1} phone={1}>
+                    <div style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} >
+                        <Checkbox
+                            theme={CheckboxTheme}
+                            label="Live Update"
+                            checked={this.props.liveUpdateEnabled}
+                            onChange={this.props.onLiveUpdate} />
+                    </div>
                 </Cell>
             </Grid>
         );

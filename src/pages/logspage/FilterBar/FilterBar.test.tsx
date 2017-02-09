@@ -43,6 +43,8 @@ describe("Filter Bar", function () {
                 onFilterException={onFilter}
                 onFilterRequest={onFilter}
                 onFilterOrigin={onFilter}
+                onLiveUpdate={onFilter}
+                liveUpdateEnabled={true}
                 query={logQuery} />
         )) as ShallowWrapper<FilterProps, FilterState>;
     });
@@ -62,12 +64,14 @@ describe("Filter Bar", function () {
                 onFilterException={onFilter}
                 onFilterRequest={onFilter}
                 onFilterOrigin={onFilter}
+                onLiveUpdate={onFilter}
+                liveUpdateEnabled={true}
                 query={logQuery} />
         ));
 
         expect(wrapper.find(Dropdown)).to.have.length(2); // Filter by type and origin
         expect(wrapper.find(DatePicker)).to.have.length(2); // Filter by date range
-        expect(wrapper.find(Checkbox)).to.have.length(1); // Filter by exception
+        expect(wrapper.find(Checkbox)).to.have.length(2); // Filter by exception and Live update
         expect(wrapper.find(Input)).to.have.length(2); // Filter by request and intent
     });
 
@@ -147,6 +151,12 @@ describe("Filter Bar", function () {
             expect(endDatePicker.prop("value")).to.be.equal(wrapper.state("endDate"));
             expect(endDatePicker.prop("onChange")).to.not.be.undefined;
             expect(endDatePicker.prop("readonly")).to.equal(false);
+        });
+
+        it ("Gives the appropriate props to the live update checkbox.", function() {
+            const liveUpdate = wrapper.find(Checkbox).at(1);
+            expect(liveUpdate.prop("checked")).to.be.true;
+            expect(liveUpdate.prop("onChange")).to.exist;
         });
     });
 
@@ -325,6 +335,21 @@ describe("Filter Bar", function () {
                 intentWrapper.simulate("change", "new value");
 
                 expect(onFilter).to.be.calledOnce;
+            });
+        });
+
+        describe("Live Update", function() {
+            let updateWrapper: ShallowWrapper<any, any>;
+
+            beforeEach(function() {
+                updateWrapper = wrapper.find(Checkbox).at(1);
+            });
+
+            it ("Tests the callback was called after an input change.", function() {
+                updateWrapper.simulate("change", true);
+
+                expect(onFilter).to.be.calledOnce;
+                expect(onFilter).to.be.calledWith(true);
             });
         });
     });

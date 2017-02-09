@@ -2,8 +2,6 @@ import * as classNames from "classnames";
 import * as moment from "moment";
 import * as React from "react";
 
-import Checkbox from "react-toolbox/lib/checkbox";
-
 import Button from "../../../components/Button";
 import Interaction from "../../../components/Interaction";
 import TwoPane from "../../../components/TwoPane";
@@ -138,6 +136,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     handleTailChecked(enabled: boolean) {
+        console.info("HANDLE TAIL CHCKED " + enabled);
         if (enabled) {
             this.enableTail();
         } else {
@@ -169,15 +168,12 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
 
         let leftSide = (
-            <div>
-                <SettingsBar tailEnabled={this.state.tailOn} onTailChecked={this.handleTailChecked} />
-                <FilterableConversationList
-                    conversations={ConversationList.fromLogs(logs)}
-                    filter={this.state.filter}
-                    onScroll={this.onScroll.bind(this)}
-                    onShowConversation={this.onConversationClicked.bind(this)}
-                    onItemsFiltered={this.props.onItemsFiltered} />
-            </div>
+            <FilterableConversationList
+                conversations={ConversationList.fromLogs(logs)}
+                filter={this.state.filter}
+                onScroll={this.onScroll.bind(this)}
+                onShowConversation={this.onConversationClicked.bind(this)}
+                onItemsFiltered={this.props.onItemsFiltered} />
         );
 
         let rightSide = this.state.selectedConvo ?
@@ -194,12 +190,14 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         return (
             <span>
                 <FilterBar className={this.filterBarClasses()}
+                    liveUpdateEnabled={this.state.tailOn}
                     onFilterDate={this.handleDateFilter}
                     onFilterIntent={this.handleFilter}
                     onFilterLogLevel={this.handleFilter}
                     onFilterException={this.handleFilter}
                     onFilterRequest={this.handleFilter}
                     onFilterOrigin={this.handleFilter}
+                    onLiveUpdate={this.handleTailChecked}
                     query={query} />
                 <TwoPane
                     leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}
@@ -224,27 +222,4 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
 function isToday(date: Date): boolean {
     return moment(date).isSame(moment(), "days");
-}
-
-interface SettingsProps {
-    tailEnabled: boolean;
-    onTailChecked: (enabled: boolean) => void;
-}
-
-interface SettingsState {
-
-}
-
-class SettingsBar extends React.Component<SettingsProps, SettingsState> {
-
-    render() {
-        return (
-            <div>
-                <Checkbox
-                    label="Update"
-                    checked={this.props.tailEnabled}
-                    onChange={this.props.onTailChecked} />
-            </div>
-        )
-    }
 }
