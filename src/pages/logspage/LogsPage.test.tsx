@@ -7,7 +7,7 @@ import * as sinonChai from "sinon-chai";
 import Log from "../../models/log";
 import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
-import { LogMap } from "../../reducers/log";
+import { LogMap, LogQueryEvent } from "../../reducers/log";
 import LogsExplorer from "./LogsExplorer";
 import { LogsPage } from "./LogsPage";
 
@@ -61,41 +61,19 @@ describe("LogsPage", function () {
 
             logExplorer.simulate("scroll", 0, 10, firstPage.length);
 
-            expect(getLogs).to.have.been.calledOnce;
+            expect(nextPage).to.have.been.calledOnce;
 
             // Checking the query start and end times are where they should be.
 
-            const logQuery: LogQuery = getLogs.args[0][0];
-            const append: boolean = getLogs.args[0][1];
+            const logQueryEvent: LogQueryEvent = nextPage.args[0][0];
+            const limit: number = nextPage.args[0][1];
 
-            expect(append).to.be.true; // Since it's scrolling, it should add to the new ones rather than replace.
+            const originalLogQueryEvent = logMap[source.id];
+
+            expect(limit).to.equal(50); // Current limit is 50 in the class.
 
             // It requests everything from the first filter up to the last item in the page.
-            expect(logQuery.source).to.equal(source);
-            expect(logQuery.startTime).to.equalDate(logQuery.startTime);
-            expect(logQuery.endTime).to.be.equalDate(firstPage[firstPage.length - 1].timestamp);
-        });
-
-        it ("Tests that the query is not called when there have been no new logs pulled.", function() {
-            let wrapper = shallow(<LogsPage isLoading={false} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage}/>);
-
-            let logExplorer = wrapper.find("LogExplorer").at(0);
-            logExplorer.simulate("scroll", 0, 10, firstPage.length); // Will return four dummylogs.
-
-            logMap[source.id].logs = allPages;
-
-            wrapper.setProps({ isLoading: false, source: source, logMap: logMap, getLogs: getLogs });
-
-            logExplorer = wrapper.find("LogExplorer").at(0);
-            logExplorer.simulate("scroll", 10, allPages.length, allPages.length); // Will attempt get get more.
-
-            // Simulate nothing returned.
-            wrapper.setProps({ isLoading: false, source: source, logMap: logMap, getLogs: getLogs });
-
-            logExplorer = wrapper.find("LogExplorer").at(0);
-            logExplorer.simulate("scroll", 10, allPages.length, allPages.length); // Will not even attempt to get logs.
-
-            expect(getLogs).to.have.been.calledTwice;
+            expect(logQueryEvent).to.deep.equal(originalLogQueryEvent);
         });
 
         it("Tests that the get logs is not retrieved when not within range.", function () {
@@ -105,7 +83,7 @@ describe("LogsPage", function () {
 
             logExplorer.simulate("scroll", 0, 3, firstPage.length);
 
-            expect(getLogs).to.not.have.been.called;
+            expect(nextPage).to.not.have.been.called;
         });
 
         it("Tests that the get logs is not retrieved when already loading.", function () {
@@ -115,7 +93,7 @@ describe("LogsPage", function () {
 
             logExplorer.simulate("scroll", 0, 10, firstPage.length);
 
-            expect(getLogs).to.not.have.been.called;
+            expect(nextPage).to.not.have.been.called;
         });
     });
 });

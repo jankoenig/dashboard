@@ -66,10 +66,18 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     componentDidMount() {
-        this.refresher.start();
+        this.enableTail();
     }
 
     componentWillUnmount() {
+        this.disableTail();
+    }
+
+    enableTail() {
+        this.refresher.start();
+    }
+
+    disableTail() {
         this.refresher.end();
     }
 
