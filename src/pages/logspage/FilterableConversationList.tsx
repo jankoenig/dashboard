@@ -5,15 +5,16 @@ import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 
 import browser from "../../utils/browser";
+import Noop from "../../utils/Noop";
 import { filter, FilterResult } from "../../utils/promise";
 
 import { FilterType } from "./Filters";
 
 export interface FilterableConversationListProps {
     conversations: ConversationList;
-    onShowConversation: (conversation: Conversation) => void;
+    onShowConversation?: (conversation: Conversation) => void;
     filter?: FilterType;
-    onItemsFiltered: (shownConversations: ConversationList) => void;
+    onItemsFiltered?: (shownConversations: ConversationList) => void;
     onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
 }
 
@@ -23,6 +24,14 @@ interface FilterableConversationListState {
 }
 
 export class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
+
+    static defaultProps: FilterableConversationListProps = {
+        conversations: [],
+        onShowConversation: Noop,
+        onItemsFiltered: Noop,
+        filter: undefined,
+        onScroll: undefined
+    };
 
     constructor(props: FilterableConversationListProps) {
         super(props);
@@ -49,9 +58,7 @@ export class FilterableConversationList extends React.Component<FilterableConver
                     me.state.shownConversations = items;
                     me.setState(me.state);
 
-                    if (me.props.onItemsFiltered) {
-                        me.props.onItemsFiltered(items);
-                    }
+                    me.props.onItemsFiltered(items);
                 }
             }).catch(function (err: Error) {
                 me.state.shownConversations = new ConversationList();

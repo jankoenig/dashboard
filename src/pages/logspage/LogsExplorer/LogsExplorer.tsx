@@ -11,6 +11,7 @@ import LogQuery from "../../../models/log-query";
 import Source from "../../../models/source";
 import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
+import Noop, { falseBoolNoop } from "../../../utils/Noop";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
 import { CompositeFilter, FilterType } from "../Filters";
@@ -33,6 +34,15 @@ interface LogExplorerState {
 }
 
 export default class LogExplorer extends React.Component<LogExplorerProps, LogExplorerState> {
+
+    static defaultProps: LogExplorerProps = {
+        logMap: undefined,
+        source: undefined,
+        onFilter: falseBoolNoop,
+        lockFilterBar: false,
+        onItemsFiltered: Noop,
+        onScroll: Noop
+    };
 
     constructor(props: any) {
         super(props);
@@ -60,13 +70,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             this.state.filterBarHidden = true;
             this.setState(this.state);
         }
-        if (this.props.onScroll) {
-            this.props.onScroll(firstVisibleIndex, lastVisibleIndex, total);
-        }
+        this.props.onScroll(firstVisibleIndex, lastVisibleIndex, total);
     }
 
     handleFilter(filter: FilterType) {
-        if (this.props.onFilter && this.props.onFilter(filter)) {
+        if (this.props.onFilter(filter)) {
             return;
         }
         if (!this.state.filter) {

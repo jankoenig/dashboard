@@ -3,12 +3,13 @@ import * as React from "react";
 import List from "../../components/List/List";
 import Conversation from "../../models/conversation";
 import ConversationList, { ConversationMap } from "../../models/conversation-list";
+import Noop from "../../utils/Noop";
 import ConversationListViewItem from "./ConversationListViewItem";
 
 export interface ConversationListViewProps {
     readonly conversations: ConversationList;
     readonly expandListItemWhenActive?: boolean;
-    readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
+    readonly onClick?: (conversation: Conversation, event: React.MouseEvent) => void;
     readonly onEmpty?: () => JSX.Element;
     readonly onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
 }
@@ -18,6 +19,14 @@ export interface ConversationListViewState {
 }
 
 export default class ConversationListView extends React.Component<ConversationListViewProps, ConversationListViewState> {
+
+    static defaultProps: ConversationListViewProps = {
+        conversations: [],
+        expandListItemWhenActive: false,
+        onClick: Noop,
+        onScroll: Noop,
+        onEmpty: function (): JSX.Element { return (<div />); }
+    };
 
     constructor(props: ConversationListViewProps) {
         super(props);
@@ -35,7 +44,7 @@ export default class ConversationListView extends React.Component<ConversationLi
 
         if (this.props.expandListItemWhenActive) {
             // mobile mode, clone the existing
-            activeConversations = {...{}, ...this.state.activeConversations};
+            activeConversations = { ...{}, ...this.state.activeConversations };
 
             if (activeConversations[conversation.id]) {
                 // if it exists remove it
@@ -72,18 +81,16 @@ export default class ConversationListView extends React.Component<ConversationLi
     }
 
     render() {
-        const emptyElement = (this.props.onEmpty) ? this.props.onEmpty() : (<div />);
-
-        let listElement = (
-            <List
-                onScroll={this.props.onScroll}
-                itemRenderer={this.renderItem}
-                length={this.props.conversations.length}
-                type={"simple"} />
-        );
-
-        let finalElement = this.props.conversations.length > 0 ? listElement : emptyElement;
-
-        return finalElement;
+        if (this.props.conversations.length > 0) {
+            return (
+                <List
+                    onScroll={this.props.onScroll}
+                    itemRenderer={this.renderItem}
+                    length={this.props.conversations.length}
+                    type={"simple"} />
+            );
+        } else {
+            return this.props.onEmpty();
+        }
     }
 }
