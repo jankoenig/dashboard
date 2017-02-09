@@ -69,7 +69,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.enableTail();
     }
 
