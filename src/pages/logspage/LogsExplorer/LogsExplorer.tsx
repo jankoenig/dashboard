@@ -2,6 +2,8 @@ import * as classNames from "classnames";
 import * as moment from "moment";
 import * as React from "react";
 
+import Checkbox from "react-toolbox/lib/checkbox";
+
 import Button from "../../../components/Button";
 import Interaction from "../../../components/Interaction";
 import TwoPane from "../../../components/TwoPane";
@@ -32,6 +34,7 @@ interface LogExplorerProps {
 
 interface LogExplorerState {
     filterBarHidden: boolean;
+    tailOn: boolean;
     selectedConvo?: Conversation;
     filter?: CompositeFilter;
 }
@@ -53,11 +56,13 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     constructor(props: any) {
         super(props);
         this.state = {
-            filterBarHidden: false
+            filterBarHidden: false,
+            tailOn: false
         };
 
         this.handleFilter = this.handleFilter.bind(this);
         this.handleDateFilter = this.handleDateFilter.bind(this);
+        this.handleTailChecked = this.handleTailChecked.bind(this);
 
         this.refresher = Interval.newExecutor(2000, this.refresh.bind(this));
     }
@@ -87,10 +92,14 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
     enableTail() {
         this.refresher.start();
+        this.state.tailOn = true;
+        this.setState(this.state);
     }
 
     disableTail() {
         this.refresher.end();
+        this.state.tailOn = false;
+        this.setState(this.state);
     }
 
     onConversationClicked(conversation: Conversation) {
@@ -128,6 +137,14 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.setState(this.state);
     }
 
+    handleTailChecked(enabled: boolean) {
+        if (enabled) {
+            this.enableTail();
+        } else {
+            this.disableTail();
+        }
+    }
+
     filterBarClasses() {
         return classNames(style.filterBar, {
             [style.filterBarHidden]: this.state.filterBarHidden
@@ -152,12 +169,15 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
 
         let leftSide = (
-            <FilterableConversationList
-                conversations={ConversationList.fromLogs(logs)}
-                filter={this.state.filter}
-                onScroll={this.onScroll.bind(this)}
-                onShowConversation={this.onConversationClicked.bind(this)}
-                onItemsFiltered={this.props.onItemsFiltered} />
+            <div>
+                <SettingsBar tailEnabled={this.state.tailOn} onTailChecked={this.handleTailChecked} />
+                <FilterableConversationList
+                    conversations={ConversationList.fromLogs(logs)}
+                    filter={this.state.filter}
+                    onScroll={this.onScroll.bind(this)}
+                    onShowConversation={this.onConversationClicked.bind(this)}
+                    onItemsFiltered={this.props.onItemsFiltered} />
+            </div>
         );
 
         let rightSide = this.state.selectedConvo ?
@@ -204,4 +224,27 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
 function isToday(date: Date): boolean {
     return moment(date).isSame(moment(), "days");
+}
+
+interface SettingsProps {
+    tailEnabled: boolean;
+    onTailChecked: (enabled: boolean) => void;
+}
+
+interface SettingsState {
+
+}
+
+class SettingsBar extends React.Component<SettingsProps, SettingsState> {
+
+    render() {
+        return (
+            <div>
+                <Checkbox
+                    label="Update"
+                    checked={this.props.tailEnabled}
+                    onChange={this.props.onTailChecked} />
+            </div>
+        )
+    }
 }
