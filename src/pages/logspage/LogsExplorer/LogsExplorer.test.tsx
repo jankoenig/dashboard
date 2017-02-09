@@ -224,6 +224,30 @@ describe("LogExplorer", function () {
                     expect(stubExecutor.start).to.be.calledTwice;
                     expect(wrapper.state("tailOn")).to.be.true;
                 });
+
+                it ("Tests the auto-refresh goes back to original state when date filter comes back to today.", function() {
+                    // This test first toggles the live update off.  Then it will switch the Date from before today then back to today.
+                    // The live update should still be turned off when we're back here.
+                    let filterBar = wrapper.find("FilterBar").at(0);
+                    filterBar.simulate("liveUpdate", false);
+
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    // get the new one when it re-renders
+                    filterBar = wrapper.find(FilterBar).at(0);
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    // get the new one when it re-renders
+                    filterBar = wrapper.find(FilterBar).at(0);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, new Date()));
+
+                    expect(wrapper.state("tailOn")).to.be.false;
+                });
             });
         });
     });

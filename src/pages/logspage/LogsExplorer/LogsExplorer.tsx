@@ -33,6 +33,7 @@ interface LogExplorerProps {
 interface LogExplorerState {
     filterBarHidden: boolean;
     tailOn: boolean;
+    savedTailValue?: boolean;
     selectedConvo?: Conversation;
     filter?: CompositeFilter;
 }
@@ -82,8 +83,12 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
     disableTailIfNotToday(date: Date) {
         if (isToday(date)) {
-            this.enableTail();
+            const savedTail = this.state.savedTailValue;
+            if (savedTail) {
+                this.enableTail();
+            }
         } else {
+            this.state.savedTailValue = this.state.tailOn;
             this.disableTail();
         }
     }
@@ -136,7 +141,6 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     handleTailChecked(enabled: boolean) {
-        console.info("HANDLE TAIL CHCKED " + enabled);
         if (enabled) {
             this.enableTail();
         } else {
