@@ -21,16 +21,18 @@ describe("LogsPage", function () {
     it("renders a LogsExplorer", function () {
         const getLogs = sinon.stub().returns(dummyLogs(4));
         const nextpage = sinon.stub().returns(dummyLogs(4));
+        const refresh = sinon.stub().returns(dummyLogs(4));
 
-        let wrapper = shallow(<LogsPage isLoading source={undefined} logMap={undefined} getLogs={getLogs} newPage={nextpage} />);
+        let wrapper = shallow(<LogsPage isLoading source={undefined} logMap={undefined} getLogs={getLogs} newPage={nextpage} refresh={refresh} />);
         expect(wrapper.find(LogsExplorer)).to.have.length(1);
     });
 
     describe("Paging", function () {
         let source: Source = dummySources(1)[0];
-        let allPages: Log[] = dummyLogs(15);
-        let firstPage: Log[] = allPages.slice(0, 10);
-        let secondPage: Log[] = allPages.slice(10);
+        let allPages: Log[] = dummyLogs(20);
+        let firstPage: Log[] = allPages.slice(5, 15);
+        let secondPage: Log[] = allPages.slice(15);
+        let prequelPage: Log[] = allPages.slice(0, 5);
 
         let logMap: LogMap = {};
         logMap[source.id] = {
@@ -40,6 +42,7 @@ describe("LogsPage", function () {
 
         let getLogs: Sinon.SinonStub;
         let nextPage: Sinon.SinonStub;
+        let refresh: Sinon.SinonStub;
 
         before(function () {
             getLogs = sinon.stub();
@@ -47,6 +50,9 @@ describe("LogsPage", function () {
 
             nextPage = sinon.stub();
             nextPage.returns(Promise.resolve(secondPage));
+
+            refresh = sinon.stub();
+            refresh.returned(Promise.resolve(prequelPage));
         });
 
         afterEach(function () {
@@ -55,7 +61,7 @@ describe("LogsPage", function () {
         });
 
         it("Tests that new logs are retrieved when user scrolls to bottom.", function () {
-            let wrapper = shallow(<LogsPage isLoading={false} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage} />);
+            let wrapper = shallow(<LogsPage isLoading={false} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage} refresh={refresh} />);
 
             const logExplorer = wrapper.find("LogExplorer").at(0);
 
@@ -77,7 +83,7 @@ describe("LogsPage", function () {
         });
 
         it("Tests that the get logs is not retrieved when not within range.", function () {
-            let wrapper = shallow(<LogsPage isLoading={false} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage} />);
+            let wrapper = shallow(<LogsPage isLoading={false} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage} refresh={refresh} />);
 
             const logExplorer = wrapper.find("LogExplorer").at(0);
 
@@ -87,7 +93,7 @@ describe("LogsPage", function () {
         });
 
         it("Tests that the get logs is not retrieved when already loading.", function () {
-            let wrapper = shallow(<LogsPage isLoading={true} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage} />);
+            let wrapper = shallow(<LogsPage isLoading={true} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage} refresh={refresh} />);
 
             const logExplorer = wrapper.find("LogExplorer").at(0);
 

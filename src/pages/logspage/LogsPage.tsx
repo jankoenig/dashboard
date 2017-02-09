@@ -11,7 +11,7 @@ import Interval from "../../utils/Interval";
 import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
-import { nextPage, retrieveLogs } from "../../actions/log";
+import { findLatest, nextPage, retrieveLogs } from "../../actions/log";
 
 const LIMIT: number = 50;
 
@@ -20,7 +20,8 @@ export interface LogsPageProps {
     source: Source;
     isLoading: boolean;
     getLogs: (query: LogQuery, append: boolean) => Promise<Log[]>;
-    newPage: (logMap: LogQueryEvent, limit: number) => Promise<Log[]>;
+    newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<Log[]>;
+    refresh: (logQueryEvent: LogQueryEvent) => Promise<Log[]>;
 }
 
 interface LogsPageState {
@@ -43,6 +44,10 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         },
         newPage: function (query: LogQueryEvent, limit: number): Promise<Log[]> {
             const fetchLogs = nextPage(query, limit);
+            return fetchLogs(dispatch);
+        },
+        refresh: function (query: LogQueryEvent): Promise<Log[]> {
+            const fetchLogs = findLatest(query);
             return fetchLogs(dispatch);
         }
     };
@@ -115,7 +120,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         console.info("REFRESHING");
         const sourceId = this.props.source.id;
         const event: LogQueryEvent = this.props.logMap[sourceId];
-        this.props.getLogs(event.query, false);
+        this.props.refresh(event);
     }
 
     getNextPage() {

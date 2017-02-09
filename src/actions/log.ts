@@ -89,13 +89,13 @@ export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: R
  * @param logMap: The last query.
  * @param limit: the maximum number of logs to retrieve in this page.
  */
-export function nextPage(logMap: LogQueryEvent, limit?: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
-    const logs = logMap.logs;
-    const lastLog = (logs !== undefined && logs.length > 0) ? logs[logs.length - 1] : undefined;
+export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+    const oldLogs = logQueryEvent.logs;
+    const lastLog = (oldLogs !== undefined && oldLogs.length > 0) ? oldLogs[oldLogs.length - 1] : undefined;
     const endTime = (lastLog) ? new Date(lastLog.timestamp) : new Date();
     const query = new LogQuery({
-        source: logMap.query.source,
-        startTime: logMap.query.startTime,
+        source: logQueryEvent.query.source,
+        startTime: logQueryEvent.query.startTime,
         endTime: endTime,
         limit: limit
     });
@@ -105,9 +105,48 @@ export function nextPage(logMap: LogQueryEvent, limit?: number): (dispatch: Redu
 
         return service.getLogs(query).
             then(function (newLogs: Log[]) {
-                return logs.slice().concat(newLogs);
+                return oldLogs.slice().concat(newLogs);
             }).then(function (logs: Log[]) {
-                dispatch(setLogs(logMap.query, logs, false));
+                dispatch(setLogs(logQueryEvent.query, logs, false));
+                return logs;
+            }).then(function (logs: Log[]) {
+                dispatch(fetchLogsRequest(false));
+                return logs;
+            }).catch(function (err: Error) {
+                dispatch(fetchLogsRequest(false));
+                throw err;
+            });
+    };
+}
+
+/**
+ * Retrieves the latest logs from the most recent log to the most recent found Log to the start date of the query.
+ * It will then set the new logs with the pre-pended logs.  This assumes the current logs are already in order from
+ * most recent to oldest.  The end time will be moved up to *now* instead of what was last implemented in the last query.
+ *
+ * @param logMap: The last query.
+ *
+ */
+export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+    const oldLogs = logQueryEvent.logs;
+    const firstLog = (oldLogs !== undefined && oldLogs.length > 0) ? oldLogs[0] : undefined;
+    const startTime = (firstLog) ? new Date(firstLog.timestamp) : undefined;
+    const query = new LogQuery({
+        source: logQueryEvent.query.source,
+        startTime: startTime,
+        endTime: new Date()
+    });
+
+    return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
+        dispatch(fetchLogsRequest(true));
+
+        return service.getLogs(query).
+            then(function (newLogs: Log[]) {
+                return newLogs.concat(oldLogs);
+            }).then(function (logs: Log[]) {
+                const oldQuery = logQueryEvent.query;
+                let newQuery = { ... oldQuery, ... { endTime: query.endTime }};
+                dispatch(setLogs(newQuery, logs, false));
                 return logs;
             }).then(function (logs: Log[]) {
                 dispatch(fetchLogsRequest(false));
