@@ -56,6 +56,6 @@ export class CodeSheet extends React.Component<any, any> {
             <pre style={CodeSheet.codeStyle} >
                 {this.props.children}
             </pre>
-        )
+        );
     }
 }
