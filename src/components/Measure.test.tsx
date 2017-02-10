@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { mount, shallow, ShallowWrapper } from "enzyme";
+import { mount, ReactWrapper, shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import * as sinon from "sinon";
 
@@ -12,11 +12,19 @@ import { Measure, MeasureProps } from "./Measure";
 let expect = chai.expect;
 
 class TestingWrappedEvent implements browser.WrappedEvent {
-    register() {
-
+    constructor() {
+        this.register = sinon.stub();
+        this.unregister = sinon.stub();
     }
-    unregister() {
 
+    register: Sinon.SinonStub;
+
+    unregister: Sinon.SinonStub;
+
+    reset() {
+        console.info("RESET");
+        this.register.reset();
+        this.unregister.reset();
     }
 }
 
@@ -24,8 +32,12 @@ describe("Measure", function () {
 
     let onMeasure: Sinon.SinonStub;
 
-    beforeEach(function () {
+    before(function() {
         onMeasure = sinon.stub();
+    });
+
+    afterEach(function () {
+        onMeasure.reset();
     });
 
     it("Renders correctly", function () {
@@ -42,75 +54,59 @@ describe("Measure", function () {
         expect(wrapper.find(".secondComponent")).to.have.length(1);
     });
 
-    describe("Full Render", function() {
+    describe("Full Render", function () {
 
         jsdom();
 
+        let wrappedEvent: TestingWrappedEvent;
+        let sizeStub: Sinon.SinonStub;
+        let onResizeStub: Sinon.SinonStub;
+        let updateDimensions: Sinon.SinonSpy;
+
+        let wrapper: ReactWrapper<any, any>;
+
+        before(function () {
+            wrappedEvent = new TestingWrappedEvent();
+            sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
+            onResizeStub = sinon.stub(browser, "onResize").yields({ target: { innerWidth: 200, innerHeight: 800 }}).returns(wrappedEvent);
+
+            updateDimensions = sinon.spy(Measure.prototype, "updateDimensions");
+        });
+
+        beforeEach(function() {
+            wrapper = mount((
+                <Measure onMeasure={onMeasure} />
+            ));
+        });
+
+        afterEach(function () {
+            wrappedEvent.reset();
+            sizeStub.reset();
+            onResizeStub.reset();
+            updateDimensions.reset();
+        });
+
+        after(function () {
+            sizeStub.restore();
+            onResizeStub.restore();
+            updateDimensions.restore();
+        });
+
         it("registers an onResize listener", function () {
-
-            let onResize = sinon.spy(browser, "onResize");
-            mount((
-                <Measure onMeasure={onMeasure} />
-            ));
-
-            expect(onResize).to.have.been.calledOnce;
-
-            onResize.restore();
-        });
-
-
-        it("Calls the onMeasure when the window gets smaller.", function () {
-            // No need for this to do anything as they won't be called. The resizeStub throws the event to the callback.
-            let wrappedEvent: browser.WrappedEvent = new TestingWrappedEvent();
-            wrappedEvent.register = sinon.stub();
-            wrappedEvent.unregister = sinon.stub();
-
-            // Utils stubs.  Not testing these so do whatever.
-            let sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
-            let onResizeStub = sinon.stub(browser, "onResize")
-                .yields({ target: { innerWidth: 200, innerHeight: 800 } })
-                .returns(wrappedEvent);
-
-            let updateDimensions = sinon.spy(Measure.prototype, "updateDimensions");
-
-            mount((
-                <Measure onMeasure={onMeasure} />
-            ));
-
-            expect(wrappedEvent.register).to.have.been.calledOnce;
-            expect(onMeasure).to.have.been.calledTwice; // Once for mounting and once for event thrown.
-            expect(updateDimensions).to.have.been.calledTwice; // Once for mounting and once for event thrown.
-
-            sizeStub.restore();
-            onResizeStub.restore();
-            updateDimensions.restore();
+            expect(onResizeStub).to.have.been.calledOnce;
         });
 
         it("Calls the onMeasure when the window gets smaller.", function () {
-            // No need for this to do anything as they won't be called. The resizeStub throws the event to the callback.
-            let wrappedEvent: browser.WrappedEvent = new TestingWrappedEvent();
-            wrappedEvent.register = sinon.stub();
-            wrappedEvent.unregister = sinon.stub();
-
-            // Utils stubs.  Not testing these so do whatever.
-            let sizeStub = sinon.stub(browser, "size").returns({ width: 200, height: 800 });
-            let onResizeStub = sinon.stub(browser, "onResize")
-                .yields({ target: { innerWidth: 800, innerHeight: 800 } })
-                .returns(wrappedEvent);
-
-            let updateDimensions = sinon.spy(Measure.prototype, "updateDimensions");
-
-            mount((
-                <Measure onMeasure={onMeasure} />
-            ));
-
             expect(wrappedEvent.register).to.have.been.calledOnce;
             expect(onMeasure).to.have.been.calledTwice; // Once for mounting and once for event thrown.
             expect(updateDimensions).to.have.been.calledTwice; // Once for mounting and once for event thrown.
+        });
 
-            sizeStub.restore();
-            onResizeStub.restore();
-            updateDimensions.restore();
+        xit("Unregisters on unmount", function () {
+            // Unmount throws an error so need to figure out why.
+            wrapper.unmount();
+
+            expect(wrappedEvent.unregister).to.have.been.calledOnce;
         });
     });
 });
