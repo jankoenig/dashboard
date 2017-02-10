@@ -4,11 +4,11 @@ import * as React from "react";
 
 import { Grid } from "../../components/Grid";
 
-import IntegrationNodeJs from "./IntegrationNodeJs";
+import IntegrationNodeJS from "./IntegrationNodeJSLambda";
 
 const expect = chai.expect;
 
-describe("IntegrationNodeJs", function () {
+describe("IntegrationNodeJSLambda", function () {
 
     /**
      * These are extremely simple pages so we're just going to test that they render without error
@@ -17,7 +17,7 @@ describe("IntegrationNodeJs", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
-            wrapper = shallow(<IntegrationNodeJs secretKey={"ABC123"} />);
+            wrapper = shallow(<IntegrationNodeJS secretKey={"ABC123"} />);
         });
 
         it("Tests the page renders.", function () {
@@ -32,7 +32,7 @@ describe("IntegrationNodeJs", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
-            wrapper = shallow(<IntegrationNodeJs secretKey={undefined} />);
+            wrapper = shallow(<IntegrationNodeJS secretKey={undefined} />);
         });
 
         it("Tests the page renders.", function () {

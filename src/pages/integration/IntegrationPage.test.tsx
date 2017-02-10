@@ -4,8 +4,9 @@ import * as React from "react";
 
 import { Tab, Tabs } from "react-toolbox";
 
+import IntegrationExpressJS from "./IntegrationExpressJS";
 import IntegrationJava from "./IntegrationJava";
-// import IntegrationNodeJS from "./IntegrationNodeJS";
+import IntegrationNodeJS from "./IntegrationNodeJSLambda";
 import IntegrationPage from "./IntegrationPage";
 
 const expect = chai.expect;
@@ -21,7 +22,7 @@ describe("IntegrationPage", function () {
 
         it ("Tests there are the appropriate number of tabs.", function() {
             expect(wrapper.find(Tabs)).to.have.length(1);
-            expect(wrapper.find(Tab)).to.have.length(2);
+            expect(wrapper.find(Tab)).to.have.length(3);
         });
 
         it ("Tests the Tabs property has the default index.", function() {
@@ -30,14 +31,21 @@ describe("IntegrationPage", function () {
 
         it ("Tests the first tab is IntegrationNodeJS and gets the secret key.", function() {
             const tab = wrapper.find(Tab).at(0);
-            // const tabPage = tab.find(IntegrationNodeJS); // TODO: I'm not sure why this doesn't work.
-            const tabPage = tab.childAt(0);
+            const tabPage = tab.find(IntegrationNodeJS); // TODO: I'm not sure why this doesn't work.
+            // const tabPage = tab.childAt(0);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.equal("ABCD123");
         });
 
-        it ("Tests the second tab is IntegrationJava and gets the secret key.", function() {
+        it ("Tests the second tab is IntegrationExpressJS and gets the secret key.", function() {
             const tab = wrapper.find(Tab).at(1);
+            const tabPage = tab.find(IntegrationExpressJS);
+            expect(tabPage).to.have.length(1);
+            expect(tabPage.prop("secretKey")).to.equal("ABCD123");
+        });
+
+        it ("Tests the third tab is IntegrationJava and gets the secret key.", function() {
+            const tab = wrapper.find(Tab).at(2);
             const tabPage = tab.find(IntegrationJava);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.equal("ABCD123");
