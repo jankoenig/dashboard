@@ -17,29 +17,27 @@ export class IntegrationNodeJs extends IntegrationSubPage<IntegrationNodeJsProps
                     <div>
                         <h4>Integrating Logless in to an ExpressJS project</h4>
                         <p>Install the dependency</p>
-                        <CodeSheet> {
+                        <CodeSheet>{
                             `$npm install bespoken-tools --save`
-                            }
-                        </CodeSheet>
+                            }</CodeSheet>
                         <p> Configure it with your current routes. </p>
-                        <CodeSheet> {
-                            `var bst = require('bespoken-tools')
-
-                            var logless = bst.Logless.middleware("` + this.state.secretText + `");
-                            app = express();
-
-                            app.use(bodyParser.json());
-                            app.use(logless.requestHandler);
-
-                            // Application handlers and routers registered here
-                            app.post("/", function {
-                                ...
-                            });
-
-                            // The Logless error handler must be registered last
-                            app.use(logless.errorHandler);`
-                        }
-                        </CodeSheet>
+                        <CodeSheet>{
+                            `var bst = require('bespoken-tools')` +
+                            `\n` +
+                            `\nvar logless = bst.Logless.middleware("` + this.state.secretText + `");` +
+                            `\napp = express();` +
+                            `\n` +
+                            `\napp.use(bodyParser.json());` +
+                            `\napp.use(logless.requestHandler);` +
+                            `\n` +
+                            `\n// Application handlers and routers registered here` +
+                            `\napp.post("/", function {` +
+                            `\n    ...` +
+                            `\n});` +
+                            `\n` +
+                            `\n// The Logless error handler must be registered last` +
+                            `\napp.use(logless.errorHandler);`
+                        }</CodeSheet>
                     </div>
                 </Cell>
             </Grid>

@@ -17,24 +17,21 @@ export class IntegrationJava extends IntegrationSubPage<IntegrationJavaProps, In
                 <Cell col={12}>
                     <h4>Integrating the SDK in to a Java project</h4>
                     <p>To use with Speechlet: </p>
-                    <CodeSheet> {
+                    <CodeSheet>{
                         `Logless.capture("` + this.state.secretText + `", new HelloWorldSpeechlet());`
-                    }
-                    </CodeSheet>
+                    }</CodeSheet>
                     <p>To use as a standalone servlet: </p>
-                    <CodeSheet> {
+                    <CodeSheet>{
                         `Servlet wrapper = Logless.capture("` + this.state.secretText + `", new HelloWorldServlet());`
-                    }
-                    </CodeSheet>
+                    }</CodeSheet>
                     <p>Alternatively, you can wrap Servlet endpoints for greater flexibility: </p>
-                    <CodeSheet> {
-                        `Logless.capture("` + this.state.secretText + `", request, response, new IServletHandler() {
-                            public void call() throws IOException, ServletException {
-                                // Main body of servlet processing
-                            }
-                        });`
-                    }
-                    </CodeSheet>
+                    <CodeSheet>{
+                        `Logless.capture("` + this.state.secretText + `", request, response, new IServletHandler() {` +
+                        `\n    public void call() throws IOException, ServletException { ` +
+                        `\n            // Main body of servlet processing` +
+                        `\n    }` +
+                        `\n});`
+                    }</CodeSheet>
                 </Cell>
             </Grid>
         );

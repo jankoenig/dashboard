@@ -48,14 +48,13 @@ export class CodeSheet extends React.Component<any, any> {
         padding: "20px",
         backgroundColor: "#CFD8DC",
         color: "#263238",
-        whiteSpace: "pre-line"
+        overflowX: "auto",
+        // whiteSpace: "pre"
     };
 
     render() {
         return (
-            <pre style={CodeSheet.codeStyle} >
-                {this.props.children}
-            </pre>
+            <pre style={CodeSheet.codeStyle}>{this.props.children}</pre>
         );
     }
 }

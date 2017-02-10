@@ -18,21 +18,19 @@ export class IntegrationNodeJSLambda extends IntegrationSubPage<IntegrationNodeJ
                     <div>
                         <h4>Integrating Logless into a NodeJS Lambda project</h4>
                         <p>Install the dependency</p>
-                        <CodeSheet> {
+                        <CodeSheet>{
                             `$npm install bespoken-tools --save `
                         }</CodeSheet>
                         <p>Import bst to your index.js</p>
-                        <CodeSheet> {
+                        <CodeSheet>{
                             `var bst = require('bespoken-tools');`
-                        }
-                        </CodeSheet>
+                        }</CodeSheet>
                         <p> Wrap your <code>exports.handler</code></p>
-                        <CodeSheet> {
-                            `exports.handler = bst.Logless.capture("` + this.state.secretText + `", function (event, context) {
-                                // Lambda code goes here
-                            });`
-                        }
-                        </CodeSheet>
+                        <CodeSheet>{
+                            `exports.handler = bst.Logless.capture("` + this.state.secretText + `", function (event, context) {` +
+                            `\n    // Lambda code goes here` +
+                            `\n});`
+                        }</CodeSheet>
                     </div>
                 </Cell>
             </Grid>
