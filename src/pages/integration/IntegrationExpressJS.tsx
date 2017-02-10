@@ -1,24 +1,15 @@
 import * as React from "react";
 
 import { Cell, Grid } from "../../components/Grid";
+import { CodeSheet, IntegrationSubPage, IntegrationSubPageProps, IntegrationSubPageState } from "./IntegrationSubPage";
 
-interface IntegrationNodeJsProps {
-    secretKey?: string;
+interface IntegrationNodeJsProps extends IntegrationSubPageProps {
 }
 
-interface IntegrationNodeJsState {
-
+interface IntegrationNodeJsState extends IntegrationSubPageState {
 }
 
-export class IntegrationNodeJs extends React.Component<IntegrationNodeJsProps, IntegrationNodeJsState> {
-
-    static codeStyle: React.CSSProperties = {
-        margin: "10px",
-        padding: "20px",
-        backgroundColor: "#CFD8DC",
-        color: "#263238",
-        whiteSpace: "pre-line"
-    };
+export class IntegrationNodeJs extends IntegrationSubPage<IntegrationNodeJsProps, IntegrationNodeJsState> {
     render() {
         return (
             <Grid>
@@ -26,12 +17,15 @@ export class IntegrationNodeJs extends React.Component<IntegrationNodeJsProps, I
                     <div>
                         <h4>Integrating Logless in to an ExpressJS project</h4>
                         <p>Install the dependency</p>
-                        <pre style={IntegrationNodeJs.codeStyle}>{`$npm install bespoken-tools --save `}</pre>
+                        <CodeSheet> {
+                            `$npm install bespoken-tools --save`
+                            }
+                        </CodeSheet>
                         <p> Configure it with your current routes. </p>
-                        <pre style={IntegrationNodeJs.codeStyle}>{
+                        <CodeSheet> {
                             `var bst = require('bespoken-tools')
 
-                            var logless = bst.Logless.middleware("` + this.props.secretKey  + `");
+                            var logless = bst.Logless.middleware("` + this.state.secretText + `");
                             app = express();
 
                             app.use(bodyParser.json());
@@ -43,10 +37,9 @@ export class IntegrationNodeJs extends React.Component<IntegrationNodeJsProps, I
                             });
 
                             // The Logless error handler must be registered last
-                            app.use(logless.errorHandler);
-                            `
+                            app.use(logless.errorHandler);`
                         }
-                        </pre>
+                        </CodeSheet>
                     </div>
                 </Cell>
             </Grid>

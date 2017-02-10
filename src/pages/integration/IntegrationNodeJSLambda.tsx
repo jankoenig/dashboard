@@ -1,24 +1,15 @@
 import * as React from "react";
 
 import { Cell, Grid } from "../../components/Grid";
+import { CodeSheet, IntegrationSubPage, IntegrationSubPageProps, IntegrationSubPageState } from "./IntegrationSubPage";
 
-interface IntegrationNodeJSLambdaProps {
-    secretKey?: string;
+interface IntegrationNodeJSLambdaProps extends IntegrationSubPageProps {
 }
 
-interface IntegrationNodeJSLambdaState {
-
+interface IntegrationNodeJSLambdaState extends IntegrationSubPageState {
 }
 
-export class IntegrationNodeJSLambda extends React.Component<IntegrationNodeJSLambdaProps, IntegrationNodeJSLambdaState> {
-
-    static codeStyle: React.CSSProperties = {
-        margin: "10px",
-        padding: "20px",
-        backgroundColor: "#CFD8DC",
-        color: "#263238",
-        whiteSpace: "pre-line"
-    };
+export class IntegrationNodeJSLambda extends IntegrationSubPage<IntegrationNodeJSLambdaProps, IntegrationNodeJSLambdaState> {
 
     render() {
         return (
@@ -27,19 +18,21 @@ export class IntegrationNodeJSLambda extends React.Component<IntegrationNodeJSLa
                     <div>
                         <h4>Integrating Logless into a NodeJS Lambda project</h4>
                         <p>Install the dependency</p>
-                        <pre style={IntegrationNodeJSLambda.codeStyle}>{
+                        <CodeSheet> {
                             `$npm install bespoken-tools --save `
-                        }</pre>
+                        }</CodeSheet>
                         <p>Import bst to your index.js</p>
-                        <pre style={IntegrationNodeJSLambda.codeStyle}>{
+                        <CodeSheet> {
                             `var bst = require('bespoken-tools');`
-                        }</pre>
+                        }
+                        </CodeSheet>
                         <p> Wrap your <code>exports.handler</code></p>
-                        <pre style={IntegrationNodeJSLambda.codeStyle}>{
-                            `exports.handler = bst.Logless.capture("` + this.props.secretKey + `", function (event, context) {
+                        <CodeSheet> {
+                            `exports.handler = bst.Logless.capture("` + this.state.secretText + `", function (event, context) {
                                 // Lambda code goes here
                             });`
-                        }</pre>
+                        }
+                        </CodeSheet>
                     </div>
                 </Cell>
             </Grid>

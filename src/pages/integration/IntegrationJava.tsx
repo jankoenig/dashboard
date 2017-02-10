@@ -2,48 +2,39 @@ import * as React from "react";
 
 import { Cell, Grid } from "../../components/Grid";
 
-interface IntegrationJavaProps {
-    secretKey?: string;
+import { CodeSheet, IntegrationSubPage, IntegrationSubPageProps, IntegrationSubPageState } from "./IntegrationSubPage";
+
+interface IntegrationJavaProps extends IntegrationSubPageProps {
 }
 
-interface IntegrationJavaState {
-
+interface IntegrationJavaState extends IntegrationSubPageState {
 }
 
-export class IntegrationJava extends React.Component<IntegrationJavaProps, IntegrationJavaState> {
-
-    static codeStyle: React.CSSProperties = {
-        margin: "10px",
-        padding: "20px",
-        backgroundColor: "#CFD8DC",
-        color: "#263238",
-        whiteSpace: "pre-line"
-    };
-
+export class IntegrationJava extends IntegrationSubPage<IntegrationJavaProps, IntegrationJavaState> {
     render() {
         return (
             <Grid>
                 <Cell col={12}>
                     <h4>Integrating the SDK in to a Java project</h4>
                     <p>To use with Speechlet: </p>
-                    <pre style={IntegrationJava.codeStyle}>{
-                        `Logless.capture("` + this.props.secretKey + `", new HelloWorldSpeechlet());`
+                    <CodeSheet> {
+                        `Logless.capture("` + this.state.secretText + `", new HelloWorldSpeechlet());`
                     }
-                    </pre>
+                    </CodeSheet>
                     <p>To use as a standalone servlet: </p>
-                    <pre style={IntegrationJava.codeStyle}>{
-                        `Servlet wrapper = Logless.capture("` + this.props.secretKey + `", new HelloWorldServlet());`
+                    <CodeSheet> {
+                        `Servlet wrapper = Logless.capture("` + this.state.secretText + `", new HelloWorldServlet());`
                     }
-                    </pre>
+                    </CodeSheet>
                     <p>Alternatively, you can wrap Servlet endpoints for greater flexibility: </p>
-                    <pre style={IntegrationJava.codeStyle}>{
-                        `Logless.capture("` + this.props.secretKey + `", request, response, new IServletHandler() {
+                    <CodeSheet> {
+                        `Logless.capture("` + this.state.secretText + `", request, response, new IServletHandler() {
                             public void call() throws IOException, ServletException {
                                 // Main body of servlet processing
                             }
                         });`
-                        }
-                    </pre>
+                    }
+                    </CodeSheet>
                 </Cell>
             </Grid>
         );
