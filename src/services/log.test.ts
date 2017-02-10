@@ -2,6 +2,7 @@ import { expect } from "chai";
 import * as fetchMock from "fetch-mock";
 
 import LogQuery from "../models/log-query";
+import Query from "../models/Query";
 import Source from "../models/source";
 import { dummyLogs } from "../utils/test";
 import log from "./log";
@@ -10,12 +11,12 @@ describe("log service", function () {
     describe("getLogs", function () {
         // Mock fetch
         beforeEach(function () {
-             fetchMock.get("*", {
+            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/query\?*/, {
                 "data": dummyLogs(2)
             });
         });
 
-        afterEach(function() {
+        afterEach(function () {
             fetchMock.restore();
         });
 
@@ -37,4 +38,121 @@ describe("log service", function () {
             });
         });
     });
+
+    describe("TimeSummary", function () {
+        let mockSummary: log.TimeSummary;
+
+        before(function () {
+            mockSummary = dummyTimeSummary();
+            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/timeSummary\?*/, mockSummary);
+        });
+
+        after(function () {
+            fetchMock.restore();
+        });
+
+        it("Endpoint", function () {
+            const query = new Query();
+
+            return log.getTimeSummary(query).then(function (summary) {
+                expect(summary).to.deep.equal(mockSummary);
+                // If we made it this far, then we know it went to the proper endpoint.
+            });
+        });
+    });
+
+    describe("IntentSummary", function () {
+        let mockSummary: log.IntentSummary;
+
+        before(function () {
+            mockSummary = dummyIntentSummary();
+            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/intentCount\?*/, mockSummary);
+        });
+
+        after(function () {
+            fetchMock.restore();
+        });
+
+        it("Endpoint", function () {
+            const query = new Query();
+
+            return log.getIntentSummary(query).then(function (summary) {
+                expect(summary).to.deep.equal(mockSummary);
+                // If we made it this far, then we know it went to the proper endpoint.
+            });
+        });
+    });
+
+    describe("SourceStats", function () {
+        let mockSummary: log.SourceStats;
+
+        before(function () {
+            mockSummary = dummySourceStat();
+            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/sourceStats\?*/, mockSummary);
+        });
+
+        after(function () {
+            fetchMock.restore();
+        });
+
+        it("Endpoint", function () {
+            const query = new Query();
+
+            return log.getSourceSummary(query).then(function (summary) {
+                expect(summary).to.deep.equal(mockSummary);
+                // If we made it this far, then we know it went to the proper endpoint.
+            });
+        });
+    });
 });
+
+function dummyTimeSummary(): log.TimeSummary {
+    let newSummary: log.TimeSummary = {
+        buckets: []
+    };
+    let date: Date = new Date();
+    for (let i = 0; i < 5; ++i) {
+        newSummary.buckets.push(dummyBucket(date, i));
+        date.setDate(date.getDate() - 1);
+    }
+
+    return newSummary;
+}
+
+function dummyBucket(date: Date, count: number): log.TimeBucket {
+    return {
+        date: date.toISOString(),
+        count: count
+    };
+}
+
+function dummyIntentSummary(): log.IntentSummary {
+    let newSummary: log.IntentSummary = {
+        count: []
+    };
+    let date: Date = new Date();
+    for (let i = 0; i < 5; ++i) {
+        newSummary.count.push(dummyIntent("Intent" + i, i));
+        date.setDate(date.getDate() - 1);
+    }
+
+    return newSummary;
+}
+
+function dummyIntent(name: string, count: number): log.IntentBucket {
+    return {
+        name: name,
+        count: count
+    };
+}
+
+function dummySourceStat(): log.SourceStats {
+    return {
+        source: "sourceName",
+        stats: {
+            totalUsers: 1,
+            totalExceptions: 2,
+            totalEvents: 3
+        }
+    };
+}
