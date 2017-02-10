@@ -19,22 +19,34 @@ export class IntegrationNodeJs extends React.Component<IntegrationNodeJsProps, I
         color: "#263238",
         whiteSpace: "pre-line"
     };
-
     render() {
         return (
             <Grid>
                 <Cell col={12}>
                     <div>
-                        <h4>Integrate the SDK</h4>
+                        <h4>Integrating Logless in to an ExpressJS project</h4>
                         <p>Install the dependency</p>
                         <pre style={IntegrationNodeJs.codeStyle}>{`$npm install bespoken-tools --save `}</pre>
-                        <p>Import bst to your index.js</p>
-                        <pre style={IntegrationNodeJs.codeStyle}>{`var bst = require('bespoken-tools');`}</pre>
-                        <p> Wrap your <code>exports.handler</code></p>
-                        <pre style={IntegrationNodeJs.codeStyle}>{`exports.handler = bst.Logless.capture("` + this.props.secretKey + `", function (event, context) {
-                                // Lambda code goes here
+                        <p> Configure it with your current routes. </p>
+                        <pre style={IntegrationNodeJs.codeStyle}>{
+                            `var bst = require('bespoken-tools')
+
+                            var logless = bst.Logless.middleware("` + this.props.secretKey  + `");
+                            app = express();
+
+                            app.use(bodyParser.json());
+                            app.use(logless.requestHandler);
+
+                            // Application handlers and routers registered here
+                            app.post("/", function {
+                                ...
                             });
-                        `}</pre>
+
+                            // The Logless error handler must be registered last
+                            app.use(logless.errorHandler);
+                            `
+                        }
+                        </pre>
                     </div>
                 </Cell>
             </Grid>

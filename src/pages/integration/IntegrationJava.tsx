@@ -13,27 +13,37 @@ interface IntegrationJavaState {
 export class IntegrationJava extends React.Component<IntegrationJavaProps, IntegrationJavaState> {
 
     static codeStyle: React.CSSProperties = {
-            margin: "10px",
-            padding: "20px",
-            backgroundColor: "#CFD8DC",
-            color: "#263238",
-            whiteSpace: "pre-line"
+        margin: "10px",
+        padding: "20px",
+        backgroundColor: "#CFD8DC",
+        color: "#263238",
+        whiteSpace: "pre-line"
     };
 
     render() {
         return (
             <Grid>
                 <Cell col={12}>
-                    <h4>Integrate the SDK</h4>
-                    <p>Install the dependency</p>
-                    <pre style={IntegrationJava.codeStyle}>{`$npm install bespoken-tools --save `}</pre>
-                    <p>Import bst to your index.js</p>
-                    <pre style={IntegrationJava.codeStyle}>{`var bst = require('bespoken-tools');`}</pre>
-                    <p> Wrap your <code>exports.handler</code></p>
-                    <pre style={IntegrationJava.codeStyle}>{`exports.handler = bst.Logless.capture("` + this.props.secretKey + `", function (event, context) {
-                                // Lambda code goes here
-                            });
-                        `}</pre>
+                    <h4>Integrating the SDK in to a Java project</h4>
+                    <p>To use with Speechlet: </p>
+                    <pre style={IntegrationJava.codeStyle}>{
+                        `Logless.capture("` + this.props.secretKey + `", new HelloWorldSpeechlet());`
+                    }
+                    </pre>
+                    <p>To use as a standalone servlet: </p>
+                    <pre style={IntegrationJava.codeStyle}>{
+                        `Servlet wrapper = Logless.capture("` + this.props.secretKey + `", new HelloWorldServlet());`
+                    }
+                    </pre>
+                    <p>Alternatively, you can wrap Servlet endpoints for greater flexibility: </p>
+                    <pre style={IntegrationJava.codeStyle}>{
+                        `Logless.capture("` + this.props.secretKey + `", request, response, new IServletHandler() {
+                            public void call() throws IOException, ServletException {
+                                // Main body of servlet processing
+                            }
+                        });`
+                        }
+                    </pre>
                 </Cell>
             </Grid>
         );

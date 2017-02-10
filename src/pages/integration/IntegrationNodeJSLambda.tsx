@@ -25,16 +25,21 @@ export class IntegrationNodeJSLambda extends React.Component<IntegrationNodeJSLa
             <Grid>
                 <Cell col={12}>
                     <div>
-                        <h4>Integrate the SDK</h4>
+                        <h4>Integrating Logless into a NodeJS Lambda project</h4>
                         <p>Install the dependency</p>
-                        <pre style={IntegrationNodeJSLambda.codeStyle}>{`$npm install bespoken-tools --save `}</pre>
+                        <pre style={IntegrationNodeJSLambda.codeStyle}>{
+                            `$npm install bespoken-tools --save `
+                        }</pre>
                         <p>Import bst to your index.js</p>
-                        <pre style={IntegrationNodeJSLambda.codeStyle}>{`var bst = require('bespoken-tools');`}</pre>
+                        <pre style={IntegrationNodeJSLambda.codeStyle}>{
+                            `var bst = require('bespoken-tools');`
+                        }</pre>
                         <p> Wrap your <code>exports.handler</code></p>
-                        <pre style={IntegrationNodeJSLambda.codeStyle}>{`exports.handler = bst.Logless.capture("` + this.props.secretKey + `", function (event, context) {
+                        <pre style={IntegrationNodeJSLambda.codeStyle}>{
+                            `exports.handler = bst.Logless.capture("` + this.props.secretKey + `", function (event, context) {
                                 // Lambda code goes here
-                            });
-                        `}</pre>
+                            });`
+                        }</pre>
                     </div>
                 </Cell>
             </Grid>

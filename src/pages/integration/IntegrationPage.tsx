@@ -6,6 +6,8 @@ import ExpressJS from "./IntegrationExpressJS";
 import Java from "./IntegrationJava";
 import NodeJS from "./IntegrationNodeJSLambda";
 
+let TabsTheme = require("./themes/tabs.scss");
+
 interface IntegrationPageProps {
     secretKey?: string;
 }
@@ -33,9 +35,9 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
     render() {
         return (
             <section>
-                <Tabs index={this.state.tabIndex} onChange={this.handleTabChange} >
-                    <Tab label="NodeJS Lambda"><NodeJS secretKey={this.props.secretKey} /></Tab>
-                    <Tab label="ExpressJS"><ExpressJS secretKey={this.props.secretKey} /></Tab>
+                <Tabs theme={TabsTheme} fixed inverse index={this.state.tabIndex} onChange={this.handleTabChange} >
+                    <Tab label="Node.JS Lambda"><NodeJS secretKey={this.props.secretKey} /></Tab>
+                    <Tab label="Express.JS"><ExpressJS secretKey={this.props.secretKey} /></Tab>
                     <Tab label="Java"><Java secretKey={this.props.secretKey} /></Tab>
                 </Tabs>
             </section>
