@@ -139,6 +139,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         {
           icon: "list",
           name: "logs"
+        },
+        {
+          icon: "description",
+          name: "integration"
         }
       ];
     } else {
@@ -151,6 +155,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       this.props.goTo("/skills/" + this.props.currentSource.id);
     } else if (button.name === "logs") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/logs");
+    } else if (button.name === "integration") {
+      this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
     }
   }
 
