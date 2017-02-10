@@ -78,3 +78,5 @@ export class Measure extends React.Component<MeasureProps, MeasureState> {
         );
     }
 }
+
+export default Measure;

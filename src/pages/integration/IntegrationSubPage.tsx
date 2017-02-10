@@ -4,6 +4,7 @@ const HIDDEN_KEY_MESSAGE = "<SECRET_KEY>";
 
 export interface IntegrationSubPageProps {
     secretKey?: string;
+    showSecret?: string;
 }
 
 export interface IntegrationSubPageState {
@@ -16,9 +17,16 @@ export abstract class IntegrationSubPage<P extends IntegrationSubPageProps, S ex
         super(props);
 
         const initState: any = (initialState) ? {} : undefined;
-        this.state = { ...initState, ...{ secretText: HIDDEN_KEY_MESSAGE }};
+        const message = (props.showSecret && props.showSecret) ? props.secretKey : HIDDEN_KEY_MESSAGE;
+        this.state = { ...initState, ...{ secretText: message }};
 
         this.handleRevealClick = this.handleRevealClick.bind(this);
+    }
+
+    componentWillReceiveProps(props: P, context: any) {
+        const message = (props.showSecret && props.showSecret) ? props.secretKey : HIDDEN_KEY_MESSAGE;
+        this.state.secretText = message;
+        this.setState(this.state);
     }
 
     handleRevealClick() {
