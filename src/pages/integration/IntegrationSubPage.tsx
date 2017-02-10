@@ -48,8 +48,7 @@ export class CodeSheet extends React.Component<any, any> {
         padding: "20px",
         backgroundColor: "#CFD8DC",
         color: "#263238",
-        overflowX: "auto",
-        // whiteSpace: "pre"
+        overflowX: "auto"
     };
 
     render() {
