@@ -79,7 +79,7 @@ var config = {
       },
       {
         test: /\.tsx?$/,
-        loader: "strip-loader?strip[]=debug,strip[]=console.log,string[]=console.info,string[]=console.error,string[]=console.debug"
+        loader: "strip-loader?strip[]=debug,strip[]=console.log,strip[]=console.info,strip[]=console.error,strip[]=console.debug"
       }
     ],
 
