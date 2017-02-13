@@ -306,8 +306,8 @@ describe("Log Actions", function () {
                         const query: LogQuery = originalQueryEvent.query;
 
                         expect(actionsQuery.source).to.deep.equal(query.source);
-                        expect(actionsQuery.startTime).to.deep.equal(query.startTime);
-                        expect(actionsQuery.endTime).to.deep.equal(today);
+                        expect(actionsQuery.startTime).to.equalDate(query.startTime);
+                        expect(actionsQuery.endTime).to.equalDate(today);
 
                         expect(actions[2].type).to.equal(FETCH_LOGS_REQUEST);
                         expect(actions[2].fetching).to.equal(false);
