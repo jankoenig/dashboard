@@ -1,0 +1,7 @@
+@import "../../../themes/dashboard";
+@import "~react-toolbox/lib/tabs/config";
+
+$tab-inverse-bar-color: $bar-color-dark;
+$tab-inverse-pointer-color: $color-primary;
+
+@import "~react-toolbox/lib/tabs/theme";
