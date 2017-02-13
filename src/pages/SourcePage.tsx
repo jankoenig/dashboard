@@ -2,6 +2,8 @@ import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 
+import { Button } from "react-toolbox/lib/button";
+
 import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
@@ -51,6 +53,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     constructor(props: SourcePageProps) {
         super(props);
+        this.handleDeleteSkillClicked = this.handleDeleteSkillClicked.bind(this);
+
         this.state = {
             timeSummaryData: defaultTimeData(daysAgo(7), daysAgo(0)),
             intentSummaryData: defaultIntentData(),
@@ -172,6 +176,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         loader.load(query);
     }
 
+    handleDeleteSkillClicked() {
+
+    }
+
     render() {
         const tileColor = "#ECEFF1";
         return (
@@ -217,6 +225,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     timeLoaded={this.state.timeLoaded}
                     intentLoaded={this.state.intentLoaded}
                     statsLoaded={this.state.statsLoaded} />
+
+                <Button
+                    label="Delete Skill" />
             </span>
         );
     }
