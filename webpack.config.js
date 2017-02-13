@@ -47,6 +47,25 @@ if (node_env === "development") {
 plugins.push(new ExtractTextPlugin("style/" + projectName + ".css", { allChunks: true }))
 plugins.push(new webpack.DefinePlugin(buildVariables));
 
+var moduleLoaders = [];
+// All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+moduleLoaders.push({
+  test: /\.tsx?$/,
+  loader: "ts-loader"
+});
+// Styling loader for scss and css files.
+moduleLoaders.push({
+  test: /\.(scss|css)$/,
+  loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
+});
+// This loader will strip out all console methods.  We don't care if it's in development.
+if (node_env === "production") {
+  moduleLoaders.push({
+    test: /\.tsx?$/,
+    loader: "strip-loader?strip[]=debug,strip[]=console.log,strip[]=console.info,strip[]=console.error,strip[]=console.debug"
+  });
+}
+
 // The remaining webpack config
 var config = {
   entry: "./src/index.tsx",
@@ -67,21 +86,7 @@ var config = {
   },
 
   module: {
-    loaders: [
-      // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader"
-      },
-      {
-        test: /\.(scss|css)$/,
-        loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
-      },
-      {
-        test: /\.tsx?$/,
-        loader: "strip-loader?strip[]=debug,strip[]=console.log,strip[]=console.info,strip[]=console.error,strip[]=console.debug"
-      }
-    ],
+    loaders: moduleLoaders,
 
     sassLoader: {
       data: '@import "' + path.resolve(__dirname, 'theme/_theme.scss') + '";'
