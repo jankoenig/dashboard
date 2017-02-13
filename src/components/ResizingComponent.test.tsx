@@ -56,7 +56,7 @@ describe("ResizingComponent", function () {
 
             const firstChild = wrapper.childAt(0);
             expect(firstChild).to.have.style("overflow-y", "auto");
-            expect(firstChild).to.have.style("height", "200px");
+            expect(firstChild).to.have.style("max-height", "200px");
         });
 
         it ("Updates appropriately with new overflowY props.", function() {
