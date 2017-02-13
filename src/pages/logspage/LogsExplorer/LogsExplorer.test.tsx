@@ -11,8 +11,12 @@ import Output from "../../../models/output";
 import Source from "../../../models/source";
 import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
+import Interval from "../../../utils/Interval";
 import { dummyLogs, dummyOutputs } from "../../../utils/test";
 import LogsExplorer from "./LogsExplorer";
+
+import { FilterBar } from "../FilterBar";
+import { DateFilter } from "../Filters";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -41,10 +45,17 @@ describe("LogExplorer", function () {
         let logMap: LogMap = { id: { logs: logs, query: logQuery } };
         let convo: Conversation = createConvo({ request: logs[0], response: logs[1], outputs: outputs });
 
+        let onRefresh: Sinon.SinonStub;
+
         let wrapper: ShallowWrapper<any, any>;
 
+        before(function () {
+            onRefresh = sinon.stub();
+        });
+
         beforeEach(function () {
-            wrapper = shallow(<LogsExplorer source={source} logMap={logMap} />);
+            onRefresh.reset();
+            wrapper = shallow(<LogsExplorer source={source} logMap={logMap} onGetNewLogs={onRefresh} />);
         });
 
         it("renders a FilterBar", function () {
@@ -120,5 +131,159 @@ describe("LogExplorer", function () {
                 expect(wrapper.state("selectedConvo")).to.exist;
             });
         });
+
+        describe("Tests the refreshing.", function () {
+
+            let stubExecutor: StubExecutor;
+            let intervalStub: Sinon.SinonStub;
+
+            before(function () {
+                intervalStub = sinon.stub(Interval, "newExecutor", (ms: number, callback: () => void): Interval.Executor => {
+                    return stubExecutor = new StubExecutor(ms, callback);
+                });
+            });
+
+            afterEach(function () {
+                stubExecutor.reset();
+                intervalStub.reset();
+            });
+
+            after(function () {
+                intervalStub.reset();
+            });
+
+            it("Tests there is a value and callback passed to the exectuor.", function () {
+                expect(stubExecutor).to.exist;
+                expect(stubExecutor.ms).to.be.greaterThan(0);
+                expect(stubExecutor.callback).to.exist;
+            });
+
+            it("Tests the interval executor is started by default.", function () {
+                expect(stubExecutor.start).to.have.been.calledOnce;
+                expect(wrapper.state("tailOn")).to.be.true;
+            });
+
+            it("Tests the interval executor is ended when unmounted.", function () {
+                wrapper.unmount();
+                expect(stubExecutor.end).to.have.been.calledOnce;
+            });
+
+            it("Tests the callback when the executor executes the callback.", function () {
+                stubExecutor.callback();
+                expect(onRefresh).to.have.been.calledOnce;
+            });
+
+            it("Tests the auto-refresh is turned off when filterbar activates it.", function () {
+                let filterBar = wrapper.find("FilterBar").at(0);
+                filterBar.simulate("liveUpdate", false);
+
+                expect(wrapper.state("tailOn")).to.be.false;
+
+                filterBar = wrapper.find("FilterBar").at(0);
+                filterBar.simulate("liveUpdate", true);
+
+                expect(wrapper.state("tailOn")).to.be.true;
+            });
+
+            describe("Tests the auto turn off when date filters.", function () {
+
+                let filterBar: ShallowWrapper<any, any>;
+
+                beforeEach(function () {
+                    filterBar = wrapper.find(FilterBar).at(0);
+                });
+
+                it("Tests that the auto-refresh ends when the date filter goes away from today.", function () {
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    expect(stubExecutor.end).to.be.calledOnce;
+                    expect(wrapper.state("tailOn")).to.be.false;
+                });
+
+                it("Tests that the auto-refresh restarts when the date filter comes back to today.", function () {
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    // get the new one when it re-renders
+                    filterBar = wrapper.find(FilterBar).at(0);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, new Date()));
+
+                    expect(stubExecutor.end).to.be.calledOnce;
+                    expect(stubExecutor.start).to.be.calledTwice;
+                    expect(wrapper.state("tailOn")).to.be.true;
+                });
+
+                it ("Tests the auto-refresh goes back to original state when date filter comes back to today.", function() {
+                    // This test first toggles the live update off.  Then it will switch the Date from before today then back to today.
+                    // The live update should still be turned off when we're back here.
+                    let filterBar = wrapper.find("FilterBar").at(0);
+                    filterBar.simulate("liveUpdate", false);
+
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    // get the new one when it re-renders
+                    filterBar = wrapper.find(FilterBar).at(0);
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    // get the new one when it re-renders
+                    filterBar = wrapper.find(FilterBar).at(0);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, new Date()));
+
+                    expect(wrapper.state("tailOn")).to.be.false;
+                });
+
+                it ("Tests the filterbar live update is disabled when the dates go out of range.", function() {
+                    const startDate = new Date();
+                    startDate.setDate(startDate.getDate() - 12);
+
+                    const endDate = new Date();
+                    endDate.setDate(endDate.getDate() - 12);
+
+                    filterBar.simulate("filterDate", new DateFilter(startDate, endDate));
+
+                    filterBar = wrapper.find(FilterBar).at(0);
+
+                    expect(filterBar.prop("disableLiveUpdateCheckbox")).to.be.true;
+                });
+            });
+        });
     });
 });
+
+class StubExecutor implements Interval.Executor {
+
+    callback: () => void;
+    ms: number;
+
+    start: Sinon.SinonStub;
+    end: Sinon.SinonStub;
+
+    constructor(ms: number, callback: () => void) {
+        this.callback = callback;
+        this.ms = ms;
+        this.start = sinon.stub();
+        this.end = sinon.stub();
+    }
+
+    reset() {
+        this.start.reset();
+        this.end.reset();
+    }
+}

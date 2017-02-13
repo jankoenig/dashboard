@@ -18,12 +18,15 @@ const CheckboxTheme = require("../../../themes/checkbox-light.scss");
 
 export interface FilterProps {
     query: LogQuery;
+    liveUpdateEnabled: boolean;
     onFilterLogLevel: (filter: LogLevelFilter) => void;
     onFilterRequest: (filter: RequestFilter) => void;
     onFilterIntent: (filter: IntentFilter) => void;
     onFilterDate: (filter: DateFilter) => void;
     onFilterException: (filter: ExceptionFilter) => void;
     onFilterOrigin: (filter: OriginFilter) => void;
+    onLiveUpdate: (enabled: boolean) => void;
+    disableLiveUpdateCheckbox?: boolean;
     className?: string;
 }
 
@@ -112,7 +115,6 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
-
         if (item === "startDate") {
             this.setDateRange(value, this.state.endDate);
         } else if (item === "endDate") {
@@ -223,6 +225,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                 </Cell>
                 <Cell col={2} offsetDesktop={1} tablet={2} offsetTablet={3} phone={1} offsetPhone={1}>
                     <DatePicker
+                        autoOk
                         theme={DatePickerFilterbarTheme}
                         label="Start Date"
                         maxDate={queryEndDate}
@@ -233,6 +236,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
                 <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={0} phone={1} offsetPhone={0}>
                     <DatePicker
+                        autoOk
                         theme={DatePickerFilterbarTheme}
                         label="End Date"
                         minDate={this.state.startDate}
@@ -240,6 +244,16 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         value={this.state.endDate}
                         onChange={this.handleEndDateChange}
                         readonly={this.props.query ? false : true} />
+                </Cell>
+                <Cell col={1} tablet={1} phone={1}>
+                    <div style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} >
+                        <Checkbox
+                            theme={CheckboxTheme}
+                            label="Live Update"
+                            checked={this.props.liveUpdateEnabled}
+                            disabled={this.props.disableLiveUpdateCheckbox}
+                            onChange={this.props.onLiveUpdate} />
+                    </div>
                 </Cell>
             </Grid>
         );
