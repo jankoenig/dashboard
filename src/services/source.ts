@@ -1,6 +1,5 @@
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
-import * as objectAssign from "object-assign";
 
 import { Source } from "../models/source";
 import StringUtil from "../utils/string";
@@ -8,27 +7,11 @@ import { remoteservice } from "./remote-service";
 
 export namespace source {
 
-    class MutableSource {
-        secretKey: string;
-        name: string;
-        id: string;
-        members: any;
-        created: string;
-
-        constructor(source: Source) {
-            this.secretKey = source.secretKey;
-            this.name = source.name;
-            this.id = source.id;
-            this.members = objectAssign({}, source.members);
-            this.created = source.created.toISOString();
-        }
-    }
-
     export function createSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return new Promise(function (callback, reject) {
 
             // Create a new mutable source from the source passed in
-            let mutableSource: MutableSource = new MutableSource(source);
+            const mutableSource: any = {...{}, ...source};
 
             let user = auth.currentUser;
             let ref = db.ref();
@@ -98,8 +81,11 @@ export namespace source {
         const key = source.id;
 
         console.info("Deleting " + source.id + " for user " + user.uid);
+        console.log(source);
         // tslint:disable:no-null-keyword
-        return ref.child("users").child(user.uid).child("sources").child(key).set(null).then(function() { return source; });
+        return ref.child("users").child(user.uid).child("sources").child(key).set(null).then(function() {
+            return removeMembers(user.uid, source);
+        });
         // tslint:enable:no-null-keyword
     }
 
@@ -140,3 +126,11 @@ export namespace source {
 }
 
 export default source;
+
+function removeMembers(memeberId: string, source: Source): Promise<Source> {
+    return new Promise(function (resolve, reject) {
+        const mutableSource: any = {...{}, ...source};
+        mutableSource.members[memeberId] = undefined;
+        resolve(mutableSource);
+    });
+}

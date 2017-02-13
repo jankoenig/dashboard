@@ -14,13 +14,13 @@ let expect = chai.expect;
  *
  * @param {string} The ID to put.
  */
-function generateSourceProps(sourceId?: string): SourceModel.SourceProperties {
+function generateSourceProps(sourceId: string = undefined, members: SourceModel.Members = {}): SourceModel.SourceProperties {
     let props: SourceModel.SourceProperties = {
         secretKey: "SuperSecretKey",
         name: "Test Source",
-        members: undefined,
+        members: members,
         profile: undefined,
-        id: (sourceId) ? sourceId : undefined,
+        id: sourceId,
         created: new Date()
     };
     return props;
@@ -188,9 +188,16 @@ describe("Source Service", function () {
         let source = generateSourceProps();
 
         beforeEach(function () {
+            const owner: SourceModel.Members = {};
+            owner[mockUser.uid] = "owner";
+            owner["123ABC"] = "visitor";
+            owner["234BCD"] = "visitor";
+            owner["345CDE"] = "visitor";
+            owner["456DEF"] = "visitor";
+
             childStub = sinon.stub().returns(ref);
             setStub = sinon.stub().returns(successResponsePromise());
-            source = generateSourceProps();
+            source = generateSourceProps("ABC123", owner);
 
             ref.child = childStub;
             ref.set = setStub;
@@ -225,10 +232,12 @@ describe("Source Service", function () {
                     });
             });
 
-            xit ("Tests the returned source has been updated.", function() {
+            it ("Tests the returned source has been updated.", function() {
                 return SourceService.default.deleteSource(new SourceModel.Source(source), mockAuth, db)
                     .then(function(source: SourceModel.Source) {
-                        expect(source.members);
+                        console.log(source);
+                        expect(source.members[mockUser.uid]).to.not.exist;
+                        // expect(true).to.equal(false);
                     });
             });
         });
