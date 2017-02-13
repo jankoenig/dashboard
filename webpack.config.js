@@ -1,6 +1,7 @@
 var path = require("path");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var webpack = require("webpack");
+var WebpackStrip = require('strip-loader');
 var package = require("./package.json");
 
 var node_env = process.env.NODE_ENV;
@@ -75,6 +76,10 @@ var config = {
       {
         test: /\.(scss|css)$/,
         loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
+      },
+      {
+        test: /\.tsx?$/,
+        loader: "strip-loader?strip[]=debug,strip[]=console.log,string[]=console.info,string[]=console.error,string[]=console.debug"
       }
     ],
 
