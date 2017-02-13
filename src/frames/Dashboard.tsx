@@ -141,7 +141,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           name: "logs"
         },
         {
-          icon: "description",
+          icon: "code",
           name: "integration"
         }
       ];
