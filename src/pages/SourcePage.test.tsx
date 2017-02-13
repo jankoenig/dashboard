@@ -5,7 +5,10 @@ import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
+import { Button } from "react-toolbox/lib/button";
+
 import LogService from "../services/log";
+import SourceService from "../services/source";
 import { dummyLogs, dummySources } from "../utils/test";
 import { SourcePage } from "./SourcePage";
 
@@ -205,6 +208,36 @@ describe("Source Page", function () {
             const originalStats: LogService.SourceStats = sourceStats;
 
             expect(pageStats).to.equal(originalStats);
+        });
+    });
+
+    describe("Delete source", function() {
+        let deleteSourceStub: Sinon.SinonStub;
+        let wrapper: ShallowWrapper<any, any>;
+
+        before(function() {
+            wrapper = shallow(<SourcePage source={source} />);
+        });
+
+        describe("Successful deletes", function() {
+            before(function() {
+                deleteSourceStub = sinon.stub(SourceService, "deleteSource").returns(Promise.resolve(source));
+            });
+
+            afterEach(function() {
+                deleteSourceStub.reset();
+            });
+
+            after(function() {
+                deleteSourceStub.restore();
+            });
+
+            it ("Tests the delete handler passes in the correct parameters.", function() {
+                wrapper.find(Button).at(0).simulate("click");
+
+                expect(deleteSourceStub).to.have.been.calledOnce;
+                expect(deleteSourceStub).to.have.been.calledWith(source);
+            });
         });
     });
 });
