@@ -7,6 +7,7 @@ import Button from "../components/Button";
 import { Cell, Grid } from "../components/Grid";
 import { NameRule, SourceForm } from "../components/SourceForm";
 import Source from "../models/source";
+import { IntegrationPage } from "../pages/integration";
 import { State } from "../reducers";
 import service from "../services/source";
 
@@ -191,33 +192,26 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
     }
 
     render(): JSX.Element {
+        const hasKey = this.props.source !== undefined;
+        const key = (hasKey) ? this.props.source.secretKey : undefined;
         return (
-            <Grid>
-                <Cell col={12}>
-                    <h4>Integrate the SDK</h4>
-                    <p>Install the dependency</p>
-                    <pre style={this.codeStyle()}>{`$npm install bespoken-tools --save `}</pre>
-                    <p>Import bst to your index.js</p>
-                    <pre style={this.codeStyle()}>{`var bst = require('bespoken-tools');`}</pre>
-                    <p> Wrap your <code>exports.handler</code></p>
-                    <pre style={this.codeStyle()}>{`exports.handler = bst.Logless.capture("` + this.state.secretKey + `", function (event, context) {
-                                // Lambda code goes here
-                            });
-                        `}</pre>
-                </Cell>
-                {(this.props.source) ?
-                    (
-                        <div>
-                            <Cell col={12}>
-                                <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
-                            </Cell>
-                            <Cell col={12}>
-                                <Button raised={true} onClick={this.props.onGoBack}>Create Another</Button>
-                            </Cell>
-                        </div>
-                    )
-                    : (<div />)}
-            </Grid>
+            <div>
+                <IntegrationPage secretKey={key} />
+                {
+                    (hasKey) ?
+                        (
+                            <Grid>
+                                <Cell col={12}>
+                                    <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
+                                </Cell>
+                                <Cell col={12}>
+                                    <Button raised={true} onClick={this.props.onGoBack}>Create Another</Button>
+                                </Cell>
+                            </Grid>
+                        )
+                        : (<div />)
+                }
+            </div>
         );
     }
 }

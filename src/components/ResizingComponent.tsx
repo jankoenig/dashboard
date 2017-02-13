@@ -36,7 +36,7 @@ export class ResizingComponent extends React.Component<ResizingComponentProps, R
     render() {
         return (
             <Measure onMeasure={this.onMeasure} >
-                <div style={{ overflowY: this.props.overflowY, height: this.state.dimens.height }} >
+                <div style={{ overflowY: this.props.overflowY, maxHeight: this.state.dimens.height }} >
                     {this.props.children}
                 </div>
             </Measure>

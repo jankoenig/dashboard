@@ -4,7 +4,7 @@ const HIDDEN_KEY_MESSAGE = "<SECRET_KEY>";
 
 export interface IntegrationSubPageProps {
     secretKey?: string;
-    showSecret?: string;
+    showSecret?: boolean;
 }
 
 export interface IntegrationSubPageState {

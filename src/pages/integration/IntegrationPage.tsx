@@ -11,6 +11,7 @@ let TabsTheme = require("./themes/tabs.scss");
 
 interface IntegrationPageProps {
     secretKey?: string;
+    showSecret?: boolean;
 }
 
 interface IntegrationPageState {
@@ -40,17 +41,17 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
                     <Tabs theme={TabsTheme} fixed inverse index={this.state.tabIndex} onChange={this.handleTabChange} >
                         <Tab label="Node.JS Lambda">
                             <ResizingComponent>
-                                <NodeJS secretKey={this.props.secretKey} />
+                                <NodeJS secretKey={this.props.secretKey} showSecret={this.props.showSecret} />
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Express.JS">
                             <ResizingComponent>
-                                <ExpressJS secretKey={this.props.secretKey} />
+                                <ExpressJS secretKey={this.props.secretKey} showSecret={this.props.showSecret} />
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Java">
                             <ResizingComponent>
-                                <Java secretKey={this.props.secretKey} />
+                                <Java secretKey={this.props.secretKey} showSecret={this.props.showSecret} />
                             </ResizingComponent>
                         </Tab>
                     </Tabs>
