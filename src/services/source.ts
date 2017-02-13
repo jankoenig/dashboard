@@ -4,7 +4,7 @@ import * as objectAssign from "object-assign";
 
 import { Source } from "../models/source";
 import StringUtil from "../utils/string";
-import { remoteservice  } from "./remote-service";
+import { remoteservice } from "./remote-service";
 
 export namespace source {
 
@@ -92,6 +92,17 @@ export namespace source {
         });
     }
 
+    export function deleteSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
+        const user = auth.currentUser;
+        const ref = db.ref();
+        const key = source.id;
+
+        console.info("Deleting " + source.id + " for user " + user.uid);
+        // tslint:disable:no-null-keyword
+        return ref.child("users").child(user.uid).child("sources").child(key).set(null).then(function() { return source; });
+        // tslint:enable:no-null-keyword
+    }
+
     export function getSources(auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<any> {
         let user = auth.currentUser;
         let ref = db.ref();
@@ -121,10 +132,10 @@ export namespace source {
 
     export function getSourceObj(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return getSource(key, db)
-                .then(function (data) {
-                    let source: Source = new Source(data.val());
-                    return source;
-                });
+            .then(function (data) {
+                let source: Source = new Source(data.val());
+                return source;
+            });
     }
 }
 

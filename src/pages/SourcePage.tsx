@@ -12,6 +12,7 @@ import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortP
 import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
+import SourceService from "../services/source";
 
 enum DataState {
     LOADING, ERROR, LOADED
@@ -177,7 +178,11 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     handleDeleteSkillClicked() {
-
+        SourceService.deleteSource(this.props.source).then(function(source: Source) {
+            console.info("source " + source.id + " is deleted.");
+        }).catch(function(e: Error) {
+            console.error(e);
+        });
     }
 
     render() {
@@ -227,6 +232,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     statsLoaded={this.state.statsLoaded} />
 
                 <Button
+                    onClick={this.handleDeleteSkillClicked}
                     label="Delete Skill" />
             </span>
         );
