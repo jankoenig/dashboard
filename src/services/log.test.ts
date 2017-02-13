@@ -2,10 +2,25 @@ import { expect } from "chai";
 import * as fetchMock from "fetch-mock";
 
 import LogQuery from "../models/log-query";
-import Query from "../models/Query";
 import Source from "../models/source";
 import { dummyLogs } from "../utils/test";
 import log from "./log";
+
+/**
+ * CI doesn't like importing "Query", so we're going to make it here.  Take that CI.
+ */
+export class Query {
+
+    myQuery = "";
+
+    constructor(query?: string) {
+        this.myQuery = (query) ? query : "";
+    }
+
+    query(): string {
+        return this.myQuery;
+    };
+}
 
 describe("log service", function () {
     describe("getLogs", function () {
@@ -52,7 +67,7 @@ describe("log service", function () {
         });
 
         it("Endpoint", function () {
-            const query = new Query();
+            const query: any = new Query();
 
             return log.getTimeSummary(query).then(function (summary) {
                 expect(summary).to.deep.equal(mockSummary);
@@ -74,7 +89,7 @@ describe("log service", function () {
         });
 
         it("Endpoint", function () {
-            const query = new Query();
+            const query: any = new Query();
 
             return log.getIntentSummary(query).then(function (summary) {
                 expect(summary).to.deep.equal(mockSummary);
@@ -96,7 +111,7 @@ describe("log service", function () {
         });
 
         it("Endpoint", function () {
-            const query = new Query();
+            const query: any = new Query();
 
             return log.getSourceSummary(query).then(function (summary) {
                 expect(summary).to.deep.equal(mockSummary);
