@@ -75,7 +75,7 @@
     "tslint-react": "^2.2.0",
     "typescript": "^2.1.4",
     "typings": "^2.0.0",
-    "typings-for-css-modules-loader": "1.2.0",
+    "typings-for-css-modules-loader": "1.0.0",
     "webpack": "^1.14.0",
     "webpack-dev-middleware": "^1.8.4",
     "webpack-dev-server": "^1.16.2"
