@@ -235,9 +235,7 @@ describe("Source Service", function () {
             it ("Tests the returned source has been updated.", function() {
                 return SourceService.default.deleteSource(new SourceModel.Source(source), mockAuth, db)
                     .then(function(source: SourceModel.Source) {
-                        console.log(source);
                         expect(source.members[mockUser.uid]).to.not.exist;
-                        // expect(true).to.equal(false);
                     });
             });
         });

@@ -80,8 +80,6 @@ export namespace source {
         const ref = db.ref();
         const key = source.id;
 
-        console.info("Deleting " + source.id + " for user " + user.uid);
-        console.log(source);
         // tslint:disable:no-null-keyword
         return ref.child("users").child(user.uid).child("sources").child(key).set(null).then(function() {
             return removeMembers(user.uid, source);

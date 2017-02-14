@@ -190,9 +190,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         const goBack = this.props.goHome;
         this.props.removeSource(this.props.source)
             .then(function (source: Source) {
-                console.info("GOING HOME");
                 goBack();
-                console.info("GONE");
             }).catch(function (e: Error) {
                 console.error(e);
             });

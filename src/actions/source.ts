@@ -56,14 +56,10 @@ export function createSourceSuccess(source: Source): CreateSourceSuccess {
 }
 
 export function deleteSource(source: Source): (dispatch: Redux.Dispatch<any>) => Promise<Source> {
-    console.info("DELETE SOURCE");
     return function(dispatch: Redux.Dispatch<any>): Promise<Source> {
-        console.info("DELETING");
         return service.deleteSource(source)
             .then(function() {
-                console.info("DELETED");
                 dispatch(removeSource(source));
-                console.info("RETURNING");
                 return source;
             });
     };
