@@ -227,12 +227,9 @@ describe("Source Page", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         describe("Successful deletes", function () {
-            before(function () {
+            beforeEach(function () {
                 goHome = sinon.stub();
                 removeSource = sinon.stub().returns(Promise.resolve(source));
-            });
-
-            beforeEach(function () {
                 wrapper = shallow(<SourcePage source={source} goHome={goHome} removeSource={removeSource} />);
             });
 
@@ -250,41 +247,56 @@ describe("Source Page", function () {
                 let actions: any[];
 
                 beforeEach(function () {
-                    dialog = wrapper.find(Dialog).at(0);
-                    actions = dialog.prop("actions");
-
                     // Act like we just opened it.
                     wrapper.find(Button).at(0).simulate("click");
+
+                    dialog = wrapper.find(Dialog).at(0);
+                    actions = dialog.prop("actions");
                 });
 
-                it ("Tests the first action", function() {
+                it("Tests the first action is proper.", function () {
                     const action = actions[0];
 
                     // first one is the cancel action.
                     expect(action.label).to.equal("Cancel");
                     expect(action.onClick).to.exist;
-
-                    action.onClick();
-
-                    expect(wrapper.state("deleteDialogActive")).to.be.false;
                 });
 
-                it("Tests the second action.", function () {
+                it("Tests the second action is proper.", function () {
                     const action = actions[1];
 
                     // second one is the delete action.
                     expect(action.label).to.equal("Delete");
                     expect(action.onClick).to.exist;
-
-                    actions[1].onClick();
-
-                    expect(removeSource).to.have.been.calledOnce;
-                    expect(removeSource).to.have.been.calledWith(source);
                 });
-            });
 
-            xit("Tests the GoHome method is called on success", function () {
-                expect(goHome).to.be.calledOnce;
+                describe("First Action", function () {
+                    beforeEach(function () {
+                        const action = actions[0];
+                        action.onClick();
+                    });
+
+                    it("Tests the first action performed its duties.", function () {
+                        expect(wrapper.state("deleteDialogActive")).to.be.false;
+                    });
+                });
+
+                describe("Second Action", function () {
+                    beforeEach(function () {
+                        const action = actions[1];
+                        return action.onClick(); // This action returns a Promise just for this test.
+                    });
+
+                    it("Tests the delete action called remove source..", function () {
+                        expect(removeSource).to.have.been.calledOnce;
+                        expect(removeSource).to.have.been.calledWith(source);
+                    });
+
+                    it("Tests the delete action called GoHome once removed.", function() {
+                        console.info("CHECKING");
+                        expect(goHome).to.be.calledOnce;
+                    });
+                });
             });
         });
 
@@ -294,7 +306,9 @@ describe("Source Page", function () {
                 removeSource = sinon.stub().returns(Promise.reject(new Error("Error per requirements of the test.")));
                 wrapper = shallow(<SourcePage source={source} goHome={goHome} removeSource={removeSource} />);
 
-                wrapper.find(Dialog).at(0).simulate("click");
+                const actions = wrapper.find(Dialog).at(0).prop("actions");
+                const deleteAction = actions[1];
+                return deleteAction.onClick();
             });
 
             it("Tests the GoHome method is not called on failed delete.", function () {
