@@ -6,6 +6,7 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import { Button } from "react-toolbox/lib/button";
+import Dialog from "react-toolbox/lib/dialog";
 
 import LogService from "../services/log";
 import { dummyLogs, dummySources } from "../utils/test";
@@ -229,17 +230,60 @@ describe("Source Page", function () {
             before(function () {
                 goHome = sinon.stub();
                 removeSource = sinon.stub().returns(Promise.resolve(source));
+            });
+
+            beforeEach(function () {
                 wrapper = shallow(<SourcePage source={source} goHome={goHome} removeSource={removeSource} />);
+            });
 
+            it("Tests the dialog is opened.", function () {
                 wrapper.find(Button).at(0).simulate("click");
+
+                expect(wrapper.state("deleteDialogActive")).to.be.true;
+
+                const dialog = wrapper.find(Dialog);
+                expect(dialog.prop("active")).to.be.true;
             });
 
-            it("Tests the delete handler passes in the correct parameters.", function () {
-                expect(removeSource).to.have.been.calledOnce;
-                expect(removeSource).to.have.been.calledWith(source);
+            describe("Dialog", function () {
+                let dialog: ShallowWrapper<any, any>;
+                let actions: any[];
+
+                beforeEach(function () {
+                    dialog = wrapper.find(Dialog).at(0);
+                    actions = dialog.prop("actions");
+
+                    // Act like we just opened it.
+                    wrapper.find(Button).at(0).simulate("click");
+                });
+
+                it ("Tests the first action", function() {
+                    const action = actions[0];
+
+                    // first one is the cancel action.
+                    expect(action.label).to.equal("Cancel");
+                    expect(action.onClick).to.exist;
+
+                    action.onClick();
+
+                    expect(wrapper.state("deleteDialogActive")).to.be.false;
+                });
+
+                it("Tests the second action.", function () {
+                    const action = actions[1];
+
+                    // second one is the delete action.
+                    expect(action.label).to.equal("Delete");
+                    expect(action.onClick).to.exist;
+
+                    actions[1].onClick();
+
+                    expect(removeSource).to.have.been.calledOnce;
+                    expect(removeSource).to.have.been.calledWith(source);
+                });
             });
 
-            it("Tests the GoHome method is called on success", function () {
+            xit("Tests the GoHome method is called on success", function () {
                 expect(goHome).to.be.calledOnce;
             });
         });
@@ -250,7 +294,7 @@ describe("Source Page", function () {
                 removeSource = sinon.stub().returns(Promise.reject(new Error("Error per requirements of the test.")));
                 wrapper = shallow(<SourcePage source={source} goHome={goHome} removeSource={removeSource} />);
 
-                wrapper.find(Button).at(0).simulate("click");
+                wrapper.find(Dialog).at(0).simulate("click");
             });
 
             it("Tests the GoHome method is not called on failed delete.", function () {
