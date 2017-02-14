@@ -88,6 +88,26 @@ describe("Source Actions", function () {
                         });
                 });
             });
+
+            describe("Error", function() {
+                before(function() {
+                    deleteSource = sinon.stub(SourceService, "deleteSource").returns(Promise.reject(new Error("Error due to requirements of the test.")));
+                });
+
+                after(function() {
+                    deleteSource.restore();
+                });
+
+                it ("Tests that an error is thrown appropriately.", function() {
+                    return store.dispatch(actions.deleteSource(sources[0]))
+                        .then(function() {
+                            expect(true, "An error was not thrown with the rejected deleteSource service.").to.be.false;
+                        })
+                        .catch(function(err: Error) {
+                            expect(err).to.not.be.undefined;
+                        });
+                });
+            });
         });
     });
 });
