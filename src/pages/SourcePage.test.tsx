@@ -27,6 +27,7 @@ describe("Source Page", function () {
         let getIntentSummary: Sinon.SinonStub;
         let getSourceSummary: Sinon.SinonStub;
         let goHome: Sinon.SinonStub;
+        let removeSource: Sinon.SinonStub;
 
         before(function () {
             getLogs = sinon.stub(LogService, "getLogs").returns(Promise.resolve(logs));
@@ -34,6 +35,7 @@ describe("Source Page", function () {
             getIntentSummary = sinon.stub(LogService, "getIntentSummary").returns(Promise.resolve(dummyIntentSummary(5)));
             getSourceSummary = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(dummySourceStats()));
             goHome = sinon.stub();
+            removeSource = sinon.stub();
         });
 
         afterEach(function () {
@@ -41,6 +43,8 @@ describe("Source Page", function () {
             getTimeSummary.reset();
             getIntentSummary.reset();
             getSourceSummary.reset();
+            goHome.reset();
+            removeSource.reset();
         });
 
         after(function () {
@@ -48,11 +52,13 @@ describe("Source Page", function () {
             getTimeSummary.restore();
             getIntentSummary.restore();
             getSourceSummary.restore();
+            goHome.restore();
+            removeSource.restore();
         });
 
         it("Tests that the initial datastates", function () {
             const wrapper = shallow((
-                <SourcePage source={source} goHome={goHome} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             expect(wrapper.state("timeLoaded")).to.equal(0); // 0 = DataState.Loading
@@ -62,7 +68,7 @@ describe("Source Page", function () {
 
         it("Tests that the source details header is visible when source exists.", function () {
             const wrapper = shallow((
-                <SourcePage source={source} goHome={goHome} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             const dataTiles = wrapper.find("DataTile");
@@ -71,7 +77,7 @@ describe("Source Page", function () {
 
         it("Tests that the source details header is gone when source is not defined.", function () {
             const wrapper = shallow((
-                <SourcePage source={undefined} goHome={goHome} />
+                <SourcePage source={undefined} goHome={goHome} removeSource={removeSource} />
             ));
 
             expect(wrapper.find("DataTile")).to.have.length(0);
@@ -79,7 +85,7 @@ describe("Source Page", function () {
 
         it("Tests that the source data tiles have their correct values.", function () {
             const wrapper = shallow((
-                <SourcePage source={source} goHome={goHome} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             const dataTiles = wrapper.find("DataTile");
@@ -101,14 +107,14 @@ describe("Source Page", function () {
 
         it ("Tests that the summary view is there.", function() {
             const wrapper = shallow((
-                <SourcePage source={source} goHome={goHome} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             expect(wrapper.find("SummaryView")).to.have.length(1);
         });
 
         it ("Tests that the summary view is linked to the source pages' state.", function() {
-            const wrapper = shallow((<SourcePage source={source} goHome={goHome} />));
+            const wrapper = shallow((<SourcePage source={source} goHome={goHome} removeSource={removeSource} />));
 
             const summaryView = wrapper.find("SummaryView").at(0);
             expect(summaryView.prop("timeData")).to.equal(wrapper.state("timeSummaryData"));
@@ -135,6 +141,7 @@ describe("Source Page", function () {
         let getIntentSummary: Sinon.SinonStub;
         let getSourceSummary: Sinon.SinonStub;
         let goHome: Sinon.SinonStub;
+        let removeSource: Sinon.SinonStub;
 
         let wrapper: ShallowWrapper<any, any>;
 
@@ -144,8 +151,9 @@ describe("Source Page", function () {
             getIntentSummary = sinon.stub(LogService, "getIntentSummary").returns(Promise.resolve(intentSummary));
             getSourceSummary = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(sourceStats));
             goHome = sinon.stub();
+            removeSource = sinon.stub();
 
-            wrapper = shallow(<SourcePage source={undefined} goHome={goHome} />);
+            wrapper = shallow(<SourcePage source={undefined} goHome={goHome} removeSource={removeSource} />);
             wrapper.setProps({
                 source: source
             });
@@ -157,6 +165,8 @@ describe("Source Page", function () {
             getTimeSummary.restore();
             getIntentSummary.restore();
             getSourceSummary.restore();
+            goHome.restore();
+            removeSource.restore();
         });
 
         it("Tests that the get Time summary is called on props set.", function () {
@@ -218,11 +228,18 @@ describe("Source Page", function () {
     describe("Delete source", function() {
         let deleteSourceStub: Sinon.SinonStub;
         let goHome: Sinon.SinonStub;
+        let removeSource: Sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         before(function() {
             goHome = sinon.stub();
-            wrapper = shallow(<SourcePage source={source} goHome={goHome} />);
+            removeSource = sinon.stub();
+            wrapper = shallow(<SourcePage source={source} goHome={goHome} removeSource={removeSource} />);
+        });
+
+        after(function() {
+            goHome.restore();
+            removeSource.restore();
         });
 
         describe("Successful deletes", function() {

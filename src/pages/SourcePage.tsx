@@ -5,6 +5,7 @@ import { replace, RouterAction } from "react-router-redux";
 
 import { Button } from "react-toolbox/lib/button";
 
+import { deleteSource } from "../actions/source";
 import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
@@ -13,7 +14,6 @@ import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortP
 import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
-import SourceService from "../services/source";
 
 enum DataState {
     LOADING, ERROR, LOADED
@@ -22,6 +22,7 @@ enum DataState {
 interface SourcePageProps {
     source: Source;
     goHome: () => RouterAction;
+    removeSource: (source: Source) => Promise<Source>;
 }
 
 interface SourcePageState {
@@ -41,8 +42,11 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
-        goHome: function(): RouterAction {
+        goHome: function (): RouterAction {
             return dispatch(replace("/"));
+        },
+        removeSource: function (source: Source): Promise<Source> {
+            return dispatch(deleteSource(source));
         }
     };
 }
@@ -184,12 +188,13 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     handleDeleteSkillClicked() {
         const goBack = this.props.goHome;
-        SourceService.deleteSource(this.props.source).then(function(source: Source) {
-            console.info("source " + source.id + " is deleted.");
-            goBack();
-        }).catch(function(e: Error) {
-            console.error(e);
-        });
+        this.props.removeSource(this.props.source)
+            .then(function (source: Source) {
+                console.info("source " + source.id + " is deleted.");
+                goBack();
+            }).catch(function (e: Error) {
+                console.error(e);
+            });
     }
 
     render() {
