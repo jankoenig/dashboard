@@ -17,6 +17,7 @@ import { State } from "../reducers";
 import LogService from "../services/log";
 
 const DeleteButtonTheme = require("../themes/button_theme.scss");
+const DeleteDialogTheme = require("../themes/dialog_theme.scss");
 
 enum DataState {
     LOADING, ERROR, LOADED
@@ -275,12 +276,12 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                 </Grid>
 
                 <Dialog
+                    theme={DeleteDialogTheme}
                     actions={this.dialogActions}
                     active={this.state.deleteDialogActive}
                     onEscKeyDown={this.handleDeleteDialogToggle}
                     onOverlayClick={this.handleDeleteDialogToggle}
-                    title="Delete Skill"
-                    >
+                    title="Delete Skill" >
                     <p>Are you sure you want to delete {sourceName}? This action can not be undone.</p>
                 </Dialog>
             </span>
