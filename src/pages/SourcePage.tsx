@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
+import { replace, RouterAction } from "react-router-redux";
 
 import { Button } from "react-toolbox/lib/button";
 
@@ -20,6 +21,7 @@ enum DataState {
 
 interface SourcePageProps {
     source: Source;
+    goHome: () => RouterAction;
 }
 
 interface SourcePageState {
@@ -39,6 +41,9 @@ function mapStateToProps(state: State.All) {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
+        goHome: function(): RouterAction {
+            return dispatch(replace("/"));
+        }
     };
 }
 
@@ -178,8 +183,10 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     handleDeleteSkillClicked() {
+        const goBack = this.props.goHome;
         SourceService.deleteSource(this.props.source).then(function(source: Source) {
             console.info("source " + source.id + " is deleted.");
+            goBack();
         }).catch(function(e: Error) {
             console.error(e);
         });
