@@ -60,12 +60,11 @@ let firebaseConfig = {
 };
 
 // Timing the firebase initialize
-let firebaseInitializeTimer = new Date();
+console.time("FirebaseInitialize");
 
 Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
-    let firebaseInitializeTime = +new Date() - +firebaseInitializeTimer;
-    console.log("Firebase took " + firebaseInitializeTime + "ms to initialize");
+    console.timeEnd("FirebaseInitialize");
     const lastUser = store.getState().session.user;
     // If there is a user, set it
     if (user) {
