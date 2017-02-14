@@ -15,6 +15,8 @@ import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
 
+const DeleteButtonTheme = require("../themes/button_theme.scss");
+
 enum DataState {
     LOADING, ERROR, LOADED
 }
@@ -242,9 +244,16 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     intentLoaded={this.state.intentLoaded}
                     statsLoaded={this.state.statsLoaded} />
 
-                <Button
-                    onClick={this.handleDeleteSkillClicked}
-                    label="Delete Skill" />
+                <Grid>
+                    <Cell>
+                        <Button
+                            theme={DeleteButtonTheme}
+                            raised
+                            primary
+                            onClick={this.handleDeleteSkillClicked}
+                            label="Delete Skill" />
+                    </Cell>
+                </Grid>
             </span>
         );
     }
