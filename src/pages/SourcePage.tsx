@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { replace, RouterAction } from "react-router-redux";
 
 import { Button } from "react-toolbox/lib/button";
+import Dialog from "react-toolbox/lib/dialog";
 
 import { deleteSource } from "../actions/source";
 import DataTile from "../components/DataTile";
@@ -34,6 +35,7 @@ interface SourcePageState {
     timeLoaded: DataState;
     intentLoaded: DataState;
     statsLoaded: DataState;
+    deleteDialogActive: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -63,9 +65,20 @@ class IntentSortParameter extends SortParameter {
 
 export class SourcePage extends React.Component<SourcePageProps, SourcePageState> {
 
+    dialogActions: any[];
+
     constructor(props: SourcePageProps) {
         super(props);
-        this.handleDeleteSkillClicked = this.handleDeleteSkillClicked.bind(this);
+        this.handleDeleteDialogToggle = this.handleDeleteDialogToggle.bind(this);
+        this.handleDeleteSkill = this.handleDeleteSkill.bind(this);
+
+        this.dialogActions = [{
+            label: "Cancel",
+            onClick: this.handleDeleteDialogToggle
+        }, {
+            label: "Delete",
+            onClick: this.handleDeleteSkill
+        }];
 
         this.state = {
             timeSummaryData: defaultTimeData(daysAgo(7), daysAgo(0)),
@@ -73,6 +86,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             timeLoaded: DataState.LOADING,
             intentLoaded: DataState.LOADING,
             statsLoaded: DataState.LOADING,
+            deleteDialogActive: false,
             sourceStats: {
                 source: "",
                 stats: {
@@ -137,7 +151,6 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         loader.load(query);
     }
 
-
     retrieveIntentSummary(source: Source) {
         const dataLoader: DataLoader<LogService.IntentSummary, CountData[]> = {
             loadData: function (query: Query): Promise<LogService.IntentSummary> {
@@ -188,7 +201,12 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         loader.load(query);
     }
 
-    handleDeleteSkillClicked() {
+    handleDeleteDialogToggle() {
+        this.state.deleteDialogActive = !this.state.deleteDialogActive;
+        this.setState(this.state);
+    }
+
+    handleDeleteSkill() {
         const goBack = this.props.goHome;
         this.props.removeSource(this.props.source)
             .then(function (source: Source) {
@@ -200,6 +218,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     render() {
         const tileColor = "#ECEFF1";
+        const sourceName = (this.props.source) ? this.props.source.name : "this skill";
         return (
             <span>
                 {this.props.source ? (
@@ -250,10 +269,20 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                             theme={DeleteButtonTheme}
                             raised
                             primary
-                            onClick={this.handleDeleteSkillClicked}
+                            onClick={this.handleDeleteDialogToggle}
                             label="Delete Skill" />
                     </Cell>
                 </Grid>
+
+                <Dialog
+                    actions={this.dialogActions}
+                    active={this.state.deleteDialogActive}
+                    onEscKeyDown={this.handleDeleteDialogToggle}
+                    onOverlayClick={this.handleDeleteDialogToggle}
+                    title="Delete Skill"
+                    >
+                    <p>Are you sure you want to delete {sourceName}? This action can not be undone.</p>
+                </Dialog>
             </span>
         );
     }
