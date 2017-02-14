@@ -62,7 +62,7 @@ moduleLoaders.push({
 if (node_env === "production") {
   moduleLoaders.push({
     test: /\.tsx?$/,
-    loader: "strip-loader?strip[]=debug,strip[]=console.log,strip[]=console.info,strip[]=console.error,strip[]=console.debug,strip[]=console.time,strip[]=console.timeEnd"
+    loader: "strip-loader?strip[]=debug,strip[]=console.log,strip[]=console.info,strip[]=console.debug,strip[]=console.time,strip[]=console.timeEnd"
   });
 }
 
