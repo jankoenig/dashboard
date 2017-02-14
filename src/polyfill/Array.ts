@@ -1,12 +1,13 @@
 // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
 // Taken from MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
 // tslint:disable
-if (!(Array as any).findIndex) {
-  Object.defineProperty(Array.prototype, "findIndex", {
+// https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
+if (!Array.prototype.findIndex) {
+  Object.defineProperty(Array.prototype, 'findIndex', {
     value: function(predicate: any) {
      // 1. Let O be ? ToObject(this value).
       if (this == null) {
-        throw new TypeError("\"this\" is null or not defined");
+        throw new TypeError('"this" is null or not defined');
       }
 
       var o = Object(this);
@@ -15,8 +16,8 @@ if (!(Array as any).findIndex) {
       var len = o.length >>> 0;
 
       // 3. If IsCallable(predicate) is false, throw a TypeError exception.
-      if (typeof predicate !== "function") {
-        throw new TypeError("predicate must be a function");
+      if (typeof predicate !== 'function') {
+        throw new TypeError('predicate must be a function');
       }
 
       // 4. If thisArg was supplied, let T be thisArg; else let T be undefined.
