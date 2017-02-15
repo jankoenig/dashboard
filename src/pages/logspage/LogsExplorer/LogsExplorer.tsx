@@ -174,7 +174,6 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     refresh() {
-        console.info("REFRESH");
         this.props.onGetNewLogs();
     }
 
