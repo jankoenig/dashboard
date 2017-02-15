@@ -204,6 +204,36 @@ describe("Alexa Conversation", function () {
             expect(conversation.userColors.background).to.equal("#4fff0f");
         });
 
+        it("returns the default hex color when no user id is present.", function () {
+            let request = new Log({
+                payload: {
+                    request: {
+                        type: "TestRequest"
+                    }
+                },
+                log_type: "DEBUG",
+                source: "source",
+                transaction_id: "transaction_id",
+                timestamp: new Date(),
+                tags: [],
+                id: ""
+            });
+            let response = alexaResponseLog();
+            let output = new Output({
+                message: "message",
+                level: "DEBUG",
+                timestamp: new Date(),
+                transaction_id: "transaction_id",
+                id: "id"
+            });
+            let outputs = [output];
+
+            let conversation = createConvo({ response: response, request: request, outputs: outputs });
+
+            expect(conversation.userColors.fill).to.equal("#ffffff");
+            expect(conversation.userColors.background).to.equal("#000000");
+        });
+
         it("returns the appropriate request payload type.", function () {
             let request = new Log({
                 payload: {
