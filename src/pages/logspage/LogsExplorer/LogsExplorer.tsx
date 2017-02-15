@@ -65,6 +65,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleFilter = this.handleFilter.bind(this);
         this.handleDateFilter = this.handleDateFilter.bind(this);
         this.handleTailChecked = this.handleTailChecked.bind(this);
+        this.handleFilterButtonClicked = this.handleFilterButtonClicked.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
     }
@@ -140,7 +141,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleFilter(filter);
     }
 
-    handleFilterButtonClicked(event: React.MouseEvent) {
+    handleFilterButtonClicked() {
         this.state.filterBarHidden = !this.state.filterBarHidden;
         this.setState(this.state);
     }
@@ -221,7 +222,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                         className={style.button}
                         fab
                         colored
-                        onClick={this.handleFilterButtonClicked.bind(this)}>
+                        onClick={this.handleFilterButtonClicked}>
                         <i className="material-icons">filter_list</i>
                     </Button>
                 ) : undefined}

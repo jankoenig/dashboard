@@ -22,7 +22,6 @@ class TestingWrappedEvent implements browser.WrappedEvent {
     unregister: Sinon.SinonStub;
 
     reset() {
-        console.info("RESET");
         this.register.reset();
         this.unregister.reset();
     }
