@@ -4,6 +4,7 @@ import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
+import VisiblityWatcher from "../../../components/VisibilityWatcher";
 import Conversation, { createConvo } from "../../../models/conversation";
 import Log from "../../../models/log";
 import LogQuery from "../../../models/log-query";
@@ -261,6 +262,44 @@ describe("LogExplorer", function () {
                     filterBar = wrapper.find(FilterBar).at(0);
 
                     expect(filterBar.prop("disableLiveUpdateCheckbox")).to.be.true;
+                });
+            });
+
+            describe("Tests the auto-turn off when visibility swaps", function() {
+                let visibilityWrapper: ShallowWrapper<any, any>;
+
+                beforeEach(function() {
+                    visibilityWrapper = wrapper.find(VisiblityWatcher);
+                });
+
+                it ("Tests the tail turns off on visibility change.", function() {
+                    visibilityWrapper.simulate("change", "hidden");
+
+                    expect(wrapper.state("tailOn")).to.be.false;
+                });
+
+                it ("Tests the tail turns on on visibility change.", function() {
+                    visibilityWrapper.simulate("change", "hidden");
+
+                    visibilityWrapper = wrapper.find(VisiblityWatcher);
+
+                    visibilityWrapper.simulate("change", "visible");
+
+                    expect(wrapper.state("tailOn")).to.be.true;
+                });
+
+                it ("Tests that the tail stays off when it's off and we come back.", function() {
+                    wrapper.setState({ tailOn: false });
+
+                    visibilityWrapper = wrapper.find(VisiblityWatcher);
+
+                    visibilityWrapper.simulate("change", "hidden");
+
+                    visibilityWrapper = wrapper.find(VisiblityWatcher);
+
+                    visibilityWrapper.simulate("change", "visible");
+
+                    expect(wrapper.state("tailOn")).to.be.false;
                 });
             });
         });

@@ -5,6 +5,7 @@ import * as React from "react";
 import Button from "../../../components/Button";
 import Interaction from "../../../components/Interaction";
 import TwoPane from "../../../components/TwoPane";
+import VisiblityWatcher, { VISIBLITY_STATE } from "../../../components/VisibilityWatcher";
 import Conversation from "../../../models/conversation";
 import ConversationList from "../../../models/conversation-list";
 import Log from "../../../models/log";
@@ -66,6 +67,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleDateFilter = this.handleDateFilter.bind(this);
         this.handleTailChecked = this.handleTailChecked.bind(this);
         this.handleFilterButtonClicked = this.handleFilterButtonClicked.bind(this);
+        this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
     }
@@ -146,6 +148,17 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.setState(this.state);
     }
 
+    handleVisibilityChange(visibilityState: VISIBLITY_STATE) {
+        if (visibilityState === "hidden") {
+            this.state.savedTailValue = this.state.tailOn;
+            this.disableTail();
+        } else if (visibilityState === "visible") {
+            if (this.state.savedTailValue) {
+                this.enableTail();
+            }
+        }
+    }
+
     handleTailChecked(enabled: boolean) {
         if (enabled) {
             this.enableTail();
@@ -198,35 +211,37 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             );
 
         return (
-            <span>
-                <FilterBar className={this.filterBarClasses()}
-                    liveUpdateEnabled={this.state.tailOn}
-                    onFilterDate={this.handleDateFilter}
-                    onFilterIntent={this.handleFilter}
-                    onFilterLogLevel={this.handleFilter}
-                    onFilterException={this.handleFilter}
-                    onFilterRequest={this.handleFilter}
-                    onFilterOrigin={this.handleFilter}
-                    onLiveUpdate={this.handleTailChecked}
-                    disableLiveUpdateCheckbox={this.state.dateOutOfRange}
-                    query={query} />
-                <TwoPane
-                    leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}
-                    rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}
-                    spacing={true}>
-                    {leftSide}
-                    {rightSide}
-                </TwoPane>
-                {this.state.filterBarHidden ? (
-                    <Button
-                        className={style.button}
-                        fab
-                        colored
-                        onClick={this.handleFilterButtonClicked}>
-                        <i className="material-icons">filter_list</i>
-                    </Button>
-                ) : undefined}
-            </span>
+            <VisiblityWatcher onChange={this.handleVisibilityChange} >
+                <span>
+                    <FilterBar className={this.filterBarClasses()}
+                        liveUpdateEnabled={this.state.tailOn}
+                        onFilterDate={this.handleDateFilter}
+                        onFilterIntent={this.handleFilter}
+                        onFilterLogLevel={this.handleFilter}
+                        onFilterException={this.handleFilter}
+                        onFilterRequest={this.handleFilter}
+                        onFilterOrigin={this.handleFilter}
+                        onLiveUpdate={this.handleTailChecked}
+                        disableLiveUpdateCheckbox={this.state.dateOutOfRange}
+                        query={query} />
+                    <TwoPane
+                        leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}
+                        rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}
+                        spacing={true}>
+                        {leftSide}
+                        {rightSide}
+                    </TwoPane>
+                    {this.state.filterBarHidden ? (
+                        <Button
+                            className={style.button}
+                            fab
+                            colored
+                            onClick={this.handleFilterButtonClicked}>
+                            <i className="material-icons">filter_list</i>
+                        </Button>
+                    ) : undefined}
+                </span>
+            </VisiblityWatcher>
         );
     }
 }
