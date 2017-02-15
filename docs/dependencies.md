@@ -46,3 +46,7 @@ sass-loader v6 requires Webpack v2
 ### postcss-loader
 
 postcss-loader v1 requires Webpack v2
+
+### remap-istanbul
+
+v0.8.0 throws a strict mode error.
