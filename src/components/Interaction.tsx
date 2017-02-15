@@ -14,7 +14,11 @@ interface InteractionProps {
     theme?: any;
 }
 
-export class Interaction extends React.Component<InteractionProps, any> {
+interface InteractionState {
+    openBranches: any;
+}
+
+export class Interaction extends React.Component<InteractionProps, InteractionState> {
     /**
      * JSONTree uses base16 style
      * For more info read http://chriskempson.com/projects/base16/
@@ -41,7 +45,11 @@ export class Interaction extends React.Component<InteractionProps, any> {
         base0F: "#cc6633"
     };
 
-    getJSONTreeStyle() {
+    static getKey(keyName: string[]): string {
+        return keyName.join(",");
+    }
+
+    static getJSONTreeStyle() {
         return {
             padding: "15px",
             borderRadius: "10px",
@@ -49,21 +57,38 @@ export class Interaction extends React.Component<InteractionProps, any> {
         };
     }
 
-    getTheme() {
-        return this.props.theme ?
-            this.props.theme :
-            {
-                extend: Interaction.monokaiTheme,
-                tree: this.getJSONTreeStyle()
-            };
+    static defaultProps = {
+        theme: {
+            extend: Interaction.monokaiTheme,
+            tree: Interaction.getJSONTreeStyle()
+        }
+    };
+
+    constructor(props: InteractionProps) {
+        super(props);
+
+        this.shouldExpandNode = this.shouldExpandNode.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
+
+        this.state = {
+            openBranches: { "request": true, "response": true }
+        };
+    }
+
+    setOpenBranch(isExpanded: boolean, key: string) {
+        this.state.openBranches[key] = isExpanded;
+        this.setState(this.state);
+    }
+
+    handleToggle(isExpanded: boolean, keyName: string[], data: any, level: number): string {
+        const key = Interaction.getKey(keyName);
+        this.setOpenBranch(isExpanded, key);
+        return key;
     }
 
     shouldExpandNode(keyName: string[], data: any, level: number) {
-        // only expand the initial node, request and response by default
-        if (keyName.length === 0 || keyName.indexOf("request") > -1 || keyName.indexOf("response") > -1) {
-            return true;
-        }
-        return false;
+        const key = Interaction.getKey(keyName);
+        return this.state.openBranches[key] === true;
     }
 
     getTree(log: Log): JSX.Element {
@@ -75,8 +100,9 @@ export class Interaction extends React.Component<InteractionProps, any> {
                     data={payload}
                     hideRoot={true}
                     invertTheme={false}
-                    theme={this.getTheme()}
-                    shouldExpandNode={this.shouldExpandNode} />
+                    theme={this.props.theme}
+                    shouldExpandNode={this.shouldExpandNode}
+                    onToggle={this.handleToggle} />
             );
         } else {
             tree = (<p>Select a conversation or message to inspect the payload</p>);
