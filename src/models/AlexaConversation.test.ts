@@ -47,12 +47,14 @@ describe("Alexa Conversation", function () {
 
         });
     });
+
     describe("with request from player", function () {
         it("sets the userId", function () {
             let conversation = createConvo({ response: alexaResponsePlayerLog(), request: alexaRequestPlayerLog() });
             expect(conversation.userId).to.equal("amzn1.ask.account.1237345d-bb6a-470a-b5fd-40dd148390a7");
         });
     });
+
     describe("hasError", function () {
         it("returns true when an error output exists", function () {
             let response = alexaResponseLog();
@@ -70,6 +72,7 @@ describe("Alexa Conversation", function () {
             expect(conversation.hasError).to.be.true;
         });
     });
+
     describe("userColors", function () {
         it("returns default colors for an undefined userId", function () {
 
@@ -98,6 +101,7 @@ describe("Alexa Conversation", function () {
             expect(conversation.userColors.background).to.equal("#000000");
 
         });
+
         it("returns the default colors for an empty string userId", function () {
             let request = new Log({
                 payload: {
@@ -129,6 +133,7 @@ describe("Alexa Conversation", function () {
             expect(conversation.userColors.fill).to.equal("#ffffff");
             expect(conversation.userColors.background).to.equal("#000000");
         });
+
         it("returns the hex color for a hex userId", function () {
             let request = new Log({
                 payload: {
@@ -136,6 +141,9 @@ describe("Alexa Conversation", function () {
                         user: {
                             userId: "A234b6"
                         }
+                    },
+                    request: {
+                        type: "TestRequest"
                     }
                 },
                 log_type: "DEBUG",
@@ -160,6 +168,7 @@ describe("Alexa Conversation", function () {
             expect(conversation.userColors.fill).to.equal("#A234b6");
             expect(conversation.userColors.background).to.equal("#48b634");
         });
+
         it("returns the hex value for a base 36 userId", function () {
             let request = new Log({
                 payload: {
@@ -167,6 +176,9 @@ describe("Alexa Conversation", function () {
                         user: {
                             userId: "ZZZZZZ"
                         }
+                    },
+                    request: {
+                        type: "TestRequest"
                     }
                 },
                 log_type: "DEBUG",
@@ -279,7 +291,8 @@ describe("Alexa Conversation", function () {
             expect(conversation.requestPayloadType).to.be.undefined;
         });
     });
-    describe("without a request", function() {
+
+    describe("without a request", function () {
 
         let response = alexaResponseLog();
         let request = undefined;
@@ -294,10 +307,11 @@ describe("Alexa Conversation", function () {
 
         let conversation = createConvo({ response: response, request: request, outputs: outputs });
 
-        it("returns the id from the response", function() {
+        it("returns the id from the response", function () {
             expect(conversation.id).to.equal(response.id);
         });
-        it("returns the timestamp from the response", function() {
+
+        it("returns the timestamp from the response", function () {
             expect(conversation.timestamp).to.equal(response.timestamp);
         });
     });
