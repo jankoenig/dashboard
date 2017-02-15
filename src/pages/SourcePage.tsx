@@ -207,13 +207,16 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         this.setState(this.state);
     }
 
-    handleDeleteSkill() {
+    handleDeleteSkill(): Promise<Source> {
         const goBack = this.props.goHome;
-        this.props.removeSource(this.props.source)
+        const source = this.props.source;
+        return this.props.removeSource(source)
             .then(function (source: Source) {
                 goBack();
+                return source;
             }).catch(function (e: Error) {
                 console.error(e);
+                return source;
             });
     }
 

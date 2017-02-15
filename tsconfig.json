@@ -10,6 +10,7 @@
   "include": [
     "src/**/*",
     "./typings/index.d.ts",
+    "./typings/array.d.ts",
     "./typings/config.d.ts",
     "./typings/recharts.d.ts",
     "./typings/react-list.d.ts",
