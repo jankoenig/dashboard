@@ -4,7 +4,7 @@ import * as React from "react";
 import JSONTree from "react-json-tree";
 import * as sinonChai from "sinon-chai";
 
-import Log from "../models/Log";
+import Log from "../models/log";
 import Output from "../models/output";
 import { dummyLogs, dummyOutputs } from "../utils/test";
 import Interaction from "./Interaction";
