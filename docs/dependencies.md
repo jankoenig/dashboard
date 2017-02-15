@@ -42,3 +42,7 @@ We had trouble with 1.4.0, had to stay on 1.0.0
 ### sass-loader
 
 sass-loader v6 requires Webpack v2
+
+### postcss-loader
+
+postcss-loader v1 requires Webpack v2
