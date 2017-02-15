@@ -71,7 +71,7 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         this.handleToggle = this.handleToggle.bind(this);
 
         this.state = {
-            openBranches: {}
+            openBranches: { "request": true, "response": true }
         };
     }
 
@@ -88,10 +88,6 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
 
     shouldExpandNode(keyName: string[], data: any, level: number) {
         const key = Interaction.getKey(keyName);
-        // only expand the initial node, request and response by default
-        if (this.state.openBranches[key] === undefined && (key.lastIndexOf("request") > -1 || keyName.lastIndexOf("response") > -1)) {
-            this.setOpenBranch(true, key);
-        }
         return this.state.openBranches[key] === true;
     }
 
