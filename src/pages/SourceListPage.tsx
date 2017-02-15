@@ -15,6 +15,8 @@ import { State } from "../reducers";
 
 import WelcomePage from "./WelcomePage";
 
+const ButtonTheme = require("../themes/button_theme.scss");
+
 export interface SourceListPageProps {
     sources: Source[];
 }
@@ -37,7 +39,7 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
                 <SourceList
                     sources={this.props.sources} />
                 <Link to="/skills/new" style={{ position: "absolute", bottom: "5%", right: "5%" }} >
-                    <Button icon="add" accent mini floating />
+                    <Button theme={ButtonTheme} icon="add" accent mini floating />
                 </Link>
             </div>
         );

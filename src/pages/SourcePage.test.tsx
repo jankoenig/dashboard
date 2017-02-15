@@ -5,6 +5,9 @@ import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
+import { Button } from "react-toolbox/lib/button";
+import Dialog from "react-toolbox/lib/dialog";
+
 import LogService from "../services/log";
 import { dummyLogs, dummySources } from "../utils/test";
 import { SourcePage } from "./SourcePage";
@@ -23,12 +26,16 @@ describe("Source Page", function () {
         let getTimeSummary: Sinon.SinonStub;
         let getIntentSummary: Sinon.SinonStub;
         let getSourceSummary: Sinon.SinonStub;
+        let goHome: Sinon.SinonStub;
+        let removeSource: Sinon.SinonStub;
 
         before(function () {
             getLogs = sinon.stub(LogService, "getLogs").returns(Promise.resolve(logs));
             getTimeSummary = sinon.stub(LogService, "getTimeSummary").returns(Promise.resolve(dummyTimeSummary(5)));
             getIntentSummary = sinon.stub(LogService, "getIntentSummary").returns(Promise.resolve(dummyIntentSummary(5)));
             getSourceSummary = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(dummySourceStats()));
+            goHome = sinon.stub();
+            removeSource = sinon.stub();
         });
 
         afterEach(function () {
@@ -36,6 +43,8 @@ describe("Source Page", function () {
             getTimeSummary.reset();
             getIntentSummary.reset();
             getSourceSummary.reset();
+            goHome.reset();
+            removeSource.reset();
         });
 
         after(function () {
@@ -47,7 +56,7 @@ describe("Source Page", function () {
 
         it("Tests that the initial datastates", function () {
             const wrapper = shallow((
-                <SourcePage source={source} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             expect(wrapper.state("timeLoaded")).to.equal(0); // 0 = DataState.Loading
@@ -57,7 +66,7 @@ describe("Source Page", function () {
 
         it("Tests that the source details header is visible when source exists.", function () {
             const wrapper = shallow((
-                <SourcePage source={source} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             const dataTiles = wrapper.find("DataTile");
@@ -66,7 +75,7 @@ describe("Source Page", function () {
 
         it("Tests that the source details header is gone when source is not defined.", function () {
             const wrapper = shallow((
-                <SourcePage source={undefined} />
+                <SourcePage source={undefined} goHome={goHome} removeSource={removeSource} />
             ));
 
             expect(wrapper.find("DataTile")).to.have.length(0);
@@ -74,7 +83,7 @@ describe("Source Page", function () {
 
         it("Tests that the source data tiles have their correct values.", function () {
             const wrapper = shallow((
-                <SourcePage source={source} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             const dataTiles = wrapper.find("DataTile");
@@ -94,16 +103,16 @@ describe("Source Page", function () {
             expect(dataTile.prop("showable")).to.equal(true);
         });
 
-        it ("Tests that the summary view is there.", function() {
+        it("Tests that the summary view is there.", function () {
             const wrapper = shallow((
-                <SourcePage source={source} />
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
             expect(wrapper.find("SummaryView")).to.have.length(1);
         });
 
-        it ("Tests that the summary view is linked to the source pages' state.", function() {
-            const wrapper = shallow((<SourcePage source={source} />));
+        it("Tests that the summary view is linked to the source pages' state.", function () {
+            const wrapper = shallow((<SourcePage source={source} goHome={goHome} removeSource={removeSource} />));
 
             const summaryView = wrapper.find("SummaryView").at(0);
             expect(summaryView.prop("timeData")).to.equal(wrapper.state("timeSummaryData"));
@@ -129,6 +138,8 @@ describe("Source Page", function () {
         let getTimeSummary: Sinon.SinonStub;
         let getIntentSummary: Sinon.SinonStub;
         let getSourceSummary: Sinon.SinonStub;
+        let goHome: Sinon.SinonStub;
+        let removeSource: Sinon.SinonStub;
 
         let wrapper: ShallowWrapper<any, any>;
 
@@ -137,8 +148,10 @@ describe("Source Page", function () {
             getTimeSummary = sinon.stub(LogService, "getTimeSummary").returns(Promise.resolve(timeSummary));
             getIntentSummary = sinon.stub(LogService, "getIntentSummary").returns(Promise.resolve(intentSummary));
             getSourceSummary = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(sourceStats));
+            goHome = sinon.stub();
+            removeSource = sinon.stub();
 
-            wrapper = shallow(<SourcePage source={undefined} />);
+            wrapper = shallow(<SourcePage source={undefined} goHome={goHome} removeSource={removeSource} />);
             wrapper.setProps({
                 source: source
             });
@@ -205,6 +218,102 @@ describe("Source Page", function () {
             const originalStats: LogService.SourceStats = sourceStats;
 
             expect(pageStats).to.equal(originalStats);
+        });
+    });
+
+    describe("Delete source", function () {
+        let goHome: Sinon.SinonStub;
+        let removeSource: Sinon.SinonStub;
+        let wrapper: ShallowWrapper<any, any>;
+
+        describe("Successful deletes", function () {
+            beforeEach(function () {
+                goHome = sinon.stub();
+                removeSource = sinon.stub().returns(Promise.resolve(source));
+                wrapper = shallow(<SourcePage source={source} goHome={goHome} removeSource={removeSource} />);
+            });
+
+            it("Tests the dialog is opened.", function () {
+                wrapper.find(Button).at(0).simulate("click");
+
+                expect(wrapper.state("deleteDialogActive")).to.be.true;
+
+                const dialog = wrapper.find(Dialog);
+                expect(dialog.prop("active")).to.be.true;
+            });
+
+            describe("Dialog", function () {
+                let dialog: ShallowWrapper<any, any>;
+                let actions: any[];
+
+                beforeEach(function () {
+                    // Act like we just opened it.
+                    wrapper.find(Button).at(0).simulate("click");
+
+                    dialog = wrapper.find(Dialog).at(0);
+                    actions = dialog.prop("actions");
+                });
+
+                it("Tests the first action is proper.", function () {
+                    const action = actions[0];
+
+                    // first one is the cancel action.
+                    expect(action.label).to.equal("Cancel");
+                    expect(action.onClick).to.exist;
+                });
+
+                it("Tests the second action is proper.", function () {
+                    const action = actions[1];
+
+                    // second one is the delete action.
+                    expect(action.label).to.equal("Delete");
+                    expect(action.onClick).to.exist;
+                });
+
+                describe("First Action", function () {
+                    beforeEach(function () {
+                        const action = actions[0];
+                        action.onClick();
+                    });
+
+                    it("Tests the first action performed its duties.", function () {
+                        expect(wrapper.state("deleteDialogActive")).to.be.false;
+                    });
+                });
+
+                describe("Second Action", function () {
+                    beforeEach(function () {
+                        const action = actions[1];
+                        return action.onClick(); // This action returns a Promise just for this test.
+                    });
+
+                    it("Tests the delete action called remove source..", function () {
+                        expect(removeSource).to.have.been.calledOnce;
+                        expect(removeSource).to.have.been.calledWith(source);
+                    });
+
+                    it("Tests the delete action called GoHome once removed.", function() {
+                        console.info("CHECKING");
+                        expect(goHome).to.be.calledOnce;
+                    });
+                });
+            });
+        });
+
+        describe("Unsuccessful deletes", function () {
+            before(function () {
+                goHome = sinon.stub();
+                removeSource = sinon.stub().returns(Promise.reject(new Error("Error per requirements of the test.")));
+                wrapper = shallow(<SourcePage source={source} goHome={goHome} removeSource={removeSource} />);
+
+                const actions = wrapper.find(Dialog).at(0).prop("actions");
+                const deleteAction = actions[1];
+                return deleteAction.onClick();
+            });
+
+            it("Tests the GoHome method is not called on failed delete.", function () {
+                expect(goHome).to.not.be.called;
+            });
         });
     });
 });

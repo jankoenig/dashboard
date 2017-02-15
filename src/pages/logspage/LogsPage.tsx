@@ -96,7 +96,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     refresh() {
-        console.info("REFRESHING");
         const event: LogQueryEvent = this.getLogQueryEvent();
         if (event) {
             this.props.refresh(event);
@@ -104,7 +103,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     getNextPage() {
-        console.info("Getting next");
         const event: LogQueryEvent = this.getLogQueryEvent();
         if (event) {
             this.props.newPage(event, LIMIT);

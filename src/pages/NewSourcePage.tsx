@@ -54,6 +54,10 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
 
     constructor(props: NewSourceProps) {
         super(props);
+        this.createSource = this.createSource.bind(this);
+        this.goToLogs = this.goToLogs.bind(this);
+        this.goBack = this.goBack.bind(this);
+
         this.state = {
             source: undefined,
             error: undefined
@@ -100,8 +104,8 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
         ) : (<div />);
 
         let bottomHalf = (createSource) ?
-            (<NewSkillForm onCreateSource={this.createSource.bind(this)} />) :
-            (<CodeForm source={this.state.source} onGoToLogs={this.goToLogs.bind(this)} onGoBack={this.goBack.bind(this)} />);
+            (<NewSkillForm onCreateSource={this.createSource} />) :
+            (<CodeForm source={this.state.source} onGoToLogs={this.goToLogs} onGoBack={this.goBack} />);
 
         return (
             <div>
@@ -159,6 +163,8 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
     constructor(props: CodeFormProps) {
         super(props);
 
+        this.goToLogs = this.goToLogs.bind(this);
+
         this.state = {
             secretKey: CodeForm.codeSecretKey(props.source)
         };
@@ -202,7 +208,7 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
                         (
                             <Grid>
                                 <Cell col={12}>
-                                    <Button accent={true} raised={true} onClick={this.goToLogs.bind(this)}>Next: Check for Logs</Button>
+                                    <Button accent={true} raised={true} onClick={this.goToLogs}>Next: Check for Logs</Button>
                                 </Cell>
                                 <Cell col={12}>
                                     <Button raised={true} onClick={this.props.onGoBack}>Create Another</Button>
