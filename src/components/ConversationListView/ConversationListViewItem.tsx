@@ -102,24 +102,36 @@ export default class ConversationListViewItem extends React.Component<Conversati
     }
 
     render() {
-        const itemStyle = (this.props.active) ? ConversationListViewItem.listItemActiveStyle : ConversationListViewItem.listItemStyle;
+        const itemStyle = (this.props.active) ?
+            ConversationListViewItem.listItemActiveStyle :
+            ConversationListViewItem.listItemStyle;
+
         return (
-            <li key={this.props.conversation.id} style={{ listStyle: "none" }}>
+            <li
+                key={this.props.conversation.id}
+                style={{ listStyle: "none" }}>
                 <div
                     style={itemStyle}
                     onClick={this.handleClick}>
-                    <span style={ConversationListViewItem.primaryContentStyle}>
-                        <div style={ConversationListViewItem.iconWrapperStyle} >
-                            <Icon onClick={this.handleIconClick}
+                    <span
+                        style={ConversationListViewItem.primaryContentStyle}>
+                        <div
+                            style={ConversationListViewItem.iconWrapperStyle} >
+                            <Icon
+                                onClick={this.handleIconClick}
                                 fill={this.props.conversation.userColors.fill}
                                 origin={this.props.conversation.origin} />
                         </div>
                         <span>
                             {this.props.conversation.requestPayloadType}
                         </span>
-                        <span style={ConversationListViewItem.subtitleStyle}>
+                        <span
+                            style={ConversationListViewItem.subtitleStyle}>
                             {moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a")}
-                            <span style={{ color: "#BDBDBD", paddingLeft: "5px" }}>{moment(this.props.conversation.timestamp).fromNow()} </span>
+                            <span
+                                style={{ color: "#BDBDBD", paddingLeft: "5px" }}>
+                                {moment(this.props.conversation.timestamp).fromNow()}
+                            </span>
                         </span>
                     </span>
                     <span>
