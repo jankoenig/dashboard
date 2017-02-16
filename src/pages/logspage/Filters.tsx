@@ -11,7 +11,7 @@ export const TYPE_REQUEST: string = "Request";
 export const TYPE_INTENT: string = "Intent";
 export const TYPE_EXCEPTION: string = "Exception";
 export const TYPE_ORIGIN: string = "Origin";
-export const TYPE_SESSION_ID: string = "SessionID";
+export const TYPE_USER_ID: string = "UserID";
 
 export interface FilterType {
     type: string;
@@ -163,23 +163,23 @@ export class IntentFilter implements FilterType {
     }
 }
 
-export class SessionIDFilter implements FilterType {
-    type: string = TYPE_SESSION_ID;
-    sessionID: string | undefined;
+export class UserIDFilter implements FilterType {
+    type: string = TYPE_USER_ID;
+    userID: string | undefined;
 
-    constructor(sessionID?: string) {
-        this.sessionID = sessionID;
+    constructor(userID?: string) {
+        this.userID = userID;
     }
 
     get filter(): (item: Conversation) => boolean {
-        const sessionId = this.sessionID;
+        const userId = this.userID;
         return function (item: Conversation): boolean {
-            if (!sessionId) {
+            if (!userId) {
                 return true;
             }
 
-            if (item && item.sessionId) {
-                return checkString(sessionId, item.sessionId);
+            if (item && item.userId) {
+                return checkString(userId, item.userId);
             } else {
                 return false;
             }

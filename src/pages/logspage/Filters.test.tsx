@@ -5,14 +5,15 @@ import { Log, LogProperties } from "../../models/log";
 import StackTrace from "../../models/stack-trace";
 import { dummyOutputs } from "../../utils/test";
 
-import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, TYPE_ORIGIN, TYPE_REQUEST, TYPE_SESSION_ID } from "./Filters";
-import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter, SessionIDFilter } from "./Filters";
+import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, TYPE_ORIGIN, TYPE_REQUEST, TYPE_USER_ID } from "./Filters";
+import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter, UserIDFilter } from "./Filters";
 import { FilterType } from "./Filters";
 
 chai.use(require("chai-datetime"));
 let expect = chai.expect;
 
 const fullSessionID = "amzn1.echo-api.session.4ad25fd6-5287-4f09-a142-dfbad23c1ff9";
+const fullUserID = "amzn1.ask.account.AE2GW6ZHVQYQG4ILBSOHWUXACSTTHENV426JX23R6PS2TBQBW5ZVHHTNETVCIBALJE77IRJKQ4OFBIHWAZTNCEZTLS3EY6V7TYQLXQEJZ2CH4LPXG2GL27D4VCJVZXIONQG6452LDN7IXVCJ3EBRBO2JYF3YCMHINQ4N7VS6NINYW3DR53W5GSQTYOFAHT6LVXFHIZCEAMZVB5I";
 
 let requestProps: LogProperties = {
     payload: {
@@ -24,8 +25,11 @@ let requestProps: LogProperties = {
         },
         session: {
             sessionId: fullSessionID,
-            applicationId: "ABC123"
-        }
+            applicationId: "ABC123",
+            user: {
+                userId: fullUserID
+            },
+        },
     },
     stack: "Request Test Stack",
     log_type: "DEBUG",
@@ -454,7 +458,7 @@ describe("Filters.tsx", function () {
         });
     });
 
-    describe("Session filter", function() {
+    describe("UserID filter", function() {
         let convo: Conversation;
 
         before(function() {
@@ -464,58 +468,58 @@ describe("Filters.tsx", function () {
             });
         });
 
-        it ("Tests the session filter returns the correct type.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter("amz");
-            expect(filter.type).to.equal(TYPE_SESSION_ID);
+        it ("Tests the user filter returns the correct type.", function() {
+            const filter: UserIDFilter = new UserIDFilter("amz");
+            expect(filter.type).to.equal(TYPE_USER_ID);
         });
 
-        it ("Tests the session filter returns a filter.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter("amz");
+        it ("Tests the user filter returns a filter.", function() {
+            const filter: UserIDFilter = new UserIDFilter("amz");
             expect(filter.filter).to.exist;
         });
 
-        it ("Tests that the session filter matches a full session id.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID);
+        it ("Tests that the user filter matches a full user id.", function() {
+            const filter: UserIDFilter = new UserIDFilter(fullUserID);
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the session filter matches a partial match from the beginning.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID.slice(0, 5));
+        it ("Tests that the user filter matches a partial match from the beginning.", function() {
+            const filter: UserIDFilter = new UserIDFilter(fullUserID.slice(0, 5));
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the session filter matches a partial match from the middle.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID.slice(0, 5));
+        it ("Tests that the user filter matches a partial match from the middle.", function() {
+            const filter: UserIDFilter = new UserIDFilter(fullUserID.slice(0, 5));
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the session filter matches a partial match from the end.", function() {
-            const length = fullSessionID.length;
-            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID.slice(length - 10));
+        it ("Tests that the user filter matches a partial match from the end.", function() {
+            const length = fullUserID.length;
+            const filter: UserIDFilter = new UserIDFilter(fullUserID.slice(length - 10));
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the session filter matches an empty string.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter("");
+        it ("Tests that the user filter matches an empty string.", function() {
+            const filter: UserIDFilter = new UserIDFilter("");
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the session filter matches an undefined.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter(undefined);
+        it ("Tests that the user filter matches an undefined.", function() {
+            const filter: UserIDFilter = new UserIDFilter(undefined);
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Test that session filter does not match a bad session name.", function() {
-            const filter: SessionIDFilter = new SessionIDFilter("Really weird sesison ID");
+        it ("Test that user filter does not match a bad user name.", function() {
+            const filter: UserIDFilter = new UserIDFilter("Really weird user ID");
             expect(filter.filter(convo)).to.be.false;
         });
 
-        it ("Tests that the session filter returns false when the convo doesn't have a session.", function() {
+        it ("Tests that the user filter returns false when the convo doesn't have a user.", function() {
             const newConvo = createConvo({
                 request: new Log(responseProps),
                 response: new Log(responseProps)
             });
-            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID);
+            const filter: UserIDFilter = new UserIDFilter(fullUserID);
             expect(filter.filter(newConvo)).to.be.false;
         });
     });
