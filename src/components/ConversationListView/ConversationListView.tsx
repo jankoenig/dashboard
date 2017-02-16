@@ -34,9 +34,10 @@ export default class ConversationListView extends React.Component<ConversationLi
             activeConversations: {}
         };
         this.renderItem = this.renderItem.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    onClick(conversation: Conversation, event: React.MouseEvent) {
+    handleClick(conversation: Conversation, event: React.MouseEvent) {
         // depending on if we in a mobile mode or not,
         // we either only let one active at a time
         // or multiple active at a time.
@@ -74,7 +75,7 @@ export default class ConversationListView extends React.Component<ConversationLi
             <ConversationListViewItem
                 key={index + "." + conversation.id}
                 conversation={conversation}
-                onClick={this.onClick.bind(this)}
+                onClick={this.handleClick}
                 active={this.isConversationActive(conversation)}
                 showInteractionOnActive={this.props.expandListItemWhenActive} />
         );
