@@ -16,7 +16,7 @@ import Interval from "../../../utils/Interval";
 import Noop, { falseBoolNoop } from "../../../utils/Noop";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
-import { CompositeFilter, DateFilter, FilterType } from "../Filters";
+import { CompositeFilter, DateFilter, FilterType, UserIDFilter } from "../Filters";
 
 const style = require("./style.scss");
 
@@ -83,6 +83,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
         this.handleConversationClicked = this.handleConversationClicked.bind(this);
+        this.handleFilterUser = this.handleFilterUser.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
     }
@@ -183,6 +184,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
     }
 
+    handleFilterUser(conversation: Conversation) {
+        const newFilter = new UserIDFilter(conversation.userId);
+        this.handleFilter(newFilter);
+    }
+
     filterBarClasses() {
         return classNames(style.filterBar, {
             [style.filterBarHidden]: this.state.filterBarHidden
@@ -210,6 +216,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                 filter={this.state.filter}
                 onScroll={this.handleScroll}
                 onShowConversation={this.handleConversationClicked}
+                onFilterUser={this.handleFilterUser}
                 onItemsFiltered={this.props.onItemsFiltered} />
         );
 

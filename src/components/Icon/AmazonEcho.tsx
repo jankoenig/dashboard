@@ -5,6 +5,7 @@ interface AmazonEchoProps {
     width?: string;
     height?: string;
     color?: string;
+    onClick?: () => void;
 }
 
 export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
@@ -19,7 +20,7 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
     // tslint:disable
     render() {
         return (
-            <svg width={this.props.width} height={this.props.height} viewBox="0 0 43 97" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg onClick={this.props.onClick} style={this.props.style} width={this.props.width} height={this.props.height} viewBox="0 0 43 97" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <g id="Page-1" stroke="none" strokeWidth="3" fill="none" fillRule="evenodd">
                     <g id="simple_alexa" fillRule="nonzero">
                         <g id="noun_646078">
