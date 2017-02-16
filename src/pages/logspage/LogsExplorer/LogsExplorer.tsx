@@ -8,7 +8,6 @@ import TwoPane from "../../../components/TwoPane";
 import VisiblityWatcher, { VISIBLITY_STATE } from "../../../components/VisibilityWatcher";
 import Conversation from "../../../models/conversation";
 import ConversationList from "../../../models/conversation-list";
-import Log from "../../../models/log";
 import LogQuery from "../../../models/log-query";
 import Source from "../../../models/source";
 import { LogMap } from "../../../reducers/log";
@@ -36,6 +35,7 @@ interface LogExplorerProps {
 interface LogExplorerState {
     filterBarHidden: boolean;
     tailOn: boolean;
+    conversationList: ConversationList;
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
@@ -54,12 +54,25 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         onGetNewLogs: Noop
     };
 
+    static getList(props: LogExplorerProps): ConversationList {
+        const source = props.source;
+        let list: ConversationList = undefined;
+        if (props.source && props.logMap) {
+            const logs = props.logMap[source.id];
+            if (logs) {
+                list = ConversationList.fromLogs(logs.logs);
+            }
+        }
+        return list;
+    }
+
     refresher: Interval.Executor;
 
     constructor(props: any) {
         super(props);
         this.state = {
             filterBarHidden: false,
+            conversationList: LogExplorer.getList(props),
             tailOn: false
         };
 
@@ -77,8 +90,9 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
             this.state.selectedConvo = undefined;
-            this.setState(this.state);
         }
+        this.state.conversationList = LogExplorer.getList(nextProps);
+        this.setState(this.state);
     }
 
     componentWillMount() {
@@ -182,19 +196,17 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     render(): JSX.Element {
 
         let query: LogQuery;
-        let logs: Log[];
 
         if (this.props.source && this.props.logMap) {
             let logMap = this.props.logMap[this.props.source.id];
             if (logMap) {
                 query = logMap.query;
-                logs = logMap.logs;
             }
         }
 
         let leftSide = (
             <FilterableConversationList
-                conversations={ConversationList.fromLogs(logs)}
+                conversations={this.state.conversationList}
                 filter={this.state.filter}
                 onScroll={this.handleScroll}
                 onShowConversation={this.handleConversationClicked}
