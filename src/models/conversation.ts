@@ -203,7 +203,9 @@ class AlexaConversation extends GenericConversation {
         let sessionId: string;
         if (this.request) {
             if (typeof this.request.payload === "object") {
-                sessionId = this.request.payload.session.sessionId;
+                if (this.request.payload.session) {
+                    sessionId = this.request.payload.session.sessionId;
+                }
             }
         }
         return sessionId;

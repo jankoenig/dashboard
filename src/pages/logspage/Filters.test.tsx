@@ -5,22 +5,25 @@ import { Log, LogProperties } from "../../models/log";
 import StackTrace from "../../models/stack-trace";
 import { dummyOutputs } from "../../utils/test";
 
-import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, TYPE_ORIGIN, TYPE_REQUEST } from "./Filters";
-import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter } from "./Filters";
+import { TYPE_COMPOSITE, TYPE_DATE, TYPE_EXCEPTION, TYPE_ID, TYPE_INTENT, TYPE_LOG_LEVEL, TYPE_ORIGIN, TYPE_REQUEST, TYPE_SESSION_ID } from "./Filters";
+import { CompositeFilter, DateFilter, ExceptionFilter, IDFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter, SessionIDFilter } from "./Filters";
 import { FilterType } from "./Filters";
 
 chai.use(require("chai-datetime"));
 let expect = chai.expect;
 
+const fullSessionID = "amzn1.echo-api.session.4ad25fd6-5287-4f09-a142-dfbad23c1ff9";
+
 let requestProps: LogProperties = {
     payload: {
         request: {
             intent: {
-                name: "Testing Request Intent"
+                name: "Testing.Request.Intent"
             },
             type: "TestRequest"
         },
         session: {
+            sessionId: fullSessionID,
             applicationId: "ABC123"
         }
     },
@@ -405,6 +408,11 @@ describe("Filters.tsx", function () {
             expect(filter.filter(convo)).to.be.true;
         });
 
+        it("Tests a true filter with empty", function () {
+            const filter: IntentFilter = new IntentFilter("");
+            expect(filter.filter(convo)).to.be.true;
+        });
+
         it("Tests a true filter", function () {
             const filter: IntentFilter = new IntentFilter(convo.intent);
             expect(filter.filter(convo)).to.be.true;
@@ -442,6 +450,72 @@ describe("Filters.tsx", function () {
             });
 
             const filter: IntentFilter = new IntentFilter("Test Convo");
+            expect(filter.filter(newConvo)).to.be.false;
+        });
+    });
+
+    describe("Session filter", function() {
+        let convo: Conversation;
+
+        before(function() {
+            convo = createConvo({
+                request: new Log(requestProps),
+                response: new Log(responseProps)
+            });
+        });
+
+        it ("Tests the session filter returns the correct type.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter("amz");
+            expect(filter.type).to.equal(TYPE_SESSION_ID);
+        });
+
+        it ("Tests the session filter returns a filter.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter("amz");
+            expect(filter.filter).to.exist;
+        });
+
+        it ("Tests that the session filter matches a full session id.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID);
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests that the session filter matches a partial match from the beginning.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID.slice(0, 5));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests that the session filter matches a partial match from the middle.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID.slice(0, 5));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests that the session filter matches a partial match from the end.", function() {
+            const length = fullSessionID.length;
+            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID.slice(length - 10));
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests that the session filter matches an empty string.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter("");
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Tests that the session filter matches an undefined.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter(undefined);
+            expect(filter.filter(convo)).to.be.true;
+        });
+
+        it ("Test that session filter does not match a bad session name.", function() {
+            const filter: SessionIDFilter = new SessionIDFilter("Really weird sesison ID");
+            expect(filter.filter(convo)).to.be.false;
+        });
+
+        it ("Tests that the session filter returns false when the convo doesn't have a session.", function() {
+            const newConvo = createConvo({
+                request: new Log(responseProps),
+                response: new Log(responseProps)
+            });
+            const filter: SessionIDFilter = new SessionIDFilter(fullSessionID);
             expect(filter.filter(newConvo)).to.be.false;
         });
     });

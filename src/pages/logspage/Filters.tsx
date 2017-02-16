@@ -11,6 +11,7 @@ export const TYPE_REQUEST: string = "Request";
 export const TYPE_INTENT: string = "Intent";
 export const TYPE_EXCEPTION: string = "Exception";
 export const TYPE_ORIGIN: string = "Origin";
+export const TYPE_SESSION_ID: string = "SessionID";
 
 export interface FilterType {
     type: string;
@@ -155,6 +156,30 @@ export class IntentFilter implements FilterType {
 
             if (item && item.intent) {
                 return checkString(intent, item.intent);
+            } else {
+                return false;
+            }
+        };
+    }
+}
+
+export class SessionIDFilter implements FilterType {
+    type: string = TYPE_SESSION_ID;
+    sessionID: string | undefined;
+
+    constructor(sessionID?: string) {
+        this.sessionID = sessionID;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const sessionId = this.sessionID;
+        return function (item: Conversation): boolean {
+            if (!sessionId) {
+                return true;
+            }
+
+            if (item && item.sessionId) {
+                return checkString(sessionId, item.sessionId);
             } else {
                 return false;
             }
