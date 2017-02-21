@@ -73,7 +73,7 @@ export default class ConversationListView extends React.Component<ConversationLi
 
     handleScroll(first: number, last: number, total: number) {
         const realFirst = (first) ? first : 0;
-        const realLast = (last) ? last : this.props.conversations.length;
+        const realLast = (last) ? last : total;
         this.props.onScroll(realFirst, realLast, total);
     }
 
