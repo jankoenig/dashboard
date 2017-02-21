@@ -136,8 +136,10 @@ export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatc
  *
  * @param logMap: The last query.
  *
+ * @returns A PageResults object that contains the new logs found with the old and total.
+ *
  */
-export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Redux.Dispatch<Log[]>) => Promise<PageResults> {
     const oldLogs = logQueryEvent.logs;
     const firstLog = (oldLogs !== undefined && oldLogs.length > 0) ? oldLogs[0] : undefined;
     const startTime = (firstLog) ? new Date(firstLog.timestamp) : undefined;
@@ -147,20 +149,21 @@ export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Redux.Dispa
         endTime: new Date()
     });
 
-    return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
+    return function (dispatch: Redux.Dispatch<PageResults>): Promise<PageResults> {
         dispatch(fetchLogsRequest(true));
 
         return service.getLogs(query).
             then(function (newLogs: Log[]) {
-                return newLogs.concat(oldLogs);
-            }).then(function (logs: Log[]) {
+                const combined = newLogs.concat(oldLogs);
+                return { newLogs: newLogs, oldLogs: oldLogs, totalLogs: combined };
+            }).then(function (result: PageResults) {
                 const oldQuery = logQueryEvent.query;
                 let newQuery = { ... oldQuery, ... { endTime: query.endTime }};
-                dispatch(setLogs(newQuery, logs, false));
-                return logs;
-            }).then(function (logs: Log[]) {
+                dispatch(setLogs(newQuery, result.totalLogs, false));
+                return result;
+            }).then(function (result: PageResults) {
                 dispatch(fetchLogsRequest(false));
-                return logs;
+                return result;
             }).catch(function (err: Error) {
                 dispatch(fetchLogsRequest(false));
                 throw err;

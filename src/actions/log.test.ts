@@ -298,7 +298,7 @@ describe("Log Actions", function () {
 
                 it("Tests the appropriate actions were dispatched.", function () {
                     const today = new Date();
-                    return store.dispatch(log.findLatest(originalQueryEvent)).then(function (logs: Log[]) {
+                    return store.dispatch(log.findLatest(originalQueryEvent)).then(function (results: log.PageResults) {
                         let actions: any[] = store.getActions();
 
                         expect(actions).to.have.length(3); // Two fetching dispatches and set logs.
@@ -306,7 +306,7 @@ describe("Log Actions", function () {
                         expect(actions[0].fetching).to.equal(true);
 
                         expect(actions[1].type).to.equal(SET_LOGS);
-                        expect(actions[1].logs).to.deep.equal(logs);
+                        expect(actions[1].logs).to.deep.equal(results.totalLogs);
                         expect(actions[1].append).to.equal(false);
 
                         // Test the query was updated.
@@ -322,11 +322,13 @@ describe("Log Actions", function () {
                     });
                 });
 
-                it ("Tests the logs were prepended to the current ones.", function() {
+                it ("Tests the proper results were returned..", function() {
                     const joined: Log[] = nextPage.slice().concat(mockPayload);
 
-                    return store.dispatch(log.findLatest(originalQueryEvent)).then(function (logs: Log[]) {
-                        expect(logs).to.deep.equal(joined);
+                    return store.dispatch(log.findLatest(originalQueryEvent)).then(function (results: log.PageResults) {
+                        expect(results.totalLogs).to.deep.equal(joined);
+                        expect(results.newLogs).to.deep.equal(nextPage);
+                        expect(results.oldLogs).to.deep.equal(mockPayload);
                     });
                 });
             });

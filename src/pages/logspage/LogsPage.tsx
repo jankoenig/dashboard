@@ -20,7 +20,7 @@ export interface LogsPageProps {
     isLoading: boolean;
     getLogs: (query: LogQuery, append: boolean) => Promise<Log[]>;
     newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
-    refresh: (logQueryEvent: LogQueryEvent) => Promise<Log[]>;
+    refresh: (logQueryEvent: LogQueryEvent) => Promise<PageResults>;
 }
 
 interface LogsPageState {
@@ -45,7 +45,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
             const fetchLogs = nextPage(query, limit);
             return fetchLogs(dispatch);
         },
-        refresh: function (query: LogQueryEvent): Promise<Log[]> {
+        refresh: function (query: LogQueryEvent): Promise<PageResults> {
             const fetchLogs = findLatest(query);
             return fetchLogs(dispatch);
         }
