@@ -83,6 +83,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
 
         this.state.conversationList = getListFromProps(nextProps);
+        this.props.onItemsFiltered(this.state.conversationList);
         this.setState(this.state);
     }
 
