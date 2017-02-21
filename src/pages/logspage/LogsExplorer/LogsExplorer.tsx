@@ -36,6 +36,7 @@ interface LogExplorerProps {
 interface LogExplorerState {
     filterBarHidden: boolean;
     tailOn: boolean;
+    conversationList: ConversationList;
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
@@ -60,6 +61,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         super(props);
         this.state = {
             filterBarHidden: false,
+            conversationList: [],
             tailOn: false
         };
 
@@ -75,8 +77,21 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
             this.state.selectedConvo = undefined;
-            this.setState(this.state);
         }
+
+        let query: LogQuery;
+        let logs: Log[];
+
+        if (this.props.source && this.props.logMap) {
+            let logMap = this.props.logMap[this.props.source.id];
+            if (logMap) {
+                query = logMap.query;
+                logs = logMap.logs;
+            }
+        }
+
+        this.state.conversationList = ConversationList.fromLogs(logs);
+        this.setState(this.state);
     }
 
     componentWillMount() {
@@ -192,7 +207,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
         let leftSide = (
             <FilterableConversationList
-                conversations={ConversationList.fromLogs(logs)}
+                conversations={this.state.conversationList}
                 filter={this.state.filter}
                 onScroll={this.onScroll.bind(this)}
                 onShowConversation={this.onConversationClicked.bind(this)}
