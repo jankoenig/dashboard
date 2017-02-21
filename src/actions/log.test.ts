@@ -176,7 +176,7 @@ describe("Log Actions", function () {
                 });
 
                 it("Checks the dispatches were shown.", function () {
-                    return store.dispatch(log.nextPage(originalQuery, 50)).then(function (logs: Log[]) {
+                    return store.dispatch(log.nextPage(originalQuery, 50)).then(function (results: log.PageResults) {
                         let actions: any[] = store.getActions();
 
                         expect(actions).to.have.length(3); // Two fetching dispatches and set logs.
@@ -184,7 +184,7 @@ describe("Log Actions", function () {
                         expect(actions[0].fetching).to.equal(true);
 
                         expect(actions[1].type).to.equal(SET_LOGS);
-                        expect(actions[1].logs).to.deep.equal(logs);
+                        expect(actions[1].logs).to.deep.equal(results.totalLogs);
                         expect(actions[1].query).to.deep.equal(originalQuery.query);
                         expect(actions[1].append).to.equal(false);
 
@@ -193,10 +193,12 @@ describe("Log Actions", function () {
                     });
                 });
 
-                it("Checks the logs returned have the new pages appended to them.", function () {
-                    return store.dispatch(log.nextPage(originalQuery, 50)).then(function (logs: Log[]) {
+                it("Checks the results of the next page.", function () {
+                    return store.dispatch(log.nextPage(originalQuery, 50)).then(function (results: log.PageResults) {
                         const merged = mockPayload.slice().concat(nextPage);
-                        expect(merged).to.deep.equal(logs);
+                        expect(merged).to.deep.equal(results.totalLogs);
+                        expect(nextPage).to.deep.equal(results.newLogs);
+                        expect(mockPayload).to.deep.equal(results.oldLogs);
                     });
                 });
             });
@@ -230,7 +232,7 @@ describe("Log Actions", function () {
                 });
 
                 it("Checks the dispatches were shown.", function () {
-                    return store.dispatch(log.nextPage(originalQuery, 50)).catch(function (logs: Log[]) {
+                    return store.dispatch(log.nextPage(originalQuery, 50)).catch(function (err: Error) {
                         let actions: any[] = store.getActions();
 
                         expect(actions).to.have.length(2); // Two fetching dispatches.
@@ -239,6 +241,12 @@ describe("Log Actions", function () {
 
                         expect(actions[1].type).to.equal(FETCH_LOGS_REQUEST);
                         expect(actions[1].fetching).to.equal(false);
+                    });
+                });
+
+                it("Checks the error is not null.", function() {
+                    return store.dispatch(log.nextPage(originalQuery, 50)).catch(function (err: Error) {
+                        expect(err).to.exist;
                     });
                 });
             });

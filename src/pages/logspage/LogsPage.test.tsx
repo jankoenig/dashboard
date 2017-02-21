@@ -31,8 +31,6 @@ describe("LogsPage", function () {
         let source: Source = dummySources(1)[0];
         let allPages: Log[] = dummyLogs(20);
         let firstPage: Log[] = allPages.slice(5, 15);
-        let secondPage: Log[] = allPages.slice(15);
-        let prequelPage: Log[] = allPages.slice(0, 5);
 
         let logMap: LogMap = {};
         logMap[source.id] = {
@@ -49,10 +47,17 @@ describe("LogsPage", function () {
             getLogs.returns(Promise.resolve(dummyLogs(0)));
 
             nextPage = sinon.stub();
-            nextPage.returns(Promise.resolve(secondPage));
+            // "nextPage" returns the first along with the second appended on top.
+            nextPage.onFirstCall().returns(Promise.resolve({ newLogs: allPages.slice(15), oldLogs: firstPage, totalLogs: allPages.slice(5) }))
+                .onSecondCall().returns(Promise.resolve({ newLogs: dummyLogs(0), oldLogs: allPages.slice(5), totalLogs: allPages.slice(5) }))
+                .onThirdCall().returns(Promise.resolve({ newLogs: dummyLogs(0), oldLogs: allPages.slice(5), totalLogs: allPages.slice(5) }))
+                .onCall(4).returns(Promise.resolve({ newLogs: dummyLogs(0), oldLogs: allPages.slice(5), totalLogs: allPages.slice(5) }))
+                .onCall(5).returns(Promise.resolve({ newLogs: dummyLogs(0), oldLogs: allPages.slice(5), totalLogs: allPages.slice(5) }))
+                .onCall(6).returns(Promise.resolve({ newLogs: dummyLogs(0), oldLogs: allPages.slice(5), totalLogs: allPages.slice(5) }));
 
             refresh = sinon.stub();
-            refresh.returned(Promise.resolve(prequelPage));
+            // "refresh" returns all old items along with the new items preppended before it.
+            refresh.returned(Promise.resolve(allPages.slice(0, 15)));
         });
 
         afterEach(function () {
@@ -100,6 +105,37 @@ describe("LogsPage", function () {
             logExplorer.simulate("scroll", 0, 10, firstPage.length);
 
             expect(nextPage).to.not.have.been.called;
+        });
+
+        it("Tests that the get logs is not retrieved when nothing was sent last time.", function () {
+            let wrapper = shallow(<LogsPage isLoading={false} source={source} logMap={logMap} getLogs={getLogs} newPage={nextPage} refresh={refresh} />);
+
+            // Everything works through a Promise, so by doing this, you let all the Promises that are in queue execute first.
+            // Then the next goes.  Then the next and so on.  Everything waits until it's necessary.
+            return Promise.resolve(true)
+            .then(() => {
+                let logExplorer = wrapper.find("LogExplorer").at(0);
+
+                logExplorer.simulate("scroll", 0, 10, firstPage.length);
+            }).then(() => {
+                let logExplorer = wrapper.find("LogExplorer").at(0);
+
+                logExplorer.simulate("scroll", 0, 10, firstPage.length);
+            }).then(() => {
+                let logExplorer = wrapper.find("LogExplorer").at(0);
+
+                logExplorer.simulate("scroll", 0, 10, firstPage.length);
+            }).then(() => {
+                let logExplorer = wrapper.find("LogExplorer").at(0);
+
+                logExplorer.simulate("scroll", 0, 10, firstPage.length);
+            }).then(() => {
+                let logExplorer = wrapper.find("LogExplorer").at(0);
+
+                logExplorer.simulate("scroll", 0, 10, firstPage.length);
+            }).then(() => {
+                expect(nextPage).to.have.been.calledTwice;  // Gets the first page, then nothing the second time, then should not try again after.
+            });
         });
     });
 });

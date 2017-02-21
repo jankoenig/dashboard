@@ -10,7 +10,7 @@ import { LogMap, LogQueryEvent } from "../../reducers/log";
 import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
-import { findLatest, nextPage, retrieveLogs } from "../../actions/log";
+import { findLatest, nextPage, PageResults, retrieveLogs } from "../../actions/log";
 
 const LIMIT: number = 50;
 
@@ -19,12 +19,12 @@ export interface LogsPageProps {
     source: Source;
     isLoading: boolean;
     getLogs: (query: LogQuery, append: boolean) => Promise<Log[]>;
-    newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<Log[]>;
+    newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
     refresh: (logQueryEvent: LogQueryEvent) => Promise<Log[]>;
 }
 
 interface LogsPageState {
-    lastQuery: LogQuery;
+    endReached?: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -41,7 +41,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
             const fetchLogs = retrieveLogs(query, append);
             return fetchLogs(dispatch);
         },
-        newPage: function (query: LogQueryEvent, limit: number): Promise<Log[]> {
+        newPage: function (query: LogQueryEvent, limit: number): Promise<PageResults> {
             const fetchLogs = nextPage(query, limit);
             return fetchLogs(dispatch);
         },
@@ -57,7 +57,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     constructor(props: LogsPageProps) {
         super(props);
         this.state = {
-            lastQuery: undefined
         };
 
         this.onScroll = this.onScroll.bind(this);
@@ -103,9 +102,16 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     getNextPage() {
-        const event: LogQueryEvent = this.getLogQueryEvent();
-        if (event) {
-            this.props.newPage(event, LIMIT);
+        if (!this.state.endReached) {
+            const event: LogQueryEvent = this.getLogQueryEvent();
+            if (event) {
+                this.props.newPage(event, LIMIT).then((results: PageResults) => {
+                    if (results.newLogs.length === 0) {
+                        this.state.endReached = true;
+                        this.setState(this.state);
+                    }
+                });
+            }
         }
     }
 
@@ -116,10 +122,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
             }
         }
         return undefined;
-    }
-
-    lastQueryDoesNotMatch(query: LogQuery) {
-        return JSON.stringify(this.state.lastQuery) !== JSON.stringify(query);
     }
 
     render() {

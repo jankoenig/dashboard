@@ -5,6 +5,12 @@ import Source from "../models/source";
 import { LogQueryEvent } from "../reducers/log";
 import service from "../services/log";
 
+export interface PageResults {
+    newLogs: Log[];
+    oldLogs: Log[];
+    totalLogs: Log[];
+}
+
 export type SetLogsAction = {
     type: SET_LOGS,
     query: LogQuery,
@@ -69,7 +75,8 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
 export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
     return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
         dispatch(fetchLogsRequest(true));
-        return service.getLogs(logQuery).then(function (logs: Log[]) {
+        return service.getLogs(logQuery)
+        .then(function (logs: Log[]) {
             dispatch(setLogs(logQuery, logs, append));
             return logs;
         }).then(function (logs: Log[]) {
@@ -88,8 +95,10 @@ export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: R
  *
  * @param logMap: The last query.
  * @param limit: the maximum number of logs to retrieve in this page.
+ *
+ * @returns A PageResults object that contains the new logs found with the old and total.
  */
-export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<PageResults> {
     const oldLogs = logQueryEvent.logs;
     const lastLog = (oldLogs !== undefined && oldLogs.length > 0) ? oldLogs[oldLogs.length - 1] : undefined;
     const endTime = (lastLog) ? new Date(lastLog.timestamp) : new Date();
@@ -100,18 +109,19 @@ export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatc
         limit: limit
     });
 
-    return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
+    return function (dispatch: Redux.Dispatch<Log[]>): Promise<PageResults> {
         dispatch(fetchLogsRequest(true));
 
         return service.getLogs(query).
             then(function (newLogs: Log[]) {
-                return oldLogs.slice().concat(newLogs);
-            }).then(function (logs: Log[]) {
-                dispatch(setLogs(logQueryEvent.query, logs, false));
-                return logs;
-            }).then(function (logs: Log[]) {
+                const combined = oldLogs.slice().concat(newLogs);
+                return { newLogs: newLogs, oldLogs: oldLogs, totalLogs: combined };
+            }).then(function (results: PageResults) {
+                dispatch(setLogs(logQueryEvent.query, results.totalLogs, false));
+                return results;
+            }).then(function (results: PageResults) {
                 dispatch(fetchLogsRequest(false));
-                return logs;
+                return results;
             }).catch(function (err: Error) {
                 dispatch(fetchLogsRequest(false));
                 throw err;

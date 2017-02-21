@@ -180,6 +180,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
     }
 
+    length(): number {
+        return this.state.conversationList.length;
+    }
+
     filterBarClasses() {
         return classNames(style.filterBar, {
             [style.filterBarHidden]: this.state.filterBarHidden
