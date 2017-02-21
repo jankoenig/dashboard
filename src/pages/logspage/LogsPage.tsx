@@ -89,6 +89,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
+        console.info("SCROLL " + lastVisibleIndex);
         if (!this.props.isLoading && lastVisibleIndex > total - 5) {
             this.getNextPage();
         }

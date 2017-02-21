@@ -70,6 +70,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleTailChecked = this.handleTailChecked.bind(this);
         this.handleFilterButtonClicked = this.handleFilterButtonClicked.bind(this);
         this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.handleConversationClicked = this.handleConversationClicked.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
     }
@@ -126,12 +128,12 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.setState(this.state);
     }
 
-    onConversationClicked(conversation: Conversation) {
+    handleConversationClicked(conversation: Conversation) {
         this.state.selectedConvo = conversation;
         this.setState(this.state);
     }
 
-    onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
+    handleScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
         if (!this.state.filterBarHidden && browser.isMobileWidth() && !this.props.lockFilterBar) {
             this.state.filterBarHidden = true;
             this.setState(this.state);
@@ -209,8 +211,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             <FilterableConversationList
                 conversations={this.state.conversationList}
                 filter={this.state.filter}
-                onScroll={this.onScroll.bind(this)}
-                onShowConversation={this.onConversationClicked.bind(this)}
+                onScroll={this.handleScroll}
+                onShowConversation={this.handleConversationClicked}
                 onItemsFiltered={this.props.onItemsFiltered} />
         );
 
