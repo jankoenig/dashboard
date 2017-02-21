@@ -79,13 +79,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             this.state.selectedConvo = undefined;
         }
 
-        let query: LogQuery;
         let logs: Log[];
 
         if (this.props.source && this.props.logMap) {
             let logMap = this.props.logMap[this.props.source.id];
             if (logMap) {
-                query = logMap.query;
                 logs = logMap.logs;
             }
         }
@@ -195,13 +193,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     render(): JSX.Element {
 
         let query: LogQuery;
-        let logs: Log[];
 
         if (this.props.source && this.props.logMap) {
             let logMap = this.props.logMap[this.props.source.id];
             if (logMap) {
                 query = logMap.query;
-                logs = logMap.logs;
             }
         }
 
