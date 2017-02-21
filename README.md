@@ -1,6 +1,6 @@
 The developer dashboard for [bespoken.tools](https://bespoken.tools/dashboard)
 
-[![Build Status](https://travis-ci.org/bespoken/dashboard.svg?branch=master)](https://travis-ci.org/bespoken/dashboard) [![Coverage Status](https://coveralls.io/repos/github/bespoken/dashboard/badge.svg)](https://coveralls.io/github/bespoken/dashboard)
+[![Build Status](https://travis-ci.org/bespoken/dashboard.svg?branch=master)](https://travis-ci.org/bespoken/dashboard) [![Coverage Status](https://coveralls.io/repos/github/bespoken/dashboard/badge.svg)](https://coveralls.io/github/bespoken/dashboard) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/be0cf929dced4e16befad6da2c327a4c)](https://www.codacy.com/app/bespoken/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=bespoken/dashboard&amp;utm_campaign=Badge_Grade)
 
 ## Installation
 
