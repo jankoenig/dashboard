@@ -59,11 +59,6 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
     constructor(props: any) {
         super(props);
-        this.state = {
-            filterBarHidden: false,
-            conversationList: [],
-            tailOn: false
-        };
 
         this.handleFilter = this.handleFilter.bind(this);
         this.handleDateFilter = this.handleDateFilter.bind(this);
@@ -74,23 +69,20 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleConversationClicked = this.handleConversationClicked.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
+
+        this.state = {
+            filterBarHidden: false,
+            conversationList: getListFromProps(props),
+            tailOn: false
+        };
     }
 
-    componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
+    componentWillReceiveProps(nextProps: LogExplorerProps, nextContext: any): void {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
             this.state.selectedConvo = undefined;
         }
 
-        let logs: Log[];
-
-        if (this.props.source && this.props.logMap) {
-            let logMap = this.props.logMap[this.props.source.id];
-            if (logMap) {
-                logs = logMap.logs;
-            }
-        }
-
-        this.state.conversationList = ConversationList.fromLogs(logs);
+        this.state.conversationList = getListFromProps(nextProps);
         this.setState(this.state);
     }
 
@@ -265,4 +257,16 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
 function isToday(date: Date): boolean {
     return moment(date).isSame(moment(), "days");
+}
+
+function getListFromProps(props: LogExplorerProps) {
+    let logs: Log[];
+
+    if (props.source && props.logMap) {
+        let logMap = props.logMap[props.source.id];
+        if (logMap) {
+            logs = logMap.logs;
+        }
+    }
+    return ConversationList.fromLogs(logs);
 }

@@ -38,20 +38,29 @@ describe("LogExplorer", function () {
     });
 
     describe("with properties", function () {
-        let logs: Log[] = dummyLogs(4);
-        let outputs: Output[] = dummyOutputs(2);
-        let source = new Source({ name: "name", id: "id" });
-        let source2 = new Source({ name: "name", id: "id2" });
-        let logQuery: LogQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
-        let logMap: LogMap = { id: { logs: logs, query: logQuery } };
-        let convo: Conversation = createConvo({ request: logs[0], response: logs[1], outputs: outputs });
+        let logs: Log[];
+        let outputs: Output[];
+        let source: Source;
+        let source2: Source;
+        let logQuery: LogQuery;
+        let logMap: LogMap;
+        let convo: Conversation;
 
         let onRefresh: Sinon.SinonStub;
 
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
+            logs = dummyLogs(4);
+            outputs = dummyOutputs(2);
+            source = new Source({ name: "name", id: "id" });
+            source2 = new Source({ name: "name", id: "id2" });
+            logQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
+            logMap = {};
+            convo = createConvo({ request: logs[0], response: logs[1], outputs: outputs });
             onRefresh = sinon.stub();
+
+            logMap[source.id] = { logs: logs, query: logQuery };
         });
 
         beforeEach(function () {
@@ -61,6 +70,10 @@ describe("LogExplorer", function () {
 
         it("renders a FilterBar", function () {
             expect(wrapper.find("FilterBar")).to.have.length(1);
+        });
+
+        it("Tests the length function", function () {
+            expect((wrapper.instance() as LogsExplorer).length()).to.equal(logs.length / 2);
         });
 
         describe("without a conversation selected", function () {
@@ -226,7 +239,7 @@ describe("LogExplorer", function () {
                     expect(wrapper.state("tailOn")).to.be.true;
                 });
 
-                it ("Tests the auto-refresh goes back to original state when date filter comes back to today.", function() {
+                it("Tests the auto-refresh goes back to original state when date filter comes back to today.", function () {
                     // This test first toggles the live update off.  Then it will switch the Date from before today then back to today.
                     // The live update should still be turned off when we're back here.
                     let filterBar = wrapper.find("FilterBar").at(0);
@@ -250,7 +263,7 @@ describe("LogExplorer", function () {
                     expect(wrapper.state("tailOn")).to.be.false;
                 });
 
-                it ("Tests the filterbar live update is disabled when the dates go out of range.", function() {
+                it("Tests the filterbar live update is disabled when the dates go out of range.", function () {
                     const startDate = new Date();
                     startDate.setDate(startDate.getDate() - 12);
 
@@ -265,20 +278,20 @@ describe("LogExplorer", function () {
                 });
             });
 
-            describe("Tests the auto-turn off when visibility swaps", function() {
+            describe("Tests the auto-turn off when visibility swaps", function () {
                 let visibilityWrapper: ShallowWrapper<any, any>;
 
-                beforeEach(function() {
+                beforeEach(function () {
                     visibilityWrapper = wrapper.find(VisiblityWatcher);
                 });
 
-                it ("Tests the tail turns off on visibility change.", function() {
+                it("Tests the tail turns off on visibility change.", function () {
                     visibilityWrapper.simulate("change", "hidden");
 
                     expect(wrapper.state("tailOn")).to.be.false;
                 });
 
-                it ("Tests the tail turns on on visibility change.", function() {
+                it("Tests the tail turns on on visibility change.", function () {
                     visibilityWrapper.simulate("change", "hidden");
 
                     visibilityWrapper = wrapper.find(VisiblityWatcher);
@@ -288,7 +301,7 @@ describe("LogExplorer", function () {
                     expect(wrapper.state("tailOn")).to.be.true;
                 });
 
-                it ("Tests that the tail stays off when it's off and we come back.", function() {
+                it("Tests that the tail stays off when it's off and we come back.", function () {
                     wrapper.setState({ tailOn: false });
 
                     visibilityWrapper = wrapper.find(VisiblityWatcher);
