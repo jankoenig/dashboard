@@ -1,8 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
 
-// import { IconButton } from "react-toolbox/lib/button";
-
 import Conversation, { Origin } from "../../models/conversation";
 import Button from "../Button";
 import AmazonEchoIcon from "../Icon/AmazonEcho";

@@ -2,7 +2,10 @@ import * as React from "react";
 
 import { IconButton } from "react-toolbox/lib/button";
 
+const HomeTheme = require("./home-theme.scss");
+
 interface GoogleHomeProps {
+    theme?: string;
     style?: React.CSSProperties;
     width?: string;
     height?: string;
@@ -12,11 +15,7 @@ interface GoogleHomeProps {
 
 export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
     static defaultProps: GoogleHomeProps = {
-        style: {
-            fontSize: "1rem",
-            width: "3em",
-            height: "3em"
-        },
+        theme: HomeTheme,
         width: "58px",
         height: "88px",
         color: "#FFFFFF"
@@ -29,9 +28,10 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
     render() {
         return (
             <IconButton
+                theme={this.props.theme}
                 onClick={this.props.onClick}
                 icon={<Icon
-                    {...this.props.style}/>} />
+                    {...this.props } />} />
         );
     }
 }

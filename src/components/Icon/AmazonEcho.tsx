@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { IconButton } from "react-toolbox/lib/button";
 
+const IconTheme = require("./echo-theme.scss");
+
 interface AmazonEchoProps {
     theme?: string;
     style?: React.CSSProperties;
@@ -14,11 +16,7 @@ interface AmazonEchoProps {
 export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
 
     static defaultProps: AmazonEchoProps = {
-        style: {
-            fontSize: "1rem",
-            width: "3em",
-            height: "3em"
-        },
+        theme: IconTheme,
         width: "21px",
         height: "46px",
         color: "#FFFFFF"
@@ -30,7 +28,7 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
                 theme={this.props.theme}
                 onClick={this.props.onClick}
                 icon={<Icon
-                    {...this.props}/>} />
+                    {...this.props} />} />
         );
     }
 }

@@ -9,7 +9,7 @@ import { Menu, MenuItem } from "../components/Menu";
 import Noop from "../utils/Noop";
 
 const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
-const IconButtonTheme = require("../themes/icon-button-primary.scss");
+const IconButtonTheme = require("../themes/icon-button-primary-theme.scss");
 
 export interface Dropdownable {
   value: string;
