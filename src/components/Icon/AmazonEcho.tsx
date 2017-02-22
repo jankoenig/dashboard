@@ -1,5 +1,7 @@
 import * as React from "react";
 
+import { IconButton } from "react-toolbox/lib/button"
+
 interface AmazonEchoProps {
     style?: React.CSSProperties;
     width?: string;
@@ -8,19 +10,50 @@ interface AmazonEchoProps {
     onClick?: () => void;
 }
 
-export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
+interface AmazonEchoState {
+    style: React.CSSProperties;
+}
+
+export default class AmazonEcho extends React.Component<AmazonEchoProps, AmazonEchoState> {
 
     static defaultProps: AmazonEchoProps = {
-        style: undefined,
-        width: "43px",
-        height: "97px",
+        style: {
+            fontSize: "1rem",
+            width: "3em",
+            height: "3em"
+        },
+        width: "21px",
+        height: "46px",
         color: "#FFFFFF"
     };
+
+    constructor(props: AmazonEchoProps) {
+        super(props);
+
+        this.state = {
+            style: { ...AmazonEcho.defaultProps.style, ...props.style }
+        }
+    }
+
+    render() {
+        return (
+            <IconButton
+                onClick={this.props.onClick}
+                icon={<Icon
+                    style={this.state.style}
+                    width={this.props.width}
+                    height={this.props.height}
+                    color={this.props.color} />} />
+        )
+    }
+}
+
+export class Icon extends React.Component<AmazonEchoProps, any> {
 
     // tslint:disable
     render() {
         return (
-            <svg onClick={this.props.onClick} style={this.props.style} width={this.props.width} height={this.props.height} viewBox="0 0 43 97" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg style={this.props.style} width={this.props.width} height={this.props.height} viewBox="0 0 43 97" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <g id="Page-1" stroke="none" strokeWidth="3" fill="none" fillRule="evenodd">
                     <g id="simple_alexa" fillRule="nonzero">
                         <g id="noun_646078">

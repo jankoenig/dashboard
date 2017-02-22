@@ -173,24 +173,16 @@ interface IconProps {
 
 class Icon extends React.Component<IconProps, any> {
     render() {
-        const iconStyle = { marginTop: "4px" };
-
         let icon: JSX.Element;
         if (this.props.origin === Origin.GoogleHome) {
             icon = (
                 <GoogleHomeIcon
-                    style={iconStyle}
-                    width={"30px"}
-                    height={"30px"}
                     color={this.props.fill}
                     onClick={this.props.onClick} />
             );
         } else {
             icon = (
                 <AmazonEchoIcon
-                    style={iconStyle}
-                    width={"30px"}
-                    height={"30px"}
                     color={this.props.fill}
                     onClick={this.props.onClick} />);
         }

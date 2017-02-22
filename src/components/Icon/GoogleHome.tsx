@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import { IconButton } from "react-toolbox/lib/button";
 
 interface GoogleHomeProps {
     style?: React.CSSProperties;
@@ -9,14 +10,44 @@ interface GoogleHomeProps {
     onClick?: () => void;
 }
 
-export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
+interface GoogleHomeState {
+    style: React.CSSProperties;
+}
 
+export default class GoogleHome extends React.Component<GoogleHomeProps, GoogleHomeState> {
     static defaultProps: GoogleHomeProps = {
-        style: undefined,
+        style: {
+            fontSize: "1rem",
+            width: "3em",
+            height: "3em"
+        },
         width: "58px",
         height: "88px",
-        color: "#0000000"
+        color: "#FFFFFF"
     };
+
+    constructor(props: GoogleHomeProps) {
+        super(props);
+
+        this.state = {
+            style: { ...GoogleHome.defaultProps.style, ...props.style }
+        }
+    }
+
+    render() {
+        return (
+            <IconButton
+                onClick={this.props.onClick}
+                icon={<Icon
+                    style={this.state.style}
+                    width={this.props.width}
+                    height={this.props.height}
+                    color={this.props.color} />} />
+        )
+    }
+}
+class Icon extends React.Component<GoogleHomeProps, any> {
+
 
     // tslint:disable
     render() {
