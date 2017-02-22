@@ -167,7 +167,9 @@ export class IntentFilter implements FilterType {
 }
 
 export class UserIDFilter implements FilterType {
-    type: string = TYPE_USER_ID;
+    static type = TYPE_USER_ID;
+
+    type: string = UserIDFilter.type;
     userID: string | undefined;
 
     constructor(userID?: string) {
