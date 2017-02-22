@@ -67,9 +67,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
     }
 
     componentWillReceiveProps(nextProps: LogsPageProps, context: any) {
-        console.info("NEW PROPS");
         if (!SourceUtil.equals(nextProps.source, this.props.source)) {
-            console.info("CLEARNING END");
             this.state.endReached = false;
             this.setState(this.state);
         }
