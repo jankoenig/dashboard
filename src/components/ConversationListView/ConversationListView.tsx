@@ -38,7 +38,6 @@ export default class ConversationListView extends React.Component<ConversationLi
 
         this.renderItem = this.renderItem.bind(this);
         this.handleClick = this.handleClick.bind(this);
-        this.handleIconClick = this.handleIconClick.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
     }
 
@@ -70,10 +69,6 @@ export default class ConversationListView extends React.Component<ConversationLi
         this.props.onClick(conversation);
     }
 
-    handleIconClick(conversation: Conversation) {
-        this.props.onIconClick(conversation);
-    }
-
     isConversationActive(conversation: Conversation): boolean {
         return this.state.activeConversations[conversation.id] ? true : false;
     }
@@ -91,7 +86,7 @@ export default class ConversationListView extends React.Component<ConversationLi
                 key={index + "." + conversation.id}
                 conversation={conversation}
                 onClick={this.handleClick}
-                onIconClicked={this.handleIconClick}
+                onIconClick={this.props.onIconClick}
                 active={this.isConversationActive(conversation)}
                 showInteractionOnActive={this.props.expandListItemWhenActive} />
         );

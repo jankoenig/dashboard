@@ -11,7 +11,7 @@ import Pill from "../Pill";
 interface ConversationListViewItemProps {
     readonly conversation: Conversation;
     readonly onClick: (conversation: Conversation) => void;
-    readonly onIconClicked: (conversation: Conversation) => void;
+    readonly onIconClick: (conversation: Conversation) => void;
     readonly active?: boolean;
     readonly showInteractionOnActive?: boolean;
 }
@@ -92,7 +92,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
     }
 
     handleIconClick() {
-        this.props.onIconClicked(this.props.conversation);
+        this.props.onIconClick(this.props.conversation);
     }
 
     handleClick() {

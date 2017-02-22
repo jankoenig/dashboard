@@ -17,7 +17,7 @@ describe("ConversationListViewItem", function () {
     let onClick = sinon.spy();
     let onIconClick = sinon.spy();
     let conversation = createConvo({ request: alexaRequestIntentLog(), response: alexaResponseLog() });
-    let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} onIconClicked={onIconClick} />);
+    let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} onIconClick={onIconClick} />);
     let li = wrapper.find("li");
     let div = li.find("div").first();
 
@@ -43,7 +43,7 @@ describe("ConversationListViewItem", function () {
     describe("when active", function () {
         let onClick = sinon.spy();
         let conversation = createConvo({ request: alexaRequestIntentLog(), response: alexaResponseLog() });
-        let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} onIconClicked={onIconClick} active={true} />);
+        let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} onIconClick={onIconClick} active={true} />);
         let li = wrapper.find("li");
         let div = li.find("div").first();
 
@@ -76,7 +76,7 @@ describe("ConversationListViewItem", function () {
             });
 
             let conversation = createConvo({ request: alexaRequestIntentLog(), response: alexaResponseLog(), outputs: [output] });
-            let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} onIconClicked={onIconClick} active={true} />);
+            let wrapper = shallow(<ConversationListItem conversation={conversation} onClick={onClick} onIconClick={onIconClick} active={true} />);
 
             expect(wrapper.find("Pill")).to.have.length(1);
         });
