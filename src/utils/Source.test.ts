@@ -1,6 +1,6 @@
 import * as chai from "chai";
 
-import Source from "../models/Source";
+import Source from "../models/source";
 import SourceUtil from "./Source";
 
 const expect = chai.expect;

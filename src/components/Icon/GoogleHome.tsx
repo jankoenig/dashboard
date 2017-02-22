@@ -21,20 +21,17 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
         color: "#FFFFFF"
     };
 
-    constructor(props: GoogleHomeProps) {
-        super(props);
-    }
-
     render() {
         return (
             <IconButton
                 theme={this.props.theme}
                 onClick={this.props.onClick}
                 icon={<Icon
-                    {...this.props } />} />
+                    {...this.props} />}/>
         );
     }
 }
+
 class Icon extends React.Component<GoogleHomeProps, any> {
 
 
