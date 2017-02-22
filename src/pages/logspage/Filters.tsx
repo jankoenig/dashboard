@@ -40,10 +40,13 @@ export class CompositeFilter implements FilterType {
     copyAndAddOrReplace(filter: FilterType): CompositeFilter {
         let copy = this.filters.slice();
         for (let i = 0; i < this.filters.length; ++i) {
+            console.info("Checking " + this.filters[i].type + " with " + filter.type);
             if (this.filters[i].type === filter.type) {
+                console.info("Removing at " + i);
                 copy.splice(i, 1);
             }
         }
+        console.log(filter);
         copy.push(filter);
         return new CompositeFilter(copy);
     }

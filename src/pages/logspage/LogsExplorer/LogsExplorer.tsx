@@ -40,6 +40,7 @@ interface LogExplorerState {
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
+    filteredUser?: string;
     filter?: CompositeFilter;
 }
 
@@ -154,6 +155,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         if (!this.state.filter) {
             this.state.filter = new CompositeFilter([filter]);
         } else {
+            console.info("REPLACING");
             this.state.filter = this.state.filter.copyAndAddOrReplace(filter);
         }
         this.setState(this.state);
@@ -189,7 +191,21 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     handleFilterUser(conversation: Conversation) {
-        const newFilter = new UserIDFilter(conversation.userId);
+        let userId: string;
+        let newFilter: UserIDFilter;
+        console.info("Filtering " + conversation.userId);
+        if (conversation.userId !== this.state.filteredUser) {
+            console.info("setting");
+            userId = conversation.userId;
+        } else {
+            console.info("Clearing.");
+            userId = undefined;
+        }
+
+        this.state.filteredUser = userId;
+        this.setState(this.state);
+
+        newFilter = new UserIDFilter(this.state.filteredUser);
         this.handleFilter(newFilter);
     }
 
@@ -224,7 +240,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                 filter={this.state.filter}
                 onScroll={this.handleScroll}
                 onShowConversation={this.handleConversationClicked}
-                onFilterUser={this.handleFilterUser}
+                onIconClick={this.handleFilterUser}
                 onItemsFiltered={this.props.onItemsFiltered} />
         );
 

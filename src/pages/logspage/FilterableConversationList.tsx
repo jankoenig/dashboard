@@ -13,7 +13,7 @@ import { FilterType } from "./Filters";
 export interface FilterableConversationListProps {
     conversations: ConversationList;
     onShowConversation?: (conversation: Conversation) => void;
-    onFilterUser?: (conversation: Conversation) => void;
+    onIconClick?: (conversation: Conversation) => void;
     filter?: FilterType;
     onItemsFiltered?: (shownConversations: ConversationList) => void;
     onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
@@ -21,7 +21,6 @@ export interface FilterableConversationListProps {
 
 interface FilterableConversationListState {
     shownConversations: ConversationList;
-    lastFilterType: FilterType;
 }
 
 export class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
@@ -30,6 +29,7 @@ export class FilterableConversationList extends React.Component<FilterableConver
         conversations: [],
         onShowConversation: Noop,
         onItemsFiltered: Noop,
+        onIconClick: Noop,
         filter: undefined,
         onScroll: undefined
     };
@@ -38,18 +38,15 @@ export class FilterableConversationList extends React.Component<FilterableConver
         super(props);
 
         this.state = {
-            shownConversations: props.conversations,
-            lastFilterType: props.filter
+            shownConversations: props.conversations
         };
 
-        this.handleIconClicked = this.handleIconClicked.bind(this);
-
+        this.onEmpty = this.onEmpty.bind(this);
     }
 
     componentWillReceiveProps(nextProps: FilterableConversationListProps, nextContext: any): void {
         this.state.shownConversations = nextProps.conversations;
-        this.state.lastFilterType = nextProps.filter;
-        this.internalFilter(nextProps.conversations, this.state.lastFilterType);
+        this.internalFilter(nextProps.conversations, nextProps.filter);
     }
 
     internalFilter(list: ConversationList, filterType: FilterType) {
@@ -70,16 +67,8 @@ export class FilterableConversationList extends React.Component<FilterableConver
             });
     }
 
-    onConversationClicked(conversation: Conversation) {
-        this.props.onShowConversation(conversation);
-    }
-
     onEmpty(): JSX.Element {
         return (<p> No available data </p>);
-    }
-
-    handleIconClicked(conversation: Conversation) {
-        this.props.onFilterUser(conversation);
     }
 
     render() {
@@ -88,9 +77,9 @@ export class FilterableConversationList extends React.Component<FilterableConver
                 onScroll={this.props.onScroll}
                 conversations={this.state.shownConversations}
                 expandListItemWhenActive={browser.isMobileWidth()}
-                onClick={this.onConversationClicked.bind(this)}
-                onIconClick={this.handleIconClicked}
-                onEmpty={this.onEmpty.bind(this)} />
+                onClick={this.props.onShowConversation}
+                onIconClick={this.props.onIconClick}
+                onEmpty={this.onEmpty} />
         );
     }
 }
