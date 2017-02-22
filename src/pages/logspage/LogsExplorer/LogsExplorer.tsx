@@ -18,6 +18,7 @@ import Noop, { falseBoolNoop } from "../../../utils/Noop";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
 import { CompositeFilter, DateFilter, FilterType, UserIDFilter } from "../Filters";
+import { TYPE_USER_ID } from "../Filters";
 
 const style = require("./style.scss");
 
@@ -40,7 +41,6 @@ interface LogExplorerState {
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
-    filteredUser?: string;
     filter?: CompositeFilter;
 }
 
@@ -94,6 +94,9 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     componentWillReceiveProps(nextProps: LogExplorerProps, nextContext: any): void {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
             this.state.selectedConvo = undefined;
+            if (this.state.filter) {
+                this.state.filter = this.state.filter.copyAndRemove(TYPE_USER_ID);
+            }
         }
 
         this.state.conversationList = getListFromProps(nextProps);
@@ -192,16 +195,14 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     handleFilterUser(conversation: Conversation) {
         let userId: string;
         let newFilter: UserIDFilter;
-        if (conversation.userId !== this.state.filteredUser) {
+        let oldFilter: UserIDFilter = (this.state.filter) ? this.state.filter.getFilter(TYPE_USER_ID) as UserIDFilter : undefined;
+        if (!oldFilter || oldFilter.userID !== userId) {
             userId = conversation.userId;
         } else {
             userId = undefined;
         }
 
-        this.state.filteredUser = userId;
-        this.setState(this.state);
-
-        newFilter = new UserIDFilter(this.state.filteredUser);
+        newFilter = new UserIDFilter(userId);
         this.handleFilter(newFilter);
     }
 
