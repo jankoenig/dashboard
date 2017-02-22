@@ -7,6 +7,7 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap, LogQueryEvent } from "../../reducers/log";
+import SourceUtil from "../../utils/Source";
 import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
@@ -63,6 +64,15 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.onFilter = this.onFilter.bind(this);
         this.onItemsFiltered = this.onItemsFiltered.bind(this);
         this.refresh = this.refresh.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps: LogsPageProps, context: any) {
+        console.info("NEW PROPS");
+        if (!SourceUtil.equals(nextProps.source, this.props.source)) {
+            console.info("CLEARNING END");
+            this.state.endReached = false;
+            this.setState(this.state);
+        }
     }
 
     onItemsFiltered(list: ConversationList) {

@@ -15,6 +15,7 @@ import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
 import Interval from "../../../utils/Interval";
 import Noop, { falseBoolNoop } from "../../../utils/Noop";
+import SourceUtil from "../../../utils/Source";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
 import { CompositeFilter, DateFilter, FilterType, UserIDFilter } from "../Filters";
@@ -92,7 +93,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     }
 
     componentWillReceiveProps(nextProps: LogExplorerProps, nextContext: any): void {
-        if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
+        if (!SourceUtil.equals(nextProps.source, this.props.source)) {
             this.state.selectedConvo = undefined;
             if (this.state.filter) {
                 this.state.filter = this.state.filter.copyAndRemove(TYPE_USER_ID);
