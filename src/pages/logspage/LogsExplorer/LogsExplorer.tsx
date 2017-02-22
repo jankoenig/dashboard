@@ -197,7 +197,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         let userId: string;
         let newFilter: UserIDFilter;
         let oldFilter: UserIDFilter = (this.state.filter) ? this.state.filter.getFilter(TYPE_USER_ID) as UserIDFilter : undefined;
-        if (!oldFilter || oldFilter.userID !== userId) {
+
+        if (!oldFilter || oldFilter.userID !== conversation.userId) {
             userId = conversation.userId;
         } else {
             userId = undefined;
