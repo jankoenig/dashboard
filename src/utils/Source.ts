@@ -1,4 +1,4 @@
-import Source from "../models/Source";
+import Source from "../models/source";
 
 export namespace SourceUtil {
     export function equals(s1: Source, s2: Source) {
