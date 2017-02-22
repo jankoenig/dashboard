@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { IconButton } from "react-toolbox/lib/button"
+import { IconButton } from "react-toolbox/lib/button";
 
 interface AmazonEchoProps {
     style?: React.CSSProperties;
@@ -32,7 +32,7 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, AmazonE
 
         this.state = {
             style: { ...AmazonEcho.defaultProps.style, ...props.style }
-        }
+        };
     }
 
     render() {
@@ -44,7 +44,7 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, AmazonE
                     width={this.props.width}
                     height={this.props.height}
                     color={this.props.color} />} />
-        )
+        );
     }
 }
 

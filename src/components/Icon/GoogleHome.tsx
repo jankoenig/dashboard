@@ -31,7 +31,7 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, GoogleH
 
         this.state = {
             style: { ...GoogleHome.defaultProps.style, ...props.style }
-        }
+        };
     }
 
     render() {
@@ -43,7 +43,7 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, GoogleH
                     width={this.props.width}
                     height={this.props.height}
                     color={this.props.color} />} />
-        )
+        );
     }
 }
 class Icon extends React.Component<GoogleHomeProps, any> {
