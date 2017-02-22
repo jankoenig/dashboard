@@ -155,7 +155,6 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         if (!this.state.filter) {
             this.state.filter = new CompositeFilter([filter]);
         } else {
-            console.info("REPLACING");
             this.state.filter = this.state.filter.copyAndAddOrReplace(filter);
         }
         this.setState(this.state);
@@ -193,12 +192,9 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     handleFilterUser(conversation: Conversation) {
         let userId: string;
         let newFilter: UserIDFilter;
-        console.info("Filtering " + conversation.userId);
         if (conversation.userId !== this.state.filteredUser) {
-            console.info("setting");
             userId = conversation.userId;
         } else {
-            console.info("Clearing.");
             userId = undefined;
         }
 
