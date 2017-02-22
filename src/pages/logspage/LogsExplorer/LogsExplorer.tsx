@@ -36,6 +36,7 @@ interface LogExplorerProps {
 interface LogExplorerState {
     filterBarHidden: boolean;
     tailOn: boolean;
+    conversationList: ConversationList;
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
@@ -58,25 +59,32 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
     constructor(props: any) {
         super(props);
-        this.state = {
-            filterBarHidden: false,
-            tailOn: false
-        };
 
         this.handleFilter = this.handleFilter.bind(this);
         this.handleDateFilter = this.handleDateFilter.bind(this);
         this.handleTailChecked = this.handleTailChecked.bind(this);
         this.handleFilterButtonClicked = this.handleFilterButtonClicked.bind(this);
         this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.handleConversationClicked = this.handleConversationClicked.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
+
+        this.state = {
+            filterBarHidden: false,
+            conversationList: getListFromProps(props),
+            tailOn: false
+        };
     }
 
-    componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
+    componentWillReceiveProps(nextProps: LogExplorerProps, nextContext: any): void {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
             this.state.selectedConvo = undefined;
-            this.setState(this.state);
         }
+
+        this.state.conversationList = getListFromProps(nextProps);
+        this.props.onItemsFiltered(this.state.conversationList);
+        this.setState(this.state);
     }
 
     componentWillMount() {
@@ -113,12 +121,12 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.setState(this.state);
     }
 
-    onConversationClicked(conversation: Conversation) {
+    handleConversationClicked(conversation: Conversation) {
         this.state.selectedConvo = conversation;
         this.setState(this.state);
     }
 
-    onScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
+    handleScroll(firstVisibleIndex: number, lastVisibleIndex: number, total: number) {
         if (!this.state.filterBarHidden && browser.isMobileWidth() && !this.props.lockFilterBar) {
             this.state.filterBarHidden = true;
             this.setState(this.state);
@@ -167,6 +175,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
     }
 
+    length(): number {
+        return this.state.conversationList.length;
+    }
+
     filterBarClasses() {
         return classNames(style.filterBar, {
             [style.filterBarHidden]: this.state.filterBarHidden
@@ -180,22 +192,20 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     render(): JSX.Element {
 
         let query: LogQuery;
-        let logs: Log[];
 
         if (this.props.source && this.props.logMap) {
             let logMap = this.props.logMap[this.props.source.id];
             if (logMap) {
                 query = logMap.query;
-                logs = logMap.logs;
             }
         }
 
         let leftSide = (
             <FilterableConversationList
-                conversations={ConversationList.fromLogs(logs)}
+                conversations={this.state.conversationList}
                 filter={this.state.filter}
-                onScroll={this.onScroll.bind(this)}
-                onShowConversation={this.onConversationClicked.bind(this)}
+                onScroll={this.handleScroll}
+                onShowConversation={this.handleConversationClicked}
                 onItemsFiltered={this.props.onItemsFiltered} />
         );
 
@@ -248,4 +258,16 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
 function isToday(date: Date): boolean {
     return moment(date).isSame(moment(), "days");
+}
+
+function getListFromProps(props: LogExplorerProps) {
+    let logs: Log[];
+
+    if (props.source && props.logMap) {
+        let logMap = props.logMap[props.source.id];
+        if (logMap) {
+            logs = logMap.logs;
+        }
+    }
+    return ConversationList.fromLogs(logs);
 }
