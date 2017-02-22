@@ -3,6 +3,7 @@ import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
 
 interface AmazonEchoProps {
+    theme?: string;
     style?: React.CSSProperties;
     width?: string;
     height?: string;
@@ -10,11 +11,7 @@ interface AmazonEchoProps {
     onClick?: () => void;
 }
 
-interface AmazonEchoState {
-    style: React.CSSProperties;
-}
-
-export default class AmazonEcho extends React.Component<AmazonEchoProps, AmazonEchoState> {
+export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
 
     static defaultProps: AmazonEchoProps = {
         style: {
@@ -27,23 +24,13 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, AmazonE
         color: "#FFFFFF"
     };
 
-    constructor(props: AmazonEchoProps) {
-        super(props);
-
-        this.state = {
-            style: { ...AmazonEcho.defaultProps.style, ...props.style }
-        };
-    }
-
     render() {
         return (
             <IconButton
+                theme={this.props.theme}
                 onClick={this.props.onClick}
                 icon={<Icon
-                    style={this.state.style}
-                    width={this.props.width}
-                    height={this.props.height}
-                    color={this.props.color} />} />
+                    {...this.props}/>} />
         );
     }
 }

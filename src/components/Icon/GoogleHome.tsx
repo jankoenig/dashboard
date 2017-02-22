@@ -10,11 +10,7 @@ interface GoogleHomeProps {
     onClick?: () => void;
 }
 
-interface GoogleHomeState {
-    style: React.CSSProperties;
-}
-
-export default class GoogleHome extends React.Component<GoogleHomeProps, GoogleHomeState> {
+export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
     static defaultProps: GoogleHomeProps = {
         style: {
             fontSize: "1rem",
@@ -28,10 +24,6 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, GoogleH
 
     constructor(props: GoogleHomeProps) {
         super(props);
-
-        this.state = {
-            style: { ...GoogleHome.defaultProps.style, ...props.style }
-        };
     }
 
     render() {
@@ -39,10 +31,7 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, GoogleH
             <IconButton
                 onClick={this.props.onClick}
                 icon={<Icon
-                    style={this.state.style}
-                    width={this.props.width}
-                    height={this.props.height}
-                    color={this.props.color} />} />
+                    {...this.props.style}/>} />
         );
     }
 }
