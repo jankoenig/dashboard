@@ -35,9 +35,11 @@ export default class ConversationListView extends React.Component<ConversationLi
         this.state = {
             activeConversations: {}
         };
+
         this.renderItem = this.renderItem.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleIconClick = this.handleIconClick.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
     }
 
     handleClick(conversation: Conversation) {
@@ -76,6 +78,12 @@ export default class ConversationListView extends React.Component<ConversationLi
         return this.state.activeConversations[conversation.id] ? true : false;
     }
 
+    handleScroll(first: number, last: number, total: number) {
+        const realFirst = (first) ? first : 0;
+        const realLast = (last) ? last : total;
+        this.props.onScroll(realFirst, realLast, total);
+    }
+
     renderItem(index: number, key: string): JSX.Element {
         let conversation = this.props.conversations[index];
         return (
@@ -93,7 +101,7 @@ export default class ConversationListView extends React.Component<ConversationLi
         if (this.props.conversations.length > 0) {
             return (
                 <List
-                    onScroll={this.props.onScroll}
+                    onScroll={this.handleScroll}
                     itemRenderer={this.renderItem}
                     length={this.props.conversations.length}
                     type={"simple"} />

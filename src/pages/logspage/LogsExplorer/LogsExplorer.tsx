@@ -8,6 +8,7 @@ import TwoPane from "../../../components/TwoPane";
 import VisiblityWatcher, { VISIBLITY_STATE } from "../../../components/VisibilityWatcher";
 import Conversation from "../../../models/conversation";
 import ConversationList from "../../../models/conversation-list";
+import Log from "../../../models/log";
 import LogQuery from "../../../models/log-query";
 import Source from "../../../models/source";
 import { LogMap } from "../../../reducers/log";
@@ -70,11 +71,6 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
     constructor(props: any) {
         super(props);
-        this.state = {
-            filterBarHidden: false,
-            conversationList: LogExplorer.getList(props),
-            tailOn: false
-        };
 
         this.handleFilter = this.handleFilter.bind(this);
         this.handleDateFilter = this.handleDateFilter.bind(this);
@@ -86,13 +82,21 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleFilterUser = this.handleFilterUser.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
+
+        this.state = {
+            filterBarHidden: false,
+            conversationList: getListFromProps(props),
+            tailOn: false
+        };
     }
 
-    componentWillReceiveProps?(nextProps: LogExplorerProps, nextContext: any): void {
+    componentWillReceiveProps(nextProps: LogExplorerProps, nextContext: any): void {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
             this.state.selectedConvo = undefined;
         }
-        this.state.conversationList = LogExplorer.getList(nextProps);
+
+        this.state.conversationList = getListFromProps(nextProps);
+        this.props.onItemsFiltered(this.state.conversationList);
         this.setState(this.state);
     }
 
@@ -189,6 +193,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleFilter(newFilter);
     }
 
+    length(): number {
+        return this.state.conversationList.length;
+    }
+
     filterBarClasses() {
         return classNames(style.filterBar, {
             [style.filterBarHidden]: this.state.filterBarHidden
@@ -269,4 +277,16 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
 function isToday(date: Date): boolean {
     return moment(date).isSame(moment(), "days");
+}
+
+function getListFromProps(props: LogExplorerProps) {
+    let logs: Log[];
+
+    if (props.source && props.logMap) {
+        let logMap = props.logMap[props.source.id];
+        if (logMap) {
+            logs = logMap.logs;
+        }
+    }
+    return ConversationList.fromLogs(logs);
 }
