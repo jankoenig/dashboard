@@ -83,6 +83,9 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 limit: LIMIT
             });
             this.props.getLogs(query, false);
+            // we're restarting so unset "endReached";
+            this.state.endReached = false;
+            this.setState(this.state);
             return true;
         }
         return false;

@@ -33,10 +33,13 @@ export default class ConversationListView extends React.Component<ConversationLi
         this.state = {
             activeConversations: {}
         };
+
         this.renderItem = this.renderItem.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
 
-    onClick(conversation: Conversation, event: React.MouseEvent) {
+    handleClick(conversation: Conversation, event: React.MouseEvent) {
         // depending on if we in a mobile mode or not,
         // we either only let one active at a time
         // or multiple active at a time.
@@ -68,13 +71,19 @@ export default class ConversationListView extends React.Component<ConversationLi
         return this.state.activeConversations[conversation.id] ? true : false;
     }
 
+    handleScroll(first: number, last: number, total: number) {
+        const realFirst = (first) ? first : 0;
+        const realLast = (last) ? last : total;
+        this.props.onScroll(realFirst, realLast, total);
+    }
+
     renderItem(index: number, key: string): JSX.Element {
         let conversation = this.props.conversations[index];
         return (
             <ConversationListViewItem
                 key={index + "." + conversation.id}
                 conversation={conversation}
-                onClick={this.onClick.bind(this)}
+                onClick={this.handleClick}
                 active={this.isConversationActive(conversation)}
                 showInteractionOnActive={this.props.expandListItemWhenActive} />
         );
@@ -84,7 +93,7 @@ export default class ConversationListView extends React.Component<ConversationLi
         if (this.props.conversations.length > 0) {
             return (
                 <List
-                    onScroll={this.props.onScroll}
+                    onScroll={this.handleScroll}
                     itemRenderer={this.renderItem}
                     length={this.props.conversations.length}
                     type={"simple"} />
