@@ -22,11 +22,12 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
     };
 
     render() {
-        let { style, theme, ...iconProps } = this.props;
+        let { style, theme, onClick, ...iconProps } = this.props;
         return (
             <IconButton
                 style={style}
                 theme={theme}
+                onClick={onClick}
                 icon={<Icon
                     {...iconProps} />} />
         );

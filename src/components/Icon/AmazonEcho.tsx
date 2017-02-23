@@ -23,11 +23,12 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
     };
 
     render() {
-        let { style, theme, ...iconProps } = this.props;
+        let { style, theme, onClick, ...iconProps } = this.props;
         return (
             <IconButton
                 style={style}
                 theme={theme}
+                onClick={onClick}
                 icon={<Icon
                     {...iconProps} />} />
         );

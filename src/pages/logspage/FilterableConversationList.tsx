@@ -12,9 +12,10 @@ import { FilterType } from "./Filters";
 
 export interface FilterableConversationListProps {
     conversations: ConversationList;
+    iconStyle?: React.CSSProperties;
+    filter?: FilterType;
     onShowConversation?: (conversation: Conversation) => void;
     onIconClick?: (conversation: Conversation) => void;
-    filter?: FilterType;
     onItemsFiltered?: (shownConversations: ConversationList) => void;
     onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
 }
@@ -30,8 +31,9 @@ export class FilterableConversationList extends React.Component<FilterableConver
         onShowConversation: Noop,
         onItemsFiltered: Noop,
         onIconClick: Noop,
+        onScroll: Noop,
+        iconStyle: undefined,
         filter: undefined,
-        onScroll: undefined
     };
 
     constructor(props: FilterableConversationListProps) {
@@ -72,13 +74,13 @@ export class FilterableConversationList extends React.Component<FilterableConver
     }
 
     render() {
+        let { onShowConversation, ...others } = this.props;
         return (
             <ConversationListView
-                onScroll={this.props.onScroll}
+                {...others}
                 conversations={this.state.shownConversations}
                 expandListItemWhenActive={browser.isMobileWidth()}
-                onClick={this.props.onShowConversation}
-                onIconClick={this.props.onIconClick}
+                onClick={onShowConversation}
                 onEmpty={this.onEmpty} />
         );
     }
