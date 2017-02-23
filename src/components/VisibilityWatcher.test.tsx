@@ -24,7 +24,6 @@ describe("VisibilityWatcher", function () {
         let wrapper: ReactWrapper<any, any>;
 
         before(function () {
-            console.log(document);
             addEventListener = sinon.stub(document, "addEventListener");
             removeEventListener = sinon.stub(document, "removeEventListener");
         });

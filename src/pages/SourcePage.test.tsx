@@ -293,7 +293,6 @@ describe("Source Page", function () {
                     });
 
                     it("Tests the delete action called GoHome once removed.", function() {
-                        console.info("CHECKING");
                         expect(goHome).to.be.calledOnce;
                     });
                 });

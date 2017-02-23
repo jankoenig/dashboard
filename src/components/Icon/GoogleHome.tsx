@@ -1,11 +1,15 @@
 import * as React from "react";
 
 import { IconButton } from "react-toolbox/lib/button";
+import Tooltip from "react-toolbox/lib/tooltip";
 
 const HomeTheme = require("./home-theme.scss");
 
+const TooltipButton = Tooltip(IconButton);
+
 interface GoogleHomeProps {
     theme?: string;
+    tooltip?: string;
     style?: React.CSSProperties;
     width?: string;
     height?: string;
@@ -22,12 +26,13 @@ export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
     };
 
     render() {
-        let { style, theme, onClick, ...iconProps } = this.props;
+        let { style, theme, onClick, tooltip, ...iconProps } = this.props;
         return (
-            <IconButton
+            <TooltipButton
                 style={style}
                 theme={theme}
                 onClick={onClick}
+                tooltip={tooltip}
                 icon={<Icon
                     {...iconProps} />} />
         );

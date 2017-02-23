@@ -40,6 +40,7 @@ interface LogExplorerState {
     tailOn: boolean;
     conversationList: ConversationList;
     iconStyle?: React.CSSProperties;
+    iconTooltip?: string;
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
@@ -93,6 +94,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.state = {
             filterBarHidden: false,
             conversationList: getListFromProps(props),
+            iconTooltip: "Filter user",
             tailOn: false
         };
     }
@@ -201,18 +203,22 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
     handleFilterUser(conversation: Conversation) {
         let userId: string;
         let style: React.CSSProperties;
+        let tooltip: string;
         let newFilter: UserIDFilter;
         let oldFilter: UserIDFilter = (this.state.filter) ? this.state.filter.getFilter(TYPE_USER_ID) as UserIDFilter : undefined;
 
         if (!oldFilter || oldFilter.userID !== conversation.userId) {
             userId = conversation.userId;
             style = LogExplorer.activeIconStyle;
+            tooltip = "Unset filter";
         } else {
             userId = undefined;
             style = undefined;
+            tooltip = "Filter user";
         }
 
         this.state.iconStyle = style;
+        this.state.iconTooltip = tooltip;
         this.setState(this.state);
 
         newFilter = new UserIDFilter(userId);
@@ -249,6 +255,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                 conversations={this.state.conversationList}
                 filter={this.state.filter}
                 iconStyle={this.state.iconStyle}
+                iconTooltip={this.state.iconTooltip}
                 onScroll={this.handleScroll}
                 onShowConversation={this.handleConversationClicked}
                 onIconClick={this.handleFilterUser}

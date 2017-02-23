@@ -12,6 +12,7 @@ interface ConversationListViewItemProps {
     readonly conversation: Conversation;
     readonly onClick: (conversation: Conversation) => void;
     readonly onIconClick: (conversation: Conversation) => void;
+    readonly iconTooltip?: string;
     readonly iconStyle?: React.CSSProperties;
     readonly active?: boolean;
     readonly showInteractionOnActive?: boolean;
@@ -93,7 +94,6 @@ export default class ConversationListViewItem extends React.Component<Conversati
     }
 
     handleIconClick() {
-        console.info("ICON CLICK");
         this.props.onIconClick(this.props.conversation);
     }
 
@@ -119,6 +119,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
                             style={ConversationListViewItem.iconWrapperStyle} >
                             <Icon
                                 style={this.props.iconStyle}
+                                tooltip={this.props.iconTooltip}
                                 onClick={this.handleIconClick}
                                 color={this.props.conversation.userColors.fill}
                                 origin={this.props.conversation.origin} />
@@ -170,6 +171,7 @@ interface IconProps {
     origin: Origin;
     color: string;
     style?: React.CSSProperties;
+    tooltip?: string;
     onClick?: () => void;
 }
 

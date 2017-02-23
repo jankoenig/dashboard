@@ -10,6 +10,7 @@ export interface ConversationListViewProps {
     readonly conversations: ConversationList;
     readonly expandListItemWhenActive?: boolean;
     readonly iconStyle?: React.CSSProperties;
+    readonly iconTooltip?: string;
     readonly onClick?: (conversation: Conversation) => void;
     readonly onIconClick?: (conversatino: Conversation) => void;
     readonly onEmpty?: () => JSX.Element;

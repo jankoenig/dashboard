@@ -13,6 +13,7 @@ import { FilterType } from "./Filters";
 export interface FilterableConversationListProps {
     conversations: ConversationList;
     iconStyle?: React.CSSProperties;
+    iconTooltip?: string;
     filter?: FilterType;
     onShowConversation?: (conversation: Conversation) => void;
     onIconClick?: (conversation: Conversation) => void;

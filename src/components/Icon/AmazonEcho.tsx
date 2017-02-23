@@ -1,12 +1,16 @@
 import * as React from "react";
 
 import { IconButton } from "react-toolbox/lib/button";
+import Tooltip from "react-toolbox/lib/tooltip";
 
 const IconTheme = require("./echo-theme.scss");
+
+const TooltipButton = Tooltip(IconButton);
 
 interface AmazonEchoProps {
     theme?: string;
     style?: React.CSSProperties;
+    tooltip?: string;
     width?: string;
     height?: string;
     color?: string;
@@ -23,12 +27,13 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
     };
 
     render() {
-        let { style, theme, onClick, ...iconProps } = this.props;
+        let { style, theme, onClick, tooltip, ...iconProps } = this.props;
         return (
-            <IconButton
+            <TooltipButton
                 style={style}
                 theme={theme}
                 onClick={onClick}
+                tooltip={tooltip}
                 icon={<Icon
                     {...iconProps} />} />
         );
