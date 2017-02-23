@@ -121,6 +121,21 @@ describe("Filters.tsx", function () {
             expect(filter.getFilter(fail.type).type).to.equal(fail.type);
         });
 
+        it("Tests returns an undefined from getFilter if not found.", function() {
+            let success = new SuccessFilter();
+            let fail = new FailFilter();
+            let filter = new CompositeFilter([success, fail]);
+            expect(filter.getFilter("Can not find.")).to.be.undefined;
+        });
+
+        it("Tests returns an undefined from getFilter if searching for undefined.", function() {
+            let success = new SuccessFilter();
+            let fail = new FailFilter();
+            let filter = new CompositeFilter([success, fail]);
+
+            expect(filter.getFilter(undefined)).to.be.undefined;
+        });
+
         describe("Copy and replace", function () {
             let arr: FilterType[];
             let filter: CompositeFilter;
@@ -174,6 +189,47 @@ describe("Filters.tsx", function () {
 
                 expect(newFilter.getFilter(newSuccess.type)).to.equal(newSuccess);
                 expect(newFilter.getFilter(arr[0].type)).to.not.equal(arr[arr.length - 1]);
+            });
+        });
+
+        describe("Copy and Remove", function () {
+            let arr: FilterType[];
+            let filter: CompositeFilter;
+
+            before(function () {
+                arr = [];
+                for (let i = 0; i < 10; ++i) {
+                    let success: SuccessFilter = new SuccessFilter();
+                    success.type = success.type + i.toString();
+
+                    arr.push(success);
+                }
+
+                filter = new CompositeFilter(arr);
+            });
+
+            it("Tests the copy and remove method from beginning.", function () {
+                let newFilter = filter.copyAndRemove(arr[0].type);
+
+                expect(newFilter.getFilter(arr[0].type)).to.not.exist;
+            });
+
+            it("Tests the copy and remove method from middle.", function () {
+                let newFilter = filter.copyAndRemove(arr[arr.length - 4].type);
+
+                expect(newFilter.getFilter(arr[arr.length - 4].type)).to.not.exist;
+            });
+
+            it("Tests the copy and remove method from end.", function () {
+                let newFilter = filter.copyAndRemove(arr[arr.length - 1].type);
+
+                expect(newFilter.getFilter(arr[arr.length - 1].type)).to.not.exist;
+            });
+
+            it("Tests the copy and remove method does not remove anything if it doesn't exist.", function () {
+                let newFilter = filter.copyAndRemove("Doesn't exist.");
+                expect(newFilter.type).to.deep.equal(filter.type);
+                expect(newFilter.filters).to.deep.equal(filter.filters);
             });
         });
     });
@@ -458,63 +514,63 @@ describe("Filters.tsx", function () {
         });
     });
 
-    describe("UserID filter", function() {
+    describe("UserID filter", function () {
         let convo: Conversation;
 
-        before(function() {
+        before(function () {
             convo = createConvo({
                 request: new Log(requestProps),
                 response: new Log(responseProps)
             });
         });
 
-        it ("Tests the user filter returns the correct type.", function() {
+        it("Tests the user filter returns the correct type.", function () {
             const filter: UserIDFilter = new UserIDFilter("amz");
             expect(filter.type).to.equal(TYPE_USER_ID);
         });
 
-        it ("Tests the user filter returns a filter.", function() {
+        it("Tests the user filter returns a filter.", function () {
             const filter: UserIDFilter = new UserIDFilter("amz");
             expect(filter.filter).to.exist;
         });
 
-        it ("Tests that the user filter matches a full user id.", function() {
+        it("Tests that the user filter matches a full user id.", function () {
             const filter: UserIDFilter = new UserIDFilter(fullUserID);
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the user filter matches a partial match from the beginning.", function() {
+        it("Tests that the user filter matches a partial match from the beginning.", function () {
             const filter: UserIDFilter = new UserIDFilter(fullUserID.slice(0, 5));
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the user filter matches a partial match from the middle.", function() {
+        it("Tests that the user filter matches a partial match from the middle.", function () {
             const filter: UserIDFilter = new UserIDFilter(fullUserID.slice(0, 5));
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the user filter matches a partial match from the end.", function() {
+        it("Tests that the user filter matches a partial match from the end.", function () {
             const length = fullUserID.length;
             const filter: UserIDFilter = new UserIDFilter(fullUserID.slice(length - 10));
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the user filter matches an empty string.", function() {
+        it("Tests that the user filter matches an empty string.", function () {
             const filter: UserIDFilter = new UserIDFilter("");
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests that the user filter matches an undefined.", function() {
+        it("Tests that the user filter matches an undefined.", function () {
             const filter: UserIDFilter = new UserIDFilter(undefined);
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Test that user filter does not match a bad user name.", function() {
+        it("Test that user filter does not match a bad user name.", function () {
             const filter: UserIDFilter = new UserIDFilter("Really weird user ID");
             expect(filter.filter(convo)).to.be.false;
         });
 
-        it ("Tests that the user filter returns false when the convo doesn't have a user.", function() {
+        it("Tests that the user filter returns false when the convo doesn't have a user.", function () {
             const newConvo = createConvo({
                 request: new Log(responseProps),
                 response: new Log(responseProps)
@@ -534,37 +590,37 @@ describe("Filters.tsx", function () {
             });
         });
 
-        it("Tests the request filter returns the correct type.", function() {
+        it("Tests the request filter returns the correct type.", function () {
             const filter = new RequestFilter();
             expect(filter.type).to.equal(TYPE_REQUEST);
         });
 
-        it ("Tests the request filter returns the correct value with default constructor", function() {
+        it("Tests the request filter returns the correct value with default constructor", function () {
             const filter = new RequestFilter();
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests the request filter returns the correct value when undefined is passed in.", function() {
+        it("Tests the request filter returns the correct value when undefined is passed in.", function () {
             const filter = new RequestFilter();
             expect(filter.filter(undefined)).to.be.true;
         });
 
-        it ("Tests the request filter returns the correct value when request exists.", function() {
+        it("Tests the request filter returns the correct value when request exists.", function () {
             const filter = new RequestFilter("TestRequest");
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests the request filter returns the correct value when request exists and with partial value.", function() {
+        it("Tests the request filter returns the correct value when request exists and with partial value.", function () {
             const filter = new RequestFilter("estReques");
             expect(filter.filter(convo)).to.be.true;
         });
 
-        it ("Tests the request filter returns the correct value when request does not exist.", function() {
+        it("Tests the request filter returns the correct value when request does not exist.", function () {
             const filter = new RequestFilter("Does not exist request");
             expect(filter.filter(convo)).to.be.false;
         });
 
-        it ("Tests the request filter returns the correct value when there is no type.", function() {
+        it("Tests the request filter returns the correct value when there is no type.", function () {
             const filter = new RequestFilter("TestRequest");
             const newConvo = createConvo({
                 request: new Log(responseProps), // Response doesn't have a type so we'll just use that.
@@ -612,13 +668,13 @@ describe("Filters.tsx", function () {
         });
     });
 
-    describe("Origin filter", function() {
-        it ("Tests the Origin filter returns the correct type.", function() {
+    describe("Origin filter", function () {
+        it("Tests the Origin filter returns the correct type.", function () {
             const filter: OriginFilter = new OriginFilter(Origin.AmazonAlexa);
             expect(filter.type).to.equal(TYPE_ORIGIN);
         });
 
-        it ("Tests the Origin filter returns true on correct origin.", function() {
+        it("Tests the Origin filter returns true on correct origin.", function () {
             const filter: OriginFilter = new OriginFilter(Origin.AmazonAlexa);
             const newConvo = createConvo({
                 request: new Log(responseProps),
@@ -628,7 +684,7 @@ describe("Filters.tsx", function () {
             expect(filter.filter(newConvo)).to.be.true;
         });
 
-        it ("Tests the Origin filter returns true on bad origin.", function() {
+        it("Tests the Origin filter returns true on bad origin.", function () {
             const filter: OriginFilter = new OriginFilter(Origin.GoogleHome);
             const newConvo = createConvo({
                 request: new Log(responseProps),
@@ -638,7 +694,7 @@ describe("Filters.tsx", function () {
             expect(filter.filter(newConvo)).to.be.false;
         });
 
-        it ("Tests the Origin filter returns true on undefined origin.", function() {
+        it("Tests the Origin filter returns true on undefined origin.", function () {
             const filter: OriginFilter = new OriginFilter(undefined);
             const newConvo = createConvo({
                 request: new Log(responseProps),
