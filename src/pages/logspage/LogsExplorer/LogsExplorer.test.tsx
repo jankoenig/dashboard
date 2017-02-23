@@ -203,7 +203,7 @@ describe("LogExplorer", function () {
             });
 
             after(function () {
-                intervalStub.reset();
+                intervalStub.restore();
             });
 
             it("Tests there is a value and callback passed to the exectuor.", function () {
