@@ -21,23 +21,39 @@ describe("ConversationListViewItem", function () {
     let li = wrapper.find("li");
     let div = li.find("div").first();
 
+    afterEach(function () {
+        onClick.reset();
+        onIconClick.reset();
+    });
+
     it("renders a li", function () {
         expect(li).to.have.length(1);
     });
+
     it("has the right background color", function () {
         expect(div.props().style.backgroundColor).to.equal("#FAFAFA");
     });
+
     it("renders the Icon", function () {
         expect(wrapper.find("Icon")).to.have.length(1);
     });
+
     it("does not render a Pill", function () {
         expect(wrapper.find("Pill")).to.have.length(0);
     });
+
     it("does not render an Interaction", function () {
         expect(wrapper.find("Interaction")).to.have.length(0);
     });
+
     it("does not render a Button", function () {
         expect(wrapper.find("Button")).to.have.length(0);
+    });
+
+    it("activates the icon click", function () {
+        wrapper.find("Icon").at(0).simulate("click");
+        expect(onIconClick).to.have.been.calledOnce;
+        expect(onIconClick).to.have.been.calledWith(conversation);
     });
 
     describe("when active", function () {
@@ -50,9 +66,11 @@ describe("ConversationListViewItem", function () {
         it("renders one li", function () {
             expect(wrapper.find("li")).to.have.length(1);
         });
+
         it("renders the background color", function () {
             expect(div.props().style.backgroundColor).to.equal("#90A4AE");
         });
+
         describe("with showInteractionOnActive", function () {
 
             wrapper.setProps({ showInteractionOnActive: true });
@@ -63,6 +81,7 @@ describe("ConversationListViewItem", function () {
             });
         });
     });
+
     describe("with a conversation that has an output with an error", function () {
         it("renders the error pill", function () {
             let onClick = sinon.spy();
