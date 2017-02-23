@@ -62,14 +62,14 @@ export interface Conversation {
 
 export function createConvo(props: ConversationProperties): Conversation {
     if (props.request) {
-        const requestPayload = props.request.payload;
+        const requestPayload = props.request.payload || {};
         if (requestPayload.request) { // amazon
             return new AlexaConversation(props);
         } else if (requestPayload.originalRequest) { // google
             return new GoogleHomeConversation(props);
         }
     } else if (props.response) {
-        const responsePayload = props.response.payload;
+        const responsePayload = props.response.payload || {};
         if (responsePayload.response) {
             return new AlexaConversation(props);
         } else if (responsePayload.speech) {
