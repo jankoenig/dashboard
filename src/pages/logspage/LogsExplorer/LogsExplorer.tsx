@@ -23,6 +23,9 @@ import { TYPE_USER_ID } from "../Filters";
 
 const style = require("./style.scss");
 
+const TOOLTIP_ACTIVE = "Unset Filter";
+const TOOLTIP_DEACTIVE = "Filter User";
+
 const UPDATE_TIME_MS = 5000;
 
 interface LogExplorerProps {
@@ -94,7 +97,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.state = {
             filterBarHidden: false,
             conversationList: getListFromProps(props),
-            iconTooltip: "Filter user",
+            iconTooltip: TOOLTIP_DEACTIVE,
             tailOn: false
         };
     }
@@ -104,6 +107,8 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             this.state.selectedConvo = undefined;
             if (this.state.filter) {
                 this.state.filter = this.state.filter.copyAndRemove(TYPE_USER_ID);
+                this.state.iconStyle = undefined;
+                this.state.iconTooltip = TOOLTIP_DEACTIVE;
             }
         }
 
@@ -210,11 +215,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         if (!oldFilter || oldFilter.userID !== conversation.userId) {
             userId = conversation.userId;
             style = LogExplorer.activeIconStyle;
-            tooltip = "Unset filter";
+            tooltip = TOOLTIP_ACTIVE;
         } else {
             userId = undefined;
             style = undefined;
-            tooltip = "Filter user";
+            tooltip = TOOLTIP_DEACTIVE;
         }
 
         this.state.iconStyle = style;
