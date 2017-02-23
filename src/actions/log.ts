@@ -100,7 +100,7 @@ export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: R
  */
 export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<PageResults> {
     const oldLogs = logQueryEvent.logs || [];
-    const lastLog = (oldLogs.length > 0) ? oldLogs[oldLogs.length - 1] : undefined;
+    const lastLog = oldLogs[oldLogs.length - 1];
     const endTime = (lastLog) ? new Date(lastLog.timestamp) : logQueryEvent.query.endTime;
     const query = new LogQuery({
         source: logQueryEvent.query.source,
@@ -141,7 +141,7 @@ export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatc
  */
 export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Redux.Dispatch<Log[]>) => Promise<PageResults> {
     const oldLogs = logQueryEvent.logs || [];
-    const firstLog = (oldLogs.length > 0) ? oldLogs[0] : undefined;
+    const firstLog = oldLogs[0];
     const startTime = (firstLog) ? new Date(firstLog.timestamp) : logQueryEvent.query.startTime;
     const query = new LogQuery({
         source: logQueryEvent.query.source,
