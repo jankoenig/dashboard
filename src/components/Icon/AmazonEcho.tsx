@@ -25,8 +25,7 @@ export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
     render() {
         return (
             <IconButton
-                theme={this.props.theme}
-                onClick={this.props.onClick}
+                {...this.props}
                 icon={<Icon
                     {...this.props} />} />
         );
@@ -38,7 +37,7 @@ export class Icon extends React.Component<AmazonEchoProps, any> {
     // tslint:disable
     render() {
         return (
-            <svg style={this.props.style} width={this.props.width} height={this.props.height} viewBox="0 0 43 97" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg {...this.props} viewBox="0 0 43 97" preserveAspectRatio="xMinYMin" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <g id="Page-1" stroke="none" strokeWidth="3" fill="none" fillRule="evenodd">
                     <g id="simple_alexa" fillRule="nonzero">
                         <g id="noun_646078">

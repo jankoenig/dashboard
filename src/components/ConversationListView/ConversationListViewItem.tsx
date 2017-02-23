@@ -117,7 +117,7 @@ export default class ConversationListViewItem extends React.Component<Conversati
                             style={ConversationListViewItem.iconWrapperStyle} >
                             <Icon
                                 onClick={this.handleIconClick}
-                                fill={this.props.conversation.userColors.fill}
+                                color={this.props.conversation.userColors.fill}
                                 origin={this.props.conversation.origin} />
                         </div>
                         <span>
@@ -165,24 +165,30 @@ export default class ConversationListViewItem extends React.Component<Conversati
 
 interface IconProps {
     origin: Origin;
-    fill: string;
+    color: string;
+    style?: React.CSSProperties;
     onClick?: () => void;
 }
 
 class Icon extends React.Component<IconProps, any> {
     render() {
+        let { origin, ...others } = this.props;
+
         let icon: JSX.Element;
-        if (this.props.origin === Origin.GoogleHome) {
-            icon = (
-                <GoogleHomeIcon
-                    color={this.props.fill}
-                    onClick={this.props.onClick} />
-            );
-        } else {
-            icon = (
-                <AmazonEchoIcon
-                    color={this.props.fill}
-                    onClick={this.props.onClick} />);
+
+        switch (origin) {
+            case Origin.GoogleHome:
+                icon = (
+                    <GoogleHomeIcon
+                        {...others} />
+                );
+                break;
+
+            default:
+                icon = (
+                    <AmazonEchoIcon
+                        {...others} />
+                );
         }
         return icon;
     }
