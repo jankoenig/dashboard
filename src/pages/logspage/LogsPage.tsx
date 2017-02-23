@@ -90,10 +90,11 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 endTime: dateFilter.endDate,
                 limit: LIMIT
             });
-            this.props.getLogs(query, false);
-            // we're restarting so unset "endReached";
-            this.state.endReached = false;
-            this.setState(this.state);
+            this.props.getLogs(query, false).then((logs: Log[]) => {
+                // we're restarting so unset "endReached";
+                this.state.endReached = false;
+                this.setState(this.state);
+            });
             return true;
         }
         return false;
@@ -116,6 +117,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         if (!this.state.endReached) {
             const event: LogQueryEvent = this.getLogQueryEvent();
             if (event) {
+                console.info("NEXT");
                 this.props.newPage(event, LIMIT).then((results: PageResults) => {
                     if (results.newLogs.length === 0) {
                         this.state.endReached = true;
