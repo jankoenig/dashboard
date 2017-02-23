@@ -39,6 +39,7 @@ interface LogExplorerState {
     filterBarHidden: boolean;
     tailOn: boolean;
     conversationList: ConversationList;
+    iconStyle?: React.CSSProperties;
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
@@ -55,6 +56,10 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         onItemsFiltered: Noop,
         onScroll: Noop,
         onGetNewLogs: Noop
+    };
+
+    static activeIconStyle: React.CSSProperties = {
+        background: "#AAAAAA"
     };
 
     static getList(props: LogExplorerProps): ConversationList {
@@ -195,14 +200,20 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
 
     handleFilterUser(conversation: Conversation) {
         let userId: string;
+        let style: React.CSSProperties;
         let newFilter: UserIDFilter;
         let oldFilter: UserIDFilter = (this.state.filter) ? this.state.filter.getFilter(TYPE_USER_ID) as UserIDFilter : undefined;
 
         if (!oldFilter || oldFilter.userID !== conversation.userId) {
             userId = conversation.userId;
+            style = LogExplorer.activeIconStyle;
         } else {
             userId = undefined;
+            style = undefined;
         }
+
+        this.state.iconStyle = style;
+        this.setState(this.state);
 
         newFilter = new UserIDFilter(userId);
         this.handleFilter(newFilter);
@@ -237,6 +248,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             <FilterableConversationList
                 conversations={this.state.conversationList}
                 filter={this.state.filter}
+                iconStyle={this.state.iconStyle}
                 onScroll={this.handleScroll}
                 onShowConversation={this.handleConversationClicked}
                 onIconClick={this.handleFilterUser}
