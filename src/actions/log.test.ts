@@ -202,7 +202,7 @@ describe("Log Actions", function () {
                     });
                 });
 
-                it("Checks the query is correct.", function() {
+                it("Checks the query is correct.", function () {
                     return store.dispatch(log.nextPage(originalQuery, 50)).then(function (results: log.PageResults) {
                         const origQuery = originalQuery.query;
                         const origLogs = originalQuery.logs;
@@ -215,8 +215,8 @@ describe("Log Actions", function () {
                     });
                 });
 
-                it("Checks the query is correct when logs are undefined.", function() {
-                    const newQuery = {... originalQuery};
+                it("Checks the query is correct when logs are undefined.", function () {
+                    const newQuery = { ...originalQuery };
                     newQuery.logs = undefined;
                     return store.dispatch(log.nextPage(newQuery, 50)).then(function (results: log.PageResults) {
                         const origQuery = originalQuery.query;
@@ -229,8 +229,8 @@ describe("Log Actions", function () {
                     });
                 });
 
-                it("Checks the query is correct when logs are empty.", function() {
-                    const newQuery = {... originalQuery};
+                it("Checks the query is correct when logs are empty.", function () {
+                    const newQuery = { ...originalQuery };
                     newQuery.logs = [];
                     return store.dispatch(log.nextPage(newQuery, 50)).then(function (results: log.PageResults) {
                         const origQuery = originalQuery.query;
@@ -285,7 +285,7 @@ describe("Log Actions", function () {
                     });
                 });
 
-                it("Checks the error is not null.", function() {
+                it("Checks the error is not null.", function () {
                     return store.dispatch(log.nextPage(originalQuery, 50)).catch(function (err: Error) {
                         expect(err).to.exist;
                     });
@@ -363,13 +363,53 @@ describe("Log Actions", function () {
                     });
                 });
 
-                it ("Tests the proper results were returned..", function() {
+                it("Tests the proper results were returned..", function () {
                     const joined: Log[] = nextPage.slice().concat(mockPayload);
 
                     return store.dispatch(log.findLatest(originalQueryEvent)).then(function (results: log.PageResults) {
                         expect(results.totalLogs).to.deep.equal(joined);
                         expect(results.newLogs).to.deep.equal(nextPage);
                         expect(results.oldLogs).to.deep.equal(mockPayload);
+                    });
+                });
+
+                it("Tests the query.", function() {
+                    return store.dispatch(log.findLatest(originalQueryEvent)).then(function (results: log.PageResults) {
+                        const origLogs = originalQueryEvent.logs;
+                        const origQuery = originalQueryEvent.query;
+                        const query = serviceStub.args[0][0] as LogQuery;
+
+                        expect(query.startTime).to.equalDate(origLogs[0].timestamp);
+                        expect(query.endTime).to.equalDate(new Date());
+                        expect(query.source).to.equal(origQuery.source);
+                    });
+                });
+
+                it("Tests the query when logs are undefined.", function() {
+                    const queryCopy = {...originalQueryEvent};
+                    queryCopy.logs = undefined;
+
+                    return store.dispatch(log.findLatest(queryCopy)).then(function (results: log.PageResults) {
+                        const origQuery = queryCopy.query;
+                        const query = serviceStub.args[0][0] as LogQuery;
+
+                        expect(query.startTime).to.equalDate(origQuery.startTime);
+                        expect(query.endTime).to.equalDate(new Date());
+                        expect(query.source).to.equal(origQuery.source);
+                    });
+                });
+
+                it("Tests the query when logs are empty.", function() {
+                    const queryCopy = {...originalQueryEvent};
+                    queryCopy.logs = [];
+
+                    return store.dispatch(log.findLatest(queryCopy)).then(function (results: log.PageResults) {
+                        const origQuery = queryCopy.query;
+                        const query = serviceStub.args[0][0] as LogQuery;
+
+                        expect(query.startTime).to.equalDate(origQuery.startTime);
+                        expect(query.endTime).to.equalDate(new Date());
+                        expect(query.source).to.equal(origQuery.source);
                     });
                 });
             });
