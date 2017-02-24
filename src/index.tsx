@@ -16,6 +16,7 @@ import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
 import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
+import IntegrationPage from "./pages/integration/StateIntegrationPage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/logspage/LogsPage";
 import NewSourcePage from "./pages/NewSourcePage";
@@ -59,12 +60,11 @@ let firebaseConfig = {
 };
 
 // Timing the firebase initialize
-let firebaseInitializeTimer = new Date();
+console.time("FirebaseInitialize");
 
 Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
-    let firebaseInitializeTime = +new Date() - +firebaseInitializeTimer;
-    console.log("Firebase took " + firebaseInitializeTime + "ms to initialize");
+    console.timeEnd("FirebaseInitialize");
     const lastUser = store.getState().session.user;
     // If there is a user, set it
     if (user) {
@@ -136,6 +136,7 @@ let render = function () {
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
                         <IndexRoute component={SourcePage} />
                         <Route path="/skills/:sourceId/logs" component={LogsPage} />
+                        <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
                     </Route>
                     <Route path="*" component={NotFoundPage} />
                 </Route>

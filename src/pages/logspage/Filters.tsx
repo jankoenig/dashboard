@@ -1,20 +1,50 @@
 import * as moment from "moment";
 
-import Conversation from "../../models/conversation";
+import Conversation, { Origin } from "../../models/conversation";
 import StringUtils from "../../utils/string";
 
+export const TYPE_COMPOSITE: string = "Composite";
+export const TYPE_LOG_LEVEL: string = "Log Level";
+export const TYPE_ID: string = "ID";
 export const TYPE_DATE: string = "Date";
+export const TYPE_REQUEST: string = "Request";
+export const TYPE_INTENT: string = "Intent";
+export const TYPE_EXCEPTION: string = "Exception";
+export const TYPE_ORIGIN: string = "Origin";
 
 export interface FilterType {
     type: string;
     filter: (item: Conversation) => boolean;
 }
 
+/**
+ * Composite filter is an immutable object of Filters in which it will only return "true"
+ * when all filters pass.
+ *
+ * It is designed with the assumption that there will only be one filter for each type.
+ * This is not enforced in the constructor, but the other methods assume this so it is the user's
+ * responsibility to ensure that it is true.
+ */
 export class CompositeFilter implements FilterType {
     filters: FilterType[];
+    type: string = TYPE_COMPOSITE;
 
     constructor(filters: FilterType[]) {
         this.filters = filters;
+    }
+
+    /**
+     * creates a new CompositeFilter with the added filter.
+     */
+    copyAndAddOrReplace(filter: FilterType): CompositeFilter {
+        let copy = this.filters.slice();
+        for (let i = 0; i < this.filters.length; ++i) {
+            if (this.filters[i].type === filter.type) {
+                copy.splice(i, 1);
+            }
+        }
+        copy.push(filter);
+        return new CompositeFilter(copy);
     }
 
     getFilter(type: string): FilterType | undefined {
@@ -26,13 +56,9 @@ export class CompositeFilter implements FilterType {
         return undefined;
     }
 
-    get type(): string {
-        return "Composite";
-    }
-
     get filter(): (item: Conversation) => boolean {
         let filters = this.filters;
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             for (let filter of filters) {
                 if (!filter.filter(item)) {
                     return false;
@@ -45,35 +71,29 @@ export class CompositeFilter implements FilterType {
 
 export class LogLevelFilter implements FilterType {
     logType?: string;
+    type: string = TYPE_LOG_LEVEL;
 
     constructor(type?: string) {
         this.logType = type;
     }
 
-    get type(): string {
-        return "Log Level";
-    }
-
     get filter(): (item: Conversation) => boolean {
         let type = this.logType;
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             if (type === undefined || type.trim() === "") {
                 return true;
             }
-            return item !== undefined && item.hasOutputType(type);
+            return item !== undefined && (item.isType(type) || item.hasOutputType(type));
         };
     }
 }
 
 export class IDFilter implements FilterType {
     id: string;
+    type: string = "ID";
 
     constructor(id?: string) {
         this.id = id;
-    }
-
-    get type(): string {
-        return "ID";
     }
 
     get filter(): (item: Conversation) => boolean {
@@ -88,14 +108,11 @@ export class IDFilter implements FilterType {
 export class DateFilter implements FilterType {
     startMoment: moment.Moment;
     endMoment: moment.Moment;
+    type: string = TYPE_DATE;
 
     constructor(startDate?: Date, endDate?: Date) {
         this.startMoment = (startDate) ? moment(startDate) : undefined;
         this.endMoment = (endDate) ? moment(endDate) : undefined;
-    }
-
-    get type(): string {
-        return TYPE_DATE;
     }
 
     get startDate(): Date {
@@ -119,4 +136,86 @@ export class DateFilter implements FilterType {
             return false;
         };
     }
+}
+
+export class IntentFilter implements FilterType {
+    intent: string | undefined;
+    type: string = TYPE_INTENT;
+
+    constructor(intent?: string) {
+        this.intent = intent;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const intent = this.intent;
+        return function (item: Conversation): boolean {
+            if (!intent) {
+                return true;
+            }
+
+            if (item && item.intent) {
+                return checkString(intent, item.intent);
+            } else {
+                return false;
+            }
+        };
+    }
+}
+
+export class RequestFilter implements FilterType {
+    request: string | undefined;
+    type: string = TYPE_REQUEST;
+
+    constructor(request?: string) {
+        this.request = request;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const request = this.request;
+        return function (item: Conversation): boolean {
+            if (!request) {
+                return true;
+            }
+            if (item && item.requestType) {
+                return checkString(request, item.requestType);
+            } else {
+                return false;
+            }
+        };
+    }
+}
+
+export class ExceptionFilter implements FilterType {
+    type: string = TYPE_EXCEPTION;
+
+    get filter(): (item: Conversation) => boolean {
+        return function (item: Conversation): boolean {
+            return item.hasException;
+        };
+    }
+}
+
+export class OriginFilter implements FilterType {
+    type: string = TYPE_ORIGIN;
+    origin: Origin;
+
+    constructor(origin: Origin) {
+        this.origin = origin;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const origin = this.origin;
+        return function(item: Conversation): boolean {
+            return origin === undefined || origin === item.origin;
+        };
+    }
+}
+
+function checkString(original: string, isLike: string): boolean {
+    const regex = new RegExp(original.replace(/(\W)/g, "\\$1"), "gi");
+    const match = isLike.match(regex);
+    // Match throws a null instead of undefined so we're going to have to go with that.
+    /* tslint:disable:no-null-keyword */
+    return match !== null && match.length > 0;
+    /* tslint:enable:no-null-keyword*/
 }

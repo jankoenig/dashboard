@@ -1,5 +1,4 @@
 import * as classNames from "classnames";
-import * as objectAssign from "object-assign";
 import * as React from "react";
 
 import { COLORS } from "../constants";
@@ -27,6 +26,7 @@ export interface ErrorHandler {
 
 export interface FormInputTheme {
     inputTextColor: string;
+    bottomBorderColor?: string;
 };
 
 interface FormInputProps {
@@ -67,7 +67,22 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
     }
 
     inputStyle(): React.CSSProperties {
-        return objectAssign({}, { color: this.props.theme ? this.props.theme.inputTextColor : undefined });
+        if (!this.props.theme) {
+            return undefined;
+        }
+
+        const theme = this.props.theme;
+        let style = {};
+
+        if (theme.inputTextColor) {
+            style = {...style, ... { color: theme.inputTextColor }};
+        }
+
+        if (theme.bottomBorderColor) {
+            style = {...style, ... { borderBottomColor: theme.bottomBorderColor }};
+        }
+
+        return style;
     }
 
     onFormChange(event: React.FormEvent) {

@@ -1,25 +1,41 @@
 @import "dashboard";
+@import "input";
 
 .dropdown {
-  &:not(.up) > .values {
-    top: 100%;
-    margin-top: 0px;
-  }
+
+    outline: none;
+
+    &:not(.up) > .values {
+        top: 3.1em;
+        margin-top: 0px;
+    }
 }
 
-.inputInputElement {
+.inputLabel {
+    top: $label-filled-padding-top !important; // There's an extremely descriptive CSS that's overriding this so I'm giving up and being lazy for now.
+    font-size: $label-font-size-active !important; // There's an extremely descriptive CSS that's overriding this so I'm giving up and being lazy for now.
+    padding-left: $label-filled-padding-left;
+    font-size: $label-font-size-active;
+}
+
+.inputInput:not(.disabled) > .inputInputElement {
+    position: absolute;
+    top: 1.0em;
     font-size: $input-font-size;
+    padding-bottom: $input-filled-padding-bottom;
+    padding-top: $input-filled-padding-top;
+    transition-property: top, font-size, color, padding;
 }
 
 .value {
     top: 0px;
     padding-bottom: 0px;
+
+    &::after{
+        top: 90%;
+    }
 }
 
 .values {
     padding-left: 0px;
-}
-
-.inputLabel {
-    font-size: $label-font-size;
 }

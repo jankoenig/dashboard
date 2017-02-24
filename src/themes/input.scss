@@ -1,0 +1,49 @@
+@import "dashboard";
+
+$input-padding-bottom: 0;
+$input-padding-top: 0.7em;
+$input-filled-padding-bottom: 0.35em;
+$input-filled-padding-top: $input-filled-padding-bottom;
+
+$label-top: 1.3em;
+$label-filled-padding-top: 0;
+$label-filled-padding-left: 0;
+
+.inputElement {
+    &:focus:not([disabled]):not([readonly]), &.filled {
+            padding-bottom: $input-filled-padding-bottom;
+            padding-top: $input-filled-padding-top;
+
+        ~ .label:not(.fixed) {
+            top: $label-filled-padding-top;
+            padding-left: $label-filled-padding-left;
+            font-size: $label-font-size-active;
+        }
+    }
+}
+
+.input {
+    padding-top: 1em;
+    padding-bottom: 0
+}
+
+.input:not(.disabled) > .inputElement {
+    font-size: $input-font-size;
+    color: $input-color-light;
+    padding-bottom: $input-padding-bottom;
+    padding-top: $input-padding-top;
+    transition-property: top, font-size, color, padding;
+
+    &:focus,
+    &.filled {
+        padding-bottom: $input-filled-padding-bottom;
+        padding-top: $input-filled-padding-top;
+    }
+}
+
+.label {
+    font-size: $label-font-size;
+    color: $label-color-light;
+    top: $label-top;
+    transition-property: top, font-size, color, padding;
+}

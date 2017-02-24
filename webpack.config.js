@@ -1,6 +1,7 @@
 var path = require("path");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var webpack = require("webpack");
+var WebpackStrip = require('strip-loader');
 var package = require("./package.json");
 
 var node_env = process.env.NODE_ENV;
@@ -46,6 +47,25 @@ if (node_env === "development") {
 plugins.push(new ExtractTextPlugin("style/" + projectName + ".css", { allChunks: true }))
 plugins.push(new webpack.DefinePlugin(buildVariables));
 
+var moduleLoaders = [];
+// All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+moduleLoaders.push({
+  test: /\.tsx?$/,
+  loader: "ts-loader"
+});
+// Styling loader for scss and css files.
+moduleLoaders.push({
+  test: /\.(scss|css)$/,
+  loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
+});
+// This loader will strip out all console methods.  We don't care if it's in development.
+if (node_env === "production") {
+  moduleLoaders.push({
+    test: /\.tsx?$/,
+    loader: "strip-loader?strip[]=debug,strip[]=console.log,strip[]=console.info,strip[]=console.debug,strip[]=console.time,strip[]=console.timeEnd"
+  });
+}
+
 // The remaining webpack config
 var config = {
   entry: "./src/index.tsx",
@@ -66,17 +86,7 @@ var config = {
   },
 
   module: {
-    loaders: [
-      // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
-      {
-        test: /\.tsx?$/,
-        loader: "ts-loader"
-      },
-      {
-        test: /\.(scss|css)$/,
-        loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
-      }
-    ],
+    loaders: moduleLoaders,
 
     sassLoader: {
       data: '@import "' + path.resolve(__dirname, 'theme/_theme.scss') + '";'

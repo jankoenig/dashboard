@@ -1,0 +1,17 @@
+@import "dialog_config";
+@import "~react-toolbox/lib/dialog/theme";
+
+
+.dialog {
+  & > [role='navigation'] > .button {
+    color: $button-primary-color;
+
+    &:hover {
+      background: $button-primary-color-hover;
+    }
+
+    &:focus:not(:active) {
+      background: $button-primary-color-hover;
+    }
+  }
+}

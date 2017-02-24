@@ -70,11 +70,11 @@ class StaticListItem extends MDLComponent<TwoLineItemProps, TwoLineItemState> {
         let fullItem: JSX.Element;
         if (this.props.routeTo) {
             fullItem = (
-                <li className={ListItemStyle.listItem}>
+                <div className={ListItemStyle.listItem}>
                     <Link to={this.props.routeTo}>
                         {listItem}
                     </Link>
-                </li>
+                </div>
             );
         } else {
             fullItem = listItem;

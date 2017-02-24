@@ -6,7 +6,7 @@ import { push, replace } from "react-router-redux";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
-import { Dropdownable, Header, } from "../components/Header";
+import { Dropdownable, Header, PageButton } from "../components/Header";
 import Layout from "../components/Layout";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
@@ -77,6 +77,14 @@ function mapDispatchToProps(dispatch: any) {
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
+  constructor(props: DashboardProps) {
+    super(props);
+
+    this.handleSelectedSource = this.handleSelectedSource.bind(this);
+    this.handlePageSwap = this.handlePageSwap.bind(this);
+    this.handleHomeClick = this.handleHomeClick.bind(this);
+  }
+
   drawerClasses() {
     return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
   }
@@ -121,6 +129,41 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     return -1;
   }
 
+  pageButtons(): PageButton[] | undefined {
+    if (this.props.currentSource) {
+      return [
+        {
+          icon: "dashboard",
+          name: "summary"
+        },
+        {
+          icon: "list",
+          name: "logs"
+        },
+        {
+          icon: "code",
+          name: "integration"
+        }
+      ];
+    } else {
+      return undefined;
+    }
+  }
+
+  handlePageSwap(button: PageButton) {
+    if (button.name === "summary") {
+      this.props.goTo("/skills/" + this.props.currentSource.id);
+    } else if (button.name === "logs") {
+      this.props.goTo("/skills/" + this.props.currentSource.id + "/logs");
+    } else if (button.name === "integration") {
+      this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
+    }
+  }
+
+  handleHomeClick() {
+    this.props.goTo("/");
+  }
+
   render() {
     return (
       <Layout header={true}>
@@ -128,7 +171,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
           sources={this.props.currentSource ? this.dropdownableSources() : undefined}
-          onSourceSelected={this.handleSelectedSource.bind(this)}
+          pageButtons={this.pageButtons()}
+          onPageSelected={this.handlePageSwap}
+          onSourceSelected={this.handleSelectedSource}
+          onHomeClicked={this.handleHomeClick}
           displayHomeButton={this.props.location.pathname !== "/"}>
           <UserControl
             login={this.props.login}

@@ -1,0 +1,25 @@
+@import "input";
+
+.bar {
+    &::before,
+    &::after {
+        background-color: $input-color-light;
+    }
+}
+
+.inputElement {
+    &:focus:not([disabled]):not([readonly]), &.filled, &[type="date"], &[type="time"] {
+        ~ .label:not(.fixed) {
+            color: $label-color-light;
+        }
+    }
+}
+
+.input:not(.disabled) > .inputElement {
+    border-bottom-color: $label-color-light;
+    color: $input-color-light;
+}
+
+.title {
+    color: $input-color-light;
+}

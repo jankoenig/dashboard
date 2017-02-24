@@ -15,6 +15,8 @@ import { State } from "../reducers";
 
 import WelcomePage from "./WelcomePage";
 
+const ButtonTheme = require("../themes/button_theme.scss");
+
 export interface SourceListPageProps {
     sources: Source[];
 }
@@ -37,7 +39,7 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
                 <SourceList
                     sources={this.props.sources} />
                 <Link to="/skills/new" style={{ position: "absolute", bottom: "5%", right: "5%" }} >
-                    <Button icon="add" accent mini floating />
+                    <Button theme={ButtonTheme} icon="add" accent mini floating />
                 </Link>
             </div>
         );
@@ -72,6 +74,13 @@ interface SourceListState {
 }
 
 class SourceList extends React.Component<SourceListProps, SourceListState> {
+
+    constructor(props: SourceListProps) {
+        super(props);
+
+        this.renderItem = this.renderItem.bind(this);
+    }
+
     renderItem(index: number, key: string): JSX.Element {
         let source = this.props.sources[index];
         return (
@@ -86,11 +95,11 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
 
     render() {
         let element = (this.props.sources.length === 0) ?
-            ( <p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p> )
+            (<p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>)
             :
             (
                 <List
-                    itemRenderer={this.renderItem.bind(this)}
+                    itemRenderer={this.renderItem}
                     length={this.props.sources.length} />
             );
         return element;
