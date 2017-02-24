@@ -18,7 +18,7 @@ import { dummyLogs, dummyOutputs } from "../../../utils/test";
 import LogsExplorer from "./LogsExplorer";
 
 import { FilterBar } from "../FilterBar";
-import { DateFilter, UserIDFilter } from "../Filters";
+import { DateFilter, UserIDFilter } from "../filters/ConvoFilters";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);

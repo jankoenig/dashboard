@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
+import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
 import LogQuery from "../../models/log-query";
@@ -8,7 +9,8 @@ import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap, LogQueryEvent } from "../../reducers/log";
 import SourceUtil from "../../utils/Source";
-import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
+import { DateFilter, TYPE_DATE } from "./filters/ConvoFilters";
+import { Filter } from "./filters/Filters";
 import LogsExplorer from "./LogsExplorer";
 
 import { findLatest, nextPage, PageResults, retrieveLogs } from "../../actions/log";
@@ -81,7 +83,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         }
     }
 
-    onFilter(filter: FilterType): boolean {
+    onFilter(filter: Filter<Conversation>): boolean {
         if (filter.type === TYPE_DATE) {
             const dateFilter = filter as DateFilter;
             const query = new LogQuery({

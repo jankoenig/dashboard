@@ -1,9 +1,9 @@
-import * as moment from "moment";
 import * as React from "react";
 
-import Pill from "../../../components/Pill";
 import Conversation from "../../../models/conversation";
 import ConvoIcon from "./ConvoIcon";
+import ConvoPill from "./ConvoPill";
+import TimeTextComponent from "./ConvoTimeTextComponent";
 import Dropdown from "./Dropdown";
 
 interface ConvoListViewItemProps {
@@ -40,8 +40,7 @@ export default class ConversationListViewItem extends React.Component<ConvoListV
         fontSize: "16px",
     };
 
-    static listItemActiveStyle: React.CSSProperties =
-    {
+    static listItemActiveStyle: React.CSSProperties = {
         padding: "10px",
         marginTop: "10px",
         marginBottom: "10px",
@@ -76,7 +75,6 @@ export default class ConversationListViewItem extends React.Component<ConvoListV
         textAlign: "center",
         float: "left",
         marginRight: "16px"
-        // marginTop: "5px"
     };
 
     static subtitleStyle: React.CSSProperties = {
@@ -125,25 +123,18 @@ export default class ConversationListViewItem extends React.Component<ConvoListV
                         <span>
                             {this.props.conversation.requestPayloadType}
                         </span>
-                        <span
-                            style={ConversationListViewItem.subtitleStyle}>
-                            {moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a")}
-                            <span
-                                style={{ color: "#BDBDBD", paddingLeft: "5px" }}>
-                                {moment(this.props.conversation.timestamp).fromNow()}
-                            </span>
-                        </span>
+                        <TimeTextComponent
+                            style={ConversationListViewItem.subtitleStyle}
+                            timestamp={this.props.conversation.timestamp} />
                     </span>
-                    <span>
-                        <ConvoPill
-                            show={this.props.conversation.hasError}
-                            text={"error"}
-                        />
-                        <ConvoPill
-                            show={this.props.conversation.hasException}
-                            text={"exception"}
-                        />
-                    </span>
+                    <ConvoPill
+                        show={this.props.conversation.hasError}
+                        text={"error"}
+                    />
+                    <ConvoPill
+                        show={this.props.conversation.hasException}
+                        text={"exception"}
+                    />
                 </div>
                 <Dropdown
                     {...this.props}
@@ -152,24 +143,3 @@ export default class ConversationListViewItem extends React.Component<ConvoListV
         );
     }
 }
-
-interface PillProps {
-    show: boolean;
-    text: string;
-}
-
-class ConvoPill extends React.Component<PillProps, any>{
-    render() {
-        let { show, text } = this.props;
-        if (show) {
-            return (
-                <Pill>
-                    {text}
-                </Pill>
-            );
-        } else {
-            return (<div/>);
-        }
-    }
-}
-

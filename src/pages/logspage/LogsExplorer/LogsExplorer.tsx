@@ -18,8 +18,8 @@ import Noop, { falseBoolNoop } from "../../../utils/Noop";
 import SourceUtil from "../../../utils/Source";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
-import { CompositeFilter, DateFilter, FilterType, UserIDFilter } from "../Filters";
-import { TYPE_USER_ID } from "../Filters";
+import { DateFilter, TYPE_USER_ID, UserIDFilter } from "../filters/ConvoFilters";
+import { CompositeFilter, Filter } from "../filters/Filters";
 
 const style = require("./style.scss");
 
@@ -31,7 +31,7 @@ const UPDATE_TIME_MS = 5000;
 interface LogExplorerProps {
     logMap: LogMap;
     source: Source;
-    onFilter?: (filter: FilterType) => boolean;
+    onFilter?: (filter: Filter<Conversation>) => boolean;
     lockFilterBar?: boolean;
     onItemsFiltered?: (visible: ConversationList) => void;
     onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
@@ -47,7 +47,7 @@ interface LogExplorerState {
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
-    filter?: CompositeFilter;
+    filter?: CompositeFilter<Conversation>;
 }
 
 export default class LogExplorer extends React.Component<LogExplorerProps, LogExplorerState> {
@@ -164,7 +164,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.props.onScroll(firstVisibleIndex, lastVisibleIndex, total);
     }
 
-    handleFilter(filter: FilterType) {
+    handleFilter(filter: Filter<Conversation>) {
         if (this.props.onFilter(filter)) {
             return;
         }

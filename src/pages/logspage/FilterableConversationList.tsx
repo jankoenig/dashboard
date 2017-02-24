@@ -5,14 +5,14 @@ import ConversationList from "../../models/conversation-list";
 import browser from "../../utils/browser";
 import Noop from "../../utils/Noop";
 import { filter, FilterResult } from "../../utils/promise";
-import { FilterType } from "./Filters";
+import { Filter } from "./filters/Filters";
 import ConvoList from "./list/ConvoList";
 
 export interface FilterableConversationListProps {
     conversations: ConversationList;
     iconStyle?: React.CSSProperties;
     iconTooltip?: string;
-    filter?: FilterType;
+    filter?: Filter<Conversation>;
     onShowConversation?: (conversation: Conversation) => void;
     onIconClick?: (conversation: Conversation) => void;
     onItemsFiltered?: (shownConversations: ConversationList) => void;
@@ -50,7 +50,7 @@ export class FilterableConversationList extends React.Component<FilterableConver
         this.internalFilter(nextProps.conversations, nextProps.filter);
     }
 
-    internalFilter(list: ConversationList, filterType: FilterType) {
+    internalFilter(list: ConversationList, filterType: Filter<Conversation>) {
         let filterToUse = (filterType) ? filterType.filter : undefined;
         let me = this;
         filter(list, filterToUse)
