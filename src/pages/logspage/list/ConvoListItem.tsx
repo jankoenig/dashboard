@@ -84,13 +84,13 @@ export default class ConvoListViewItem extends React.Component<ConvoListViewItem
         return (
             <li
                 key={this.props.conversation.id}
-                style={{ listStyle: "none" }}>
+                style={{ listStyle: "none" }}
+                onClick={this.handleClick}>
                 <div
-                    style={itemStyle}
-                    onClick={this.handleClick}>
+                    style={itemStyle}>
                     <ConvoMainContent
                         {...this.props}
-                        onIconClick={this.handleIconClick}/>
+                        onIconClick={this.handleIconClick} />
                     <ConvoPill
                         show={this.props.conversation.hasError}
                         text={"error"}
