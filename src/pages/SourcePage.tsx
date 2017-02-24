@@ -1,4 +1,4 @@
-import * as moment from "moment";
+
 import * as React from "react";
 import { connect } from "react-redux";
 import { replace, RouterAction } from "react-router-redux";
@@ -221,42 +221,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     render() {
-        const tileColor = "#ECEFF1";
         const sourceName = (this.props.source) ? this.props.source.name : "this skill";
         return (
             <span>
-                {this.props.source ? (
-                    <span>
-                        <Grid style={{ backgroundColor: "rgb(36, 48, 54)", paddingBottom: "0px", paddingTop: "0px" }}>
-                            <Cell col={3} hidePhone={true}>
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.name}
-                                    label={"Name"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.id}
-                                    label={"ID"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={moment(this.props.source.created).format("MMM Do, YYYY")}
-                                    label={"Created"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.secretKey}
-                                    label={"Secret Key"}
-                                    hidden={true}
-                                    showable={true} />
-                            </Cell>
-                        </Grid>
-                    </span>
-                ) : undefined}
                 <SummaryView
                     timeData={this.state.timeSummaryData}
                     intentData={this.state.intentSummaryData}
