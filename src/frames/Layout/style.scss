@@ -1,31 +1,29 @@
 
 
-/**
- *  From https://github.com/philipwalton/solved-by-flexbox/blob/master/assets/css/components/holy-grail.css
- *
- *
- * Notes:
- * 1. Avoid the IE 10-11 `min-height` bug.
- * 2. Set `flex-shrink` to `0` to prevent some browsers from
- *    letting these items shrink to smaller than their content's default
- *    minimum size. See http://bit.ly/1Mn35US for details.
- * 3. Use `%` instead of `vh` since `vh` is buggy in older mobile Safari.
- */
+
+// From https://github.com/philipwalton/solved-by-flexbox/blob/master/assets/css/components/holy-grail.css
+
+// Notes:
+// 1. Avoid the IE 10-11 `min-height` bug.
+// 2. Set `flex-shrink` to `0` to prevent some browsers from
+//    letting these items shrink to smaller than their content's default
+//    minimum size. See http://bit.ly/1Mn35US for details.
+// 3. Use `%` instead of `vh` since `vh` is buggy in older mobile Safari.
 
 .layout { // was HolyGrail
   display: flex;
-  height: 100%; /* 1, 3 */
   flex-direction: column;
+  height: 100%; // Note 1, 3
 }
 
 .header,
 .footer {
-  flex: none; /* 2 */
+  flex: none; // Note 2
 }
 
 .body { // Use on container that does not contain the Header
   display: flex;
-  flex: 1 0 auto; /* 2 */
+  flex: 1 0 auto; // Note 2
   flex-direction: column;
   padding: var(--space);
 }
@@ -46,21 +44,24 @@
 
 .nav,
 .aside {
-  padding: 0;
+  background: rgba(147, 128, 108, .1);
   border-radius: 3px;
-  background: rgba(147, 128, 108, 0.1);
+  padding: 0;
 }
 
 @media (min-width: 840px) {
   .body {
     flex-direction: row;
   }
+
   .content {
     flex: 1;
-    padding: 0 var(--space-lg);
     margin: 0;
+    padding: 0 var(--space-lg);
   }
-  .nav, .aside {
+
+  .nav,
+  .aside {
     flex: 0 0 1em;
     padding: 0;
   }

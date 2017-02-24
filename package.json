@@ -7,6 +7,7 @@
   "scripts": {
     "postinstall": "typings install",
     "clean": "node scripts/clean.js",
+    "sasslint": "sass-lint -v",
     "lint": "tslint 'src/**/*.{ts,tsx}' -e **/*.scss.d.ts",
     "pretest": "tsc && npm run lint",
     "test": "mocha 'src/**/*.test.js' --require ignore-styles",
@@ -64,6 +65,7 @@
     "react-addons-test-utils": "^15.4.0",
     "redux-mock-store": "^1.2.1",
     "remap-istanbul": "0.7.0",
+    "sass-lint": "^1.10.2",
     "sass-loader": "4.1.1",
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
