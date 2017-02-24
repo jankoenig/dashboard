@@ -18,10 +18,6 @@ describe("Layout", function() {
         expect(wrapper.type()).to.equal("div");
     });
 
-    it("should not be setup for a drawer", function() {
-        expect(wrapper.props().className).to.not.contain("mdl-layout--fixed-drawer");
-    });
-
     describe("with children", function() {
         beforeEach(() => {
             wrapper = shallow((
@@ -34,19 +30,6 @@ describe("Layout", function() {
         it("should render the children", function() {
           expect(wrapper.type()).to.equal("div");
           expect(wrapper.props().children).to.have.length(2);
-        });
-    });
-
-    describe("with drawer property", function() {
-        beforeEach(() => {
-            wrapper = shallow(
-                <Layout drawer={true} />
-            );
-        });
-
-        it("should include the class for a drawer", function() {
-            expect(wrapper.type()).to.exist;
-            expect(wrapper.props().className).to.contain("mdl-layout--fixed-drawer");
         });
     });
 });
