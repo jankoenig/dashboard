@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const style = require("./style.scss");
+const style = require("./layout-style.scss");
 
 export default class Body extends React.Component<any, any> {
 

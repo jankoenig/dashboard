@@ -10,7 +10,7 @@ import Noop from "../../utils/Noop";
 const DropdownDarkTheme = require("../../themes/dropdown-dark-nolabel.scss");
 const IconButtonTheme = require("../../themes/icon-button-primary.scss");
 
-const style = require("./style.scss");
+const style = require("./layout-style.scss");
 
 export interface Dropdownable {
   value: string;

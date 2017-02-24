@@ -2,7 +2,6 @@ import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 
-import Drawer from "./Drawer";
 import Layout from "./Layout";
 
 let expect = chai.expect;
@@ -23,7 +22,7 @@ describe("Layout", function() {
             wrapper = shallow((
                 <Layout>
                     <h2>Header</h2>
-                    <Drawer title="Drawer"/>
+                    <p>Text</p>
                 </Layout>
             ));
         });
