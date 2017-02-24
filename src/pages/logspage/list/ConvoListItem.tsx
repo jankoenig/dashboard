@@ -1,9 +1,8 @@
 import * as React from "react";
 
 import Conversation from "../../../models/conversation";
-import ConvoIcon from "./ConvoIcon";
+import ConvoMainContent from "./ConvoMainContent";
 import ConvoPill from "./ConvoPill";
-import TimeTextComponent from "./ConvoTimeTextComponent";
 import Dropdown from "./Dropdown";
 
 interface ConvoListViewItemProps {
@@ -16,7 +15,7 @@ interface ConvoListViewItemProps {
     showInteractionOnActive?: boolean;
 }
 
-export default class ConversationListViewItem extends React.Component<ConvoListViewItemProps, any> {
+export default class ConvoListViewItem extends React.Component<ConvoListViewItemProps, any> {
 
     static listItemStyle: React.CSSProperties = {
         padding: "10px",
@@ -62,26 +61,6 @@ export default class ConversationListViewItem extends React.Component<ConvoListV
         fontSize: "16px",
     };
 
-    static primaryContentStyle: React.CSSProperties = {
-        display: "block",
-        order: 0,
-        flexGrow: 2
-    };
-
-    static iconWrapperStyle: React.CSSProperties = {
-        borderRadius: "20px",
-        width: "40px",
-        height: "40px",
-        textAlign: "center",
-        float: "left",
-        marginRight: "16px"
-    };
-
-    static subtitleStyle: React.CSSProperties = {
-        fontSize: "14px",
-        display: "block"
-    };
-
     constructor(props: ConvoListViewItemProps) {
         super(props);
 
@@ -99,8 +78,8 @@ export default class ConversationListViewItem extends React.Component<ConvoListV
 
     render() {
         const itemStyle = (this.props.active) ?
-            ConversationListViewItem.listItemActiveStyle :
-            ConversationListViewItem.listItemStyle;
+            ConvoListViewItem.listItemActiveStyle :
+            ConvoListViewItem.listItemStyle;
 
         return (
             <li
@@ -109,24 +88,9 @@ export default class ConversationListViewItem extends React.Component<ConvoListV
                 <div
                     style={itemStyle}
                     onClick={this.handleClick}>
-                    <span
-                        style={ConversationListViewItem.primaryContentStyle}>
-                        <div
-                            style={ConversationListViewItem.iconWrapperStyle} >
-                            <ConvoIcon
-                                style={this.props.iconStyle}
-                                tooltip={this.props.iconTooltip}
-                                onClick={this.handleIconClick}
-                                color={this.props.conversation.userColors.fill}
-                                origin={this.props.conversation.origin} />
-                        </div>
-                        <span>
-                            {this.props.conversation.requestPayloadType}
-                        </span>
-                        <TimeTextComponent
-                            style={ConversationListViewItem.subtitleStyle}
-                            timestamp={this.props.conversation.timestamp} />
-                    </span>
+                    <ConvoMainContent
+                        {...this.props}
+                        onIconClick={this.handleIconClick}/>
                     <ConvoPill
                         show={this.props.conversation.hasError}
                         text={"error"}
