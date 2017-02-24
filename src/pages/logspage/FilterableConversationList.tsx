@@ -1,14 +1,12 @@
 import * as React from "react";
 
-import { ConversationListView } from "../../components/ConversationListView";
 import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
-
 import browser from "../../utils/browser";
 import Noop from "../../utils/Noop";
 import { filter, FilterResult } from "../../utils/promise";
-
 import { FilterType } from "./Filters";
+import ConvoList from "./list/ConvoList";
 
 export interface FilterableConversationListProps {
     conversations: ConversationList;
@@ -77,7 +75,7 @@ export class FilterableConversationList extends React.Component<FilterableConver
     render() {
         let { onShowConversation, ...others } = this.props;
         return (
-            <ConversationListView
+            <ConvoList
                 {...others}
                 conversations={this.state.shownConversations}
                 expandListItemWhenActive={browser.isMobileWidth()}
