@@ -93,7 +93,7 @@ class ConversationListSummary implements SourceSummary {
         this.conversationList = conversationList;
 
         this.conversationEvents = DataUtil.convertToTimeSeries("hours", this.startTime, this.endTime, this.conversationList);
-
+        console.log("generating conversation list summary");
         // The main data processing loop
         // Loop through the conversations and parse the data
         for (let conversation of this.conversationList) {
@@ -133,7 +133,7 @@ class ConversationListSummary implements SourceSummary {
             let conversations: Conversation[] = this.userMap[key];
             let sessionProps: SessionProperties = {};
 
-            // console.log("user " + key);
+            console.log("looping user " + key);
 
             // First sort
             conversations.sort(function(a, b) {

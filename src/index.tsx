@@ -19,6 +19,7 @@ import { FirebaseUser } from "./models/user";
 import IntegrationPage from "./pages/integration/StateIntegrationPage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/logspage/LogsPage";
+import MetricsPage from "./pages/MetricsPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SourceListPage from "./pages/SourceListPage";
@@ -136,6 +137,7 @@ let render = function () {
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
                         <IndexRoute component={SourcePage} />
                         <Route path="/skills/:sourceId/logs" component={LogsPage} />
+                        <Route path="/skills/:sourceId/metrics" component={MetricsPage} />
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
                     </Route>
                     <Route path="*" component={NotFoundPage} />
