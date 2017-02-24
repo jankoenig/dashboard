@@ -63,7 +63,7 @@ export default class NavigationMenu extends React.Component<NavigationMenuProps,
                             accent
                             key={button.name}
                             tooltip={button.name}
-                            tooltipPosition={"horizontal"}
+                            // This exists but is not on the definition tooltipPosition={"horizontal"}
                             icon={button.icon}
                             onClick={this.handleSelected.bind(this, button)} />
                     </li>
