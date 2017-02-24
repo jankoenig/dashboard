@@ -40,25 +40,10 @@ export default class ConvoListViewItem extends React.Component<ConvoListViewItem
     };
 
     static listItemActiveStyle: React.CSSProperties = {
-        padding: "10px",
-        marginTop: "10px",
-        marginBottom: "10px",
-        cursor: "pointer",
-        backgroundColor: "#90A4AE",
-        border: "solid #90A4AE",
-        borderWidth: "1px",
-        borderTopLeftRadius: "10px",
-        borderTopRightRadius: "10px",
-        borderBottomLeftRadius: "10px",
-        borderBottomRightRadius: "10px",
-        position: "relative",
-        minHeight: "72px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "nowrap",
-        alignItems: "center",
-        fontSize: "16px",
+        ...ConvoListViewItem.listItemStyle,
+        ...{
+            backgroundColor: "#90A4AE"
+        }
     };
 
     constructor(props: ConvoListViewItemProps) {
