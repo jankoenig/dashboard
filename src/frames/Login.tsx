@@ -2,11 +2,10 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
 
-import Content from "../components/Content";
-import Layout from "../components/Layout";
 import Snackbar from "../components/Snackbar";
 import { CLASSES } from "../constants";
 import { State } from "../reducers";
+import { Content, Layout } from "./Layout";
 
 interface LoginProps {
     snackBarMessage: string;

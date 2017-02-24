@@ -4,12 +4,14 @@ import { IconButton } from "react-toolbox/lib/button";
 import Dropdown from "react-toolbox/lib/dropdown";
 import Tooltip from "react-toolbox/lib/tooltip";
 
-import { Menu, MenuItem } from "../components/Menu";
+import { Menu, MenuItem } from "../../components/Menu";
 
-import Noop from "../utils/Noop";
+import Noop from "../../utils/Noop";
 
-const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
-const IconButtonTheme = require("../themes/icon-button-primary.scss");
+const DropdownDarkTheme = require("../../themes/dropdown-dark-nolabel.scss");
+const IconButtonTheme = require("../../themes/icon-button-primary.scss");
+
+const style = require("./style.scss");
 
 export interface Dropdownable {
   value: string;
@@ -55,7 +57,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   classes() {
-    return classNames("mdl-layout__header", this.props.className);
+    return classNames(style.header, this.props.className);
   }
 
   handleItemSelect = (value: string) => {

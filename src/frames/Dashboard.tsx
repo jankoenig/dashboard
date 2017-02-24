@@ -3,11 +3,10 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
 
+import { Body, Content, Dropdownable, Header, Layout, Navigation, PageButton } from "./Layout";
+
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
-import Content from "../components/Content";
-import { Dropdownable, Header, PageButton } from "../components/Header";
-import Layout from "../components/Layout";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
@@ -83,10 +82,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
     this.handlePageSwap = this.handlePageSwap.bind(this);
     this.handleHomeClick = this.handleHomeClick.bind(this);
-  }
-
-  drawerClasses() {
-    return classNames(CLASSES.TEXT.BLUE_GREY_50, CLASSES.COLOR.BLUE_GREY_900);
   }
 
   headerClasses() {
@@ -166,7 +161,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   render() {
     return (
-      <Layout header={true}>
+      <Layout>
         <Header
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
@@ -181,9 +176,18 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
             logout={this.props.logout}
             user={this.props.user} />
         </Header>
-        <Content>
-          {this.props.children}
-        </Content>
+        <Body>
+          <Content>
+            {this.props.children}
+          </Content>
+          <Navigation>
+            <ul>
+              <li> Item 1</li>
+              <li> Item 2</li>
+            </ul>
+          </Navigation>
+        </Body>
+        <footer> Hi footer </footer>
       </Layout>
     );
   }
