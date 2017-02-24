@@ -6,7 +6,7 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import { Header, HeaderProps, HeaderState, Home, PageButton, PageSwap, Title } from "./Header";
+import { Header, HeaderProps, HeaderState, Home, Title } from "./Header";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -25,9 +25,9 @@ describe("Header", function () {
             expect(wrapper.find(Home)).to.have.length(1);
         });
 
-        it("Renders the page swapper", function () {
+        /* it("Renders the page swapper", function () {
             expect(wrapper.find(PageSwap)).to.have.length(1);
-        });
+        }); */
 
         it("renders the menu", function () {
             expect(wrapper.find("StyledMenu")).to.have.length(1);
@@ -186,7 +186,7 @@ describe("Header", function () {
         });
     });
 
-    describe("Page swapper", function () {
+    /* describe("Page swapper", function () {
         const pages: PageButton[] = [{ icon: "home", name: "heeyyooo" }, { icon: "away", name: "fancy" }];
 
         let onPageSelected: Sinon.SinonStub;
@@ -224,5 +224,5 @@ describe("Header", function () {
                 expect(onPageSelected).to.have.been.calledWith(pages[0]);
             });
         });
-    });
+    }); */
 });

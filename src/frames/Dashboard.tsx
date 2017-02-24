@@ -3,8 +3,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
 
-import { Body, Content, Dropdownable, Header, Layout, Navigation, PageButton } from "./Layout";
-
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import UserControl from "../components/UserControl";
@@ -12,6 +10,7 @@ import { CLASSES } from "../constants";
 import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
+import { Body, Content, Dropdownable, Header, Layout, Navigation, NavigationMenu, PageButton } from "./Layout";
 
 /**
  * Simple Adapter so a Source can conform to Dropdownable
@@ -132,12 +131,20 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           name: "summary"
         },
         {
+          icon: "timeline",
+          name: "metrics"
+        },
+        {
           icon: "list",
           name: "logs"
         },
         {
           icon: "code",
           name: "integration"
+        },
+        {
+          icon: "settings",
+          name: "settings"
         }
       ];
     } else {
@@ -152,6 +159,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/logs");
     } else if (button.name === "integration") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
+    } else if (button.name === "metrics") {
+      this.props.goTo("/skills/" + this.props.currentSource.id + "/metrics");
+    } else if (button.name === "settings") {
+      this.props.goTo("/skills/" + this.props.currentSource.id + "/settings");
     }
   }
 
@@ -166,8 +177,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
           sources={this.props.currentSource ? this.dropdownableSources() : undefined}
-          pageButtons={this.pageButtons()}
-          onPageSelected={this.handlePageSwap}
+          //  pageButtons={this.pageButtons()}
+          //  onPageSelected={this.handlePageSwap}
           onSourceSelected={this.handleSelectedSource}
           onHomeClicked={this.handleHomeClick}
           displayHomeButton={this.props.location.pathname !== "/"}>
@@ -180,14 +191,14 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           <Content>
             {this.props.children}
           </Content>
-          <Navigation>
-            <ul>
-              <li> Item 1</li>
-              <li> Item 2</li>
-            </ul>
-          </Navigation>
+          {this.pageButtons() ? (
+            <Navigation>
+              <NavigationMenu
+                pageButtons={this.pageButtons()}
+                onPageSelected={this.handlePageSwap} />
+            </Navigation>
+          ) : undefined}
         </Body>
-        <footer> Hi footer </footer>
       </Layout>
     );
   }

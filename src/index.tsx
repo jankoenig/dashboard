@@ -22,6 +22,7 @@ import LogsPage from "./pages/logspage/LogsPage";
 import MetricsPage from "./pages/MetricsPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
+import SettingsPage from "./pages/SettingsPage";
 import SourceListPage from "./pages/SourceListPage";
 import SourcePage from "./pages/SourcePage";
 import rootReducer from "./reducers";
@@ -139,6 +140,7 @@ let render = function () {
                         <Route path="/skills/:sourceId/logs" component={LogsPage} />
                         <Route path="/skills/:sourceId/metrics" component={MetricsPage} />
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
+                        <Route path="/skills/:sourceId/settings" component={SettingsPage} />
                     </Route>
                     <Route path="*" component={NotFoundPage} />
                 </Route>

@@ -2,7 +2,6 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
 import Dropdown from "react-toolbox/lib/dropdown";
-import Tooltip from "react-toolbox/lib/tooltip";
 
 import { Menu, MenuItem } from "../../components/Menu";
 
@@ -18,18 +17,11 @@ export interface Dropdownable {
   label: string;
 }
 
-export interface PageButton {
-  name: string;
-  icon: string | JSX.Element; // String or <svg/>
-}
-
 export interface HeaderProps {
   currentSourceId?: string;
   sources?: Dropdownable[];
   onHomeClicked?: () => void;
   onSourceSelected?: (source: Dropdownable) => void;
-  pageButtons?: PageButton[];
-  onPageSelected?: (button: PageButton) => void;
   displayHomeButton?: boolean;
   className?: string;
 }
@@ -85,9 +77,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             handleItemSelect={this.handleItemSelect}
             selectedSourceId={this.state.selectedSourceId} />
 
-          <PageSwap
-            pageButtons={this.props.pageButtons}
-            onPageSelected={this.props.onPageSelected} />
 
           <div className="mdl-layout-spacer" />
 
@@ -190,68 +179,5 @@ export class Title extends React.Component<TitleProps, any> {
     }
 
     return title;
-  }
-}
-
-interface PageSwapProps {
-  pageButtons?: PageButton[];
-  onPageSelected?: (button: PageButton) => void | undefined;
-}
-
-interface PageSwapState {
-  buttons: JSX.Element[];
-}
-
-const TooltipButton = Tooltip(IconButton);
-
-export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
-
-  static defaultProps: PageSwapProps = {
-    pageButtons: [],
-    onPageSelected: Noop
-  };
-
-  constructor(props: PageSwapProps) {
-    super(props);
-
-    this.state = { buttons: [] };
-  }
-
-  componentWillReceiveProps(props: PageSwapProps, context: any) {
-    this.buildButtons(props);
-  }
-
-  componentWillMount() {
-    this.buildButtons(this.props);
-  }
-
-  handleSelected(button: PageButton) {
-    this.props.onPageSelected(button);
-  }
-
-  buildButtons(props: PageSwapProps) {
-    const buttons = props.pageButtons;
-    this.state.buttons = [];
-    for (let button of buttons) {
-      this.state.buttons.push(
-        (
-          <TooltipButton
-            theme={IconButtonTheme}
-            accent
-            key={button.name}
-            tooltip={button.name}
-            icon={button.icon}
-            onClick={this.handleSelected.bind(this, button)} />
-        )
-      );
-    };
-  }
-
-  render() {
-    return (
-      <div>
-        {this.state.buttons}
-      </div>
-    );
   }
 }

@@ -1,5 +1,3 @@
-// declare namespace reactlist {
-
 declare module "react-list" {
     export class ReactList extends React.Component<any, any> {
         axis?: string
@@ -8,11 +6,6 @@ declare module "react-list" {
         type: string
         itemRenderer(index: number, key: string): JSX.Element
     }
-
-    // enum Axis {
-        // x, y
-    // }
-// }
 
     export default ReactList;
 }

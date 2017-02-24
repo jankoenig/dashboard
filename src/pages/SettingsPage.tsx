@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 import { Cell, Grid } from "../components/Grid";
 import { State } from "../reducers";
 
-interface MetricsPageProps {
+interface SettingsPageProps {
 
 }
 
-interface MetricsPageState {
+interface SettingsPageState {
 
 }
 
@@ -23,13 +23,13 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageState> {
+export class SettingsPage extends React.Component<SettingsPageProps, SettingsPageState> {
 
     render() {
         return (
             <Grid>
                 <Cell>
-                    <p>Hello</p>
+                    <p>Future home of the settings page.</p>
                 </Cell>
             </Grid>
         );
@@ -39,4 +39,4 @@ export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageSt
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(MetricsPage);
+)(SettingsPage);
