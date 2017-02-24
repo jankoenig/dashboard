@@ -39,86 +39,112 @@ describe("ConvoListItem", function () {
     describe("Render", function () {
         let wrapper: ShallowWrapper<any, any>;
 
-        before(function () {
-            wrapper = shallow(<ConvoListItem
-                conversation={conversation}
-                onClick={onClick}
-                onIconClick={onIconClick}
-                iconTooltip={"TestTooltip"}
-                iconStyle={iconStyle}
-                active={true}
-                showInteractionOnActive={true} />
-            );
-        });
-
-        describe("root", function () {
-            it("Proves that it's actually an li item", function () {
-                expect(wrapper.find("li")).to.have.length(1);
+        describe("Inactive", function () {
+            before(function () {
+                wrapper = shallow(<ConvoListItem
+                    conversation={conversation}
+                    onClick={onClick}
+                    onIconClick={onIconClick}
+                    iconTooltip={"TestTooltip"}
+                    iconStyle={iconStyle}
+                    active={false}
+                    showInteractionOnActive={true} />
+                );
             });
 
-            it("Passes the click up.", function() {
-                const root = wrapper.find("li").at(0);
-
-                root.simulate("click");
-
-                expect(onClick).to.have.been.calledOnce;
-                expect(onClick).to.have.been.calledWith;
+            it("Tests the background is faded", function () {
+                expect(wrapper.find("div").at(0)).to.have.style("background-color", "#FAFAFA");
             });
         });
 
-        describe("Main content", function () {
-            it("Shows the main content.", function () {
-                expect(wrapper.find(ConvoMainContent)).to.have.length(1);
+        describe("Active", function () {
+
+            before(function () {
+                wrapper = shallow(<ConvoListItem
+                    conversation={conversation}
+                    onClick={onClick}
+                    onIconClick={onIconClick}
+                    iconTooltip={"TestTooltip"}
+                    iconStyle={iconStyle}
+                    active={true}
+                    showInteractionOnActive={true} />
+                );
             });
 
-            it("Passes the appropriate props.", function() {
-                const mainWrapper = wrapper.find(ConvoMainContent).at(0);
-                expect(mainWrapper).to.have.prop("conversation", conversation);
-                expect(mainWrapper).to.have.prop("iconStyle", iconStyle);
-                expect(mainWrapper).to.have.prop("iconTooltip", "TestTooltip");
+            describe("root", function () {
+                it("Proves that it's actually an li item", function () {
+                    expect(wrapper.find("li")).to.have.length(1);
+                });
+
+                it("Passes the click up.", function () {
+                    // The dropdown is actually out of the root so that the user can click on it without closing it.
+                    const root = wrapper.find("div").at(0);
+
+                    root.simulate("click");
+
+                    expect(onClick).to.have.been.calledOnce;
+                    expect(onClick).to.have.been.calledWith;
+                });
+
+                it("Tests the background is normal", function () {
+                    expect(wrapper.find("div").at(0)).to.have.style("background-color", "#90A4AE");
+                });
             });
 
-            it("Tests the onItemClick", function() {
-                const mainWrapper = wrapper.find(ConvoMainContent).at(0);
-                mainWrapper.simulate("iconClick");
+            describe("Main content", function () {
+                it("Shows the main content.", function () {
+                    expect(wrapper.find(ConvoMainContent)).to.have.length(1);
+                });
 
-                expect(onIconClick).to.have.been.calledOnce;
-                expect(onIconClick).to.have.been.calledWith(conversation);
-            });
-        });
+                it("Passes the appropriate props.", function () {
+                    const mainWrapper = wrapper.find(ConvoMainContent).at(0);
+                    expect(mainWrapper).to.have.prop("conversation", conversation);
+                    expect(mainWrapper).to.have.prop("iconStyle", iconStyle);
+                    expect(mainWrapper).to.have.prop("iconTooltip", "TestTooltip");
+                });
 
-        describe("Convo pill", function() {
-            it("Tests the error pill properties", function() {
-                const errorPill = wrapper.find(ConvoPill).at(0);
+                it("Tests the onItemClick", function () {
+                    const mainWrapper = wrapper.find(ConvoMainContent).at(0);
+                    mainWrapper.simulate("iconClick");
 
-                expect(errorPill).to.have.prop("show", conversation.hasError);
-                expect(errorPill).to.have.prop("text", "error");
-            });
-
-            it("Tests the exception pill properties", function() {
-                const errorPill = wrapper.find(ConvoPill).at(1);
-
-                expect(errorPill).to.have.prop("show", conversation.hasException);
-                expect(errorPill).to.have.prop("text", "exception");
-            });
-        });
-
-        describe("Dropdown", function() {
-            it("Passes the dropdown props.", function() {
-                const dropdown = wrapper.find(Dropdown).at(0);
-
-                expect(dropdown).to.have.prop("conversation", conversation);
-                expect(dropdown).to.have.prop("showInteractionOnActive", true);
-                expect(dropdown).to.have.prop("active", true);
+                    expect(onIconClick).to.have.been.calledOnce;
+                    expect(onIconClick).to.have.been.calledWith(conversation);
+                });
             });
 
-            it("Checks the onClick", function() {
-                const dropdown = wrapper.find(Dropdown).at(0);
+            describe("Convo pill", function () {
+                it("Tests the error pill properties", function () {
+                    const errorPill = wrapper.find(ConvoPill).at(0);
 
-                dropdown.simulate("click");
+                    expect(errorPill).to.have.prop("show", conversation.hasError);
+                    expect(errorPill).to.have.prop("text", "error");
+                });
 
-                expect(onClick).to.have.been.calledOnce;
-                expect(onClick).to.have.been.calledWith;
+                it("Tests the exception pill properties", function () {
+                    const errorPill = wrapper.find(ConvoPill).at(1);
+
+                    expect(errorPill).to.have.prop("show", conversation.hasException);
+                    expect(errorPill).to.have.prop("text", "exception");
+                });
+            });
+
+            describe("Dropdown", function () {
+                it("Passes the dropdown props.", function () {
+                    const dropdown = wrapper.find(Dropdown).at(0);
+
+                    expect(dropdown).to.have.prop("conversation", conversation);
+                    expect(dropdown).to.have.prop("showInteractionOnActive", true);
+                    expect(dropdown).to.have.prop("active", true);
+                });
+
+                it("Checks the onClick", function () {
+                    const dropdown = wrapper.find(Dropdown).at(0);
+
+                    dropdown.simulate("click");
+
+                    expect(onClick).to.have.been.calledOnce;
+                    expect(onClick).to.have.been.calledWith;
+                });
             });
         });
     });
