@@ -4,11 +4,19 @@
         "**/.git": true,
         "**/.DS_Store": true,
         "**/*.js.map": true,
-        "**/*.js": { "when": "$(basename).ts"},
-        "**/*?.js": { "when": "$(basename).tsx"},
+        "**/*.js": {
+            "when": "$(basename).ts"
+        },
+        "**/*?.js": {
+            "when": "$(basename).tsx"
+        },
         "**/*.scss.d.ts": true
     },
     "files.trimTrailingWhitespace": true,
     "typescript.tsdk": "node_modules/typescript/lib",
-    "npm-intellisense.scanDevDependencies": true
+    "npm-intellisense.scanDevDependencies": true,
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/node_modules/**": true
+    }
 }

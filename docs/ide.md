@@ -10,7 +10,7 @@ Visual Studio Code already comes with all the necessary plugins for TypeScript.
 - TSLint - Provides warnings based on your tslint file
 - seti-icons - Makes the explorer much easier to navigate by adding folder and file type icons
 - Document This - Automatic documentation
-- npm Intellisense - Autocomplete imports, make sure you add the following:
+- Sass Lint - Show sass warnings from the .sass-lint.yml (Note it may cause high CPU: https://github.com/glen-84/vscode-sass-lint/issues/2)
 
 ### Helpful Commands
 
