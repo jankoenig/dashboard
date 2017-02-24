@@ -177,8 +177,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
           sources={this.props.currentSource ? this.dropdownableSources() : undefined}
-          //  pageButtons={this.pageButtons()}
-          //  onPageSelected={this.handlePageSwap}
           onSourceSelected={this.handleSelectedSource}
           onHomeClicked={this.handleHomeClick}
           displayHomeButton={this.props.location.pathname !== "/"}>
