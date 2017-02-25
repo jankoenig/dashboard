@@ -11,6 +11,7 @@ export const TYPE_REQUEST: string = "Request";
 export const TYPE_INTENT: string = "Intent";
 export const TYPE_EXCEPTION: string = "Exception";
 export const TYPE_ORIGIN: string = "Origin";
+export const TYPE_USER_ID: string = "UserID";
 
 export interface FilterType {
     type: string;
@@ -37,13 +38,16 @@ export class CompositeFilter implements FilterType {
      * creates a new CompositeFilter with the added filter.
      */
     copyAndAddOrReplace(filter: FilterType): CompositeFilter {
-        let copy = this.filters.slice();
-        for (let i = 0; i < this.filters.length; ++i) {
-            if (this.filters[i].type === filter.type) {
-                copy.splice(i, 1);
-            }
-        }
+        let copy = difference(this.filters.slice(), filter.type);
         copy.push(filter);
+        return new CompositeFilter(copy);
+    }
+
+    /**
+     * Creates a new CompositeFilter with the removed filter.
+     */
+    copyAndRemove(filterType: string): CompositeFilter {
+        let copy = difference(this.filters.slice(), filterType);
         return new CompositeFilter(copy);
     }
 
@@ -162,6 +166,32 @@ export class IntentFilter implements FilterType {
     }
 }
 
+export class UserIDFilter implements FilterType {
+    static type = TYPE_USER_ID;
+
+    type: string = UserIDFilter.type;
+    userID: string | undefined;
+
+    constructor(userID?: string) {
+        this.userID = userID;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const userId = this.userID;
+        return function (item: Conversation): boolean {
+            if (!userId) {
+                return true;
+            }
+
+            if (item && item.userId) {
+                return checkString(userId, item.userId);
+            } else {
+                return false;
+            }
+        };
+    }
+}
+
 export class RequestFilter implements FilterType {
     request: string | undefined;
     type: string = TYPE_REQUEST;
@@ -205,7 +235,7 @@ export class OriginFilter implements FilterType {
 
     get filter(): (item: Conversation) => boolean {
         const origin = this.origin;
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             return origin === undefined || origin === item.origin;
         };
     }
@@ -218,4 +248,13 @@ function checkString(original: string, isLike: string): boolean {
     /* tslint:disable:no-null-keyword */
     return match !== null && match.length > 0;
     /* tslint:enable:no-null-keyword*/
+}
+
+function difference(filters: FilterType[], filterType: string): FilterType[] {
+    for (let i = 0; i < filters.length; ++i) {
+        if (filters[i].type === filterType) {
+            filters.splice(i, 1);
+        }
+    }
+    return filters;
 }

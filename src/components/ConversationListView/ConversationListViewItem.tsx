@@ -10,7 +10,10 @@ import Pill from "../Pill";
 
 interface ConversationListViewItemProps {
     readonly conversation: Conversation;
-    readonly onClick: (conversation: Conversation, event: React.MouseEvent) => void;
+    readonly onClick: (conversation: Conversation) => void;
+    readonly onIconClick: (conversation: Conversation) => void;
+    readonly iconTooltip?: string;
+    readonly iconStyle?: React.CSSProperties;
     readonly active?: boolean;
     readonly showInteractionOnActive?: boolean;
 }
@@ -74,33 +77,63 @@ export default class ConversationListViewItem extends React.Component<Conversati
         height: "40px",
         textAlign: "center",
         float: "left",
-        marginRight: "16px",
-        marginTop: "5px"
+        marginRight: "16px"
+        // marginTop: "5px"
     };
 
     static subtitleStyle: React.CSSProperties = {
-            fontSize: "14px",
-            display: "block"
+        fontSize: "14px",
+        display: "block"
     };
 
+    constructor(props: ConversationListViewItemProps) {
+        super(props);
+
+        this.handleIconClick = this.handleIconClick.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleIconClick() {
+        this.props.onIconClick(this.props.conversation);
+    }
+
+    handleClick() {
+        this.props.onClick(this.props.conversation);
+    }
+
     render() {
-        const itemStyle = (this.props.active) ? ConversationListViewItem.listItemActiveStyle : ConversationListViewItem.listItemStyle;
+        const itemStyle = (this.props.active) ?
+            ConversationListViewItem.listItemActiveStyle :
+            ConversationListViewItem.listItemStyle;
+
         return (
-            <li key={this.props.conversation.id} style={{ listStyle: "none" }}>
+            <li
+                key={this.props.conversation.id}
+                style={{ listStyle: "none" }}>
                 <div
                     style={itemStyle}
-                    onClick={this.props.onClick.bind(this, this.props.conversation)}>
-                    <span style={ConversationListViewItem.primaryContentStyle}>
-                        <div style={ConversationListViewItem.iconWrapperStyle}>
-                            <Icon fill={this.props.conversation.userColors.fill}
+                    onClick={this.handleClick}>
+                    <span
+                        style={ConversationListViewItem.primaryContentStyle}>
+                        <div
+                            style={ConversationListViewItem.iconWrapperStyle} >
+                            <Icon
+                                style={this.props.iconStyle}
+                                tooltip={this.props.iconTooltip}
+                                onClick={this.handleIconClick}
+                                color={this.props.conversation.userColors.fill}
                                 origin={this.props.conversation.origin} />
                         </div>
                         <span>
                             {this.props.conversation.requestPayloadType}
                         </span>
-                        <span style={ConversationListViewItem.subtitleStyle}>
+                        <span
+                            style={ConversationListViewItem.subtitleStyle}>
                             {moment(this.props.conversation.timestamp).format("MMM Do, h:mm:ss a")}
-                            <span style={{ color: "#BDBDBD", paddingLeft: "5px" }}>{moment(this.props.conversation.timestamp).fromNow()} </span>
+                            <span
+                                style={{ color: "#BDBDBD", paddingLeft: "5px" }}>
+                                {moment(this.props.conversation.timestamp).fromNow()}
+                            </span>
                         </span>
                     </span>
                     <span>
@@ -136,18 +169,31 @@ export default class ConversationListViewItem extends React.Component<Conversati
 
 interface IconProps {
     origin: Origin;
-    fill: string;
+    color: string;
+    style?: React.CSSProperties;
+    tooltip?: string;
+    onClick?: () => void;
 }
 
 class Icon extends React.Component<IconProps, any> {
     render() {
-        const iconStyle = { marginTop: "4px" };
+        let { origin, ...others } = this.props;
 
         let icon: JSX.Element;
-        if (this.props.origin === Origin.GoogleHome) {
-            icon = (<GoogleHomeIcon style={iconStyle} width={"30px"} height={"30px"} color={this.props.fill} />);
-        } else {
-            icon = (<AmazonEchoIcon style={iconStyle} width={"30px"} height={"30px"} color={this.props.fill} />);
+
+        switch (origin) {
+            case Origin.GoogleHome:
+                icon = (
+                    <GoogleHomeIcon
+                        {...others} />
+                );
+                break;
+
+            default:
+                icon = (
+                    <AmazonEchoIcon
+                        {...others} />
+                );
         }
         return icon;
     }

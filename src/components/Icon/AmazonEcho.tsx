@@ -1,25 +1,51 @@
 import * as React from "react";
 
+import { IconButton } from "react-toolbox/lib/button";
+import Tooltip from "react-toolbox/lib/tooltip";
+
+const IconTheme = require("./echo-theme.scss");
+
+const TooltipButton = Tooltip(IconButton);
+
 interface AmazonEchoProps {
+    theme?: string;
     style?: React.CSSProperties;
+    tooltip?: string;
     width?: string;
     height?: string;
     color?: string;
+    onClick?: () => void;
 }
 
 export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {
 
     static defaultProps: AmazonEchoProps = {
-        style: undefined,
-        width: "43px",
-        height: "97px",
+        theme: IconTheme,
+        width: "21px",
+        height: "46px",
         color: "#FFFFFF"
     };
+
+    render() {
+        let { style, theme, onClick, tooltip, ...iconProps } = this.props;
+        return (
+            <TooltipButton
+                style={style}
+                theme={theme}
+                onClick={onClick}
+                tooltip={tooltip}
+                icon={<Icon
+                    {...iconProps} />} />
+        );
+    }
+}
+
+export class Icon extends React.Component<AmazonEchoProps, any> {
 
     // tslint:disable
     render() {
         return (
-            <svg width={this.props.width} height={this.props.height} viewBox="0 0 43 97" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg {...this.props} viewBox="0 0 43 97" preserveAspectRatio="xMinYMin" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <g id="Page-1" stroke="none" strokeWidth="3" fill="none" fillRule="evenodd">
                     <g id="simple_alexa" fillRule="nonzero">
                         <g id="noun_646078">

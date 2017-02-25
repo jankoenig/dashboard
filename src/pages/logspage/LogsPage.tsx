@@ -7,6 +7,7 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogMap, LogQueryEvent } from "../../reducers/log";
+import SourceUtil from "../../utils/Source";
 import { DateFilter, FilterType, TYPE_DATE } from "./Filters";
 import LogsExplorer from "./LogsExplorer";
 
@@ -65,6 +66,13 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         this.refresh = this.refresh.bind(this);
     }
 
+    componentWillReceiveProps(nextProps: LogsPageProps, context: any) {
+        if (!SourceUtil.equals(nextProps.source, this.props.source)) {
+            this.state.endReached = false;
+            this.setState(this.state);
+        }
+    }
+
     onItemsFiltered(list: ConversationList) {
         if (list.length < LIMIT) {
             if (!this.props.isLoading) {
@@ -82,10 +90,11 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
                 endTime: dateFilter.endDate,
                 limit: LIMIT
             });
-            this.props.getLogs(query, false);
-            // we're restarting so unset "endReached";
-            this.state.endReached = false;
-            this.setState(this.state);
+            this.props.getLogs(query, false).then((logs: Log[]) => {
+                // we're restarting so unset "endReached";
+                this.state.endReached = false;
+                this.setState(this.state);
+            });
             return true;
         }
         return false;
@@ -108,6 +117,7 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         if (!this.state.endReached) {
             const event: LogQueryEvent = this.getLogQueryEvent();
             if (event) {
+                console.info("NEXT");
                 this.props.newPage(event, LIMIT).then((results: PageResults) => {
                     if (results.newLogs.length === 0) {
                         this.state.endReached = true;

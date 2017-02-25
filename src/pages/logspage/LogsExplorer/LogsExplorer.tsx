@@ -15,11 +15,16 @@ import { LogMap } from "../../../reducers/log";
 import browser from "../../../utils/browser";
 import Interval from "../../../utils/Interval";
 import Noop, { falseBoolNoop } from "../../../utils/Noop";
+import SourceUtil from "../../../utils/Source";
 import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
-import { CompositeFilter, DateFilter, FilterType } from "../Filters";
+import { CompositeFilter, DateFilter, FilterType, UserIDFilter } from "../Filters";
+import { TYPE_USER_ID } from "../Filters";
 
 const style = require("./style.scss");
+
+const TOOLTIP_ACTIVE = "Unset Filter";
+const TOOLTIP_DEACTIVE = "Filter User";
 
 const UPDATE_TIME_MS = 5000;
 
@@ -37,6 +42,8 @@ interface LogExplorerState {
     filterBarHidden: boolean;
     tailOn: boolean;
     conversationList: ConversationList;
+    iconStyle?: React.CSSProperties;
+    iconTooltip?: string;
     savedTailValue?: boolean;
     dateOutOfRange?: boolean;
     selectedConvo?: Conversation;
@@ -55,6 +62,22 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         onGetNewLogs: Noop
     };
 
+    static activeIconStyle: React.CSSProperties = {
+        background: "#AAAAAA"
+    };
+
+    static getList(props: LogExplorerProps): ConversationList {
+        const source = props.source;
+        let list: ConversationList = undefined;
+        if (props.source && props.logMap) {
+            const logs = props.logMap[source.id];
+            if (logs) {
+                list = ConversationList.fromLogs(logs.logs);
+            }
+        }
+        return list;
+    }
+
     refresher: Interval.Executor;
 
     constructor(props: any) {
@@ -67,19 +90,26 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
         this.handleConversationClicked = this.handleConversationClicked.bind(this);
+        this.handleFilterUser = this.handleFilterUser.bind(this);
 
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.refresh.bind(this));
 
         this.state = {
             filterBarHidden: false,
             conversationList: getListFromProps(props),
+            iconTooltip: TOOLTIP_DEACTIVE,
             tailOn: false
         };
     }
 
     componentWillReceiveProps(nextProps: LogExplorerProps, nextContext: any): void {
-        if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
+        if (!SourceUtil.equals(nextProps.source, this.props.source)) {
             this.state.selectedConvo = undefined;
+            if (this.state.filter) {
+                this.state.filter = this.state.filter.copyAndRemove(TYPE_USER_ID);
+                this.state.iconStyle = undefined;
+                this.state.iconTooltip = TOOLTIP_DEACTIVE;
+            }
         }
 
         this.state.conversationList = getListFromProps(nextProps);
@@ -175,6 +205,31 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
         }
     }
 
+    handleFilterUser(conversation: Conversation) {
+        let userId: string;
+        let style: React.CSSProperties;
+        let tooltip: string;
+        let newFilter: UserIDFilter;
+        let oldFilter: UserIDFilter = (this.state.filter) ? this.state.filter.getFilter(TYPE_USER_ID) as UserIDFilter : undefined;
+
+        if (!oldFilter || oldFilter.userID !== conversation.userId) {
+            userId = conversation.userId;
+            style = LogExplorer.activeIconStyle;
+            tooltip = TOOLTIP_ACTIVE;
+        } else {
+            userId = undefined;
+            style = undefined;
+            tooltip = TOOLTIP_DEACTIVE;
+        }
+
+        this.state.iconStyle = style;
+        this.state.iconTooltip = tooltip;
+        this.setState(this.state);
+
+        newFilter = new UserIDFilter(userId);
+        this.handleFilter(newFilter);
+    }
+
     length(): number {
         return this.state.conversationList.length;
     }
@@ -204,8 +259,11 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
             <FilterableConversationList
                 conversations={this.state.conversationList}
                 filter={this.state.filter}
+                iconStyle={this.state.iconStyle}
+                iconTooltip={this.state.iconTooltip}
                 onScroll={this.handleScroll}
                 onShowConversation={this.handleConversationClicked}
+                onIconClick={this.handleFilterUser}
                 onItemsFiltered={this.props.onItemsFiltered} />
         );
 

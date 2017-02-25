@@ -6,6 +6,7 @@ import * as sinonChai from "sinon-chai";
 
 import VisiblityWatcher from "../../../components/VisibilityWatcher";
 import Conversation, { createConvo } from "../../../models/conversation";
+import ConversationList from "../../../models/conversation-list";
 import Log from "../../../models/log";
 import LogQuery from "../../../models/log-query";
 import Output from "../../../models/output";
@@ -17,7 +18,7 @@ import { dummyLogs, dummyOutputs } from "../../../utils/test";
 import LogsExplorer from "./LogsExplorer";
 
 import { FilterBar } from "../FilterBar";
-import { DateFilter } from "../Filters";
+import { DateFilter, UserIDFilter } from "../Filters";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -46,6 +47,7 @@ describe("LogExplorer", function () {
         let logMap: LogMap;
         let convo: Conversation;
 
+        let onFilter: Sinon.SinonStub;
         let onRefresh: Sinon.SinonStub;
 
         let wrapper: ShallowWrapper<any, any>;
@@ -58,14 +60,17 @@ describe("LogExplorer", function () {
             logQuery = new LogQuery({ startTime: new Date(), endTime: new Date(), source: source });
             logMap = {};
             convo = createConvo({ request: logs[0], response: logs[1], outputs: outputs });
+
             onRefresh = sinon.stub();
+            onFilter = sinon.stub().returns(false);
 
             logMap[source.id] = { logs: logs, query: logQuery };
         });
 
         beforeEach(function () {
             onRefresh.reset();
-            wrapper = shallow(<LogsExplorer source={source} logMap={logMap} onGetNewLogs={onRefresh} />);
+            onFilter.reset();
+            wrapper = shallow(<LogsExplorer source={source} logMap={logMap} onGetNewLogs={onRefresh} onFilter={onFilter} />);
         });
 
         it("renders a FilterBar", function () {
@@ -79,6 +84,41 @@ describe("LogExplorer", function () {
         describe("without a conversation selected", function () {
             it("does not render an Interaction", function () {
                 expect(wrapper.find("Interaction")).to.have.length(0);
+            });
+        });
+
+        describe("Filtering user.", function() {
+            let conversationListViewWrapper: ShallowWrapper<any, any>;
+            let conversations: ConversationList;
+
+            beforeEach(function() {
+                conversationListViewWrapper = wrapper.find("FilterableConversationList");
+                conversations = conversationListViewWrapper.prop("conversations");
+            });
+
+            it("Tests that a user filter is applied when conversation icon clicked.", function() {
+                conversationListViewWrapper.simulate("iconClick", conversations[0]);
+
+                expect(onFilter).to.be.calledOnce;
+
+                let userFilter: UserIDFilter = onFilter.args[0][0];
+                expect(userFilter).to.exist;
+                expect(userFilter.userID).to.equal(conversations[0].userId);
+            });
+
+            it("Tests that a user filter is removed when conversation icon clicked twice.", function() {
+                conversationListViewWrapper.simulate("iconClick", conversations[0]);
+
+                conversationListViewWrapper = wrapper.find("FilterableConversationList");
+
+                conversationListViewWrapper.simulate("iconClick", conversations[0]);
+
+                expect(onFilter).to.be.calledTwice;
+
+                let userFilter: UserIDFilter = onFilter.args[1][0];
+
+                expect(userFilter).to.exist;
+                expect(userFilter.userID).to.be.undefined;
             });
         });
 
@@ -163,7 +203,7 @@ describe("LogExplorer", function () {
             });
 
             after(function () {
-                intervalStub.reset();
+                intervalStub.restore();
             });
 
             it("Tests there is a value and callback passed to the exectuor.", function () {

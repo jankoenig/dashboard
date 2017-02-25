@@ -1,0 +1,13 @@
+@import "icon-style-config";
+
+@import "../../themes/icon-button-primary-theme";
+
+.toggle {
+  width: 2em;
+  height: 2em;
+
+  & > .icon,
+  & svg {
+    font-size: $button-toggle-font-size;
+  }
+}

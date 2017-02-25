@@ -1,26 +1,51 @@
 import * as React from "react";
 
+import { IconButton } from "react-toolbox/lib/button";
+import Tooltip from "react-toolbox/lib/tooltip";
+
+const HomeTheme = require("./home-theme.scss");
+
+const TooltipButton = Tooltip(IconButton);
 
 interface GoogleHomeProps {
+    theme?: string;
+    tooltip?: string;
     style?: React.CSSProperties;
     width?: string;
     height?: string;
     color?: string;
+    onClick?: () => void;
 }
 
 export default class GoogleHome extends React.Component<GoogleHomeProps, any> {
-
     static defaultProps: GoogleHomeProps = {
-        style: undefined,
+        theme: HomeTheme,
         width: "58px",
         height: "88px",
-        color: "#0000000"
+        color: "#FFFFFF"
     };
+
+    render() {
+        let { style, theme, onClick, tooltip, ...iconProps } = this.props;
+        return (
+            <TooltipButton
+                style={style}
+                theme={theme}
+                onClick={onClick}
+                tooltip={tooltip}
+                icon={<Icon
+                    {...iconProps} />} />
+        );
+    }
+}
+
+class Icon extends React.Component<GoogleHomeProps, any> {
+
 
     // tslint:disable
     render() {
         return (
-            <svg width={this.props.width} height={this.props.height} viewBox="0 0 58 88" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <svg {...this.props} viewBox="0 0 58 88" preserveAspectRatio="xMinYMin" version="1.1" xmlns="http://www.w3.org/2000/svg">
                 <defs>
                     <path d="M28.671,83.913 L28.671,83.913 L28.667,83.913 C10.825,83.913 6.367,81.388 6.187,81.28 C6.135,81.248 6.089,81.207 6.053,81.16 C3.8,78.224 0.02,72.159 0.02,64.507 C0.02,62.002 0.219,57.391 0.611,50.805 C0.624,50.58 0.774,50.357 0.996,50.325 C1.211,50.293 1.402,50.375 1.484,50.569 C1.766,50.838 4.99,53.273 28.541,53.273 C52.302,53.273 55.597,50.796 55.867,50.549 C55.964,50.365 56.153,50.295 56.359,50.336 C56.572,50.377 56.712,50.589 56.723,50.805 C57.117,57.393 57.315,62.002 57.315,64.507 C57.315,72.159 53.536,78.225 51.282,81.16 C51.246,81.207 51.201,81.248 51.148,81.28 C50.967,81.388 46.51,83.913 28.671,83.913 L28.671,83.913 Z" id="path-1"></path>
                     <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="57.295" height="33.5947424" fill="white">
