@@ -98,14 +98,13 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
         this.props.getLogs(query)
             .then((logs: Log[]) => {
-                console.info("SETTING LOGS " + logs.length);
                 const conversations = ConversationList.fromLogs(logs);
                 this.setState({ conversations: conversations, query: query, lastLogs: logs });
-                console.info("State set");
             });
     }
 
     handleItemsFiltered(shownItems: ConversationList) {
+        console.info("FILTERING " + shownItems.length);
         if (!this.props.isLoading && shownItems.length < LIMIT) {
             this.getNextPage();
         }
@@ -113,13 +112,11 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     handleScroll(firstVisibleIndex: number, lastVisibleIndex: number, totalCount: number) {
         if (!this.props.isLoading && totalCount - lastVisibleIndex < 5) {
-            console.info("HANDLE SCROLL " + this.state.lastLogs.length);
             this.getNextPage();
         }
     }
 
     getNextPage() {
-        console.info("Getting next " + this.state.lastLogs.length);
         this.props.newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
             .then((result: PageResults) => {
                 if (result.newLogs.length > 0) {
@@ -151,6 +148,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
             <ConvoList
                 {...others}
                 onScroll={this.handleScroll}
+                onItemsFiltered={this.handleItemsFiltered}
                 conversations={this.state.conversations}
             />
         );

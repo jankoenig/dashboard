@@ -42,8 +42,8 @@ describe("ConvoListPage", function () {
 
     before(function () {
         source = dummySources(1)[0];
-        logs = dummyLogs(30);
-        nextPage = dummyLogs(10);
+        logs = dummyLogs(200);
+        nextPage = dummyLogs(100);
         const both = logs.concat(nextPage);
 
         baseConversations = ConversationList.fromLogs(logs);
@@ -229,6 +229,63 @@ describe("ConvoListPage", function () {
 
             listWrapper = wrapper.find(FilteredConvoList);
             listWrapper.simulate("scroll", 0, 6, 10);
+
+            expect(newPage).to.have.not.been.called;
+        });
+    });
+
+    describe("Items filtered", function () {
+        let dateFilter: DateFilter;
+        let filter: CompositeFilter<Conversation>;
+        let wrapper: ShallowWrapper<any, any>;
+        let listWrapper: ShallowWrapper<any, any>;
+
+        before(function () {
+            dateFilter = new DateFilter(DateUtils.daysAgo(5), DateUtils.daysAgo(2));
+            filter = new CompositeFilter([dateFilter]);
+        });
+
+        beforeEach(function () {
+            wrapper = shallow(
+                <ConvoListPage
+                    isLoading={false}
+                    source={source}
+                    newPage={newPage}
+                    refresh={refresh}
+                    getLogs={getLogs}
+                    onIconClick={onIconClick}
+                    onItemClick={onItemClick}
+                    filter={filter}
+                />);
+
+            listWrapper = wrapper.find(FilteredConvoList);
+        });
+
+        it("Tests the next page is called when max limit has not been reached.", function () {
+            return Promise.resolve(true).then(function () {
+                listWrapper.simulate("itemsFiltered", baseConversations.splice(0, 10));
+
+                expect(newPage).to.have.been.calledOnce;
+                const queryEvent = newPage.args[0][0] as LogQueryEvent;
+                const limit = newPage.args[0][1] as number;
+
+                expect(limit).to.equal(50);
+                expect(queryEvent.logs).to.equal(logs);
+                expect(queryEvent.query.source).to.equal(source);
+            });
+        });
+
+        it("Tests the next page is not called when not within limit.", function () {
+            listWrapper.simulate("itemsFiltered", baseConversations);
+
+            expect(newPage).to.have.not.been.called;
+        });
+
+        it("Tests the next page is not called when loading is true.", function () {
+            wrapper.setProps({ ...wrapper.props(), ...{ isLoading: true } });
+
+            listWrapper = wrapper.find(FilteredConvoList);
+            listWrapper.simulate("itemsFiltered", baseConversations.splice(0, baseConversations.length / 2));
 
             expect(newPage).to.have.not.been.called;
         });
