@@ -43,7 +43,7 @@ export function fetchLogsRequest(fetching: boolean) {
 }
 
 /**
- * Deprecated. Use retrieveLogs.
+ * @deprecated. Use retrieveLogs.
  *
  * This function will retrieve logs with the given source. If a startTime is not given,
  * then it will retrieve logs from the last seven days.
