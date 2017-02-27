@@ -19,7 +19,8 @@ export type LogState = {
 };
 
 const INITIAL_STATE: LogState = {
-    isLoading: false
+    isLoading: false,
+    logMap: {}
 };
 
 type LogAction = SetLogsAction | FetchLogsRequestAction | { type: "" };
