@@ -50,7 +50,9 @@ describe("ConvoListPage", function () {
         fullNextPageConvoersations = ConversationList.fromLogs(logs);
 
         getLogs = sinon.stub().returns(Promise.resolve(logs));
-        newPage = sinon.stub().returns(Promise.resolve({ oldLogs: logs, newLogs: nextPage, total: both }));
+        newPage = sinon.stub();
+        newPage.onFirstCall().returns(Promise.resolve({ oldLogs: logs, newLogs: nextPage, total: both }))
+            .onSecondCall().returns(Promise.resolve({ oldLogs: both, newLogs: [], total: both }));
         refresh = sinon.stub().returns(Promise.resolve({ oldLogs: logs, newLogs: nextPage, total: both }));
 
         onItemClick = sinon.stub();
@@ -231,6 +233,19 @@ describe("ConvoListPage", function () {
             listWrapper.simulate("scroll", 0, 6, 10);
 
             expect(newPage).to.have.not.been.called;
+        });
+
+        it("Tests that scroll will not query once end is reached", function () {
+            // Promises each time so each new one will wait for the last.
+            return Promise.resolve(true).then(function () {
+                listWrapper.simulate("scroll", 0, 6, 10);
+            }).then(function () {
+                listWrapper.simulate("scroll", 0, 6, 10);
+            }).then(function () {
+                listWrapper.simulate("scroll", 0, 6, 10);
+            }).then(function () {
+                expect(newPage).to.have.been.calledTwice;
+            });
         });
     });
 

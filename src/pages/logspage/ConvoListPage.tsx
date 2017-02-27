@@ -37,6 +37,7 @@ interface ConvoListPageState {
     query: LogQuery;
     lastLogs: Log[];
     conversations: ConversationList;
+    endReached: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -83,6 +84,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         this.state = {
             conversations: [],
             lastLogs: [],
+            endReached: false,
             query: undefined
         };
     }
@@ -99,19 +101,18 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         this.props.getLogs(query)
             .then((logs: Log[]) => {
                 const conversations = ConversationList.fromLogs(logs);
-                this.setState({ conversations: conversations, query: query, lastLogs: logs });
+                this.setState({ conversations: conversations, query: query, lastLogs: logs, endReached: false });
             });
     }
 
     handleItemsFiltered(shownItems: ConversationList) {
-        console.info("FILTERING " + shownItems.length);
-        if (!this.props.isLoading && shownItems.length < LIMIT) {
+        if (!this.props.isLoading && !this.state.endReached && shownItems.length < LIMIT) {
             this.getNextPage();
         }
     }
 
     handleScroll(firstVisibleIndex: number, lastVisibleIndex: number, totalCount: number) {
-        if (!this.props.isLoading && totalCount - lastVisibleIndex < 5) {
+        if (!this.props.isLoading && !this.state.endReached && totalCount - lastVisibleIndex < 5) {
             this.getNextPage();
         }
     }
@@ -119,13 +120,15 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     getNextPage() {
         this.props.newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
             .then((result: PageResults) => {
-                if (result.newLogs.length > 0) {
+                const endReached = result.newLogs.length === 0;
+                if (endReached) {
                     // The reason we can't just append right now is because we may have partial conversations from the previous batch.
                     const newConversations = ConversationList.fromLogs(result.totalLogs);
                     this.state.conversations = this.state.conversations.concat(newConversations);
                     this.state.lastLogs = result.totalLogs;
-                    this.setState(this.state);
                 }
+                this.state.endReached = endReached;
+                this.setState(this.state);
             });
     }
 
