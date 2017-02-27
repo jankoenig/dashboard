@@ -19,6 +19,13 @@ import FilteredConvoList from "./list/FilterableConvoList";
 chai.use(sinonChai);
 const expect = chai.expect;
 
+const iconStyle = {
+    width: "100%",
+    height: "100px"
+};
+
+const tooltip = "TestTooltip";
+
 describe("ConvoListPage", function () {
 
     let source: Source;
@@ -77,6 +84,8 @@ describe("ConvoListPage", function () {
                     onIconClick={onIconClick}
                     onItemClick={onItemClick}
                     filter={filter}
+                    iconTooltip={tooltip}
+                    iconStyle={iconStyle}
                 />);
         });
 
@@ -87,15 +96,8 @@ describe("ConvoListPage", function () {
         it("Tests the FilterableConvoList has the appropriate props.", function () {
             const listWrapper = wrapper.find(FilteredConvoList);
             expect(listWrapper).to.have.prop("filter", filter);
-
-            /*conversations: ConversationList;
-            iconStyle?: React.CSSProperties;
-            iconTooltip?: string;
-            filter?: Filter<Conversation>;
-            onItemClick?: (conversation: Conversation) => void;
-            onIconClick?: (conversation: Conversation) => void;
-            onItemsFiltered?: (shownConversations: ConversationList) => void;
-            onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;*/
+            expect(listWrapper).to.have.prop("iconTooltip", tooltip);
+            expect(listWrapper.prop("iconStyle")).to.equal(iconStyle); // The have.prop method seems to be different.
         });
 
         it("Tests that the \"getLogs\" is called on mount", function () {

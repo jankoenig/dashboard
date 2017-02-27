@@ -26,12 +26,10 @@ interface ConvoListPageProps {
     newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
     refresh: (logQueryEvent: LogQueryEvent) => Promise<PageResults>;
     filter?: CompositeFilter<Conversation>;
-    // iconStyle?: React.CSSProperties;
-    // iconTooltip?: string;
+    iconStyle?: React.CSSProperties;
+    iconTooltip?: string;
     onItemClick?: (conversation: Conversation) => void;
     onIconClick?: (conversation: Conversation) => void;
-    // onItemsFiltered?: (shownConversations: ConversationList) => void;
-    // onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
 }
 
 interface ConvoListPageState {
