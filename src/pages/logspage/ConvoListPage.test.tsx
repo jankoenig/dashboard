@@ -9,6 +9,7 @@ import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
 import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
+import { LogQueryEvent } from "../../reducers/log";
 import DateUtils from "../../utils/date";
 import { dummyLogs, dummySources } from "../../utils/test";
 import { ConvoListPage } from "./ConvoListPage";
@@ -125,7 +126,7 @@ describe("ConvoListPage", function () {
                     />);
             });
 
-            it("Tests that the LogQuery is correct when a DateFilter is applied.", function() {
+            it("Tests that the LogQuery is correct when a DateFilter is applied.", function () {
                 const logQuery: LogQuery = getLogs.args[0][0];
 
                 expect(logQuery.startTime).to.equalDate(dateFilter.startDate);
@@ -134,7 +135,7 @@ describe("ConvoListPage", function () {
         });
     });
 
-    describe("Actions", function() {
+    describe("Actions", function () {
         let filter: CompositeFilter<Conversation>;
         let wrapper: ShallowWrapper<any, any>;
         let listWrapper: ShallowWrapper<any, any>;
@@ -159,18 +160,77 @@ describe("ConvoListPage", function () {
             listWrapper = wrapper.find(FilteredConvoList);
         });
 
-        it("Tests that iconClick triggers an event", function() {
+        it("Tests that iconClick triggers an event", function () {
             listWrapper.simulate("iconClick", baseConversations[0]);
 
             expect(onIconClick).to.have.been.calledOnce;
             expect(onIconClick).to.have.been.calledWith(baseConversations[0]);
         });
 
-        it("Tests that the itemClick triggers an event", function() {
+        it("Tests that the itemClick triggers an event", function () {
             listWrapper.simulate("itemClick", baseConversations[0]);
 
             expect(onItemClick).to.have.been.calledOnce;
             expect(onItemClick).to.have.been.calledWith(baseConversations[0]);
+        });
+    });
+
+    describe("Scrolling", function () {
+        let dateFilter: DateFilter;
+        let filter: CompositeFilter<Conversation>;
+        let wrapper: ShallowWrapper<any, any>;
+        let listWrapper: ShallowWrapper<any, any>;
+
+        before(function () {
+            dateFilter = new DateFilter(DateUtils.daysAgo(5), DateUtils.daysAgo(2));
+            filter = new CompositeFilter([dateFilter]);
+        });
+
+        beforeEach(function () {
+            wrapper = shallow(
+                <ConvoListPage
+                    isLoading={false}
+                    source={source}
+                    newPage={newPage}
+                    refresh={refresh}
+                    getLogs={getLogs}
+                    onIconClick={onIconClick}
+                    onItemClick={onItemClick}
+                    filter={filter}
+                />);
+
+            listWrapper = wrapper.find(FilteredConvoList);
+        });
+
+        it("Tests that the scroll will query a next page.", function () {
+            // Have to wait for the "getLogs" pass to finish so the state is updated.
+            return Promise.resolve(true).then(function () {
+                listWrapper.simulate("scroll", 0, 6, 10);
+
+                expect(newPage).to.have.been.calledOnce;
+
+                const queryEvent = newPage.args[0][0] as LogQueryEvent;
+                const limit = newPage.args[0][1] as number;
+
+                expect(limit).to.equal(50);
+                expect(queryEvent.logs).to.equal(logs);
+                expect(queryEvent.query.source).to.equal(source);
+            });
+        });
+
+        it("Tests that the scroll will not query the next page if it's not within range", function () {
+            listWrapper.simulate("scroll", 0, 3, 10);
+
+            expect(newPage).to.have.not.been.called;
+        });
+
+        it("Tests that the scroll will not query the next page if it's already loading.", function () {
+            wrapper.setProps({ ...wrapper.props(), ...{ isLoading: true } });
+
+            listWrapper = wrapper.find(FilteredConvoList);
+            listWrapper.simulate("scroll", 0, 6, 10);
+
+            expect(newPage).to.have.not.been.called;
         });
     });
 });

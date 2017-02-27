@@ -119,7 +119,6 @@ export class LogsPage extends React.Component<LogsPageProps, LogsPageState> {
         if (!this.state.endReached) {
             const event: LogQueryEvent = this.getLogQueryEvent();
             if (event) {
-                console.info("NEXT");
                 this.props.newPage(event, LIMIT).then((results: PageResults) => {
                     if (results.newLogs.length === 0) {
                         this.state.endReached = true;

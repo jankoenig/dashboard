@@ -7,12 +7,13 @@ import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
 import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
-// import Noop from "../../../utils/Noop";
 import { State } from "../../reducers";
 import { LogQueryEvent } from "../../reducers/log";
 import { DateFilter } from "./filters/ConvoFilters";
 import { CompositeFilter } from "./filters/Filters";
 import ConvoList from "./list/FilterableConvoList";
+
+const LIMIT: number = 50;
 
 interface DateRange {
     startTime?: Date;
@@ -33,6 +34,8 @@ interface ConvoListPageProps {
 }
 
 interface ConvoListPageState {
+    query: LogQuery;
+    lastLogs: Log[];
     conversations: ConversationList;
 }
 
@@ -64,7 +67,7 @@ function getDateRange(filter: CompositeFilter<any>): DateRange {
     let range: DateRange = {};
     const dateFilter = (filter) ? filter.getFilter(DateFilter.type) as DateFilter : undefined;
     if (dateFilter) {
-        range = {...{startTime: dateFilter.startDate, endTime: dateFilter.endDate }};
+        range = { ...{ startTime: dateFilter.startDate, endTime: dateFilter.endDate } };
     }
     return range;
 }
@@ -74,8 +77,13 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     constructor(props: ConvoListPageProps) {
         super(props);
 
+        this.handleItemsFiltered = this.handleItemsFiltered.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+
         this.state = {
-            conversations: []
+            conversations: [],
+            lastLogs: [],
+            query: undefined
         };
     }
 
@@ -89,10 +97,52 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         });
 
         this.props.getLogs(query)
-        .then(ConversationList.fromLogs)
-        .then((conversations: ConversationList) => {
-            this.setState({ conversations: conversations });
-        });
+            .then((logs: Log[]) => {
+                console.info("SETTING LOGS " + logs.length);
+                const conversations = ConversationList.fromLogs(logs);
+                this.setState({ conversations: conversations, query: query, lastLogs: logs });
+                console.info("State set");
+            });
+    }
+
+    handleItemsFiltered(shownItems: ConversationList) {
+        if (!this.props.isLoading && shownItems.length < LIMIT) {
+            this.getNextPage();
+        }
+    }
+
+    handleScroll(firstVisibleIndex: number, lastVisibleIndex: number, totalCount: number) {
+        if (!this.props.isLoading && totalCount - lastVisibleIndex < 5) {
+            console.info("HANDLE SCROLL " + this.state.lastLogs.length);
+            this.getNextPage();
+        }
+    }
+
+    getNextPage() {
+        console.info("Getting next " + this.state.lastLogs.length);
+        this.props.newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
+            .then((result: PageResults) => {
+                if (result.newLogs.length > 0) {
+                    // The reason we can't just append right now is because we may have partial conversations from the previous batch.
+                    const newConversations = ConversationList.fromLogs(result.totalLogs);
+                    this.state.conversations = this.state.conversations.concat(newConversations);
+                    this.state.lastLogs = result.totalLogs;
+                    this.setState(this.state);
+                }
+            });
+    }
+
+    getRefresh() {
+        this.props.refresh({ query: this.state.query, logs: this.state.lastLogs })
+            .then((result: PageResults) => {
+                if (result.newLogs.length > 0) {
+                    // The reason we can't just preppend right now is because we may have partial conversations from the previous batch.
+                    const newConversations = ConversationList.fromLogs(result.totalLogs);
+                    this.state.conversations = this.state.conversations.concat(newConversations);
+                    this.state.lastLogs = result.totalLogs;
+                    this.setState(this.state);
+                }
+            });
     }
 
     render() {
@@ -100,6 +150,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         return (
             <ConvoList
                 {...others}
+                onScroll={this.handleScroll}
                 conversations={this.state.conversations}
             />
         );
