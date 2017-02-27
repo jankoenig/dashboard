@@ -103,32 +103,6 @@ describe("FilterableconvoList", function () {
             expect(convos).to.deep.equal(conversations);
         });
 
-        it("Tests that items are filtered with partial filter", function () {
-            let counter = 0;
-            const filter: Filter<Conversation> = {
-                type: "Test",
-                filter: function (c: Conversation): boolean {
-                    return (counter++ % 2) === 0;
-                }
-            };
-
-            const wrapper = shallow(<FilterableConvoList
-                filter={filter}
-                conversations={conversations}
-                iconStyle={iconStyle}
-                iconTooltip={tooltip}
-                onItemClick={onItemClick}
-                onIconClick={onIconClick}
-                onItemsFiltered={onItemsFiltered}
-                onScroll={onScroll} />);
-
-            return Promise.resolve(true).then(function () {
-                const convoList = wrapper.find(ConvoList);
-                const convos = convoList.prop("conversations");
-                expect(convos).to.have.length(conversations.length / 2);
-            });
-        });
-
         it("Tests that items are filtered with a props change.", function () {
             let counter = 0;
             const filter: Filter<Conversation> = {
@@ -148,7 +122,7 @@ describe("FilterableconvoList", function () {
                 onItemsFiltered={onItemsFiltered}
                 onScroll={onScroll} />);
 
-            const newProps = {...wrapper.props(), ...{ filter: filter }};
+            const newProps = { ...wrapper.props(), ...{ filter: filter } };
             wrapper.setProps(newProps);
 
             return Promise.resolve(true).then(function () {

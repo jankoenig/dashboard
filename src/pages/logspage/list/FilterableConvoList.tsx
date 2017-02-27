@@ -43,7 +43,6 @@ export default class FilterableConversationList extends React.Component<Filterab
         this.state = {
             shownConversations: props.conversations
         };
-        this.internalFilter(props.conversations, props.filter);
     }
 
     componentWillReceiveProps(nextProps: FilterableConversationListProps, nextContext: any): void {
@@ -55,8 +54,6 @@ export default class FilterableConversationList extends React.Component<Filterab
         let me = this;
         filter(list, filterToUse)
             .then(function (result: FilterResult<Conversation>) {
-                console.info("RESULT " + result.changed);
-                console.info("RESULT " + result.result.length);
                 if (result.changed) {
                     let items = result.result;
                     me.state.shownConversations = items;
@@ -76,7 +73,6 @@ export default class FilterableConversationList extends React.Component<Filterab
 
     render() {
         let { onItemClick, ...others } = this.props;
-        console.info("RENDER" + this.state.shownConversations.length);
         return (
             <ConvoList
                 {...others}
