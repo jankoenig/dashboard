@@ -19,6 +19,7 @@ import LogsExplorer from "./LogsExplorer";
 
 import { FilterBar } from "../FilterBar";
 import { DateFilter, UserIDFilter } from "../filters/ConvoFilters";
+import FilterableConversationList from "../list/FilterableConvoList";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -92,7 +93,7 @@ describe("LogExplorer", function () {
             let conversations: ConversationList;
 
             beforeEach(function() {
-                conversationListViewWrapper = wrapper.find("FilterableConversationList");
+                conversationListViewWrapper = wrapper.find(FilterableConversationList);
                 conversations = conversationListViewWrapper.prop("conversations");
             });
 
@@ -109,7 +110,7 @@ describe("LogExplorer", function () {
             it("Tests that a user filter is removed when conversation icon clicked twice.", function() {
                 conversationListViewWrapper.simulate("iconClick", conversations[0]);
 
-                conversationListViewWrapper = wrapper.find("FilterableConversationList");
+                conversationListViewWrapper = wrapper.find(FilterableConversationList);
 
                 conversationListViewWrapper.simulate("iconClick", conversations[0]);
 
@@ -135,7 +136,7 @@ describe("LogExplorer", function () {
                 sizeStub = sinon.stub(browser, "size").returns({ width: 800, height: 800 });
 
                 // click
-                wrapper.find("FilterableConversationList").simulate("showConversation", convo);
+                wrapper.find(FilterableConversationList).simulate("itemClick", convo);
             });
 
             afterEach(function () {

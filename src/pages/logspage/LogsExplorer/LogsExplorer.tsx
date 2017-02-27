@@ -16,10 +16,10 @@ import browser from "../../../utils/browser";
 import Interval from "../../../utils/Interval";
 import Noop, { falseBoolNoop } from "../../../utils/Noop";
 import SourceUtil from "../../../utils/Source";
-import { FilterableConversationList } from "../FilterableConversationList";
 import { FilterBar } from "../FilterBar";
 import { DateFilter, TYPE_USER_ID, UserIDFilter } from "../filters/ConvoFilters";
 import { CompositeFilter, Filter } from "../filters/Filters";
+import FilterableConversationList from "../list/FilterableConvoList";
 
 const style = require("./style.scss");
 
@@ -262,7 +262,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                 iconStyle={this.state.iconStyle}
                 iconTooltip={this.state.iconTooltip}
                 onScroll={this.handleScroll}
-                onShowConversation={this.handleConversationClicked}
+                onItemClick={this.handleConversationClicked}
                 onIconClick={this.handleFilterUser}
                 onItemsFiltered={this.props.onItemsFiltered} />
         );

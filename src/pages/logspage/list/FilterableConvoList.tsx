@@ -1,19 +1,19 @@
 import * as React from "react";
 
-import Conversation from "../../models/conversation";
-import ConversationList from "../../models/conversation-list";
-import browser from "../../utils/browser";
-import Noop from "../../utils/Noop";
-import { filter, FilterResult } from "../../utils/promise";
-import { Filter } from "./filters/Filters";
-import ConvoList from "./list/ConvoList";
+import Conversation from "../../../models/conversation";
+import ConversationList from "../../../models/conversation-list";
+import browser from "../../../utils/browser";
+import Noop from "../../../utils/Noop";
+import { filter, FilterResult } from "../../../utils/promise";
+import { Filter } from "../filters/Filters";
+import ConvoList from "../list/ConvoList";
 
-export interface FilterableConversationListProps {
+interface FilterableConversationListProps {
     conversations: ConversationList;
     iconStyle?: React.CSSProperties;
     iconTooltip?: string;
     filter?: Filter<Conversation>;
-    onShowConversation?: (conversation: Conversation) => void;
+    onItemClick?: (conversation: Conversation) => void;
     onIconClick?: (conversation: Conversation) => void;
     onItemsFiltered?: (shownConversations: ConversationList) => void;
     onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
@@ -23,11 +23,11 @@ interface FilterableConversationListState {
     shownConversations: ConversationList;
 }
 
-export class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
+export default class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
 
     static defaultProps: FilterableConversationListProps = {
         conversations: [],
-        onShowConversation: Noop,
+        onItemClick: Noop,
         onItemsFiltered: Noop,
         onIconClick: Noop,
         onScroll: Noop,
@@ -38,15 +38,15 @@ export class FilterableConversationList extends React.Component<FilterableConver
     constructor(props: FilterableConversationListProps) {
         super(props);
 
+        this.onEmpty = this.onEmpty.bind(this);
+
         this.state = {
             shownConversations: props.conversations
         };
-
-        this.onEmpty = this.onEmpty.bind(this);
+        this.internalFilter(props.conversations, props.filter);
     }
 
     componentWillReceiveProps(nextProps: FilterableConversationListProps, nextContext: any): void {
-        this.state.shownConversations = nextProps.conversations;
         this.internalFilter(nextProps.conversations, nextProps.filter);
     }
 
@@ -55,6 +55,8 @@ export class FilterableConversationList extends React.Component<FilterableConver
         let me = this;
         filter(list, filterToUse)
             .then(function (result: FilterResult<Conversation>) {
+                console.info("RESULT " + result.changed);
+                console.info("RESULT " + result.result.length);
                 if (result.changed) {
                     let items = result.result;
                     me.state.shownConversations = items;
@@ -73,13 +75,14 @@ export class FilterableConversationList extends React.Component<FilterableConver
     }
 
     render() {
-        let { onShowConversation, ...others } = this.props;
+        let { onItemClick, ...others } = this.props;
+        console.info("RENDER" + this.state.shownConversations.length);
         return (
             <ConvoList
                 {...others}
                 conversations={this.state.shownConversations}
                 expandListItemWhenActive={browser.isMobileWidth()}
-                onClick={onShowConversation}
+                onClick={onItemClick}
                 onEmpty={this.onEmpty} />
         );
     }
