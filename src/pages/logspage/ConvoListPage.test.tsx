@@ -7,10 +7,12 @@ import * as sinonChai from "sinon-chai";
 import Conversation from "../../models/conversation";
 import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
-// import LogQuery from "../../models/log-query";
+import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
+import DateUtils from "../../utils/date";
 import { dummyLogs, dummySources } from "../../utils/test";
 import { ConvoListPage } from "./ConvoListPage";
+import { DateFilter } from "./filters/ConvoFilters";
 import { CompositeFilter } from "./filters/Filters";
 import FilteredConvoList from "./list/FilterableConvoList";
 
@@ -87,8 +89,37 @@ describe("ConvoListPage", function () {
             onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;*/
         });
 
-        it("Tests that the \"getLogs\" is called on mount", function() {
+        it("Tests that the \"getLogs\" is called on mount", function () {
             expect(getLogs).to.be.calledOnce;
+        });
+
+        describe("getLogs", function () {
+
+            let dateFilter: DateFilter;
+
+            before(function () {
+                dateFilter = new DateFilter(DateUtils.daysAgo(5), DateUtils.daysAgo(2));
+                filter = filter.copyAndAddOrReplace(dateFilter);
+            });
+
+            beforeEach(function () {
+                wrapper = shallow(
+                    <ConvoListPage
+                        isLoading={false}
+                        source={source}
+                        newPage={newPage}
+                        refresh={refresh}
+                        getLogs={getLogs}
+                        filter={filter}
+                    />);
+            });
+
+            it("Tests that the LogQuery is correct when a DateFilter is applied.", function() {
+                const logQuery: LogQuery = getLogs.args[0][0];
+
+                expect(logQuery.startTime).to.equalDate(dateFilter.startDate);
+                expect(logQuery.endTime).to.equalDate(dateFilter.endDate);
+            });
         });
     });
 });

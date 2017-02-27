@@ -94,14 +94,12 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         this.props.getLogs(query)
         .then(ConversationList.fromLogs)
         .then((conversations: ConversationList) => {
-            console.info("SETTING LIST " + conversations.length);
             this.setState({ conversations: conversations });
         });
     }
 
     render() {
         let { ...others } = this.props;
-        console.info("RENDER");
         return (
             <ConvoList
                 {...others}
