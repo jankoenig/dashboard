@@ -50,9 +50,11 @@ export class IDFilter implements Filter<Conversation> {
 }
 
 export class DateFilter implements Filter<Conversation> {
+    static type: string = TYPE_DATE;
+
     startMoment: moment.Moment;
     endMoment: moment.Moment;
-    type: string = TYPE_DATE;
+    type: string = DateFilter.type;
 
     constructor(startDate?: Date, endDate?: Date) {
         this.startMoment = (startDate) ? moment(startDate) : undefined;

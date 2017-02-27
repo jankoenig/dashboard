@@ -3,7 +3,6 @@ import * as React from "react";
 import Conversation from "../../../models/conversation";
 import ConversationList from "../../../models/conversation-list";
 import browser from "../../../utils/browser";
-import Noop from "../../../utils/Noop";
 import { filter, FilterResult } from "../../../utils/promise";
 import { Filter } from "../filters/Filters";
 import ConvoList from "../list/ConvoList";
@@ -26,13 +25,7 @@ interface FilterableConversationListState {
 export default class FilterableConversationList extends React.Component<FilterableConversationListProps, FilterableConversationListState> {
 
     static defaultProps: FilterableConversationListProps = {
-        conversations: [],
-        onItemClick: Noop,
-        onItemsFiltered: Noop,
-        onIconClick: Noop,
-        onScroll: Noop,
-        iconStyle: undefined,
-        filter: undefined,
+        conversations: []
     };
 
     constructor(props: FilterableConversationListProps) {

@@ -202,6 +202,10 @@ describe("Filters.tsx", function () {
             });
         });
 
+        it("Tests the static type attribute is correct.", function() {
+            expect(DateFilter.type).to.equal(TYPE_DATE);
+        });
+
         it("Tests the type attribute is not undefined.", function () {
             let filter = new DateFilter(new Date());
             expect(filter.type).to.equal(TYPE_DATE);
