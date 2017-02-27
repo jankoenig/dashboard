@@ -6,7 +6,7 @@ import ConversationList, { ConversationMap } from "../../../models/conversation-
 import Noop from "../../../utils/Noop";
 import ConvoListItem from "./ConvoListItem";
 
-export interface ConversationListViewProps {
+export interface ConvoListProps {
     conversations: ConversationList;
     expandListItemWhenActive?: boolean;
     iconStyle?: React.CSSProperties;
@@ -17,13 +17,13 @@ export interface ConversationListViewProps {
     onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
 }
 
-export interface ConversationListViewState {
-    activeConversations?: ConversationMap;
+export interface ConvoListState {
+    activeConversations: ConversationMap;
 }
 
-export class ConversationListView extends React.Component<ConversationListViewProps, ConversationListViewState> {
+export class ConversationListView extends React.Component<ConvoListProps, ConvoListState> {
 
-    static defaultProps: ConversationListViewProps = {
+    static defaultProps: ConvoListProps = {
         conversations: [],
         expandListItemWhenActive: false,
         onClick: Noop,
@@ -32,7 +32,7 @@ export class ConversationListView extends React.Component<ConversationListViewPr
         onEmpty: function (): JSX.Element { return (<div />); }
     };
 
-    constructor(props: ConversationListViewProps) {
+    constructor(props: ConvoListProps) {
         super(props);
         this.state = {
             activeConversations: {}
