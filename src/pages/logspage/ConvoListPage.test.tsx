@@ -29,6 +29,8 @@ describe("ConvoListPage", function () {
     let getLogs: Sinon.SinonStub;
     let newPage: Sinon.SinonStub;
     let refresh: Sinon.SinonStub;
+    let onItemClick: Sinon.SinonStub;
+    let onIconClick: Sinon.SinonStub;
 
     before(function () {
         source = dummySources(1)[0];
@@ -42,12 +44,17 @@ describe("ConvoListPage", function () {
         getLogs = sinon.stub().returns(Promise.resolve(logs));
         newPage = sinon.stub().returns(Promise.resolve({ oldLogs: logs, newLogs: nextPage, total: both }));
         refresh = sinon.stub().returns(Promise.resolve({ oldLogs: logs, newLogs: nextPage, total: both }));
+
+        onItemClick = sinon.stub();
+        onIconClick = sinon.stub();
     });
 
     afterEach(function () {
         getLogs.reset();
         newPage.reset();
         refresh.reset();
+        onItemClick.reset();
+        onIconClick.reset();
     });
 
     describe("Renders", function () {
@@ -67,6 +74,8 @@ describe("ConvoListPage", function () {
                     newPage={newPage}
                     refresh={refresh}
                     getLogs={getLogs}
+                    onIconClick={onIconClick}
+                    onItemClick={onItemClick}
                     filter={filter}
                 />);
         });
@@ -120,6 +129,46 @@ describe("ConvoListPage", function () {
                 expect(logQuery.startTime).to.equalDate(dateFilter.startDate);
                 expect(logQuery.endTime).to.equalDate(dateFilter.endDate);
             });
+        });
+    });
+
+    describe("Actions", function() {
+        let filter: CompositeFilter<Conversation>;
+        let wrapper: ShallowWrapper<any, any>;
+        let listWrapper: ShallowWrapper<any, any>;
+
+        before(function () {
+            filter = new CompositeFilter([]);
+        });
+
+        beforeEach(function () {
+            wrapper = shallow(
+                <ConvoListPage
+                    isLoading={false}
+                    source={source}
+                    newPage={newPage}
+                    refresh={refresh}
+                    getLogs={getLogs}
+                    onIconClick={onIconClick}
+                    onItemClick={onItemClick}
+                    filter={filter}
+                />);
+
+            listWrapper = wrapper.find(FilteredConvoList);
+        });
+
+        it("Tests that iconClick triggers an event", function() {
+            listWrapper.simulate("iconClick", baseConversations[0]);
+
+            expect(onIconClick).to.have.been.calledOnce;
+            expect(onIconClick).to.have.been.calledWith(baseConversations[0]);
+        });
+
+        it("Tests that the itemClick triggers an event", function() {
+            listWrapper.simulate("itemClick", baseConversations[0]);
+
+            expect(onItemClick).to.have.been.calledOnce;
+            expect(onItemClick).to.have.been.calledWith(baseConversations[0]);
         });
     });
 });

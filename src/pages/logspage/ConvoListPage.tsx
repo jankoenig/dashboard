@@ -28,9 +28,8 @@ interface ConvoListPageProps {
     filter?: CompositeFilter<Conversation>;
     // iconStyle?: React.CSSProperties;
     // iconTooltip?: string;
-    // filter?: Filter<Conversation>;
-    // onItemClick?: (conversation: Conversation) => void;
-    // onIconClick?: (conversation: Conversation) => void;
+    onItemClick?: (conversation: Conversation) => void;
+    onIconClick?: (conversation: Conversation) => void;
     // onItemsFiltered?: (shownConversations: ConversationList) => void;
     // onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
 }
