@@ -56,7 +56,12 @@ moduleLoaders.push({
 // Styling loader for scss and css files.
 moduleLoaders.push({
   test: /\.(scss|css)$/,
-  loader: ExtractTextPlugin.extract('style', 'typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
+  loaders: [
+      "style-loader",
+      "typings-for-css-modules?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]",
+      "postcss-loader",
+      "sass-loader"
+  ]
 });
 // This loader will strip out all console methods.  We don't care if it's in development.
 if (node_env === "production") {

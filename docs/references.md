@@ -40,11 +40,9 @@ $ typings install dt~react-mdl --global --save
 
 - [Redux](http://redux.js.org/)
 
-## Work in Progress
+## CSS Modules
 
-### CSS Modules
-
-CSS Modules allow you to keep the style close to the views.  Some features of TypeScript 2.0 allow this to be possible.  In order to get it working we need to get mocha running in the browser (nodejs only understands javascript files, not CSS files).  Best path forward seems to be the typed-css-modules-loader by Jimdo.
+CSS Modules allow you to keep the style close to the views.
 
 - [SO - Use CSS Modules in React Components With TypeScript](http://stackoverflow.com/questions/35014132/use-css-modules-in-react-components-with-typescript-built-by-webpack)
 - [css-modules/webpack-demo](https://github.com/css-modules/webpack-demo)

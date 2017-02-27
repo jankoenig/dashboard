@@ -101,3 +101,15 @@ export default class Component extends React.Component<ComponentProps, any> {
     }
 }
 ```
+
+# CSS/SASS
+
+## To Import a CSS Module Globally
+
+Sometimes you need to bring in external CSS globally, meaning the class names need to stay what they are.
+
+```
+import "!style!css!sass!react-dates/lib/css/_datepicker.css";
+```
+
+Help from https://github.com/css-modules/css-modules/pull/65#issuecomment-248280248
