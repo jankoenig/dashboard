@@ -9,20 +9,17 @@ import Noop from "../../../utils/Noop";
 
 interface DropdownProps {
     conversation: Conversation;
-    showInteractionOnActive: boolean;
     active: boolean;
     onClick?: () => void;
 }
 
 interface DropdownState {
-    showDropdown: boolean;
 }
 
 class Dropdown extends React.Component<DropdownProps, DropdownState> {
 
     static defaultProps: DropdownProps = {
         conversation: DefaultConvo,
-        showInteractionOnActive: false,
         active: false,
         onClick: Noop
     };
@@ -31,20 +28,12 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
         super(props);
 
         this.state = {
-            showDropdown: props.showInteractionOnActive && props.active
+            showDropdown: props.active
         };
     }
 
-    componentWillReceiveProps(props: DropdownProps, context: any) {
-        const showDropdown = props.showInteractionOnActive && props.active;
-        if (this.state.showDropdown !== showDropdown) {
-            this.state.showDropdown = showDropdown;
-            this.setState(this.state);
-        }
-    }
-
     render() {
-        if (this.state.showDropdown) {
+        if (this.props.active) {
             return (<ActualComponent {...this.props} />);
         } else {
             return (<div />);

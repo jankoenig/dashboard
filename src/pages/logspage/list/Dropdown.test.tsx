@@ -29,7 +29,6 @@ describe("Dropdown", function () {
         const wrapper: ShallowWrapper<any, any> = shallow(<Dropdown
             conversation={conversation}
             active={true}
-            showInteractionOnActive={true}
             onClick={onClick} />);
 
         expect(wrapper.find("ActualComponent")).to.have.length(1);
@@ -39,17 +38,6 @@ describe("Dropdown", function () {
         const wrapper: ShallowWrapper<any, any> = shallow(<Dropdown
             conversation={conversation}
             active={false}
-            showInteractionOnActive={true}
-            onClick={onClick} />);
-
-        expect(wrapper.find("ActualComponent")).to.have.length(0);
-    });
-
-    it("Does not show dropdown with 'showInteractionOnActive' false.", function() {
-        const wrapper: ShallowWrapper<any, any> = shallow(<Dropdown
-            conversation={conversation}
-            active={true}
-            showInteractionOnActive={false}
             onClick={onClick} />);
 
         expect(wrapper.find("ActualComponent")).to.have.length(0);
@@ -59,19 +47,6 @@ describe("Dropdown", function () {
         const wrapper: ShallowWrapper<any, any> = shallow(<Dropdown
             conversation={conversation}
             active={false}
-            showInteractionOnActive={true}
-            onClick={onClick} />);
-
-        wrapper.setProps({conversation: conversation, active: true, showInteractionOnActive: true, onClick: onClick});
-
-        expect(wrapper.find("ActualComponent")).to.have.length(1);
-    });
-
-    it("Shows dropdown on props switch of `showInteractionOnActive` from `false` to `true`", function() {
-        const wrapper: ShallowWrapper<any, any> = shallow(<Dropdown
-            conversation={conversation}
-            active={true}
-            showInteractionOnActive={false}
             onClick={onClick} />);
 
         wrapper.setProps({conversation: conversation, active: true, showInteractionOnActive: true, onClick: onClick});
@@ -83,7 +58,6 @@ describe("Dropdown", function () {
         const wrapper: ShallowWrapper<any, any> = shallow(<Dropdown
             conversation={conversation}
             active={true}
-            showInteractionOnActive={true}
             onClick={onClick} />);
 
         wrapper.setProps({conversation: conversation, active: false, showInteractionOnActive: true, onClick: onClick});
@@ -95,7 +69,6 @@ describe("Dropdown", function () {
         const wrapper: ShallowWrapper<any, any> = shallow(<Dropdown
             conversation={conversation}
             active={true}
-            showInteractionOnActive={true}
             onClick={onClick} />);
 
         wrapper.find("ActualComponent").at(0).simulate("click");

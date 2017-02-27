@@ -40,7 +40,7 @@ describe("ConvoListItem", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         describe("Inactive", function () {
-            before(function () {
+            beforeEach(function () {
                 wrapper = shallow(<ConvoListItem
                     conversation={conversation}
                     onClick={onClick}
@@ -59,7 +59,7 @@ describe("ConvoListItem", function () {
 
         describe("Active", function () {
 
-            before(function () {
+            beforeEach(function () {
                 wrapper = shallow(<ConvoListItem
                     conversation={conversation}
                     onClick={onClick}
@@ -129,11 +129,14 @@ describe("ConvoListItem", function () {
             });
 
             describe("Dropdown", function () {
+                it("Asserts the dropdown exists.", function() {
+                    expect(wrapper.find(Dropdown)).to.have.length(1);
+                });
+
                 it("Passes the dropdown props.", function () {
                     const dropdown = wrapper.find(Dropdown).at(0);
 
                     expect(dropdown).to.have.prop("conversation", conversation);
-                    expect(dropdown).to.have.prop("showInteractionOnActive", true);
                     expect(dropdown).to.have.prop("active", true);
                 });
 
@@ -144,6 +147,22 @@ describe("ConvoListItem", function () {
 
                     expect(onClick).to.have.been.calledOnce;
                     expect(onClick).to.have.been.calledWith;
+                });
+
+                it("Closes dropdown when active is false", function () {
+                    const newProps = { ...wrapper.props(), ...{ active: false } };
+                    wrapper.setProps(newProps);
+
+                    const dropdown = wrapper.find(Dropdown).at(1);
+                    expect(dropdown).to.have.prop("active", false);
+                });
+
+                it("Closes dropdown when showInteractionOnActive is false", function () {
+                    const newProps = { ...wrapper.props(), ...{ showInteractionOnActive: false } };
+                    wrapper.setProps(newProps);
+
+                    const dropdown = wrapper.find(Dropdown).at(1);
+                    expect(dropdown).to.have.prop("active", false);
                 });
             });
         });

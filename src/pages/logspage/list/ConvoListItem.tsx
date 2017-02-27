@@ -5,7 +5,7 @@ import ConvoMainContent from "./ConvoMainContent";
 import ConvoPill from "./ConvoPill";
 import Dropdown from "./Dropdown";
 
-interface ConvoListViewItemProps {
+interface ConvoListItemProps {
     conversation: Conversation;
     onClick?: (conversation: Conversation) => void;
     onIconClick?: (conversation: Conversation) => void;
@@ -15,7 +15,11 @@ interface ConvoListViewItemProps {
     showInteractionOnActive?: boolean;
 }
 
-export default class ConvoListViewItem extends React.Component<ConvoListViewItemProps, any> {
+interface ConvoListItemState {
+    dropDownActive: boolean;
+}
+
+export default class ConvoListItem extends React.Component<ConvoListItemProps, ConvoListItemState> {
 
     static listItemStyle: React.CSSProperties = {
         padding: "10px",
@@ -40,17 +44,29 @@ export default class ConvoListViewItem extends React.Component<ConvoListViewItem
     };
 
     static listItemActiveStyle: React.CSSProperties = {
-        ...ConvoListViewItem.listItemStyle,
+        ...ConvoListItem.listItemStyle,
         ...{
             backgroundColor: "#90A4AE"
         }
     };
 
-    constructor(props: ConvoListViewItemProps) {
+    constructor(props: ConvoListItemProps) {
         super(props);
 
         this.handleIconClick = this.handleIconClick.bind(this);
         this.handleClick = this.handleClick.bind(this);
+
+        this.state = {
+            dropDownActive: props.showInteractionOnActive && props.active
+        };
+    }
+
+    componentWillReceiveProps(props: ConvoListItemProps, context: any) {
+        const active = props.showInteractionOnActive && props.active;
+        if (this.state.dropDownActive !== active) {
+            this.state.dropDownActive = active;
+            this.setState(this.state);
+        }
     }
 
     handleIconClick() {
@@ -63,8 +79,8 @@ export default class ConvoListViewItem extends React.Component<ConvoListViewItem
 
     render() {
         const itemStyle = (this.props.active) ?
-            ConvoListViewItem.listItemActiveStyle :
-            ConvoListViewItem.listItemStyle;
+            ConvoListItem.listItemActiveStyle :
+            ConvoListItem.listItemStyle;
 
         return (
             <li
@@ -87,6 +103,7 @@ export default class ConvoListViewItem extends React.Component<ConvoListViewItem
                 </div>
                 <Dropdown
                     {...this.props}
+                    active={this.state.dropDownActive}
                     onClick={this.handleClick} />
             </li>
         );
