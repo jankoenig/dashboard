@@ -5,8 +5,6 @@ import Source from "../models/source";
 import { LogQueryEvent } from "../reducers/log";
 import service from "../services/log";
 
-import * as moment from "moment";
-
 export interface PageResults {
     newLogs: Log[];
     oldLogs: Log[];
