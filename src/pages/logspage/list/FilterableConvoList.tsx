@@ -7,7 +7,7 @@ import { filter, FilterResult } from "../../../utils/promise";
 import { Filter } from "../filters/Filters";
 import ConvoList from "../list/ConvoList";
 
-interface FilterableConversationListProps {
+export interface FilterableConversationListProps {
     conversations: ConversationList;
     iconStyle?: React.CSSProperties;
     iconTooltip?: string;
@@ -18,7 +18,7 @@ interface FilterableConversationListProps {
     onScroll?: (firstVsibileIndex: number, lastVisibleIndex: number, total: number) => void;
 }
 
-interface FilterableConversationListState {
+export interface FilterableConversationListState {
     shownConversations: ConversationList;
 }
 

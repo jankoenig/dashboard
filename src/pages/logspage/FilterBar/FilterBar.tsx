@@ -17,8 +17,8 @@ const InputTheme = require("../../../themes/input-light.scss");
 const CheckboxTheme = require("../../../themes/checkbox-light.scss");
 
 export interface DateRange {
-    startTime?: Date;
-    endTime?: Date;
+    startTime?: Date | moment.Moment;
+    endTime?: Date | moment.Moment;
 }
 
 export interface FilterProps {
@@ -55,6 +55,17 @@ interface LogType {
     label: string;
 }
 
+function convertDate(date: Date | moment.Moment): Date {
+    if (date) {
+        if (date instanceof Date) {
+            return date;
+        } else {
+            return date.toDate();
+        }
+    }
+    return undefined;
+}
+
 class FilterBar extends React.Component<FilterProps, FilterState> {
 
     handleStartDateChange: Function;
@@ -82,8 +93,8 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
             logTypes: types,
             origins: origins,
             filterbarHidden: false,
-            startDate: props.dateRange ? props.dateRange.startTime : undefined,
-            endDate: props.dateRange ? props.dateRange.endTime : undefined
+            startDate: convertDate(props.dateRange.startTime),
+            endDate: convertDate(props.dateRange.endTime)
         };
 
         this.handleStartDateChange = this.handleDateChange.bind(this, "startDate");
@@ -102,18 +113,16 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     componentWillReceiveProps(nextProps: FilterProps) {
         // currently not letting the caller override state if it changed.
         // TODO: It would be preferable to allow this or get rid of query.
-        if (!this.state.endDate && nextProps.dateRange) {
-            this.setDateRange(nextProps.dateRange.startTime, nextProps.dateRange.endTime);
-        }
+        this.setDateRange(nextProps.dateRange.startTime, nextProps.dateRange.endTime);
     }
 
-    setDateRange(startDate: Date, endDate: Date) {
-        this.state.startDate = (startDate) ? new Date(startDate) : undefined;
+    setDateRange(startDate: Date | moment.Moment, endDate: Date | moment.Moment) {
+        this.state.startDate = convertDate(startDate);
         if (this.state.startDate) {
             this.state.startDate.setHours(0, 0, 0, 0);
         }
 
-        this.state.endDate = (endDate) ? new Date(endDate) : undefined;
+        this.state.endDate = convertDate(endDate);
         if (this.state.endDate) {
             this.state.endDate.setHours(23, 59, 59, 999);
         }

@@ -43,8 +43,15 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
 
         this.handleFilter = this.handleFilter.bind(this);
         this.handleLiveUpdate = this.handleLiveUpdate.bind(this);
+        this.handleDateFilter = this.handleDateFilter.bind(this);
 
-        const initialFilter = new DateFilter(DateUtils.daysAgo(7), DateUtils.daysAgo(0));
+        const startDate: Date = DateUtils.daysAgo(7);
+        startDate.setHours(0, 0, 0, 0);
+
+        const endDate: Date = DateUtils.daysAgo(0);
+        endDate.setHours(23, 59, 59, 999);
+
+        const initialFilter = new DateFilter(startDate, endDate);
 
         this.state = {
             dateRange: { startTime: initialFilter.startDate, endTime: initialFilter.endDate },
@@ -56,6 +63,11 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
     handleFilter(filter: Filter<Conversation>) {
         this.state.filter = this.state.filter.copyAndAddOrReplace(filter);
         this.setState(this.state);
+    }
+
+    handleDateFilter(filter: DateFilter) {
+        this.state.dateRange = { startTime: filter.startDate, endTime: filter.endDate };
+        this.handleFilter(filter);
     }
 
     handleLiveUpdate(enabled: boolean) {
@@ -70,9 +82,9 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
                     onFilterLogLevel={this.handleFilter}
                     onFilterRequest={this.handleFilter}
                     onFilterIntent={this.handleFilter}
-                    onFilterDate={this.handleFilter}
                     onFilterException={this.handleFilter}
                     onFilterOrigin={this.handleFilter}
+                    onFilterDate={this.handleDateFilter}
                     onLiveUpdate={this.handleLiveUpdate}
                     dateRange={this.state.dateRange}
                     liveUpdateEnabled={this.state.refreshOn}

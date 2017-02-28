@@ -5,6 +5,8 @@ import Source from "../models/source";
 import { LogQueryEvent } from "../reducers/log";
 import service from "../services/log";
 
+import * as moment from "moment";
+
 export interface PageResults {
     newLogs: Log[];
     oldLogs: Log[];
@@ -73,10 +75,14 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
  * @param logQuery: The query to perform when retrievings logs.
  */
 export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+    console.info("RETRIEVE LOGS ");
+    console.log(logQuery);
     return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
         dispatch(fetchLogsRequest(true));
         return service.getLogs(logQuery)
         .then(function (logs: Log[]) {
+            console.log(moment(logs[0].timestamp))
+            console.log(moment(logs[logs.length - 1].timestamp));
             dispatch(setLogs(logQuery, logs, append));
             return logs;
         }).then(function (logs: Log[]) {

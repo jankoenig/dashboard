@@ -80,7 +80,6 @@ describe("ConvoListPage", function () {
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    isLoading={false}
                     source={source}
                     newPage={newPage}
                     refresh={refresh}
@@ -121,7 +120,6 @@ describe("ConvoListPage", function () {
             beforeEach(function () {
                 wrapper = shallow(
                     <ConvoListPage
-                        isLoading={false}
                         source={source}
                         newPage={newPage}
                         refresh={refresh}
@@ -185,7 +183,6 @@ describe("ConvoListPage", function () {
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    isLoading={false}
                     source={source}
                     newPage={newPage}
                     refresh={refresh}
@@ -229,7 +226,6 @@ describe("ConvoListPage", function () {
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    isLoading={false}
                     source={source}
                     newPage={newPage}
                     refresh={refresh}
@@ -303,7 +299,6 @@ describe("ConvoListPage", function () {
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    isLoading={false}
                     source={source}
                     newPage={newPage}
                     refresh={refresh}
@@ -363,7 +358,6 @@ describe("ConvoListPage", function () {
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    isLoading={false}
                     source={source}
                     newPage={newPage}
                     refresh={refresh}

@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 
@@ -10,21 +11,21 @@ import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogQueryEvent } from "../../reducers/log";
 import Interval from "../../utils/Interval";
+import { filter, FilterResult } from "../../utils/promise";
 import SourceUtil from "../../utils/Source";
 import { DateFilter } from "./filters/ConvoFilters";
 import { CompositeFilter } from "./filters/Filters";
-import ConvoList from "./list/FilterableConvoList";
+import ConvoList from "./list/ConvoList";
 
 const LIMIT: number = 50;
 const UPDATE_TIME_MS = 5000;
 
 interface DateRange {
-    startTime?: Date;
-    endTime?: Date;
+    startTime?: moment.Moment;
+    endTime?: moment.Moment;
 }
 
 interface ConvoListPageStateProps {
-    isLoading: boolean;
     source: Source;
 }
 
@@ -50,13 +51,13 @@ interface ConvoListPageState {
     query: LogQuery;
     lastLogs: Log[];
     conversations: ConversationList;
+    shownConversations: ConversationList;
     hasInitial: boolean;
     endReached: boolean;
 }
 
 function mapStateToProps(state: State.All): ConvoListPageStateProps {
     return {
-        isLoading: state.log.isLoading,
         source: state.source.currentSource
     };
 }
@@ -64,7 +65,7 @@ function mapStateToProps(state: State.All): ConvoListPageStateProps {
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageReduxProps {
     return {
         getLogs: function (query: LogQuery): Promise<Log[]> {
-            const fetchLogs = retrieveLogs(query, false);
+            const fetchLogs = retrieveLogs(query);
             return fetchLogs(dispatch);
         },
         newPage: function (query: LogQueryEvent, limit: number): Promise<PageResults> {
@@ -86,24 +87,53 @@ function getDateRange(filter: CompositeFilter<any>): DateRange {
     let range: DateRange = {};
     const dateFilter = (filter) ? filter.getFilter(DateFilter.type) as DateFilter : undefined;
     if (dateFilter) {
-        range = { ...{ startTime: dateFilter.startDate, endTime: dateFilter.endDate } };
+        range = { ...{ startTime: dateFilter.startMoment, endTime: dateFilter.endMoment } };
     }
     return range;
+}
+
+function differentRanges(range1: DateRange | LogQuery, range2: DateRange | LogQuery) {
+    console.info("Checking ranges");
+    console.log(range1);
+    console.log(range2);
+    const start1 = (range1 && range1.startTime) ? moment(range1.startTime) : moment();
+    const start2 = (range2 && range2.startTime) ? moment(range2.startTime) : moment();
+
+    if (!start1.isSame(start2)) {
+        console.info("Different starts");
+        return true;
+    }
+
+    const end1 = (range1 && range1.endTime) ? moment(range1.endTime) : moment();
+    const end2 = (range2 && range2.endTime) ? moment(range2.endTime) : moment();
+
+    if (!end1.isSame(end2)) {
+        console.info("different ends");
+        return true;
+    }
+
+    console.info("Same");
+    return false;
 }
 
 export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoListPageState> {
 
     refresher: Interval.Executor;
+    isLoading: boolean;
 
     constructor(props: ConvoListPageProps) {
         super(props);
 
-        this.handleItemsFiltered = this.handleItemsFiltered.bind(this);
+        this.checkIfMoreNeeded = this.checkIfMoreNeeded.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
+        this.filterConvo = this.filterConvo.bind(this);
+        this.setState = this.setState.bind(this);
+
         this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.getRefresh.bind(this));
 
         this.state = {
             conversations: [],
+            shownConversations: [],
             lastLogs: [],
             endReached: false,
             hasInitial: false,
@@ -119,8 +149,10 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         }
 
         if (nextProps.source) {
-            if (!SourceUtil.equals(nextProps.source, this.props.source) || !this.state.hasInitial) {
-                const range = getDateRange(this.props.filter);
+            const range = getDateRange(nextProps.filter);
+            if (!SourceUtil.equals(nextProps.source, this.props.source) || !this.state.hasInitial || differentRanges(range, this.state.query)) {
+                console.info("Getting new logs");
+                console.log(range);
                 const query: LogQuery = new LogQuery({
                     source: nextProps.source,
                     startTime: range.startTime,
@@ -128,15 +160,48 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                     limit: 50
                 });
 
+                let newState = { ...this.state };
+
                 nextProps.getLogs(query)
                     .then((logs: Log[]) => {
                         const conversations = ConversationList.fromLogs(logs);
-                        this.setState({ conversations: conversations, query: query, lastLogs: logs, endReached: false, hasInitial: true });
-                    });
+                        console.info("Got new logs " + conversations.length);
+                        console.log(moment(conversations[conversations.length - 1].timestamp));
+                        newState = {
+                            conversations: conversations,
+                            shownConversations: conversations,
+                            query: query,
+                            lastLogs: logs,
+                            endReached: false,
+                            hasInitial: true
+                        };
+                        console.log(newState)
+                        return newState;
+                    })
+                    .then(this.filterConvo)
+                    .then((state: any) => {
+                        console.log(state);
+                        console.log("Setting state");
+                        console.log(this === undefined);
+                        return state;
+                    })
+                    .then(this.setState)
+                    .then(function () {
+                        console.log("State set");
+                    })
+                    .then(this.checkIfMoreNeeded);
             }
         } else if (this.props.source) {
             // We're going from defined to undefined. Clear everything.
-            this.setState({ conversations: [], query: undefined, lastLogs: [], endReached: true, hasInitial: false });
+            console.info("Dropping out");
+            this.setState({
+                conversations: [],
+                shownConversations: [],
+                query: undefined,
+                lastLogs: [],
+                endReached: true,
+                hasInitial: false
+            });
         }
     }
 
@@ -144,55 +209,96 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         this.refresher.end();
     }
 
-    handleItemsFiltered(shownItems: ConversationList) {
-        if (!this.props.isLoading && !this.state.endReached && shownItems.length < LIMIT) {
+    checkIfMoreNeeded() {
+        if (!this.state.endReached && this.state.shownConversations.length < LIMIT) {
+            console.info("ITEMS FILTERED " + this.state.shownConversations.length);
             this.getNextPage();
         }
     }
 
     handleScroll(firstVisibleIndex: number, lastVisibleIndex: number, totalCount: number) {
-        if (!this.props.isLoading && !this.state.endReached && totalCount - lastVisibleIndex < 5) {
+        console.info("SCROLLING");
+        if (!this.isLoading && !this.state.endReached && totalCount - lastVisibleIndex < 5) {
             this.getNextPage();
         }
     }
 
     getNextPage() {
-        this.props.newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
-            .then((result: PageResults) => {
+        this.isLoading = true;
+        const newState = { ...this.state };
+        const filterConvo = this.filterConvo;
+        this.props
+            .newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
+            .then(function (result: PageResults) {
                 const endReached = result.newLogs.length === 0;
+                newState.endReached = endReached;
                 if (!endReached) {
                     // The reason we can't just append right now is because we may have partial conversations from the previous batch.
                     const newConversations = ConversationList.fromLogs(result.totalLogs);
-                    this.state.conversations = newConversations;
-                    this.state.lastLogs = result.totalLogs;
+                    newState.conversations = newConversations;
+                    newState.lastLogs = result.totalLogs;
+                    return filterConvo(newState);
+                } else {
+                    return newState;
                 }
-                this.state.endReached = endReached;
-                this.setState(this.state);
-            });
+            })
+            .then((state: ConvoListPageState) => {
+                this.isLoading = false;
+                return state;
+            })
+            .then(function (state: any) {
+                console.log("Setting state");
+                return state;
+            })
+            .then(this.setState)
+            .then(function () {
+                console.log("State set");
+            })
+            .then(this.checkIfMoreNeeded);
     }
 
     getRefresh() {
-        console.info("Refreshing");
-        this.props.refresh({ query: this.state.query, logs: this.state.lastLogs })
+        this.isLoading = true;
+        const newState = { ...this.state };
+        const filterConvo = this.filterConvo;
+        this.props
+            .refresh({ query: this.state.query, logs: this.state.lastLogs })
             .then((result: PageResults) => {
-                console.info("refreshed " + result.newLogs.length);
                 if (result.newLogs.length > 0) {
                     // The reason we can't just preppend right now is because we may have partial conversations from the previous batch.
                     const newConversations = ConversationList.fromLogs(result.totalLogs);
-                    this.state.conversations = newConversations;
-                    this.state.lastLogs = result.totalLogs;
-                    this.setState(this.state);
+                    newState.conversations = newConversations;
+                    newState.lastLogs = result.totalLogs;
+                    return filterConvo(newState);
+                } else {
+                    return newState;
                 }
+            }).then((state: ConvoListPageState) => {
+                this.isLoading = false;
+                return state;
+            }).then(this.setState);
+    }
+
+    filterConvo(state: ConvoListPageState) {
+        return filter(state.conversations, this.props.filter.filter)
+            .then((result: FilterResult<Conversation>) => {
+                let items = result.result;
+                state.shownConversations = items;
+            }).catch(function (err: Error) {
+                console.error(err);
+                state.shownConversations = state.conversations;
+            }).then(function() {
+                return state;
             });
     }
 
     render() {
         let { ...others } = this.props;
+        console.info("Render " + this.state.conversations.length);
         return (
             <ConvoList
                 {...others}
                 onScroll={this.handleScroll}
-                onItemsFiltered={this.handleItemsFiltered}
                 conversations={this.state.conversations}
             />
         );
