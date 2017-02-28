@@ -4,9 +4,10 @@ import TwoPane from "../../components/TwoPane";
 import Conversation from "../../models/Conversation";
 import ConvoListPage from "./ConvoListPage";
 import ConvoViewPage from "./ConvoViewPage";
+import { CompositeFilter } from "./filters/Filters";
 
 interface ConvoExplorerPageProps {
-
+    filter?: CompositeFilter<Conversation>;
 }
 
 interface ConvoExplorerPageState {
@@ -35,6 +36,7 @@ export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, C
             <TwoPane
                 spacing={false}>
                 <ConvoListPage
+                    {...this.props}
                     onItemClick={this.handleItemClick} />
                 <ConvoViewPage
                     conversation={this.state.selectedConvo} />
