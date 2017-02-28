@@ -156,7 +156,6 @@ describe("ConvoList", function () {
                 (wrapper.instance() as ConvoList).handleClick(conversations[0]);
 
                 let listItem = (wrapper.instance() as ConvoList).renderItem(0, conversations[0].id);
-                console.log(listItem.props);
                 expect(onClick).to.have.callCount(2);
                 expect(listItem.props["active"]).to.be.false;
             });

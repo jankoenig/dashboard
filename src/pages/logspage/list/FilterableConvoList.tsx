@@ -47,11 +47,10 @@ export default class FilterableConversationList extends React.Component<Filterab
         let me = this;
         filter(list, filterToUse)
             .then(function (result: FilterResult<Conversation>) {
+                let items = result.result;
+                me.state.shownConversations = items;
+                me.setState(me.state);
                 if (result.changed) {
-                    let items = result.result;
-                    me.state.shownConversations = items;
-                    me.setState(me.state);
-
                     me.props.onItemsFiltered(items);
                 }
             }).catch(function (err: Error) {

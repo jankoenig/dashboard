@@ -103,7 +103,8 @@ describe("ConvoListPage", function () {
             expect(listWrapper.prop("iconStyle")).to.equal(iconStyle); // The have.prop method seems to be different.
         });
 
-        it("Tests that the \"getLogs\" is called on mount", function () {
+        it("Tests that the \"getLogs\" is called props recieved", function () {
+            wrapper.setProps({ ...wrapper.props() });
             expect(getLogs).to.be.calledOnce;
         });
 
@@ -126,6 +127,11 @@ describe("ConvoListPage", function () {
                         getLogs={getLogs}
                         filter={filter}
                     />);
+
+                // In the real world, "componentWillReceiveProps" is called, but not in Enzyme.
+                return Promise.resolve(true).then(function() {
+                    wrapper.setProps({ ...wrapper.props() });
+                });
             });
 
             it("Tests that the LogQuery is correct when a DateFilter is applied.", function () {
@@ -133,6 +139,20 @@ describe("ConvoListPage", function () {
 
                 expect(logQuery.startTime).to.equalDate(dateFilter.startDate);
                 expect(logQuery.endTime).to.equalDate(dateFilter.endDate);
+            });
+
+            it("Tests that the \"getLogs\" is not called when source is undefined.", function () {
+                wrapper.setProps({ ...wrapper.props(), ...{ source: undefined } });
+
+                expect(getLogs).to.have.been.calledOnce; // Only the first time.
+            });
+
+            it("Tests that the logs are cleared when going from a source to an undefined source.", function() {
+                wrapper.setProps({ ...wrapper.props(), ...{ source: undefined } });
+
+                const listWrapper = wrapper.find(FilteredConvoList).at(0);
+
+                expect(listWrapper.prop("conversations")).to.deep.equal([]);
             });
         });
     });
@@ -158,6 +178,8 @@ describe("ConvoListPage", function () {
                     onItemClick={onItemClick}
                     filter={filter}
                 />);
+
+            wrapper.setProps({ ...wrapper.props() });
 
             listWrapper = wrapper.find(FilteredConvoList);
         });
@@ -200,6 +222,8 @@ describe("ConvoListPage", function () {
                     onItemClick={onItemClick}
                     filter={filter}
                 />);
+
+            wrapper.setProps({ ...wrapper.props() });
 
             listWrapper = wrapper.find(FilteredConvoList);
         });
@@ -272,6 +296,8 @@ describe("ConvoListPage", function () {
                     onItemClick={onItemClick}
                     filter={filter}
                 />);
+
+            wrapper.setProps({ ...wrapper.props() });
 
             listWrapper = wrapper.find(FilteredConvoList);
         });

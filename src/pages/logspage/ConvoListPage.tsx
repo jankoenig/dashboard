@@ -9,6 +9,7 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogQueryEvent } from "../../reducers/log";
+import SourceUtil from "../../utils/Source";
 import { DateFilter } from "./filters/ConvoFilters";
 import { CompositeFilter } from "./filters/Filters";
 import ConvoList from "./list/FilterableConvoList";
@@ -74,7 +75,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageReduxPr
 }
 
 function mergeProps(stateProps: ConvoListPageStateProps, dispatchProps: ConvoListPageReduxProps, parentProps: ConvoListPageStandardProps): ConvoListPageProps {
-    return {...parentProps, ...dispatchProps, ...stateProps};
+    return { ...parentProps, ...dispatchProps, ...stateProps };
 }
 
 function getDateRange(filter: CompositeFilter<any>): DateRange {
@@ -102,20 +103,27 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         };
     }
 
-    componentWillMount() {
-        const range = getDateRange(this.props.filter);
-        const query: LogQuery = new LogQuery({
-            source: this.props.source,
-            startTime: range.startTime,
-            endTime: range.endTime,
-            limit: 50
-        });
+    componentWillReceiveProps(nextProps: ConvoListPageProps, context: any) {
+        if (nextProps.source) {
+            if (!SourceUtil.equals(nextProps.source, this.props.source)) {
+                const range = getDateRange(this.props.filter);
+                const query: LogQuery = new LogQuery({
+                    source: nextProps.source,
+                    startTime: range.startTime,
+                    endTime: range.endTime,
+                    limit: 50
+                });
 
-        this.props.getLogs(query)
-            .then((logs: Log[]) => {
-                const conversations = ConversationList.fromLogs(logs);
-                this.setState({ conversations: conversations, query: query, lastLogs: logs, endReached: false });
-            });
+                nextProps.getLogs(query)
+                    .then((logs: Log[]) => {
+                        const conversations = ConversationList.fromLogs(logs);
+                        this.setState({ conversations: conversations, query: query, lastLogs: logs, endReached: false });
+                    });
+            }
+        } else if (this.props.source) {
+            // We're going from defined to undefined. Clear everything.
+            this.setState({ conversations: [], query: undefined, lastLogs: [], endReached: true });
+        }
     }
 
     handleItemsFiltered(shownItems: ConversationList) {
@@ -134,10 +142,10 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         this.props.newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
             .then((result: PageResults) => {
                 const endReached = result.newLogs.length === 0;
-                if (endReached) {
+                if (!endReached) {
                     // The reason we can't just append right now is because we may have partial conversations from the previous batch.
                     const newConversations = ConversationList.fromLogs(result.totalLogs);
-                    this.state.conversations = this.state.conversations.concat(newConversations);
+                    this.state.conversations = newConversations;
                     this.state.lastLogs = result.totalLogs;
                 }
                 this.state.endReached = endReached;

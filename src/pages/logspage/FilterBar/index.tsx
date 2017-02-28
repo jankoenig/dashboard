@@ -1,1 +1,5 @@
-export { default as FilterBar } from "./FilterBar";
+import FilterBar from "./FilterBar";
+
+export { FilterBar };
+
+export default FilterBar;
