@@ -9,12 +9,14 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogQueryEvent } from "../../reducers/log";
+import Interval from "../../utils/Interval";
 import SourceUtil from "../../utils/Source";
 import { DateFilter } from "./filters/ConvoFilters";
 import { CompositeFilter } from "./filters/Filters";
 import ConvoList from "./list/FilterableConvoList";
 
 const LIMIT: number = 50;
+const UPDATE_TIME_MS = 5000;
 
 interface DateRange {
     startTime?: Date;
@@ -33,6 +35,7 @@ interface ConvoListPageReduxProps {
 }
 
 interface ConvoListPageStandardProps {
+    refreshOn?: boolean;
     filter?: CompositeFilter<Conversation>;
     iconStyle?: React.CSSProperties;
     iconTooltip?: string;
@@ -90,11 +93,14 @@ function getDateRange(filter: CompositeFilter<any>): DateRange {
 
 export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoListPageState> {
 
+    refresher: Interval.Executor;
+
     constructor(props: ConvoListPageProps) {
         super(props);
 
         this.handleItemsFiltered = this.handleItemsFiltered.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
+        this.refresher = Interval.newExecutor(UPDATE_TIME_MS, this.getRefresh.bind(this));
 
         this.state = {
             conversations: [],
@@ -106,6 +112,12 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     }
 
     componentWillReceiveProps(nextProps: ConvoListPageProps, context: any) {
+        if (nextProps.refreshOn) {
+            this.refresher.start();
+        } else {
+            this.refresher.end();
+        }
+
         if (nextProps.source) {
             if (!SourceUtil.equals(nextProps.source, this.props.source) || !this.state.hasInitial) {
                 const range = getDateRange(this.props.filter);
@@ -126,6 +138,10 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
             // We're going from defined to undefined. Clear everything.
             this.setState({ conversations: [], query: undefined, lastLogs: [], endReached: true, hasInitial: false });
         }
+    }
+
+    componentWillUnmount() {
+        this.refresher.end();
     }
 
     handleItemsFiltered(shownItems: ConversationList) {
@@ -156,12 +172,14 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     }
 
     getRefresh() {
+        console.info("Refreshing");
         this.props.refresh({ query: this.state.query, logs: this.state.lastLogs })
             .then((result: PageResults) => {
+                console.info("refreshed " + result.newLogs.length);
                 if (result.newLogs.length > 0) {
                     // The reason we can't just preppend right now is because we may have partial conversations from the previous batch.
                     const newConversations = ConversationList.fromLogs(result.totalLogs);
-                    this.state.conversations = this.state.conversations.concat(newConversations);
+                    this.state.conversations = newConversations;
                     this.state.lastLogs = result.totalLogs;
                     this.setState(this.state);
                 }

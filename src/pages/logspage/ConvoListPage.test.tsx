@@ -11,6 +11,7 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { LogQueryEvent } from "../../reducers/log";
 import DateUtils from "../../utils/date";
+import Interval from "../../utils/Interval";
 import { dummyLogs, dummySources } from "../../utils/test";
 import { ConvoListPage } from "./ConvoListPage";
 import { DateFilter } from "./filters/ConvoFilters";
@@ -346,4 +347,77 @@ describe("ConvoListPage", function () {
             expect(newPage).to.have.not.been.called;
         });
     });
+
+    describe("Tests the refreshing.", function () {
+
+        let wrapper: ShallowWrapper<any, any>;
+        let stubExecutor: StubExecutor;
+        let intervalStub: Sinon.SinonStub;
+
+        before(function () {
+            intervalStub = sinon.stub(Interval, "newExecutor", (ms: number, callback: () => void): Interval.Executor => {
+                return stubExecutor = new StubExecutor(ms, callback);
+            });
+        });
+
+        beforeEach(function () {
+            wrapper = shallow(
+                <ConvoListPage
+                    isLoading={false}
+                    source={source}
+                    newPage={newPage}
+                    refresh={refresh}
+                    getLogs={getLogs}
+                    onIconClick={onIconClick}
+                    onItemClick={onItemClick}
+                    refreshOn={true}
+                />);
+        });
+
+        afterEach(function () {
+            stubExecutor.reset();
+            intervalStub.reset();
+        });
+
+        after(function () {
+            intervalStub.restore();
+        });
+
+        it("Tests there is a value and callback passed to the exectuor.", function () {
+            expect(stubExecutor).to.exist;
+            expect(stubExecutor.ms).to.be.greaterThan(0);
+            expect(stubExecutor.callback).to.exist;
+        });
+
+        it("Tests the interval executor is ended when unmounted.", function () {
+            wrapper.unmount();
+            expect(stubExecutor.end).to.have.been.calledOnce;
+        });
+
+        it("Tests the callback when the executor executes the callback.", function () {
+            stubExecutor.callback();
+            expect(refresh).to.have.been.calledOnce;
+        });
+    });
 });
+
+class StubExecutor implements Interval.Executor {
+
+    callback: () => void;
+    ms: number;
+
+    start: Sinon.SinonStub;
+    end: Sinon.SinonStub;
+
+    constructor(ms: number, callback: () => void) {
+        this.callback = callback;
+        this.ms = ms;
+        this.start = sinon.stub();
+        this.end = sinon.stub();
+    }
+
+    reset() {
+        this.start.reset();
+        this.end.reset();
+    }
+}
