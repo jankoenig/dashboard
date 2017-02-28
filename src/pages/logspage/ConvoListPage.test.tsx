@@ -129,7 +129,7 @@ describe("ConvoListPage", function () {
                     />);
 
                 // In the real world, "componentWillReceiveProps" is called, but not in Enzyme.
-                return Promise.resolve(true).then(function() {
+                return Promise.resolve(true).then(function () {
                     wrapper.setProps({ ...wrapper.props() });
                 });
             });
@@ -147,12 +147,27 @@ describe("ConvoListPage", function () {
                 expect(getLogs).to.have.been.calledOnce; // Only the first time.
             });
 
-            it("Tests that the logs are cleared when going from a source to an undefined source.", function() {
+            it("Tests that the logs are cleared when going from a source to an undefined source.", function () {
                 wrapper.setProps({ ...wrapper.props(), ...{ source: undefined } });
 
                 const listWrapper = wrapper.find(FilteredConvoList).at(0);
 
                 expect(listWrapper.prop("conversations")).to.deep.equal([]);
+            });
+
+            it("Tests that the logs are not recovered when setting props with the same source.", function () {
+                wrapper.setProps({ ...wrapper.props() });
+                wrapper.setProps({ ...wrapper.props() });
+
+                expect(getLogs).to.have.been.calledOnce;
+            });
+
+            it("Tests that the logs are gathered when finding a different source.", function () {
+                const newSource = dummySources(2)[1]; // The second one will have a different ID than the first.
+
+                wrapper.setProps({ ...wrapper.props(), ...{ source: newSource } });
+
+                expect(getLogs).to.have.been.calledTwice;
             });
         });
     });
@@ -239,7 +254,7 @@ describe("ConvoListPage", function () {
                 const limit = newPage.args[0][1] as number;
 
                 expect(limit).to.equal(50);
-                expect(queryEvent.logs).to.equal(logs);
+                expect(queryEvent.logs.length).to.equal(logs.length);
                 expect(queryEvent.query.source).to.equal(source);
             });
         });

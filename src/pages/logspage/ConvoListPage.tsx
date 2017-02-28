@@ -47,6 +47,7 @@ interface ConvoListPageState {
     query: LogQuery;
     lastLogs: Log[];
     conversations: ConversationList;
+    hasInitial: boolean;
     endReached: boolean;
 }
 
@@ -99,13 +100,14 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
             conversations: [],
             lastLogs: [],
             endReached: false,
+            hasInitial: false,
             query: undefined
         };
     }
 
     componentWillReceiveProps(nextProps: ConvoListPageProps, context: any) {
         if (nextProps.source) {
-            if (!SourceUtil.equals(nextProps.source, this.props.source)) {
+            if (!SourceUtil.equals(nextProps.source, this.props.source) || !this.state.hasInitial) {
                 const range = getDateRange(this.props.filter);
                 const query: LogQuery = new LogQuery({
                     source: nextProps.source,
@@ -117,12 +119,12 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                 nextProps.getLogs(query)
                     .then((logs: Log[]) => {
                         const conversations = ConversationList.fromLogs(logs);
-                        this.setState({ conversations: conversations, query: query, lastLogs: logs, endReached: false });
+                        this.setState({ conversations: conversations, query: query, lastLogs: logs, endReached: false, hasInitial: true });
                     });
             }
         } else if (this.props.source) {
             // We're going from defined to undefined. Clear everything.
-            this.setState({ conversations: [], query: undefined, lastLogs: [], endReached: true });
+            this.setState({ conversations: [], query: undefined, lastLogs: [], endReached: true, hasInitial: false });
         }
     }
 
