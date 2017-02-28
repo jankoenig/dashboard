@@ -8,6 +8,7 @@ import { CompositeFilter } from "./filters/Filters";
 
 interface ConvoExplorerPageProps {
     filter?: CompositeFilter<Conversation>;
+    refreshOn?: boolean;
 }
 
 interface ConvoExplorerPageState {

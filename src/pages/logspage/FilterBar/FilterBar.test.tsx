@@ -9,28 +9,24 @@ import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
 import Input from "react-toolbox/lib/input";
 
-import Filterbar, { FilterProps, FilterState } from "./FilterBar";
-
-import Source from "../../../models/source";
-
-import LogQuery from "../../../models/log-query";
+import Dateutils from "../../../utils/date";
+import Filterbar, { DateRange, FilterProps, FilterState } from "./FilterBar";
 
 chai.use(sinonChai);
 chai.use(require("chai-datetime"));
 const expect = chai.expect;
 
 describe("Filter Bar", function () {
-    let source: Source;
     let onFilter: Sinon.SinonSpy;
-    let logQuery: LogQuery;
+    let logQuery: DateRange;
     let wrapper: ShallowWrapper<FilterProps, FilterState>;
 
     before(function () {
-        source = new Source({
-            name: "TestSource"
-        });
         onFilter = sinon.spy();
-        logQuery = new LogQuery({ source: source });
+        logQuery = {
+            startTime: Dateutils.daysAgo(3),
+            endTime: Dateutils.daysAgo(0)
+        };
     });
 
     beforeEach(function () {
@@ -45,16 +41,16 @@ describe("Filter Bar", function () {
                 onFilterOrigin={onFilter}
                 onLiveUpdate={onFilter}
                 liveUpdateEnabled={true}
-                query={logQuery} />
+                dateRange={logQuery} />
         )) as ShallowWrapper<FilterProps, FilterState>;
     });
 
     it("Renders correctly", function () {
-        let source = new Source({
-            name: "TestSource"
-        });
         let onFilter = sinon.spy();
-        let logQuery = new LogQuery({ source: source });
+        let logQuery = {
+            startTime: Dateutils.daysAgo(3),
+            endTime: Dateutils.daysAgo(0)
+        };
 
         let wrapper = shallow((
             <Filterbar
@@ -66,7 +62,7 @@ describe("Filter Bar", function () {
                 onFilterOrigin={onFilter}
                 onLiveUpdate={onFilter}
                 liveUpdateEnabled={true}
-                query={logQuery} />
+                dateRange={logQuery} />
         ));
 
         expect(wrapper.find(Dropdown)).to.have.length(2); // Filter by type and origin

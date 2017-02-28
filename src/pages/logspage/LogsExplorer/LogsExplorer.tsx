@@ -291,7 +291,7 @@ export default class LogExplorer extends React.Component<LogExplorerProps, LogEx
                         onFilterOrigin={this.handleFilter}
                         onLiveUpdate={this.handleTailChecked}
                         disableLiveUpdateCheckbox={this.state.dateOutOfRange}
-                        query={query} />
+                        dateRange={{...query}} />
                     <TwoPane
                         leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}
                         rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}

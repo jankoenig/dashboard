@@ -22,6 +22,7 @@ describe("ConvoExplorerPage", function () {
 
         beforeEach(function () {
             wrapper = shallow(<ConvoExplorerPage
+                refreshOn={true}
                 filter={compositeFilter} />);
         });
 
@@ -34,7 +35,9 @@ describe("ConvoExplorerPage", function () {
         });
 
         it("Tests the props are sent to the list page.", function () {
-            expect(wrapper.find(ConvoListPage)).to.have.prop("filter", compositeFilter);
+            const page = wrapper.find(ConvoListPage).at(0);
+            expect(page).to.have.prop("filter", compositeFilter);
+            expect(page).to.have.prop("refreshOn", true);
         });
     });
 

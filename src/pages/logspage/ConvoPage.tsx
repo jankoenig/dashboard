@@ -2,40 +2,33 @@ import * as React from "react";
 import { connect } from "react-redux";
 
 import Conversation from "../../models/conversation";
-import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
+import DateUtils from "../../utils/date";
 import ConvoExplorerPage from "./ConvoExplorerPage";
-import FilterBar from "./FilterBar";
+import FilterBar, { DateRange } from "./FilterBar";
+import { DateFilter } from "./filters/ConvoFilters";
 import { CompositeFilter, Filter } from "./filters/Filters";
 
 interface ConvoPageStateProps {
     source: Source;
-    logQuery: LogQuery;
 }
 
 interface ConvoPageDispatchProps {
-
 }
 
 interface ConvoPageProps extends ConvoPageStateProps, ConvoPageDispatchProps {
-
 }
 
 interface ConvoPageState {
+    dateRange: DateRange;
     filter: CompositeFilter<Conversation>;
+    refreshOn: boolean;
 }
 
 function mapStateToProps(state: State.All): ConvoPageStateProps {
-
-    const source = state.source.currentSource;
-    const logMap = state.log.logMap;
-    const queryEvent = (source && logMap) ? state.log.logMap[source.id] : undefined;
-    const query = (queryEvent) ? queryEvent.query : undefined;
-
     return {
-        source: source,
-        logQuery: query
+        source: state.source.currentSource
     };
 }
 
@@ -49,10 +42,14 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
         super(props);
 
         this.handleFilter = this.handleFilter.bind(this);
-        this.handleLiveUpdate = this.handleFilter.bind(this);
+        this.handleLiveUpdate = this.handleLiveUpdate.bind(this);
+
+        const initialFilter = new DateFilter(DateUtils.daysAgo(7), DateUtils.daysAgo(0));
 
         this.state = {
-            filter: new CompositeFilter([])
+            dateRange: { startTime: initialFilter.startDate, endTime: initialFilter.endDate },
+            filter: new CompositeFilter([initialFilter]),
+            refreshOn: true
         };
     }
 
@@ -62,7 +59,8 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
     }
 
     handleLiveUpdate(enabled: boolean) {
-
+        this.state.refreshOn = enabled;
+        this.setState(this.state);
     }
 
     render() {
@@ -76,10 +74,11 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
                     onFilterException={this.handleFilter}
                     onFilterOrigin={this.handleFilter}
                     onLiveUpdate={this.handleLiveUpdate}
-                    query={this.props.logQuery}
-                    liveUpdateEnabled={true}
+                    dateRange={this.state.dateRange}
+                    liveUpdateEnabled={this.state.refreshOn}
                     disableLiveUpdateCheckbox={false} />
                 <ConvoExplorerPage
+                    refreshOn={this.state.refreshOn}
                     filter={this.state.filter} />
             </div>
         );

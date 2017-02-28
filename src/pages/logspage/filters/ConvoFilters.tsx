@@ -14,8 +14,10 @@ export const TYPE_ORIGIN: string = "Origin";
 export const TYPE_USER_ID: string = "UserID";
 
 export class LogLevelFilter implements Filter<Conversation> {
+    static type = TYPE_LOG_LEVEL;
+
     logType?: string;
-    type: string = TYPE_LOG_LEVEL;
+    type: string = LogLevelFilter.type;
 
     constructor(type?: string) {
         this.logType = type;
@@ -85,8 +87,9 @@ export class DateFilter implements Filter<Conversation> {
 }
 
 export class IntentFilter implements Filter<Conversation> {
+    static type = TYPE_INTENT;
     intent: string | undefined;
-    type: string = TYPE_INTENT;
+    type: string = IntentFilter.type;
 
     constructor(intent?: string) {
         this.intent = intent;
@@ -135,8 +138,10 @@ export class UserIDFilter implements Filter<Conversation> {
 }
 
 export class RequestFilter implements Filter<Conversation> {
+    static type = TYPE_REQUEST;
+
     request: string | undefined;
-    type: string = TYPE_REQUEST;
+    type: string = RequestFilter.type;
 
     constructor(request?: string) {
         this.request = request;
@@ -158,7 +163,9 @@ export class RequestFilter implements Filter<Conversation> {
 }
 
 export class ExceptionFilter implements Filter<Conversation> {
-    type: string = TYPE_EXCEPTION;
+    static type = TYPE_EXCEPTION;
+
+    type: string = ExceptionFilter.type;
 
     get filter(): (item: Conversation) => boolean {
         return function (item: Conversation): boolean {
@@ -168,7 +175,9 @@ export class ExceptionFilter implements Filter<Conversation> {
 }
 
 export class OriginFilter implements Filter<Conversation> {
-    type: string = TYPE_ORIGIN;
+    static type = TYPE_ORIGIN;
+
+    type: string = OriginFilter.type;
     origin: Origin;
 
     constructor(origin: Origin) {
