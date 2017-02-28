@@ -93,14 +93,10 @@ function getDateRange(filter: CompositeFilter<any>): DateRange {
 }
 
 function differentRanges(range1: DateRange | LogQuery, range2: DateRange | LogQuery) {
-    console.info("Checking ranges");
-    console.log(range1);
-    console.log(range2);
     const start1 = (range1 && range1.startTime) ? moment(range1.startTime) : moment();
     const start2 = (range2 && range2.startTime) ? moment(range2.startTime) : moment();
 
     if (!start1.isSame(start2)) {
-        console.info("Different starts");
         return true;
     }
 
@@ -108,11 +104,9 @@ function differentRanges(range1: DateRange | LogQuery, range2: DateRange | LogQu
     const end2 = (range2 && range2.endTime) ? moment(range2.endTime) : moment();
 
     if (!end1.isSame(end2)) {
-        console.info("different ends");
         return true;
     }
 
-    console.info("Same");
     return false;
 }
 
@@ -151,8 +145,6 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         if (nextProps.source) {
             const range = getDateRange(nextProps.filter);
             if (!SourceUtil.equals(nextProps.source, this.props.source) || !this.state.hasInitial || differentRanges(range, this.state.query)) {
-                console.info("Getting new logs");
-                console.log(range);
                 const query: LogQuery = new LogQuery({
                     source: nextProps.source,
                     startTime: range.startTime,
@@ -165,8 +157,6 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                 nextProps.getLogs(query)
                     .then((logs: Log[]) => {
                         const conversations = ConversationList.fromLogs(logs);
-                        console.info("Got new logs " + conversations.length);
-                        console.log(moment(conversations[conversations.length - 1].timestamp));
                         newState = {
                             conversations: conversations,
                             shownConversations: conversations,
@@ -175,25 +165,14 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                             endReached: false,
                             hasInitial: true
                         };
-                        console.log(newState)
                         return newState;
                     })
                     .then(this.filterConvo)
-                    .then((state: any) => {
-                        console.log(state);
-                        console.log("Setting state");
-                        console.log(this === undefined);
-                        return state;
-                    })
                     .then(this.setState)
-                    .then(function () {
-                        console.log("State set");
-                    })
                     .then(this.checkIfMoreNeeded);
             }
         } else if (this.props.source) {
             // We're going from defined to undefined. Clear everything.
-            console.info("Dropping out");
             this.setState({
                 conversations: [],
                 shownConversations: [],
@@ -211,13 +190,11 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     checkIfMoreNeeded() {
         if (!this.state.endReached && this.state.shownConversations.length < LIMIT) {
-            console.info("ITEMS FILTERED " + this.state.shownConversations.length);
             this.getNextPage();
         }
     }
 
     handleScroll(firstVisibleIndex: number, lastVisibleIndex: number, totalCount: number) {
-        console.info("SCROLLING");
         if (!this.isLoading && !this.state.endReached && totalCount - lastVisibleIndex < 5) {
             this.getNextPage();
         }
@@ -246,14 +223,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                 this.isLoading = false;
                 return state;
             })
-            .then(function (state: any) {
-                console.log("Setting state");
-                return state;
-            })
             .then(this.setState)
-            .then(function () {
-                console.log("State set");
-            })
             .then(this.checkIfMoreNeeded);
     }
 
@@ -285,7 +255,6 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                 let items = result.result;
                 state.shownConversations = items;
             }).catch(function (err: Error) {
-                console.error(err);
                 state.shownConversations = state.conversations;
             }).then(function() {
                 return state;
@@ -294,7 +263,6 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     render() {
         let { ...others } = this.props;
-        console.info("Render " + this.state.conversations.length);
         return (
             <ConvoList
                 {...others}
