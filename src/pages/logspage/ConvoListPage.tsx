@@ -20,17 +20,26 @@ interface DateRange {
     endTime?: Date;
 }
 
-interface ConvoListPageProps {
+interface ConvoListPageStateProps {
     isLoading: boolean;
     source: Source;
+}
+
+interface ConvoListPageReduxProps {
     getLogs: (query: LogQuery) => Promise<Log[]>;
     newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
     refresh: (logQueryEvent: LogQueryEvent) => Promise<PageResults>;
+}
+
+interface ConvoListPageStandardProps {
     filter?: CompositeFilter<Conversation>;
     iconStyle?: React.CSSProperties;
     iconTooltip?: string;
     onItemClick?: (conversation: Conversation) => void;
     onIconClick?: (conversation: Conversation) => void;
+}
+
+interface ConvoListPageProps extends ConvoListPageStateProps, ConvoListPageReduxProps, ConvoListPageStandardProps {
 }
 
 interface ConvoListPageState {
@@ -40,14 +49,14 @@ interface ConvoListPageState {
     endReached: boolean;
 }
 
-function mapStateToProps(state: State.All) {
+function mapStateToProps(state: State.All): ConvoListPageStateProps {
     return {
         isLoading: state.log.isLoading,
         source: state.source.currentSource
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageReduxProps {
     return {
         getLogs: function (query: LogQuery): Promise<Log[]> {
             const fetchLogs = retrieveLogs(query, false);
@@ -62,6 +71,10 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
             return fetchLogs(dispatch);
         }
     };
+}
+
+function mergeProps(stateProps: ConvoListPageStateProps, dispatchProps: ConvoListPageReduxProps, parentProps: ConvoListPageStandardProps): ConvoListPageProps {
+    return {...parentProps, ...dispatchProps, ...stateProps};
 }
 
 function getDateRange(filter: CompositeFilter<any>): DateRange {
@@ -160,5 +173,6 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    mergeProps
 )(ConvoListPage);
