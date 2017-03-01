@@ -142,29 +142,12 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
         if (nextProps.source) {
             const range = getDateRange(nextProps.filter);
-            if (!SourceUtil.equals(nextProps.source, this.props.source) || differentRanges(range, this.state.query)) {
-                const query: LogQuery = new LogQuery({
-                    source: nextProps.source,
-                    startTime: range.startTime,
-                    endTime: range.endTime,
-                    limit: 50
-                });
-
-                let newState = { ...this.state };
-
-                nextProps.getLogs(query)
-                    .then((logs: Log[]) => {
-                        const conversations = ConversationList.fromLogs(logs);
-                        newState = {
-                            conversations: conversations,
-                            shownConversations: conversations,
-                            query: query,
-                            lastLogs: logs,
-                            endReached: false
-                        };
-                        return newState;
-                    })
-                    .then(this.filterConvo)
+            if (!SourceUtil.equals(nextProps.source, this.props.source) ||
+                differentRanges(range, this.state.query)) {
+                this.getFreshLogs(nextProps);
+            } else {
+                // Same source, just filter what we have.
+                this.filterConvo({ ...this.state }, nextProps)
                     .then(this.setState)
                     .then(this.checkIfMoreNeeded);
             }
@@ -194,6 +177,34 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         if (!this.isLoading && !this.state.endReached && totalCount - lastVisibleIndex < 5) {
             this.getNextPage();
         }
+    }
+
+    getFreshLogs(props: ConvoListPageProps) {
+        const range = getDateRange(props.filter);
+        const query: LogQuery = new LogQuery({
+            source: props.source,
+            startTime: range.startTime,
+            endTime: range.endTime,
+            limit: 50
+        });
+
+        let newState = { ...this.state };
+
+        props.getLogs(query)
+            .then((logs: Log[]) => {
+                const conversations = ConversationList.fromLogs(logs);
+                newState = {
+                    conversations: conversations,
+                    shownConversations: conversations,
+                    query: query,
+                    lastLogs: logs,
+                    endReached: false
+                };
+                return newState;
+            })
+            .then(this.filterConvo)
+            .then(this.setState)
+            .then(this.checkIfMoreNeeded);
     }
 
     getNextPage() {
@@ -245,14 +256,18 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
             }).then(this.setState);
     }
 
-    filterConvo(state: ConvoListPageState) {
-        return filter(state.conversations, this.props.filter.filter)
+    filterConvo(state: ConvoListPageState, props?: ConvoListPageProps) {
+        console.info("FILTERING");
+        const useProps = props || this.props;
+        return filter(state.conversations, useProps.filter.filter)
             .then((result: FilterResult<Conversation>) => {
                 let items = result.result;
+                console.info("Result = " + items.length);
                 state.shownConversations = items;
             }).catch(function (err: Error) {
+                console.error(err);
                 state.shownConversations = state.conversations;
-            }).then(function() {
+            }).then(function () {
                 return state;
             });
     }
@@ -264,7 +279,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                 {...others}
                 onClick={this.props.onItemClick}
                 onScroll={this.handleScroll}
-                conversations={this.state.conversations}
+                conversations={this.state.shownConversations}
             />
         );
     };
