@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import Interaction from "../../components/Interaction";
-import Conversation from "../../models/Conversation";
+import Conversation from "../../models/conversation";
 
 interface ConvoViewPageProps {
     conversation?: Conversation;

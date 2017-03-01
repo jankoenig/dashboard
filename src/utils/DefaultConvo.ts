@@ -1,5 +1,5 @@
 import Conversation, { createConvo } from "../models/conversation";
-import Log from "../models/Log";
+import Log from "../models/log";
 
 export const defaultRequest: Log = {
     payload: "N/A",

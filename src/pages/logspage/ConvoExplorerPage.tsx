@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import TwoPane from "../../components/TwoPane";
-import Conversation from "../../models/Conversation";
+import Conversation from "../../models/conversation";
 import ConvoListPage from "./ConvoListPage";
 import ConvoViewPage from "./ConvoViewPage";
 import { CompositeFilter } from "./filters/Filters";

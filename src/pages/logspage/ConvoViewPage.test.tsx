@@ -3,7 +3,7 @@ import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 
 import Interaction from "../../components/Interaction";
-import Conversation from "../../models/Conversation";
+import Conversation from "../../models/conversation";
 import { dummyConversationList } from "../../utils/test";
 import ConvoViewPage from "./ConvoViewPage";
 
