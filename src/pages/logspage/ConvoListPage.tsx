@@ -257,15 +257,12 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     }
 
     filterConvo(state: ConvoListPageState, props?: ConvoListPageProps) {
-        console.info("FILTERING");
         const useProps = props || this.props;
         return filter(state.conversations, useProps.filter.filter)
             .then((result: FilterResult<Conversation>) => {
                 let items = result.result;
-                console.info("Result = " + items.length);
                 state.shownConversations = items;
             }).catch(function (err: Error) {
-                console.error(err);
                 state.shownConversations = state.conversations;
             }).then(function () {
                 return state;
