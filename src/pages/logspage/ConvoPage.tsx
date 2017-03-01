@@ -8,7 +8,7 @@ import { State } from "../../reducers";
 import DateUtils from "../../utils/date";
 import ConvoExplorerPage from "./ConvoExplorerPage";
 import FilterBar, { DateRange } from "./FilterBar";
-import { DateFilter } from "./filters/ConvoFilters";
+import { DateFilter, UserIDFilter } from "./filters/ConvoFilters";
 import { CompositeFilter, Filter } from "./filters/Filters";
 
 interface ConvoPageStateProps {
@@ -48,6 +48,7 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
         this.handleLiveUpdate = this.handleLiveUpdate.bind(this);
         this.handleDateFilter = this.handleDateFilter.bind(this);
         this.handleVisiblityChange = this.handleVisiblityChange.bind(this);
+        this.handleIconClick = this.handleIconClick.bind(this);
 
         const startDate: Date = DateUtils.daysAgo(7);
         startDate.setHours(0, 0, 0, 0);
@@ -79,6 +80,11 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
         this.handleFilter(filter);
     }
 
+    handleIconClick(convo: Conversation) {
+        const newIdFilter = new UserIDFilter(convo.userId);
+        this.handleFilter(newIdFilter);
+    }
+
     handleLiveUpdate(enabled: boolean) {
         this.state.refreshOn = enabled;
         this.state.savedRefreshState = enabled;
@@ -87,7 +93,6 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
 
     handleVisiblityChange(state: VISIBLITY_STATE) {
         this.state.refreshOn = state === "visible" && this.state.savedRefreshState;
-        console.info("Visiblity change " + this.state.refreshOn);
         this.setState(this.state);
     }
 
@@ -107,6 +112,7 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
                     liveUpdateEnabled={this.state.refreshOn && !this.state.refreshDisabled}
                     disableLiveUpdateCheckbox={this.state.refreshDisabled} />
                 <ConvoExplorerPage
+                    onIconClick={this.handleIconClick}
                     refreshOn={this.state.refreshOn}
                     filter={this.state.filter} />
             </VisibilityWatcher>

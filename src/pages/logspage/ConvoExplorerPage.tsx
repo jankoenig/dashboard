@@ -9,6 +9,9 @@ import { CompositeFilter } from "./filters/Filters";
 interface ConvoExplorerPageProps {
     filter?: CompositeFilter<Conversation>;
     refreshOn?: boolean;
+    onIconClick?: (conversation: Conversation) => void;
+    iconStyle?: React.CSSProperties;
+    iconTooltip?: string;
 }
 
 interface ConvoExplorerPageState {
