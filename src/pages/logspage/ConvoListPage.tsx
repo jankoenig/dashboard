@@ -52,7 +52,6 @@ interface ConvoListPageState {
     lastLogs: Log[];
     conversations: ConversationList;
     shownConversations: ConversationList;
-    hasInitial: boolean;
     endReached: boolean;
 }
 
@@ -130,7 +129,6 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
             shownConversations: [],
             lastLogs: [],
             endReached: false,
-            hasInitial: false,
             query: undefined
         };
     }
@@ -144,7 +142,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
         if (nextProps.source) {
             const range = getDateRange(nextProps.filter);
-            if (!SourceUtil.equals(nextProps.source, this.props.source) || !this.state.hasInitial || differentRanges(range, this.state.query)) {
+            if (!SourceUtil.equals(nextProps.source, this.props.source) || differentRanges(range, this.state.query)) {
                 const query: LogQuery = new LogQuery({
                     source: nextProps.source,
                     startTime: range.startTime,
@@ -162,8 +160,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                             shownConversations: conversations,
                             query: query,
                             lastLogs: logs,
-                            endReached: false,
-                            hasInitial: true
+                            endReached: false
                         };
                         return newState;
                     })
@@ -178,8 +175,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                 shownConversations: [],
                 query: undefined,
                 lastLogs: [],
-                endReached: true,
-                hasInitial: false
+                endReached: true
             });
         }
     }
