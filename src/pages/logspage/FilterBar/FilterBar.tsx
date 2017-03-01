@@ -7,7 +7,6 @@ import Input from "react-toolbox/lib/input";
 
 import { Cell, Grid } from "../../../components/Grid";
 import { Origin } from "../../../models/conversation";
-// import LogQuery from "../../../models/log-query";
 import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter } from "../filters/ConvoFilters";
 
 const FilterBarStyle = require("./style.scss");
