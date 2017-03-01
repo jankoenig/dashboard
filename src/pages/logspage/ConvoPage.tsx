@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 
+import VisibilityWatcher, { VISIBLITY_STATE } from "../../components/VisibilityWatcher";
 import Conversation from "../../models/conversation";
 import Source from "../../models/source";
 import { State } from "../../reducers";
@@ -25,6 +26,7 @@ interface ConvoPageState {
     filter: CompositeFilter<Conversation>;
     refreshOn: boolean;
     refreshDisabled: boolean;
+    savedRefreshState: boolean;
 }
 
 function mapStateToProps(state: State.All): ConvoPageStateProps {
@@ -45,6 +47,7 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
         this.handleFilter = this.handleFilter.bind(this);
         this.handleLiveUpdate = this.handleLiveUpdate.bind(this);
         this.handleDateFilter = this.handleDateFilter.bind(this);
+        this.handleVisiblityChange = this.handleVisiblityChange.bind(this);
 
         const startDate: Date = DateUtils.daysAgo(7);
         startDate.setHours(0, 0, 0, 0);
@@ -58,7 +61,8 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
             dateRange: { startTime: initialFilter.startDate, endTime: initialFilter.endDate },
             filter: new CompositeFilter([initialFilter]),
             refreshDisabled: false,
-            refreshOn: true
+            refreshOn: true,
+            savedRefreshState: true
         };
     }
 
@@ -77,12 +81,20 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
 
     handleLiveUpdate(enabled: boolean) {
         this.state.refreshOn = enabled;
+        this.state.savedRefreshState = enabled;
+        this.setState(this.state);
+    }
+
+    handleVisiblityChange(state: VISIBLITY_STATE) {
+        this.state.refreshOn = state === "visible" && this.state.savedRefreshState;
+        console.info("Visiblity change " + this.state.refreshOn);
         this.setState(this.state);
     }
 
     render() {
         return (
-            <div>
+            <VisibilityWatcher
+                onChange={this.handleVisiblityChange} >
                 <FilterBar
                     onFilterLogLevel={this.handleFilter}
                     onFilterRequest={this.handleFilter}
@@ -97,7 +109,7 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
                 <ConvoExplorerPage
                     refreshOn={this.state.refreshOn}
                     filter={this.state.filter} />
-            </div>
+            </VisibilityWatcher>
         );
     }
 }
