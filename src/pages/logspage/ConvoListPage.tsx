@@ -10,6 +10,7 @@ import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import { LogQueryEvent } from "../../reducers/log";
+import BrowserUtils from "../../utils/browser";
 import Interval from "../../utils/Interval";
 import { filter, FilterResult } from "../../utils/promise";
 import SourceUtil from "../../utils/Source";
@@ -280,6 +281,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         return (
             <ConvoList
                 {...others}
+                expandListItemWhenActive={BrowserUtils.isMobileWidth()}
                 onClick={this.props.onItemClick}
                 onScroll={this.handleScroll}
                 conversations={this.state.shownConversations}
