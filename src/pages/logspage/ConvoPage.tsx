@@ -92,7 +92,6 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
 
     handleIconClick(convo: Conversation) {
         const alreadyFilteringUser = this.state.iconStyle !== undefined;
-        console.info("HANDLE ICON CLICK " + alreadyFilteringUser);
         if (alreadyFilteringUser) {
             this.state.iconStyle = undefined;
             this.state.iconTooltip = TOOLTIP_DEACTIVE;
