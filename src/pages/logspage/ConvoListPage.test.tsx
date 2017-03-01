@@ -16,7 +16,7 @@ import { dummyLogs, dummySources } from "../../utils/test";
 import { ConvoListPage } from "./ConvoListPage";
 import { DateFilter } from "./filters/ConvoFilters";
 import { CompositeFilter } from "./filters/Filters";
-import FilteredConvoList from "./list/FilterableConvoList";
+import ConvoList from "./list/ConvoList";
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -93,11 +93,11 @@ describe("ConvoListPage", function () {
         });
 
         it("Tests the FilterableConvoList exists.", function () {
-            expect(wrapper.find(FilteredConvoList)).to.have.length(1);
+            expect(wrapper.find(ConvoList)).to.have.length(1);
         });
 
         it("Tests the FilterableConvoList has the appropriate props.", function () {
-            const listWrapper = wrapper.find(FilteredConvoList);
+            const listWrapper = wrapper.find(ConvoList);
             expect(listWrapper).to.have.prop("filter", filter);
             expect(listWrapper).to.have.prop("iconTooltip", tooltip);
             expect(listWrapper.prop("iconStyle")).to.equal(iconStyle); // The have.prop method seems to be different.
@@ -136,8 +136,8 @@ describe("ConvoListPage", function () {
             it("Tests that the LogQuery is correct when a DateFilter is applied.", function () {
                 const logQuery: LogQuery = getLogs.args[0][0];
 
-                expect(logQuery.startTime).to.equalDate(dateFilter.startDate);
-                expect(logQuery.endTime).to.equalDate(dateFilter.endDate);
+                expect((logQuery.startTime as moment.Moment).toDate()).to.equalDate(dateFilter.startDate);
+                expect((logQuery.endTime as moment.Moment).toDate()).to.equalDate(dateFilter.endDate);
             });
 
             it("Tests that the \"getLogs\" is not called when source is undefined.", function () {
@@ -149,7 +149,7 @@ describe("ConvoListPage", function () {
             it("Tests that the logs are cleared when going from a source to an undefined source.", function () {
                 wrapper.setProps({ ...wrapper.props(), ...{ source: undefined } });
 
-                const listWrapper = wrapper.find(FilteredConvoList).at(0);
+                const listWrapper = wrapper.find(ConvoList).at(0);
 
                 expect(listWrapper.prop("conversations")).to.deep.equal([]);
             });
@@ -194,7 +194,7 @@ describe("ConvoListPage", function () {
 
             wrapper.setProps({ ...wrapper.props() });
 
-            listWrapper = wrapper.find(FilteredConvoList);
+            listWrapper = wrapper.find(ConvoList);
         });
 
         it("Tests that iconClick triggers an event", function () {
@@ -237,7 +237,7 @@ describe("ConvoListPage", function () {
 
             wrapper.setProps({ ...wrapper.props() });
 
-            listWrapper = wrapper.find(FilteredConvoList);
+            listWrapper = wrapper.find(ConvoList);
         });
 
         it("Tests that the scroll will query a next page.", function () {
@@ -265,7 +265,7 @@ describe("ConvoListPage", function () {
         it("Tests that the scroll will not query the next page if it's already loading.", function () {
             wrapper.setProps({ ...wrapper.props(), ...{ isLoading: true } });
 
-            listWrapper = wrapper.find(FilteredConvoList);
+            listWrapper = wrapper.find(ConvoList);
             listWrapper.simulate("scroll", 0, 6, 10);
 
             expect(newPage).to.have.not.been.called;
@@ -310,7 +310,7 @@ describe("ConvoListPage", function () {
 
             wrapper.setProps({ ...wrapper.props() });
 
-            listWrapper = wrapper.find(FilteredConvoList);
+            listWrapper = wrapper.find(ConvoList);
         });
 
         it("Tests the next page is called when max limit has not been reached.", function () {
@@ -336,7 +336,7 @@ describe("ConvoListPage", function () {
         it("Tests the next page is not called when loading is true.", function () {
             wrapper.setProps({ ...wrapper.props(), ...{ isLoading: true } });
 
-            listWrapper = wrapper.find(FilteredConvoList);
+            listWrapper = wrapper.find(ConvoList);
             listWrapper.simulate("itemsFiltered", baseConversations.splice(0, baseConversations.length / 2));
 
             expect(newPage).to.have.not.been.called;
