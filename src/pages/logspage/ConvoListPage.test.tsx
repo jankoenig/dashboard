@@ -10,6 +10,7 @@ import Log from "../../models/log";
 import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
 import { LogQueryEvent } from "../../reducers/log";
+import BrowserUtils from "../../utils/browser";
 import DateUtils from "../../utils/date";
 import Interval from "../../utils/Interval";
 import { dummyLogs, dummySources } from "../../utils/test";
@@ -40,6 +41,7 @@ describe("ConvoListPage", function () {
     let refresh: Sinon.SinonStub;
     let onItemClick: Sinon.SinonStub;
     let onIconClick: Sinon.SinonStub;
+    let isMobileWidth: Sinon.SinonStub;
 
     before(function () {
         source = dummySources(1)[0];
@@ -58,6 +60,8 @@ describe("ConvoListPage", function () {
 
         onItemClick = sinon.stub();
         onIconClick = sinon.stub();
+
+        isMobileWidth = sinon.stub(BrowserUtils, "isMobileWidth").returns(false);
     });
 
     afterEach(function () {
@@ -66,6 +70,11 @@ describe("ConvoListPage", function () {
         refresh.reset();
         onItemClick.reset();
         onIconClick.reset();
+        isMobileWidth.reset();
+    });
+
+    after(function() {
+        isMobileWidth.restore();
     });
 
     describe("Renders", function () {
