@@ -50,7 +50,7 @@ export namespace remoteservice.auth {
 
     export interface Auth {
         currentUser: remoteservice.user.User | undefined;
-        createUserWithEmailAndPassword(email: string, password: string): Promise<any>;
+        createUserWithEmailAndPassword(email: string, password: string): Promise<remoteservice.user.User>;
         signInWithRedirect(provider: AuthProvider): Promise<any>;
         getRedirectResult(): Promise<any>;
         signInWithPopup(provider: AuthProvider): Promise<any>;
