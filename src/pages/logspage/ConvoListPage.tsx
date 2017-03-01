@@ -266,6 +266,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         return (
             <ConvoList
                 {...others}
+                onClick={this.props.onItemClick}
                 onScroll={this.handleScroll}
                 conversations={this.state.conversations}
             />
