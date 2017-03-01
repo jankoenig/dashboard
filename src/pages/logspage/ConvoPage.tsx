@@ -24,6 +24,7 @@ interface ConvoPageState {
     dateRange: DateRange;
     filter: CompositeFilter<Conversation>;
     refreshOn: boolean;
+    refreshDisabled: boolean;
 }
 
 function mapStateToProps(state: State.All): ConvoPageStateProps {
@@ -56,6 +57,7 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
         this.state = {
             dateRange: { startTime: initialFilter.startDate, endTime: initialFilter.endDate },
             filter: new CompositeFilter([initialFilter]),
+            refreshDisabled: false,
             refreshOn: true
         };
     }
@@ -66,7 +68,10 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
     }
 
     handleDateFilter(filter: DateFilter) {
+        const endIsToday = isToday(filter.endDate);
         this.state.dateRange = { startTime: filter.startDate, endTime: filter.endDate };
+        this.state.refreshOn = endIsToday;
+        this.state.refreshDisabled = !endIsToday;
         this.handleFilter(filter);
     }
 
@@ -87,8 +92,8 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
                     onFilterDate={this.handleDateFilter}
                     onLiveUpdate={this.handleLiveUpdate}
                     dateRange={this.state.dateRange}
-                    liveUpdateEnabled={this.state.refreshOn}
-                    disableLiveUpdateCheckbox={false} />
+                    liveUpdateEnabled={this.state.refreshOn && !this.state.refreshDisabled}
+                    disableLiveUpdateCheckbox={this.state.refreshDisabled} />
                 <ConvoExplorerPage
                     refreshOn={this.state.refreshOn}
                     filter={this.state.filter} />
@@ -101,3 +106,7 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(ConvoPage);
+
+function isToday(date: Date) {
+    return new Date().toDateString() === date.toDateString();
+}
