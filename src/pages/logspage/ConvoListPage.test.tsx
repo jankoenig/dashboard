@@ -80,7 +80,7 @@ describe("ConvoListPage", function () {
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    source={source}
+                    source={undefined}
                     newPage={newPage}
                     refresh={refresh}
                     getLogs={getLogs}
@@ -104,7 +104,7 @@ describe("ConvoListPage", function () {
         });
 
         it("Tests that the \"getLogs\" is called props recieved", function () {
-            wrapper.setProps({ ...wrapper.props() });
+            wrapper.setProps({ source: source });
             expect(getLogs).to.be.calledOnce;
         });
 
@@ -120,53 +120,68 @@ describe("ConvoListPage", function () {
             beforeEach(function () {
                 wrapper = shallow(
                     <ConvoListPage
-                        source={source}
+                        source={undefined}
                         newPage={newPage}
                         refresh={refresh}
                         getLogs={getLogs}
                         filter={filter}
                     />);
-
-                // In the real world, "componentWillReceiveProps" is called, but not in Enzyme.
-                return Promise.resolve(true).then(function () {
-                    wrapper.setProps({ ...wrapper.props() });
-                });
             });
 
             it("Tests that the LogQuery is correct when a DateFilter is applied.", function () {
-                const logQuery: LogQuery = getLogs.args[0][0];
-
-                expect((logQuery.startTime as moment.Moment).toDate()).to.equalDate(dateFilter.startDate);
-                expect((logQuery.endTime as moment.Moment).toDate()).to.equalDate(dateFilter.endDate);
+                // In the real world, "componentWillReceiveProps" is called, but not in Enzyme.
+                Promise.resolve(true).then(function () {
+                    wrapper.setProps({ source: source });
+                }).then(function () {
+                    const logQuery: LogQuery = getLogs.args[0][0];
+                    expect((logQuery.startTime as moment.Moment).toDate()).to.equalDate(dateFilter.startDate);
+                    expect((logQuery.endTime as moment.Moment).toDate()).to.equalDate(dateFilter.endDate);
+                });
             });
 
             it("Tests that the \"getLogs\" is not called when source is undefined.", function () {
-                wrapper.setProps({ ...wrapper.props(), ...{ source: undefined } });
+                Promise.resolve(true).then(function () {
+                    wrapper.setProps({ source: source });
+                }).then(function () {
+                    wrapper.setProps({ source: undefined });
+                }).then(function () {
+                    expect(getLogs).to.have.been.calledOnce; // Only the first time.
+                });
 
-                expect(getLogs).to.have.been.calledOnce; // Only the first time.
             });
 
             it("Tests that the logs are cleared when going from a source to an undefined source.", function () {
-                wrapper.setProps({ ...wrapper.props(), ...{ source: undefined } });
-
-                const listWrapper = wrapper.find(ConvoList).at(0);
-
-                expect(listWrapper.prop("conversations")).to.deep.equal([]);
+                Promise.resolve(true).then(function () {
+                    wrapper.setProps({ source: source });
+                }).then(function () {
+                    wrapper.setProps({ source: undefined });
+                }).then(function () {
+                    const listWrapper = wrapper.find(ConvoList).at(0);
+                    expect(listWrapper.prop("conversations")).to.deep.equal([]);
+                });
             });
 
             it("Tests that the logs are not recovered when setting props with the same source.", function () {
-                wrapper.setProps({ ...wrapper.props() });
-                wrapper.setProps({ ...wrapper.props() });
-
-                expect(getLogs).to.have.been.calledOnce;
+                Promise.resolve(true).then(function () {
+                    wrapper.setProps({ source: source });
+                }).then(function () {
+                    wrapper.setProps({ source: source });
+                }).then(function () {
+                    wrapper.setProps({ source: source });
+                }).then(function () {
+                    expect(getLogs).to.have.been.calledOnce;
+                });
             });
 
             it("Tests that the logs are gathered when finding a different source.", function () {
-                const newSource = dummySources(2)[1]; // The second one will have a different ID than the first.
-
-                wrapper.setProps({ ...wrapper.props(), ...{ source: newSource } });
-
-                expect(getLogs).to.have.been.calledTwice;
+                Promise.resolve(true).then(function () {
+                    wrapper.setProps({ source: source });
+                }).then(function () {
+                    const newSource = dummySources(2)[1]; // The second one will have a different ID than the first.
+                    wrapper.setProps({ source: newSource });
+                }).then(function () {
+                    expect(getLogs).to.have.been.calledTwice;
+                });
             });
         });
     });
@@ -183,7 +198,7 @@ describe("ConvoListPage", function () {
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    source={source}
+                    source={undefined}
                     newPage={newPage}
                     refresh={refresh}
                     getLogs={getLogs}
@@ -192,9 +207,11 @@ describe("ConvoListPage", function () {
                     filter={filter}
                 />);
 
-            wrapper.setProps({ ...wrapper.props() });
-
-            listWrapper = wrapper.find(ConvoList);
+            return Promise.resolve(true).then(function () {
+                wrapper.setProps({ source: source });
+            }).then(function () {
+                listWrapper = wrapper.find(ConvoList);
+            });
         });
 
         it("Tests that iconClick triggers an event", function () {
@@ -213,20 +230,18 @@ describe("ConvoListPage", function () {
     });
 
     describe("Scrolling", function () {
-        let dateFilter: DateFilter;
         let filter: CompositeFilter<Conversation>;
         let wrapper: ShallowWrapper<any, any>;
         let listWrapper: ShallowWrapper<any, any>;
 
         before(function () {
-            dateFilter = new DateFilter(DateUtils.daysAgo(5), DateUtils.daysAgo(2));
-            filter = new CompositeFilter([dateFilter]);
+            filter = new CompositeFilter([]);
         });
 
         beforeEach(function () {
             wrapper = shallow(
                 <ConvoListPage
-                    source={source}
+                    source={undefined}
                     newPage={newPage}
                     refresh={refresh}
                     getLogs={getLogs}
@@ -235,8 +250,10 @@ describe("ConvoListPage", function () {
                     filter={filter}
                 />);
 
-            wrapper.setProps({ ...wrapper.props() });
-
+            wrapper.setState({
+                lastLogs: logs,
+                query: new LogQuery({ source: source })
+            });
             listWrapper = wrapper.find(ConvoList);
         });
 
@@ -244,7 +261,7 @@ describe("ConvoListPage", function () {
             // Have to wait for the "getLogs" pass to finish so the state is updated.
             return Promise.resolve(true).then(function () {
                 listWrapper.simulate("scroll", 0, 6, 10);
-
+            }).then(function () {
                 expect(newPage).to.have.been.calledOnce;
 
                 const queryEvent = newPage.args[0][0] as LogQueryEvent;
@@ -257,89 +274,11 @@ describe("ConvoListPage", function () {
         });
 
         it("Tests that the scroll will not query the next page if it's not within range", function () {
-            listWrapper.simulate("scroll", 0, 3, 10);
-
-            expect(newPage).to.have.not.been.called;
-        });
-
-        it("Tests that the scroll will not query the next page if it's already loading.", function () {
-            wrapper.setProps({ ...wrapper.props(), ...{ isLoading: true } });
-
-            listWrapper = wrapper.find(ConvoList);
-            listWrapper.simulate("scroll", 0, 6, 10);
-
-            expect(newPage).to.have.not.been.called;
-        });
-
-        it("Tests that scroll will not query once end is reached", function () {
-            // Promises each time so each new one will wait for the last.
             return Promise.resolve(true).then(function () {
-                listWrapper.simulate("scroll", 0, 6, 10);
+                listWrapper.simulate("scroll", 0, 3, 10);
             }).then(function () {
-                listWrapper.simulate("scroll", 0, 6, 10);
-            }).then(function () {
-                listWrapper.simulate("scroll", 0, 6, 10);
-            }).then(function () {
-                expect(newPage).to.have.been.calledTwice;
+                expect(newPage).to.have.not.been.called;
             });
-        });
-    });
-
-    describe("Items filtered", function () {
-        let dateFilter: DateFilter;
-        let filter: CompositeFilter<Conversation>;
-        let wrapper: ShallowWrapper<any, any>;
-        let listWrapper: ShallowWrapper<any, any>;
-
-        before(function () {
-            dateFilter = new DateFilter(DateUtils.daysAgo(5), DateUtils.daysAgo(2));
-            filter = new CompositeFilter([dateFilter]);
-        });
-
-        beforeEach(function () {
-            wrapper = shallow(
-                <ConvoListPage
-                    source={source}
-                    newPage={newPage}
-                    refresh={refresh}
-                    getLogs={getLogs}
-                    onIconClick={onIconClick}
-                    onItemClick={onItemClick}
-                    filter={filter}
-                />);
-
-            wrapper.setProps({ ...wrapper.props() });
-
-            listWrapper = wrapper.find(ConvoList);
-        });
-
-        it("Tests the next page is called when max limit has not been reached.", function () {
-            return Promise.resolve(true).then(function () {
-                listWrapper.simulate("itemsFiltered", baseConversations.splice(0, 10));
-
-                expect(newPage).to.have.been.calledOnce;
-                const queryEvent = newPage.args[0][0] as LogQueryEvent;
-                const limit = newPage.args[0][1] as number;
-
-                expect(limit).to.equal(50);
-                expect(queryEvent.logs).to.equal(logs);
-                expect(queryEvent.query.source).to.equal(source);
-            });
-        });
-
-        it("Tests the next page is not called when not within limit.", function () {
-            listWrapper.simulate("itemsFiltered", baseConversations);
-
-            expect(newPage).to.have.not.been.called;
-        });
-
-        it("Tests the next page is not called when loading is true.", function () {
-            wrapper.setProps({ ...wrapper.props(), ...{ isLoading: true } });
-
-            listWrapper = wrapper.find(ConvoList);
-            listWrapper.simulate("itemsFiltered", baseConversations.splice(0, baseConversations.length / 2));
-
-            expect(newPage).to.have.not.been.called;
         });
     });
 
