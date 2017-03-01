@@ -66,14 +66,14 @@ describe("ConvoPage", function () {
                 source={source} />);
         });
 
-        describe("Explorer", function() {
+        describe("Explorer", function () {
             let explorer: ShallowWrapper<any, any>;
 
-            beforeEach(function() {
+            beforeEach(function () {
                 explorer = wrapper.find(ConvoExplorerPage).at(0);
             });
 
-            it("Tests the icon click action filters users.", function() {
+            it("Tests the icon click action filters users.", function () {
                 const convo = dummyConversationList(1)[0];
 
                 explorer.simulate("iconClick", convo);
@@ -86,6 +86,53 @@ describe("ConvoPage", function () {
                 const userIDFilter = filterProp.getFilter(UserIDFilter.type) as UserIDFilter;
                 expect(userIDFilter).to.exist;
                 expect(userIDFilter.userID).to.equal(convo.userId);
+            });
+
+            it("Tests the icon gets styled when filtering users.", function () {
+                const convo = dummyConversationList(1)[0];
+
+                explorer.simulate("iconClick", convo);
+
+                explorer = wrapper.find(ConvoExplorerPage).at(0);
+
+                const styleProp = explorer.prop("iconStyle");
+
+                expect(styleProp).to.exist;
+                expect(explorer).to.have.prop("iconTooltip", "Unset Filter");
+            });
+
+            it("Tests the filter is removed on double click.", function () {
+                const convo = dummyConversationList(1)[0];
+
+                explorer.simulate("iconClick", convo);
+
+                explorer = wrapper.find(ConvoExplorerPage).at(0);
+
+                explorer.simulate("iconClick", convo);
+
+                explorer = wrapper.find(ConvoExplorerPage).at(0);
+
+                const filterProp = explorer.prop("filter") as CompositeFilter<Convo>;
+
+                const userIDFilter = filterProp.getFilter(UserIDFilter.type) as UserIDFilter;
+                expect(userIDFilter).to.not.exist;
+            });
+
+            it("Tests the icon styles are removed", function () {
+                const convo = dummyConversationList(1)[0];
+
+                explorer.simulate("iconClick", convo);
+
+                explorer = wrapper.find(ConvoExplorerPage).at(0);
+
+                explorer.simulate("iconClick", convo);
+
+                explorer = wrapper.find(ConvoExplorerPage).at(0);
+
+                const styleProp = explorer.prop("iconStyle");
+
+                expect(styleProp).to.not.exist;
+                expect(explorer).to.have.prop("iconTooltip", "Filter User");
             });
         });
 

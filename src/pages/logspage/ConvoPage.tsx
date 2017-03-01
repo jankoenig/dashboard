@@ -11,6 +11,12 @@ import FilterBar, { DateRange } from "./FilterBar";
 import { DateFilter, UserIDFilter } from "./filters/ConvoFilters";
 import { CompositeFilter, Filter } from "./filters/Filters";
 
+const TOOLTIP_ACTIVE = "Unset Filter";
+const TOOLTIP_DEACTIVE = "Filter User";
+const ACTIVE_ICON_STYLE: React.CSSProperties = {
+    background: "#AAAAAA"
+};
+
 interface ConvoPageStateProps {
     source: Source;
 }
@@ -27,6 +33,8 @@ interface ConvoPageState {
     refreshOn: boolean;
     refreshDisabled: boolean;
     savedRefreshState: boolean;
+    iconStyle: React.CSSProperties;
+    iconTooltip: string;
 }
 
 function mapStateToProps(state: State.All): ConvoPageStateProps {
@@ -63,7 +71,9 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
             filter: new CompositeFilter([initialFilter]),
             refreshDisabled: false,
             refreshOn: true,
-            savedRefreshState: true
+            savedRefreshState: true,
+            iconStyle: undefined,
+            iconTooltip: TOOLTIP_DEACTIVE
         };
     }
 
@@ -81,8 +91,18 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
     }
 
     handleIconClick(convo: Conversation) {
-        const newIdFilter = new UserIDFilter(convo.userId);
-        this.handleFilter(newIdFilter);
+        const alreadyFilteringUser = this.state.iconStyle !== undefined;
+        console.info("HANDLE ICON CLICK " + alreadyFilteringUser);
+        if (alreadyFilteringUser) {
+            this.state.iconStyle = undefined;
+            this.state.iconTooltip = TOOLTIP_DEACTIVE;
+            this.state.filter = this.state.filter.copyAndRemove(UserIDFilter.type);
+            this.setState(this.state);
+        } else {
+            this.state.iconStyle = ACTIVE_ICON_STYLE;
+            this.state.iconTooltip = TOOLTIP_ACTIVE;
+            this.handleFilter(new UserIDFilter(convo.userId)); // This method will take care of setting state.
+        }
     }
 
     handleLiveUpdate(enabled: boolean) {
@@ -113,6 +133,8 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
                     disableLiveUpdateCheckbox={this.state.refreshDisabled} />
                 <ConvoExplorerPage
                     onIconClick={this.handleIconClick}
+                    iconStyle={this.state.iconStyle}
+                    iconTooltip={this.state.iconTooltip}
                     refreshOn={this.state.refreshOn}
                     filter={this.state.filter} />
             </VisibilityWatcher>
