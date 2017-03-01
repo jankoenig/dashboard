@@ -163,6 +163,12 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         }
     }
 
+    componentWillMount() {
+        if (this.props.source) {
+            this.getFreshLogs(this.props);
+        }
+    }
+
     componentWillUnmount() {
         this.refresher.end();
     }
