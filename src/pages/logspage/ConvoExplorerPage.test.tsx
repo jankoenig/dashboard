@@ -2,7 +2,7 @@ import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 
-import Conversation from "../../models/Conversation";
+import Conversation from "../../models/conversation";
 import { dummyConversationList } from "../../utils/test";
 import ConvoExplorerPage from "./ConvoExplorerPage";
 import ConvoListPage from "./ConvoListPage";
