@@ -68,7 +68,9 @@ export function createConvo(props: ConversationProperties): Conversation {
         } else if (requestPayload.originalRequest) { // google
             return new GoogleHomeConversation(props);
         }
-    } else if (props.response) {
+    }
+
+    if (props.response) {
         const responsePayload = props.response.payload || {};
         if (responsePayload.response) {
             return new AlexaConversation(props);
