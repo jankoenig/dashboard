@@ -1,12 +1,25 @@
 import * as uuid from "uuid";
 
 import { LOG_LEVELS } from "../constants";
+import ConversationList from "../models/conversation-list";
 import Log from "../models/log";
 import Output from "../models/output";
 import Source from "../models/source";
 
 export enum LogType {
     Alexa, Home
+}
+
+/**
+ * Returns a ConversationList of a specified amount.
+ *
+ * @export
+ * @param {number} length The number of dummyConversations
+ * @return {ConversationList}
+ */
+export function dummyConversationList(length: number, type: LogType = LogType.Alexa): ConversationList {
+    const logs = dummyLogs(length * 2);
+    return ConversationList.fromLogs(logs);
 }
 
 /**
