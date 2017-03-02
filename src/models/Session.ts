@@ -3,6 +3,9 @@ import * as moment from "moment";
 import { TimeSeriable } from "./time-series";
 
 export interface SessionProperties {
+
+    launch?: TimeSeriable;
+
     start?: TimeSeriable;
 
     end?: TimeSeriable;

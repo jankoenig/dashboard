@@ -32,7 +32,8 @@ describe("SourceSummaryView", function () {
             totalEvents: 0,
             events: [],
             eventLabel: "Label",
-            requests: [],
+            requestSummary: [],
+            sessionSummary: [],
             sessions: []
         };
         let wrapper = shallow((
@@ -52,7 +53,8 @@ describe("SourceSummaryView", function () {
             totalEvents: 67,
             events: [],
             eventLabel: "Label",
-            requests: [],
+            requestSummary: [],
+            sessionSummary: [],
             sessions: []
         };
         let wrapper = shallow((

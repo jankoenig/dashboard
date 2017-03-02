@@ -6,9 +6,9 @@ export interface LogProperties {
     stack?: string;
     log_type: LOG_LEVELS;
     source: string;
-    transaction_id: string;
+    transaction_id?: string;
     timestamp: Date;
-    tags: string[];
+    tags?: string[];
     id: string;
 }
 
@@ -29,7 +29,7 @@ export class Log implements LogProperties {
         this.source = props.source;
         this.transaction_id = props.transaction_id;
         this.timestamp = props.timestamp;
-        this.tags = props.tags;
+        this.tags = props.tags ? props.tags : [];
         this.id = props.id;
     }
 }

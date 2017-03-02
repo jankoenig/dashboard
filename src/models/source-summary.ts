@@ -1,4 +1,4 @@
-
+import Session from "./Session";
 import { TimeSeriesDatum } from "./time-series";
 
 export interface SummaryDatum {
@@ -22,9 +22,11 @@ interface SourceSummary {
 
     eventLabel: string;
 
-    requests: SummaryDatum[];
+    requestSummary: SummaryDatum[];
 
-    sessions: SummaryDatum[];
+    sessionSummary: SummaryDatum[];
+
+    sessions: Session[];
 }
 
 export default SourceSummary;

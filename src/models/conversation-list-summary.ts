@@ -1,7 +1,10 @@
 // import * as moment from "moment";
 
+import String from "../utils/string";
 import Conversation from "./conversation";
 import ConversationList from "./conversation-list";
+import Log from "./log";
+import LogReceiver from "./LogReceiver";
 import Session, { SessionProperties } from "./Session";
 import SourceSummary, { SummaryDatum } from "./source-summary";
 import StackTrace from "./stack-trace";
@@ -9,8 +12,10 @@ import StackTrace from "./stack-trace";
 import {
     AUDIOPLAYER_PLAYBACK_FAILED,
     AUDIOPLAYER_PLAYBACK_FINISHED,
+    AUDIOPLAYER_PLAYBACK_NEARLY_FINISHED,
     AUDIOPLAYER_PLAYBACK_STARTED,
-    AUDIOPLAYER_PLAYBACK_STOPPED
+    AUDIOPLAYER_PLAYBACK_STOPPED,
+    LAUNCH_REQUEST
 } from "../constants/alexa";
 
 import DataUtil from "../utils/data";
@@ -18,21 +23,11 @@ import { TimeSeriesDatum } from "./time-series";
 
 class ConversationListSummary implements SourceSummary {
 
-    private conversationList: ConversationList;
-
-    private userMap: { [userId: string]: Conversation[] } = {};
-
-    private requestMap: { [request: string]: number } = {};
-
-    private sessionMap: { [session: string]: number} = {};
-
-    private exceptions: { timestamp: Date, stackTrace: StackTrace }[] = [];
-
-    private conversationEvents: TimeSeriesDatum[] = [];
-
     readonly startTime: Date;
 
     readonly endTime: Date;
+
+    private userMap: { [userId: string]: Conversation[] } = {};
 
     get uniqueUsers(): string[] {
         return Object.keys(this.userMap);
@@ -42,19 +37,27 @@ class ConversationListSummary implements SourceSummary {
         return this.uniqueUsers.length;
     }
 
+    private exceptions: { timestamp: Date, stackTrace: StackTrace }[] = [];
+
     get totalExceptions() {
         return this.exceptions.length;
     }
+
+    private conversationEvents: TimeSeriesDatum[] = [];
 
     get events(): TimeSeriesDatum[] {
         return this.conversationEvents;
     }
 
+    private conversationList: ConversationList;
+
     get totalEvents(): number {
         return this.conversationList.length;
     }
 
-    get requests(): SummaryDatum[] {
+    private requestMap: { [request: string]: number } = {};
+
+    get requestSummary(): SummaryDatum[] {
         let requests = [];
         // iterate through the keys of the map
         for (let key of Object.keys(this.requestMap)) {
@@ -71,7 +74,11 @@ class ConversationListSummary implements SourceSummary {
         return requests;
     }
 
-    get sessions(): SummaryDatum[] {
+     public sessions: Session[] = [];
+
+    private sessionMap: { [session: string]: number} = {};
+
+    get sessionSummary(): SummaryDatum[] {
         let sessions = [];
 
         for (let key of Object.keys(this.sessionMap)) {
@@ -87,13 +94,31 @@ class ConversationListSummary implements SourceSummary {
 
     readonly eventLabel: string = "Conversations";
 
-    constructor(period: { startTime: Date, endTime: Date }, conversationList: ConversationList) {
+    private logReceiver: LogReceiver;
+
+    log(message: string) {
+        console.log(message);
+        if (this.logReceiver) {
+            const timestamp = new Date();
+            this.logReceiver.postLog(new Log({
+                payload: message,
+                log_type: "DEBUG",
+                source: "summary",
+                transaction_id: "",
+                timestamp: timestamp,
+                id: String.randomString(6)
+            }));
+        }
+    }
+
+    constructor(period: { startTime: Date, endTime: Date }, conversationList: ConversationList, logReceiver?: LogReceiver) {
         this.startTime = period.startTime;
         this.endTime = period.endTime;
         this.conversationList = conversationList;
+        this.logReceiver = logReceiver;
 
         this.conversationEvents = DataUtil.convertToTimeSeries("hours", this.startTime, this.endTime, this.conversationList);
-        console.log("generating conversation list summary");
+        this.log("generating summary");
         // The main data processing loop
         // Loop through the conversations and parse the data
         for (let conversation of this.conversationList) {
@@ -101,6 +126,8 @@ class ConversationListSummary implements SourceSummary {
             // Add the userId to the user map.  It is a set essentially
             if (!this.userMap[conversation.userId]) {
                 // make sure an empty array exists for the user ID
+                let shortUserId = conversation.userId ? conversation.userId.substr(0, 22) : "undefined";
+                this.log("Found new user " + shortUserId);
                 this.userMap[conversation.userId] = [];
             }
             this.userMap[conversation.userId].push(conversation);
@@ -131,11 +158,11 @@ class ConversationListSummary implements SourceSummary {
         // Now loop through the userMap to determine sessions
         for (let key in this.userMap) {
             let conversations: Conversation[] = this.userMap[key];
-            let sessionProps: SessionProperties = {};
+            let currentSessionProps: SessionProperties = {};
+            let shortUserId = key.substr(0, 22);
+            this.log("Determining session for User " + shortUserId);
 
-            console.log("looping user " + key);
-
-            // First sort
+            // First sort by time
             conversations.sort(function(a, b) {
                 return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
             });
@@ -143,39 +170,50 @@ class ConversationListSummary implements SourceSummary {
             // Then iterate through and build the sessions
             for (let conversation of conversations) {
 
+                this.log("Parsing " + conversation.requestPayloadType);
+
                 switch (conversation.requestPayloadType) {
+                    case LAUNCH_REQUEST:
+                        currentSessionProps.launch = conversation;
+                        break;
                     case AUDIOPLAYER_PLAYBACK_STARTED:
-                        if (sessionProps.end) {
-                            console.log("-----RESET: ODD DATA-------");
-                            sessionProps = {}; // reset, somehow had an end before a start
+                        // If we already have an end, reset it.  We need a start
+                        if (currentSessionProps.end) {
+                            this.log("-----RESET: ODD DATA-------");
+                            currentSessionProps = {}; // reset, somehow had an end before a start
                         } else {
-                            // console.log(conversation.requestPayloadType + " " + conversation.timestamp + " <-- START");
-                            sessionProps.start = conversation;
+                            this.log(conversation.requestPayloadType + " " + conversation.timestamp + " <-- START");
+                            currentSessionProps.start = conversation;
                         }
+                        break;
+                    case AUDIOPLAYER_PLAYBACK_NEARLY_FINISHED:
+                        // Skip this one for now, might be able to use it to determine the
+                        // the next audio track queued up.
                         break;
                     case AUDIOPLAYER_PLAYBACK_STOPPED:
                     case AUDIOPLAYER_PLAYBACK_FINISHED:
                     case AUDIOPLAYER_PLAYBACK_FAILED:
-                        // console.log(conversation.requestPayloadType + " " + conversation.timestamp + " <-- END");
-                        sessionProps.end = conversation;
+                        this.log(conversation.requestPayloadType + " " + conversation.timestamp + " <-- END");
+                        currentSessionProps.end = conversation;
                         break;
                     default:
-                        sessionProps.content = conversation.requestPayloadType;
-                        // console.log(conversation.requestPayloadType + "  " + conversation.timestamp);
+                        currentSessionProps.content = conversation.requestPayloadType;
+                        this.log("Setting audio content " + conversation.requestPayloadType + "  " + conversation.timestamp);
                         break;
                 }
 
-                if (sessionProps.start && sessionProps.end) {
+                // Our exit condition
+                if (currentSessionProps.start && currentSessionProps.end) {
 
-                    let session = new Session(sessionProps);
-                    // console.log("resetting the props");
+                    let session = new Session(currentSessionProps);
+                    this.log("Adding a session of duration " + session.duration);
                     // console.log(session);
                     if (session.duration < 0) {
-                        console.log("CAUGHT BAD DATA");
+                        this.log("CAUGHT BAD DATA WITH NEGATIVE SESSION DURATION");
                     }
                     // console.log(session.content + " " + session.duration);
-                    sessionProps = {};
-                    // console.log("==========================");
+                    currentSessionProps = {};
+                    this.log("==========================");
 
                     if (!this.sessionMap[session.content]) {
                         // Case where it doesn't exist
@@ -183,7 +221,10 @@ class ConversationListSummary implements SourceSummary {
                     } else {
                         let currentAverage = this.sessionMap[session.content];
                         this.sessionMap[session.content] = (currentAverage + session.duration) / 2;
+                        this.log("Updating average duration " + currentAverage + " to " + this.sessionMap[session.content]);
                     }
+                    // Store it on the sessions array
+                    this.sessions.push(session);
                 }
             } // End Conversation Loop
         } // END User Map Loop

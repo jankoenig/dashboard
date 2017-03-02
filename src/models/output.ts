@@ -9,7 +9,7 @@ export interface OutputProperties {
     id: string;
     stack?: string;
 }
-
+// TODO: Can we get rid of this class, seems redudant with the Log class?  -MMM
 export default class Output implements OutputProperties {
 
     readonly message: string;

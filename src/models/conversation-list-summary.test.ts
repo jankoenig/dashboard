@@ -39,7 +39,7 @@ describe("ConversationListSummary", function () {
     });
 
     it("returns the requests", function() {
-        expect(conversationListSummary.requests).to.have.length(5);
+        expect(conversationListSummary.requestSummary).to.have.length(5);
     });
 });
 

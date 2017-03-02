@@ -2,11 +2,14 @@
 
 // Request Types
 
+export const LAUNCH_REQUEST = "LaunchRequest";
 export const INTENT_REQUEST = "IntentRequest";
+
+export const SESSION_ENDED_REQUEST = "SessionEndedRequest";
 
 export const AMAZON_RESUME_INTENT = "AMAZON.ResumeIntent";
 export const AMAZON_PAUSE_INTENT = "AMAZON.PauseIntent";
-
+export const AMASON_STOP_INTENT = "AMAZON.StopIntent";
 
 export const AUDIOPLAYER_PLAYBACK_STARTED = "AudioPlayer.PlaybackStarted";
 export const AUDIOPLAYER_PLAYBACK_NEARLY_FINISHED = "AudioPlayer.PlaybackNearlyFinished";

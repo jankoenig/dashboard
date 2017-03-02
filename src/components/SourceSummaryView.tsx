@@ -61,11 +61,11 @@ export default class SourceSummaryView extends React.Component<SourceSummaryView
                             </Cell>
                         </Grid>
                         <Grid>
-                            <Cell col={12} style={{ height: (this.props.sourceSummary.requests.length * 40) + 100 }} >
+                            <Cell col={12} style={{ height: (this.props.sourceSummary.requestSummary.length * 40) + 100 }} >
                                 <ResponsiveContainer>
                                     <BarChart
                                         layout="vertical"
-                                        data={this.props.sourceSummary.requests}
+                                        data={this.props.sourceSummary.requestSummary}
                                         margin={{ left: 200 }}
                                         barSize={30}
                                         barCategoryGap={80}>

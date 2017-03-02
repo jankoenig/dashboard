@@ -23,6 +23,7 @@ declare module "react-dates" {
         endDateId?: string;
         startDatePlaceholderText?: string;
         endDatePlaceholderText?: string;
+        disabled?: boolean;
     }
 
     export class DateRangePicker extends React.Component<DateRangePickerProps, any> {}
