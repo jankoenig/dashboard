@@ -345,7 +345,9 @@ class GoogleHomeConversation extends GenericConversation {
         if (this.request) {
             if (this.request.payload) {
                 const payload = this.request.payload;
+
                 if (payload.originalRequest) {
+
                     const originalRequest = payload.originalRequest;
                     if (originalRequest.data) {
                         const data = originalRequest.data;
@@ -353,6 +355,14 @@ class GoogleHomeConversation extends GenericConversation {
                             const firstInput = data.inputs[0];
                             intent = firstInput.intent;
                         }
+                    }
+                }
+
+                if (payload.result) {
+                    if (intent && intent !== payload.result.action) {
+                        intent += "." + payload.result.action;
+                    } else {
+                        intent = payload.result.action;
                     }
                 }
             }
