@@ -404,6 +404,19 @@ describe("Filters.tsx", function () {
             expect(filter.filter(convo)).to.be.true;
         });
 
+        it("Tests that the user filter does not match a defined if filtering for only undefined.", function() {
+            const filter: UserIDFilter = new UserIDFilter(undefined, true);
+            expect(filter.filter(convo)).to.be.false;
+        });
+
+        it("Tests that the user filter does match a defined if filtering for only undefined and get an undefined.", function() {
+            const copyConvo = {...convo};
+            copyConvo.userId = undefined;
+
+            const filter: UserIDFilter = new UserIDFilter(undefined, true);
+            expect(filter.filter(copyConvo)).to.be.true;
+        });
+
         it("Test that user filter does not match a bad user name.", function () {
             const filter: UserIDFilter = new UserIDFilter("Really weird user ID");
             expect(filter.filter(convo)).to.be.false;
