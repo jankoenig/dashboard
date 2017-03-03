@@ -209,7 +209,7 @@ describe("Log Actions", function () {
                         const query = serviceStub.args[0][0] as LogQuery;
 
                         expect(query.limit).to.equal(50);
-                        expect(query.startTime).to.equalDate(origQuery.startTime);
+                        expect(query.startTime).to.equalDate(origQuery.startTime as Date);
                         expect(query.endTime).to.equalDate(origLogs[origLogs.length - 1].timestamp);
                         expect(query.source).to.equal(origQuery.source);
                     });
@@ -223,8 +223,8 @@ describe("Log Actions", function () {
                         const query = serviceStub.args[0][0] as LogQuery;
 
                         expect(query.limit).to.equal(50);
-                        expect(query.startTime).to.equalDate(origQuery.startTime);
-                        expect(query.endTime).to.equalDate(origQuery.endTime);
+                        expect(query.startTime).to.equalDate(origQuery.startTime as Date);
+                        expect(query.endTime).to.equalDate(origQuery.endTime as Date);
                         expect(query.source).to.equal(origQuery.source);
                     });
                 });
@@ -237,8 +237,8 @@ describe("Log Actions", function () {
                         const query = serviceStub.args[0][0] as LogQuery;
 
                         expect(query.limit).to.equal(50);
-                        expect(query.startTime).to.equalDate(origQuery.startTime);
-                        expect(query.endTime).to.equalDate(origQuery.endTime);
+                        expect(query.startTime).to.equalDate(origQuery.startTime as Date);
+                        expect(query.endTime).to.equalDate(origQuery.endTime as Date);
                         expect(query.source).to.equal(origQuery.source);
                     });
                 });
@@ -355,7 +355,7 @@ describe("Log Actions", function () {
                         const query: LogQuery = originalQueryEvent.query;
 
                         expect(actionsQuery.source).to.deep.equal(query.source);
-                        expect(actionsQuery.startTime).to.equalDate(query.startTime);
+                        expect(actionsQuery.startTime).to.equalDate(query.startTime as Date);
                         expect(actionsQuery.endTime).to.equalDate(today);
 
                         expect(actions[2].type).to.equal(FETCH_LOGS_REQUEST);
@@ -393,7 +393,7 @@ describe("Log Actions", function () {
                         const origQuery = queryCopy.query;
                         const query = serviceStub.args[0][0] as LogQuery;
 
-                        expect(query.startTime).to.equalDate(origQuery.startTime);
+                        expect(query.startTime).to.equalDate(origQuery.startTime as Date);
                         expect(query.endTime).to.equalDate(new Date());
                         expect(query.source).to.equal(origQuery.source);
                     });
@@ -407,7 +407,7 @@ describe("Log Actions", function () {
                         const origQuery = queryCopy.query;
                         const query = serviceStub.args[0][0] as LogQuery;
 
-                        expect(query.startTime).to.equalDate(origQuery.startTime);
+                        expect(query.startTime).to.equalDate(origQuery.startTime as Date);
                         expect(query.endTime).to.equalDate(new Date());
                         expect(query.source).to.equal(origQuery.source);
                     });

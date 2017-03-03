@@ -9,28 +9,26 @@ import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
 import Input from "react-toolbox/lib/input";
 
-import Filterbar, { FilterProps, FilterState } from "./FilterBar";
-
-import Source from "../../../models/source";
-
-import LogQuery from "../../../models/log-query";
+import { Origin } from "../../../models/conversation";
+import Dateutils from "../../../utils/date";
+import { OriginFilter } from "../filters/ConvoFilters";
+import Filterbar, { DateRange, FilterProps, FilterState } from "./FilterBar";
 
 chai.use(sinonChai);
 chai.use(require("chai-datetime"));
 const expect = chai.expect;
 
 describe("Filter Bar", function () {
-    let source: Source;
     let onFilter: Sinon.SinonSpy;
-    let logQuery: LogQuery;
+    let logQuery: DateRange;
     let wrapper: ShallowWrapper<FilterProps, FilterState>;
 
     before(function () {
-        source = new Source({
-            name: "TestSource"
-        });
         onFilter = sinon.spy();
-        logQuery = new LogQuery({ source: source });
+        logQuery = {
+            startTime: Dateutils.daysAgo(3),
+            endTime: Dateutils.daysAgo(0)
+        };
     });
 
     beforeEach(function () {
@@ -45,16 +43,16 @@ describe("Filter Bar", function () {
                 onFilterOrigin={onFilter}
                 onLiveUpdate={onFilter}
                 liveUpdateEnabled={true}
-                query={logQuery} />
+                dateRange={logQuery} />
         )) as ShallowWrapper<FilterProps, FilterState>;
     });
 
     it("Renders correctly", function () {
-        let source = new Source({
-            name: "TestSource"
-        });
         let onFilter = sinon.spy();
-        let logQuery = new LogQuery({ source: source });
+        let logQuery = {
+            startTime: Dateutils.daysAgo(3),
+            endTime: Dateutils.daysAgo(0)
+        };
 
         let wrapper = shallow((
             <Filterbar
@@ -66,7 +64,7 @@ describe("Filter Bar", function () {
                 onFilterOrigin={onFilter}
                 onLiveUpdate={onFilter}
                 liveUpdateEnabled={true}
-                query={logQuery} />
+                dateRange={logQuery} />
         ));
 
         expect(wrapper.find(Dropdown)).to.have.length(2); // Filter by type and origin
@@ -153,7 +151,7 @@ describe("Filter Bar", function () {
             expect(endDatePicker.prop("readonly")).to.equal(false);
         });
 
-        it ("Gives the appropriate props to the live update checkbox.", function() {
+        it("Gives the appropriate props to the live update checkbox.", function () {
             const liveUpdate = wrapper.find(Checkbox).at(1);
             expect(liveUpdate.prop("checked")).to.be.true;
             expect(liveUpdate.prop("onChange")).to.exist;
@@ -176,6 +174,36 @@ describe("Filter Bar", function () {
                 dropdown.simulate("change", "Alexa");
 
                 expect(wrapper.state("selectedOrigin")).to.equal("Alexa");
+            });
+
+            it("Tests the returned origin filter for alexa", function () {
+                dropdown.simulate("change", "Alexa");
+
+                expect(onFilter).to.have.been.calledOnce;
+
+                const filter: OriginFilter = onFilter.args[0][0];
+
+                expect(filter.origin).to.equal(Origin.AmazonAlexa);
+            });
+
+            it("Tests the returned origin filter for Home", function () {
+                dropdown.simulate("change", "Home");
+
+                expect(onFilter).to.have.been.calledOnce;
+
+                const filter: OriginFilter = onFilter.args[0][0];
+
+                expect(filter.origin).to.equal(Origin.GoogleHome);
+            });
+
+            it("Tests the returned origin filter for unknown", function() {
+                dropdown.simulate("change", "Uknown");
+
+                expect(onFilter).to.have.been.calledOnce;
+
+                const filter: OriginFilter = onFilter.args[0][0];
+
+                expect(filter.origin).to.not.exist;
             });
 
             it("Tests the callback is called on type filter change.", function () {
@@ -338,22 +366,22 @@ describe("Filter Bar", function () {
             });
         });
 
-        describe("Live Update", function() {
+        describe("Live Update", function () {
             let updateWrapper: ShallowWrapper<any, any>;
 
-            beforeEach(function() {
+            beforeEach(function () {
                 updateWrapper = wrapper.find(Checkbox).at(1);
             });
 
-            it ("Tests the callback was called after an input change.", function() {
+            it("Tests the callback was called after an input change.", function () {
                 updateWrapper.simulate("change", true);
 
                 expect(onFilter).to.be.calledOnce;
                 expect(onFilter).to.be.calledWith(true);
             });
 
-            it ("Tests the live update is disabled when props set.", function() {
-                const newProps = { ...wrapper.props(), ...{disableLiveUpdateCheckbox: true} };
+            it("Tests the live update is disabled when props set.", function () {
+                const newProps = { ...wrapper.props(), ...{ disableLiveUpdateCheckbox: true } };
                 wrapper.setProps(newProps);
 
                 updateWrapper = wrapper.find(Checkbox).at(1);
