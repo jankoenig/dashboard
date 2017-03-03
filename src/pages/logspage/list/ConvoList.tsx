@@ -1,29 +1,29 @@
 import * as React from "react";
 
-import List from "../../components/List/List";
-import Conversation from "../../models/conversation";
-import ConversationList, { ConversationMap } from "../../models/conversation-list";
-import Noop from "../../utils/Noop";
-import ConversationListViewItem from "./ConversationListViewItem";
+import List from "../../../components/List/List";
+import Conversation from "../../../models/conversation";
+import ConversationList, { ConversationMap } from "../../../models/conversation-list";
+import Noop from "../../../utils/Noop";
+import ConvoListItem from "./ConvoListItem";
 
-export interface ConversationListViewProps {
-    readonly conversations: ConversationList;
-    readonly expandListItemWhenActive?: boolean;
-    readonly iconStyle?: React.CSSProperties;
-    readonly iconTooltip?: string;
-    readonly onClick?: (conversation: Conversation) => void;
-    readonly onIconClick?: (conversatino: Conversation) => void;
-    readonly onEmpty?: () => JSX.Element;
-    readonly onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
+export interface ConvoListProps {
+    conversations: ConversationList;
+    expandListItemWhenActive?: boolean;
+    iconStyle?: React.CSSProperties;
+    iconTooltip?: string;
+    onClick?: (conversation: Conversation) => void;
+    onIconClick?: (conversatino: Conversation) => void;
+    onEmpty?: () => JSX.Element;
+    onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
 }
 
-export interface ConversationListViewState {
-    activeConversations?: ConversationMap;
+export interface ConvoListState {
+    activeConversations: ConversationMap;
 }
 
-export default class ConversationListView extends React.Component<ConversationListViewProps, ConversationListViewState> {
+export class ConversationListView extends React.Component<ConvoListProps, ConvoListState> {
 
-    static defaultProps: ConversationListViewProps = {
+    static defaultProps: ConvoListProps = {
         conversations: [],
         expandListItemWhenActive: false,
         onClick: Noop,
@@ -32,7 +32,7 @@ export default class ConversationListView extends React.Component<ConversationLi
         onEmpty: function (): JSX.Element { return (<div />); }
     };
 
-    constructor(props: ConversationListViewProps) {
+    constructor(props: ConvoListProps) {
         super(props);
         this.state = {
             activeConversations: {}
@@ -86,7 +86,7 @@ export default class ConversationListView extends React.Component<ConversationLi
 
         let conversation = this.props.conversations[index];
         return (
-            <ConversationListViewItem
+            <ConvoListItem
                 {...others}
                 key={index + "." + conversation.id}
                 conversation={conversation}
@@ -112,3 +112,5 @@ export default class ConversationListView extends React.Component<ConversationLi
         }
     }
 }
+
+export default ConversationListView;

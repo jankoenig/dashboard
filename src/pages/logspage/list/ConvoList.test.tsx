@@ -1,21 +1,20 @@
 import * as chai from "chai";
-import { mount, ReactWrapper, shallow, ShallowWrapper } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
-let jsdom = require("mocha-jsdom");
 
-import List from "../../components/List/List";
-import ConversationList from "../../models/conversation-list";
-import Log from "../../models/log";
-import { dummyLogs } from "../../utils/test";
-import ConversationListView, { ConversationListViewProps, ConversationListViewState } from "./ConversationListView";
+import List from "../../../components/List/List";
+import ConversationList from "../../../models/conversation-list";
+import Log from "../../../models/log";
+import { dummyLogs } from "../../../utils/test";
+import ConvoList, { ConvoListProps, ConvoListState } from "./ConvoList";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
 
-describe("ConversationListView", function () {
+describe("ConvoList", function () {
 
     let noLogsRenderer: Sinon.SinonStub;
 
@@ -32,7 +31,7 @@ describe("ConversationListView", function () {
             let logs = dummyLogs(4);
             let conversations = ConversationList.fromLogs(logs);
             let onClick = sinon.spy();
-            const wrapper = shallow(<ConversationListView conversations={conversations} onClick={onClick} onEmpty={noLogsRenderer} />);
+            const wrapper = shallow(<ConvoList conversations={conversations} onClick={onClick} onEmpty={noLogsRenderer} />);
 
             expect(wrapper.find("StaticList")).to.have.length(1);
             expect(wrapper.find("div")).to.have.length(0);
@@ -54,7 +53,7 @@ describe("ConversationListView", function () {
 
             beforeEach(function () {
                 wrapper = shallow(
-                    <ConversationListView
+                    <ConvoList
                         conversations={conversations}
                         onScroll={onScroll}
                         onClick={onClick}
@@ -92,6 +91,7 @@ describe("ConversationListView", function () {
             });
         });
     });
+
     describe("without logs", function () {
 
         beforeEach(function () {
@@ -100,85 +100,92 @@ describe("ConversationListView", function () {
 
         it("renders correctly", function () {
             let onClick = sinon.spy();
-            const wrapper = shallow(<ConversationListView conversations={new ConversationList()} onClick={onClick} onEmpty={noLogsRenderer} />);
+            const wrapper = shallow(<ConvoList conversations={new ConversationList()} onClick={onClick} onEmpty={noLogsRenderer} />);
 
             expect(wrapper.find("ReactList")).to.have.length(0);
             expect(wrapper.find("p")).to.have.length(1);
             expect(noLogsRenderer).to.be.calledOnce;
         });
     });
+
     describe("property expandListItemWhenActive", function () {
 
-        jsdom(); // required by enzyme mount, mocks the entire dom
+        // jsdom(); // required by enzyme mount, mocks the entire dom
 
         let logs = dummyLogs(4);
         let conversations = ConversationList.fromLogs(logs);
 
         let onClick: Sinon.SinonSpy;
-        let wrapper: ReactWrapper<ConversationListViewProps, ConversationListViewState>;
+        let wrapper: ShallowWrapper<ConvoListProps, ConvoListState>;
 
         describe("when true", function () {
 
+            before(function() {
+                onClick = sinon.stub();
+            });
+
             beforeEach(function () {
-                onClick = sinon.spy();
                 noLogsRenderer.reset();
 
-                wrapper = mount((
-                    <ConversationListView
+                wrapper = shallow((
+                    <ConvoList
                         conversations={conversations}
                         onClick={onClick}
                         expandListItemWhenActive={true}
                         onEmpty={noLogsRenderer} />
-                ));
+                )) as ShallowWrapper<ConvoListProps, ConvoListState>;
+            });
 
-                expect(wrapper.find("ConversationListViewItem")).to.have.length(2);
-                expect(wrapper.find("Interaction")).to.have.length(0);
+            afterEach(function() {
+                onClick.reset();
             });
 
             it("renders interaction after clicking a list item", function () {
+                // It doesn't render a list item, so we're just going to go straight to a click item.
+                (wrapper.instance() as ConvoList).handleClick(conversations[0]);
 
-                let listItem = wrapper.find("li div").first();
-                listItem.simulate("click");
                 expect(onClick).to.have.been.calledOnce;
 
-                // Now we should find a Interaction present
-                expect(wrapper.find("Interaction")).to.have.length(1);
+                let listItem = (wrapper.instance() as ConvoList).renderItem(0, conversations[0].id);
+                expect(listItem.props["active"]).to.be.true;
             });
+
             it("clears the interaction when it is clicked again", function () {
-                let listItem = wrapper.find("li div").first();
-                listItem.simulate("click");
-                expect(onClick).to.have.been.calledOnce;
-                listItem.simulate("click"); // click again to disable
+                // It doesn't render a list item, so we're just going to go straight to a click item.
+                (wrapper.instance() as ConvoList).handleClick(conversations[0]);
+                (wrapper.instance() as ConvoList).handleClick(conversations[0]);
+
+                let listItem = (wrapper.instance() as ConvoList).renderItem(0, conversations[0].id);
                 expect(onClick).to.have.callCount(2);
-                expect(wrapper.find("Interaction")).to.have.length(0);
+                expect(listItem.props["active"]).to.be.false;
             });
+
             it("renders two interactions after clicking on two list items", function () {
-                let listItems = wrapper.find("li div");
-                let listItemOne = listItems.first();
-                let listItemTwo = listItems.last();
+                // It doesn't render a list item, so we're just going to go straight to a click item.
+                (wrapper.instance() as ConvoList).handleClick(conversations[0]);
+                (wrapper.instance() as ConvoList).handleClick(conversations[1]);
 
-                listItemOne.simulate("click");
-                listItemTwo.simulate("click");
+                let listItemOne = (wrapper.instance() as ConvoList).renderItem(0, conversations[0].id);
+                let listItemTwo = (wrapper.instance() as ConvoList).renderItem(0, conversations[1].id);
 
-                expect(wrapper.find("Interaction")).to.have.length(2);
+                expect(listItemOne.props["active"]).to.be.true;
+                expect(listItemTwo.props["active"]).to.be.true;
             });
         });
+
         describe("when false", function () {
             beforeEach(function () {
                 onClick = sinon.spy();
 
-                wrapper = mount((
-                    <ConversationListView
+                wrapper = shallow((
+                    <ConvoList
                         conversations={conversations}
                         onClick={onClick} />
-                ));
-
-                expect(wrapper.find("ConversationListViewItem")).to.have.length(2);
-                expect(wrapper.find("Interaction")).to.have.length(0);
+                )) as ShallowWrapper<ConvoListProps, ConvoListState>;
             });
+
             it("does not render the interaction when clicked", function () {
-                let listItem = wrapper.find("li div").first();
-                listItem.simulate("click");
+                (wrapper.instance() as ConvoList).handleClick(conversations[0]);
                 expect(onClick).to.have.been.calledOnce;
 
                 // Now we should find a Interaction present
