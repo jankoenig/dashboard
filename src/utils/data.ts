@@ -54,7 +54,7 @@ namespace DataUtil {
      * @param {T[]} data
      * @returns {TimeSeriesDatum[]}
      */
-    export function convertToTimeSeries<T extends TimeSeriable>(bucketSize: "days" | "hours", startTime: Date, endTime: Date, data: T[]): TimeSeriesDatum[] {
+    export function convertToTimeSeries<T extends TimeSeriable>(bucketSize: "days" | "hours", startTime: Date | moment.Moment, endTime: Date | moment.Moment, data: T[]): TimeSeriesDatum[] {
 
         let dataMap: { [time: string]: T[] } = {};
         let timeSeriesData: TimeSeriesDatum[] = [];

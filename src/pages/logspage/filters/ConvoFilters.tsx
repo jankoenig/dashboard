@@ -1,9 +1,9 @@
 import * as moment from "moment";
 
-import Conversation, { Origin } from "../../models/conversation";
-import StringUtils from "../../utils/string";
+import Conversation, { Origin } from "../../../models/conversation";
+import StringUtils from "../../../utils/string";
+import { Filter } from "./Filters";
 
-export const TYPE_COMPOSITE: string = "Composite";
 export const TYPE_LOG_LEVEL: string = "Log Level";
 export const TYPE_ID: string = "ID";
 export const TYPE_DATE: string = "Date";
@@ -11,67 +11,13 @@ export const TYPE_REQUEST: string = "Request";
 export const TYPE_INTENT: string = "Intent";
 export const TYPE_EXCEPTION: string = "Exception";
 export const TYPE_ORIGIN: string = "Origin";
+export const TYPE_USER_ID: string = "UserID";
 
-export interface FilterType {
-    type: string;
-    filter: (item: Conversation) => boolean;
-}
+export class LogLevelFilter implements Filter<Conversation> {
+    static type = TYPE_LOG_LEVEL;
 
-/**
- * Composite filter is an immutable object of Filters in which it will only return "true"
- * when all filters pass.
- *
- * It is designed with the assumption that there will only be one filter for each type.
- * This is not enforced in the constructor, but the other methods assume this so it is the user's
- * responsibility to ensure that it is true.
- */
-export class CompositeFilter implements FilterType {
-    filters: FilterType[];
-    type: string = TYPE_COMPOSITE;
-
-    constructor(filters: FilterType[]) {
-        this.filters = filters;
-    }
-
-    /**
-     * creates a new CompositeFilter with the added filter.
-     */
-    copyAndAddOrReplace(filter: FilterType): CompositeFilter {
-        let copy = this.filters.slice();
-        for (let i = 0; i < this.filters.length; ++i) {
-            if (this.filters[i].type === filter.type) {
-                copy.splice(i, 1);
-            }
-        }
-        copy.push(filter);
-        return new CompositeFilter(copy);
-    }
-
-    getFilter(type: string): FilterType | undefined {
-        for (let filterType of this.filters) {
-            if (filterType.type === type) {
-                return filterType;
-            }
-        }
-        return undefined;
-    }
-
-    get filter(): (item: Conversation) => boolean {
-        let filters = this.filters;
-        return function (item: Conversation): boolean {
-            for (let filter of filters) {
-                if (!filter.filter(item)) {
-                    return false;
-                }
-            }
-            return true;
-        };
-    }
-}
-
-export class LogLevelFilter implements FilterType {
     logType?: string;
-    type: string = TYPE_LOG_LEVEL;
+    type: string = LogLevelFilter.type;
 
     constructor(type?: string) {
         this.logType = type;
@@ -88,7 +34,7 @@ export class LogLevelFilter implements FilterType {
     }
 }
 
-export class IDFilter implements FilterType {
+export class IDFilter implements Filter<Conversation> {
     id: string;
     type: string = "ID";
 
@@ -105,10 +51,12 @@ export class IDFilter implements FilterType {
     }
 }
 
-export class DateFilter implements FilterType {
+export class DateFilter implements Filter<Conversation> {
+    static type: string = TYPE_DATE;
+
     startMoment: moment.Moment;
     endMoment: moment.Moment;
-    type: string = TYPE_DATE;
+    type: string = DateFilter.type;
 
     constructor(startDate?: Date, endDate?: Date) {
         this.startMoment = (startDate) ? moment(startDate) : undefined;
@@ -138,9 +86,10 @@ export class DateFilter implements FilterType {
     }
 }
 
-export class IntentFilter implements FilterType {
+export class IntentFilter implements Filter<Conversation> {
+    static type = TYPE_INTENT;
     intent: string | undefined;
-    type: string = TYPE_INTENT;
+    type: string = IntentFilter.type;
 
     constructor(intent?: string) {
         this.intent = intent;
@@ -162,9 +111,37 @@ export class IntentFilter implements FilterType {
     }
 }
 
-export class RequestFilter implements FilterType {
+export class UserIDFilter implements Filter<Conversation> {
+    static type = TYPE_USER_ID;
+
+    type: string = UserIDFilter.type;
+    userID: string | undefined;
+
+    constructor(userID?: string) {
+        this.userID = userID;
+    }
+
+    get filter(): (item: Conversation) => boolean {
+        const userId = this.userID;
+        return function (item: Conversation): boolean {
+            if (!userId) {
+                return true;
+            }
+
+            if (item && item.userId) {
+                return checkString(userId, item.userId);
+            } else {
+                return false;
+            }
+        };
+    }
+}
+
+export class RequestFilter implements Filter<Conversation> {
+    static type = TYPE_REQUEST;
+
     request: string | undefined;
-    type: string = TYPE_REQUEST;
+    type: string = RequestFilter.type;
 
     constructor(request?: string) {
         this.request = request;
@@ -185,8 +162,10 @@ export class RequestFilter implements FilterType {
     }
 }
 
-export class ExceptionFilter implements FilterType {
-    type: string = TYPE_EXCEPTION;
+export class ExceptionFilter implements Filter<Conversation> {
+    static type = TYPE_EXCEPTION;
+
+    type: string = ExceptionFilter.type;
 
     get filter(): (item: Conversation) => boolean {
         return function (item: Conversation): boolean {
@@ -195,8 +174,10 @@ export class ExceptionFilter implements FilterType {
     }
 }
 
-export class OriginFilter implements FilterType {
-    type: string = TYPE_ORIGIN;
+export class OriginFilter implements Filter<Conversation> {
+    static type = TYPE_ORIGIN;
+
+    type: string = OriginFilter.type;
     origin: Origin;
 
     constructor(origin: Origin) {
@@ -205,7 +186,7 @@ export class OriginFilter implements FilterType {
 
     get filter(): (item: Conversation) => boolean {
         const origin = this.origin;
-        return function(item: Conversation): boolean {
+        return function (item: Conversation): boolean {
             return origin === undefined || origin === item.origin;
         };
     }

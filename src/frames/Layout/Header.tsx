@@ -4,12 +4,10 @@ import { IconButton } from "react-toolbox/lib/button";
 import Dropdown from "react-toolbox/lib/dropdown";
 
 import { Menu, MenuItem } from "../../components/Menu";
-
 import Noop from "../../utils/Noop";
 
 const DropdownDarkTheme = require("../../themes/dropdown-dark-nolabel.scss");
-const IconButtonTheme = require("../../themes/icon-button-primary.scss");
-
+const IconButtonTheme = require("../../themes/icon-button-primary-theme.scss");
 const style = require("./layout-style.scss");
 
 export interface Dropdownable {

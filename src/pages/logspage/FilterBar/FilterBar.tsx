@@ -7,8 +7,7 @@ import Input from "react-toolbox/lib/input";
 
 import { Cell, Grid } from "../../../components/Grid";
 import { Origin } from "../../../models/conversation";
-import LogQuery from "../../../models/log-query";
-import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter } from "../Filters";
+import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter } from "../filters/ConvoFilters";
 
 const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
@@ -16,8 +15,14 @@ const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss"
 const InputTheme = require("../../../themes/input-light.scss");
 const CheckboxTheme = require("../../../themes/checkbox-light.scss");
 
+export interface DateRange {
+    startTime?: Date | moment.Moment;
+    endTime?: Date | moment.Moment;
+}
+
 export interface FilterProps {
-    query: LogQuery;
+    // query: LogQuery;
+    dateRange: DateRange;
     liveUpdateEnabled: boolean;
     onFilterLogLevel: (filter: LogLevelFilter) => void;
     onFilterRequest: (filter: RequestFilter) => void;
@@ -49,6 +54,17 @@ interface LogType {
     label: string;
 }
 
+function convertDate(date: Date | moment.Moment): Date {
+    if (date) {
+        if (date instanceof Date) {
+            return date;
+        } else {
+            return date.toDate();
+        }
+    }
+    return undefined;
+}
+
 class FilterBar extends React.Component<FilterProps, FilterState> {
 
     handleStartDateChange: Function;
@@ -76,8 +92,8 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
             logTypes: types,
             origins: origins,
             filterbarHidden: false,
-            startDate: props.query ? props.query.startTime : undefined,
-            endDate: props.query ? props.query.endTime : undefined
+            startDate: convertDate(props.dateRange.startTime),
+            endDate: convertDate(props.dateRange.endTime)
         };
 
         this.handleStartDateChange = this.handleDateChange.bind(this, "startDate");
@@ -96,18 +112,16 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     componentWillReceiveProps(nextProps: FilterProps) {
         // currently not letting the caller override state if it changed.
         // TODO: It would be preferable to allow this or get rid of query.
-        if (!this.state.endDate && nextProps.query) {
-            this.setDateRange(nextProps.query.startTime, nextProps.query.endTime);
-        }
+        this.setDateRange(nextProps.dateRange.startTime, nextProps.dateRange.endTime);
     }
 
-    setDateRange(startDate: Date, endDate: Date) {
-        this.state.startDate = (startDate) ? new Date(startDate) : undefined;
+    setDateRange(startDate: Date | moment.Moment, endDate: Date | moment.Moment) {
+        this.state.startDate = convertDate(startDate);
         if (this.state.startDate) {
             this.state.startDate.setHours(0, 0, 0, 0);
         }
 
-        this.state.endDate = (endDate) ? new Date(endDate) : undefined;
+        this.state.endDate = convertDate(endDate);
         if (this.state.endDate) {
             this.state.endDate.setHours(23, 59, 59, 999);
         }
@@ -231,7 +245,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         maxDate={queryEndDate}
                         value={this.state.startDate}
                         onChange={this.handleStartDateChange}
-                        readonly={this.props.query ? false : true} />
+                        readonly={this.props.dateRange ? false : true} />
                 </Cell>
                 <p style={{ color: "rgb(255, 255, 255)", fontSize: "26px", margin: "auto -5px", marginTop: "28px", display: "inline-block" }}>-</p>
                 <Cell col={2} offsetDesktop={0} tablet={2} offsetTablet={0} phone={1} offsetPhone={0}>
@@ -243,7 +257,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         maxDate={fullEndDate}
                         value={this.state.endDate}
                         onChange={this.handleEndDateChange}
-                        readonly={this.props.query ? false : true} />
+                        readonly={this.props.dateRange ? false : true} />
                 </Cell>
                 <Cell col={1} tablet={1} phone={1}>
                     <div style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} >

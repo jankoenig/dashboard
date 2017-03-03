@@ -8,9 +8,9 @@ export interface SummaryDatum {
 
 interface SourceSummary {
 
-    startTime: Date;
+    startTime: Date | moment.Moment;
 
-    endTime: Date;
+    endTime: Date | moment.Moment;
 
     totalUniqueUsers: number;
 

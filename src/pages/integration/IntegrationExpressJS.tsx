@@ -31,7 +31,7 @@ export class IntegrationNodeJs extends IntegrationSubPage<IntegrationNodeJsProps
                             `\napp.use(logless.requestHandler);` +
                             `\n` +
                             `\n// Application handlers and routers registered here` +
-                            `\napp.post("/", function {` +
+                            `\napp.post("/", function() {` +
                             `\n    ...` +
                             `\n});` +
                             `\n` +

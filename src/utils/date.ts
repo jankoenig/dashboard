@@ -9,7 +9,7 @@ export namespace DateUtil {
         return moment().subtract(hours, "hours").toDate();
     }
 
-    export function timeBuckets(start: Date, end: Date, interval: "days" | "hours"): Date[] {
+    export function timeBuckets(start: Date | moment.Moment, end: Date | moment.Moment, interval: "days" | "hours"): Date[] {
 
         let buckets: Date[] = [];
 

@@ -1,4 +1,3 @@
-// import * as moment from "moment";
 
 import String from "../utils/string";
 import Conversation from "./conversation";
@@ -23,9 +22,9 @@ import { TimeSeriesDatum } from "./time-series";
 
 class ConversationListSummary implements SourceSummary {
 
-    readonly startTime: Date;
+    readonly startTime: Date | moment.Moment;
 
-    readonly endTime: Date;
+    readonly endTime: Date | moment.Moment;
 
     private userMap: { [userId: string]: Conversation[] } = {};
 
@@ -111,7 +110,7 @@ class ConversationListSummary implements SourceSummary {
         }
     }
 
-    constructor(period: { startTime: Date, endTime: Date }, conversationList: ConversationList, logReceiver?: LogReceiver) {
+    constructor(period: { startTime: Date | moment.Moment, endTime: Date | moment.Moment }, conversationList: ConversationList, logReceiver?: LogReceiver) {
         this.startTime = period.startTime;
         this.endTime = period.endTime;
         this.conversationList = conversationList;

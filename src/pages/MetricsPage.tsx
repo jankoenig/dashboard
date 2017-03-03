@@ -113,7 +113,10 @@ export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageSt
             this.state.startDate = moment(query.startTime);
             this.state.endDate = moment(query.endTime);
             this.state.conversationList = ConversationList.fromLogs(logs);
-            this.state.summary = new ConversationListSummary(query, this.state.conversationList, this);
+            this.state.summary = new ConversationListSummary({
+                startTime: query.startTime,
+                endTime: query.endTime
+            }, this.state.conversationList, this);
             this.setState(this.state);
         }
     }

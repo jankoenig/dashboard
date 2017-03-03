@@ -39,6 +39,7 @@
   ],
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.33",
     "browser-sync": "^2.18.8",
     "bs-fullscreen-message": "^1.1.0",
     "chai": "^3.5.0",
@@ -75,7 +76,7 @@
     "ts-loader": "2.0.0",
     "tslint": "^4.1.1",
     "tslint-react": "2.4.0",
-    "typescript": "^2.1.4",
+    "typescript": "^2.2.0",
     "typings": "^2.0.0",
     "typings-for-css-modules-loader": "1.0.0",
     "webpack": "1.14.0",

@@ -12,6 +12,10 @@ import VisibilityWatcher from "./VisibilityWatcher";
 chai.use(sinonChai);
 let expect = chai.expect;
 
+const style = {
+    height: "100px"
+};
+
 describe("VisibilityWatcher", function () {
 
     describe("Full Render", function () {
@@ -24,7 +28,6 @@ describe("VisibilityWatcher", function () {
         let wrapper: ReactWrapper<any, any>;
 
         before(function () {
-            console.log(document);
             addEventListener = sinon.stub(document, "addEventListener");
             removeEventListener = sinon.stub(document, "removeEventListener");
         });
@@ -33,7 +36,7 @@ describe("VisibilityWatcher", function () {
             addEventListener.reset();
             removeEventListener.reset();
             onChangeListener = sinon.stub();
-            wrapper = mount(<VisibilityWatcher onChange={onChangeListener} />);
+            wrapper = mount(<VisibilityWatcher style={style} onChange={onChangeListener} />);
         });
 
         after(function () {
@@ -52,6 +55,10 @@ describe("VisibilityWatcher", function () {
 
             expect(removeEventListener).to.be.calledOnce;
             expect(removeEventListener).to.be.calledWith("visibilitychange");
+        });
+
+        it("Tests the style is passed in", function () {
+            expect(wrapper.find("div").at(0)).to.have.prop("style", style);
         });
     });
 });
