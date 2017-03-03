@@ -3,7 +3,7 @@ import Tooltip from "react-toolbox/lib/tooltip";
 
 import Noop from "../../utils/Noop";
 
-const IconButtonTheme = require("../../themes/icon-button-primary.scss");
+const IconButtonTheme = require("../../themes/icon-button-primary-theme.scss");
 
 export interface PageButton {
     name: string;
