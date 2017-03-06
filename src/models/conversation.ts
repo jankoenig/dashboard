@@ -65,7 +65,7 @@ export function createConvo(props: ConversationProperties): Conversation {
         const requestPayload = props.request.payload || {};
         if (requestPayload.request) { // amazon
             return new AlexaConversation(props);
-        } else if (requestPayload.originalRequest) { // google
+        } else if (requestPayload.result) { // google
             return new GoogleHomeConversation(props);
         }
     }
@@ -314,7 +314,25 @@ class GoogleHomeConversation extends GenericConversation {
     }
 
     get rawRequestType(): string | undefined {
-        return this.intent; // Turns out they may be the same thing for Google Home.
+        let intent: string;
+        if (this.request) {
+            if (this.request.payload) {
+                const payload = this.request.payload;
+
+                if (payload.originalRequest) {
+
+                    const originalRequest = payload.originalRequest;
+                    if (originalRequest.data) {
+                        const data = originalRequest.data;
+                        if (data.inputs && data.inputs.length > 0) {
+                            const firstInput = data.inputs[0];
+                            intent = firstInput.intent;
+                        }
+                    }
+                }
+            }
+        }
+        return intent;
     }
 
     get requestType(): string | undefined {
