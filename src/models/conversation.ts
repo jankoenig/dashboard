@@ -336,29 +336,11 @@ class GoogleHomeConversation extends GenericConversation {
     }
 
     get requestType(): string | undefined {
-        let requestType: string = this.rawRequestType;
-
-        if (requestType) {
-            requestType = requestType.split(".")[0];
-        }
-
-        return requestType;
+        return this.rawRequestType;
     }
 
     get requestPayloadType(): string | undefined {
-        let intent: string;
-
-        if (this.request) {
-            if (this.request.payload) {
-                const payload = this.request.payload;
-
-                if (payload.result) {
-                    intent = payload.result.action;
-                }
-            }
-        }
-
-        return intent;
+        return this.intent;
     }
 
     get intent(): string | undefined {
