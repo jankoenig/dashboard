@@ -319,7 +319,9 @@ describe("Source Page", function () {
 
 function dummyTimeSummary(size: number): LogService.TimeSummary {
     return {
-        buckets: dummyTimeBuckets(size)
+        buckets: dummyTimeBuckets(size),
+        amazonBuckets: dummyTimeBuckets(size / 2),
+        googleBuckets: dummyTimeBuckets(size / 2)
     };
 }
 
@@ -363,7 +365,8 @@ function dummyIntentBuckets(size: number): LogService.IntentBucket[] {
     for (let i = 0; i < size; ++i) {
         buckets.push({
             name: randomNameGenerator(),
-            count: i
+            count: i,
+            origin: "Amazon.Alexa"
         });
     }
 
