@@ -2,26 +2,8 @@ import * as moment from "moment";
 import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-export class TimeData {
-    date: Date;
-    count?: number;
-
-    constructor(obj: {isoDate: string, count?: number}) {
-        this.date = new Date(obj.isoDate);
-        this.count = obj.count;
-    }
-
-    get time(): number {
-        return this.date.getTime();
-    }
-
-    get length(): number {
-        return this.count;
-    }
-}
-
 interface TimeChartProps {
-    data: TimeData[];
+    data: any[];
     tickFormat?: string;
     labelFormat?: string;
 }
@@ -54,7 +36,7 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     }
 
     createTicks(props: TimeChartProps): number[] {
-        const data: TimeData[] = props.data;
+        const data: any[] = props.data;
         if (data.length === 0) {
             return [];
         }
@@ -91,7 +73,9 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
                     <XAxis dataKey="time" tickFormatter={this.tickFormat} ticks={this.state.ticks}/>
                     <YAxis />
                     <Tooltip labelFormatter={this.labelFormat} />
-                    <Line type="monotone" dataKey="length" dot={false} />
+                    <Line type="monotone" dataKey="total" stroke="#FF0000" dot={false} />
+                    <Line type="monotone" dataKey="amazon.alexa" name={"Alexa"} stroke="#00FF00" dot={false} />
+                    <Line type="monotone" dataKey="google.home" name={"Home"} stroke="#0000FF" dot={false} />
                 </LineChart>
             </ResponsiveContainer>
         );

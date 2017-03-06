@@ -3,23 +3,23 @@ import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import TimeChart, { TimeData } from "./TimeChart";
+import TimeChart from "./TimeChart";
 
 const expect = chai.expect;
 
 const DATA_LENGTH = 10;
 
-const data: TimeData[] = [];
+const data: any[] = [];
 
 describe("CountChart", function() {
 
     before(function() {
         let date: Date = new Date();
         for (let i = 0; i < DATA_LENGTH; ++i) {
-            data.push(new TimeData({
+            data.push({
                 isoDate: date.toISOString(),
                 count: i
-            }));
+            });
         }
     });
 

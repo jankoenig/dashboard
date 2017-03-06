@@ -9,7 +9,7 @@ import Dialog from "react-toolbox/lib/dialog";
 import { deleteSource } from "../actions/source";
 import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
-import TimeChart, { TimeData } from "../components/Graphs/Line/TimeChart";
+import TimeChart from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
 import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import Source from "../models/source";
@@ -21,6 +21,13 @@ const DeleteDialogTheme = require("../themes/dialog_theme.scss");
 
 enum DataState {
     LOADING, ERROR, LOADED
+}
+
+interface TimeData {
+    time: string;
+    total: number;
+    "amazon.alexa": number;
+    "google.home": number;
 }
 
 interface SourcePageProps {
@@ -120,14 +127,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             loadData: function (query: Query): Promise<LogService.TimeSummary> {
                 return LogService.getTimeSummary(query);
             },
-            map: function (data: LogService.TimeSummary): TimeData[] {
-                return data.buckets.map(function (value: LogService.TimeBucket, index: number, array: LogService.TimeBucket[]) {
-                    let timeData: TimeData = new TimeData({
-                        isoDate: value.date,
-                        count: value.count
-                    });
-                    return timeData;
-                });
+            map: function (data: LogService.TimeSummary): any[] {
+                return merge(data);
             },
         };
 
@@ -404,9 +405,12 @@ function defaultTimeData(start: Date, end: Date): TimeData[] {
     let data: TimeData[] = [];
     let currentDate: Date = new Date(start);
     while (currentDate.getDate() < end.getDate()) {
-        data.push(new TimeData({
-            isoDate: currentDate.toISOString()
-        }));
+        data.push({
+            time: currentDate.toISOString(),
+            total: 0,
+            "amazon.alexa": 0,
+            "google.home": 0
+        });
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return data;
@@ -486,5 +490,41 @@ class Loader {
             this.stateHandler.stateChange(DataState.ERROR);
             this.loadCallback.onError(err);
         });
+    }
+}
+
+function merge(summary: LogService.TimeSummary): TimeData[] {
+    const merger: any = {};
+    console.log(summary);
+    for (let bucket of summary.buckets) {
+        const date = new Date(bucket.date);
+        date.setMinutes(0, 0, 0);
+        const dateString = date.toISOString();
+        merger[dateString] = {
+            time: date,
+            total: bucket.count
+        };
+    }
+
+    join(merger, summary.amazonBuckets, "amazon.alexa");
+    join(merger, summary.googleBuckets, "google.home");
+
+    const values = Object.keys(merger).map(key => merger[key]);
+    return values;
+}
+
+function join(merger: any, buckets: LogService.TimeBucket[], key: string) {
+    for (let bucket of buckets) {
+        const date = new Date(bucket.date);
+        date.setMinutes(0, 0, 0);
+        const dateString = date.toISOString();
+        let obj = merger[dateString];
+        if (!obj) {
+            obj = {
+                time: date
+            };
+        }
+        obj[key] = bucket.count;
+        merger[dateString] = obj;
     }
 }
