@@ -346,14 +346,19 @@ class GoogleHomeConversation extends GenericConversation {
     }
 
     get requestPayloadType(): string | undefined {
-        let requestType: string = this.rawRequestType;
+        let intent: string;
 
-        // if it is an intent request, append the type
-        if (requestType === "IntentRequest") {
-            requestType = requestType + "." + this.intent;
+        if (this.request) {
+            if (this.request.payload) {
+                const payload = this.request.payload;
+
+                if (payload.result) {
+                    intent = payload.result.action;
+                }
+            }
         }
 
-        return requestType;
+        return intent;
     }
 
     get intent(): string | undefined {
