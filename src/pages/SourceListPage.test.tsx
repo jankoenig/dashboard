@@ -9,6 +9,10 @@ import { dummySources } from "../utils/test";
 import { SourceListPage } from "./SourceListPage";
 import WelcomePage from "./WelcomePage";
 
+import { Button } from "react-toolbox/lib/button";
+
+import List from "../components/List/List";
+
 let expect = chai.expect;
 
 describe("Source List Page", function () {
@@ -30,8 +34,8 @@ describe("Source List Page", function () {
             let leftSide = twoPaneWrapper.find(".source_list_page_left");
             let rightSide = twoPaneWrapper.find(".source_list_page_right");
 
-            expect(leftSide.find("StaticList").find("ListItem")).to.have.length(4);
-            expect(leftSide.find("Button")).to.have.length(1);
+            expect(leftSide.find(List)).to.have.prop("length", 4);
+            expect(leftSide.find(Button)).to.have.length(1);
 
             expect(rightSide.find(WelcomePage)).to.have.length(1);
         });

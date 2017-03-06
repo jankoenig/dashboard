@@ -116,16 +116,21 @@ export class UserIDFilter implements Filter<Conversation> {
 
     type: string = UserIDFilter.type;
     userID: string | undefined;
+    filterUndefined: boolean;
 
-    constructor(userID?: string) {
+    constructor(userID?: string, filterForUndefinedID: boolean = false) {
         this.userID = userID;
+        this.filterUndefined = filterForUndefinedID;
     }
 
     get filter(): (item: Conversation) => boolean {
         const userId = this.userID;
+        const filterUndefined = this.filterUndefined;
         return function (item: Conversation): boolean {
             if (!userId) {
-                return true;
+                // tslint:disable:no-null-keyword
+                return !filterUndefined || (item.userId === undefined || item.userId === null);
+                // tslint:enable:no-null-keyword
             }
 
             if (item && item.userId) {
