@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import AmazonEchoIcon from "../../../components/Icon/AmazonEcho";
+import DefaultIcon from "../../../components/Icon/Default";
 import GoogleHomeIcon from "../../../components/Icon/GoogleHome";
 import { Origin } from "../../../models/conversation";
 
@@ -35,9 +36,16 @@ export class ConvoIcon extends React.Component<ConvoIconProps, ConvoIconState> {
                 );
                 break;
 
-            default:
+            case Origin.AmazonAlexa:
                 icon = (
                     <AmazonEchoIcon
+                        {...others} />
+                );
+                break;
+
+            default:
+                icon = (
+                    <DefaultIcon
                         {...others} />
                 );
         }
