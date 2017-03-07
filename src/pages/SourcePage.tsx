@@ -30,12 +30,15 @@ class PageTimeData extends TimeData {
 
     constructor(time: Date | moment.Moment) {
         super(time);
+        this["total"] = 0;
+        this["Amazon.Alexa"] = 0;
+        this["Google.Home"] = 0;
     }
 }
 
 class IntentCountData implements CountData {
     title: string;
-    count: number;
+    count?: number;
     "Amazon.Alexa"?: number;
     "Google.Home"?: number;
 }
@@ -322,6 +325,10 @@ interface SummaryDataState {
 class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
 
     static lines: LineProps[] = [{
+        dataKey: "total",
+        name: "Total",
+        stroke: "#000000"
+    }, {
         dataKey: "Amazon.Alexa",
         name: "Alexa",
         stroke: "#FF9900"
@@ -329,21 +336,18 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
         dataKey: "Google.Home",
         name: "Home",
         stroke: "#4885ed"
-    }, {
-        dataKey: "total",
-        name: "Total",
-        stroke: "#000000"
     }];
 
-    static bars: BarProps[] = [{
+    static bars: BarProps[] = [ {
         dataKey: "Amazon.Alexa",
+        name: "Alexa",
         fill: "#FF9900",
+        stackId: "a"
     }, {
         dataKey: "Google.Home",
-        fill: "#4885ed"
-    }, {
-        dataKey: "count",
-        fill: "#000000"
+        name: "Home",
+        fill: "#4885ed",
+        stackId: "a"
     }];
 
     constructor(props: SummaryViewProps) {

@@ -87,10 +87,12 @@ declare module "recharts" {
     export class BarChart extends React.Component<BarChartProps, any> { }
 
     export interface BarProps {
+        dataKey: string | number;
         layout?: Layout;
         fill?: string;
-        dataKey: string | number;
         barSize?: number;
+        name?: string;
+        stackId?: string;
     }
 
     export class Bar extends React.Component<BarProps, any> { }

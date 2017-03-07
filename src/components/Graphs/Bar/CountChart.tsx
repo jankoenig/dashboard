@@ -4,6 +4,8 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recha
 export interface BarProps {
     dataKey: string;
     fill?: string;
+    name?: string;
+    stackId?: string;
 }
 
 export interface CountData {
