@@ -38,8 +38,8 @@ export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, C
     render() {
         return (
             <TwoPane
-                leftStyle={{ paddingLeft: "10px", paddingRight: "5px", zIndex: 1 }}
-                rightStyle={{ paddingLeft: "5px", paddingRight: "10px" }}
+                leftStyle={{ paddingLeft: "5px", paddingRight: "5px", zIndex: 1 }}
+                rightStyle={{ paddingLeft: "5px", paddingRight: "5px" }}
                 spacing={true}>
                 <ConvoListPage
                     {...this.props}

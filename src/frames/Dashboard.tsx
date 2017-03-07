@@ -131,8 +131,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           name: "summary"
         },
         {
-          icon: "timeline",
-          name: "metrics"
+          icon: "av_timer",
+          name: "sessions"
         },
         {
           icon: "list",
@@ -159,8 +159,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/logs");
     } else if (button.name === "integration") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
-    } else if (button.name === "metrics") {
-      this.props.goTo("/skills/" + this.props.currentSource.id + "/metrics");
+    } else if (button.name === "sessions") {
+      this.props.goTo("/skills/" + this.props.currentSource.id + "/sessions");
     } else if (button.name === "settings") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/settings");
     }

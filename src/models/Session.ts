@@ -16,6 +16,10 @@ export interface SessionProperties {
 
     content?: string;
 
+    userId?: string;
+
+    sessions?: Session[];
+
 }
 
 export default class Session implements SessionProperties {
@@ -26,6 +30,12 @@ export default class Session implements SessionProperties {
 
     readonly content: string;
 
+    readonly userId: string;
+
+    readonly launch: TimeSeriable;
+
+    readonly sessions: Session[];
+
     /**
      * Get the session duration in seconds.
      *
@@ -34,13 +44,23 @@ export default class Session implements SessionProperties {
      * @memberOf Session
      */
     get duration(): number {
-        return moment(this.end.timestamp).diff(moment(this.start.timestamp), "seconds");
 
+        let start = moment(this.start.timestamp);
+        let end = moment(this.end.timestamp);
+
+        if (this.sessions.length > 0) {
+            end = moment(this.sessions[this.sessions.length - 1].end.timestamp);
+        }
+
+        return moment(end).diff(moment(start), "seconds");
     }
 
     constructor(props: SessionProperties) {
         this.start = props.start;
         this.end = props.end;
         this.content = props.content;
+        this.userId = props.userId;
+        this.launch = props.launch;
+        this.sessions = props.sessions ? props.sessions : [];
     }
 }

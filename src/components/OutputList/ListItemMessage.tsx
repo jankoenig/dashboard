@@ -40,13 +40,13 @@ export default class ListItemMessage extends React.Component<ListItemMessageProp
 
         return (
             <div style={this.style()} onClick={this.props.onClick} >
-                <span style={{ color: "rgb(102, 217, 239)", paddingRight: "10px" }}>
+                <span style={{ color: "rgb(102, 217, 239)", paddingRight: "5px" }}>
                     {formattedTime}
                 </span>
                 <span style={{ color: levelColor }}>
                     {level}
                 </span>
-                <span style={{ paddingLeft: "10px", color: messageColor }}>
+                <span style={{ paddingLeft: "5px", color: messageColor }}>
                     {message}
                 </span>
                 {this.props.children}

@@ -1,4 +1,4 @@
-
+import * as moment from "moment";
 import String from "../utils/string";
 import Conversation from "./conversation";
 import ConversationList from "./conversation-list";
@@ -73,18 +73,20 @@ class ConversationListSummary implements SourceSummary {
         return requests;
     }
 
-     public sessions: Session[] = [];
+    public sessions: Session[] = [];
 
-    private sessionMap: { [session: string]: number} = {};
+    public failedSessions: SessionProperties[] = [];
+
+    private sessionMap: { [session: string]: number } = {};
 
     get sessionSummary(): SummaryDatum[] {
         let sessions = [];
 
         for (let key of Object.keys(this.sessionMap)) {
-            sessions.push({name: key, total: this.sessionMap[key]});
+            sessions.push({ name: key, total: this.sessionMap[key] });
         }
 
-        sessions.sort(function(a, b) {
+        sessions.sort(function (a, b) {
             return b.total - a.total;
         });
 
@@ -96,7 +98,7 @@ class ConversationListSummary implements SourceSummary {
     private logReceiver: LogReceiver;
 
     log(message: string) {
-        console.log(message);
+        // console.log(message);
         if (this.logReceiver) {
             const timestamp = new Date();
             this.logReceiver.postLog(new Log({
@@ -157,12 +159,14 @@ class ConversationListSummary implements SourceSummary {
         // Now loop through the userMap to determine sessions
         for (let key in this.userMap) {
             let conversations: Conversation[] = this.userMap[key];
+            // set the first prop
             let currentSessionProps: SessionProperties = {};
+            let previousSession: Session;
             let shortUserId = key.substr(0, 22);
             this.log("Determining session for User " + shortUserId);
 
             // First sort by time
-            conversations.sort(function(a, b) {
+            conversations.sort(function (a, b) {
                 return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
             });
 
@@ -170,6 +174,9 @@ class ConversationListSummary implements SourceSummary {
             for (let conversation of conversations) {
 
                 this.log("Parsing " + conversation.requestPayloadType);
+
+                // TODO: Can we find a better place to set this?
+                currentSessionProps.userId = shortUserId;
 
                 switch (conversation.requestPayloadType) {
                     case LAUNCH_REQUEST:
@@ -179,6 +186,7 @@ class ConversationListSummary implements SourceSummary {
                         // If we already have an end, reset it.  We need a start
                         if (currentSessionProps.end) {
                             this.log("-----RESET: ODD DATA-------");
+                            this.failedSessions.push(currentSessionProps);
                             currentSessionProps = {}; // reset, somehow had an end before a start
                         } else {
                             this.log(conversation.requestPayloadType + " " + conversation.timestamp + " <-- START");
@@ -222,11 +230,38 @@ class ConversationListSummary implements SourceSummary {
                         this.sessionMap[session.content] = (currentAverage + session.duration) / 2;
                         this.log("Updating average duration " + currentAverage + " to " + this.sessionMap[session.content]);
                     }
-                    // Store it on the sessions array
-                    this.sessions.push(session);
+
+                    let difference: number = Number.MAX_VALUE;
+
+                    if (previousSession) {
+                        console.log("=====");
+                        console.log("previous end " + moment(previousSession.end.timestamp).format("h:mm:ss a"));
+                        console.log("current start " + moment(session.start.timestamp).format("h:mm:ss a"));
+                        let duration = moment.duration(moment(session.start.timestamp).diff(moment(previousSession.end.timestamp)));
+                        difference = duration.asMinutes();
+                        console.log("difference = " + duration.asMinutes());
+                        console.log("=====");
+                    }
+
+                    // if it is less than three minutes from the previous
+                    if (difference <= 3) {
+                        // store it on the previous
+                        previousSession.sessions.push(session);
+                    } else {
+                        // Set it to the previous
+                        previousSession = session;
+                        // or store it on the sessions array
+                        this.sessions.push(session);
+                    }
+                    // and restart the loop
                 }
             } // End Conversation Loop
         } // END User Map Loop
+
+        // Sort the sessions.
+        this.sessions.sort(function (a, b) {
+            return new Date(b.start.timestamp).getTime() - new Date(a.start.timestamp).getTime();
+        });
     }
 }
 

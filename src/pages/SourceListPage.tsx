@@ -53,8 +53,8 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
         return (
             <TwoPane
                 spacing={true}
-                leftStyle={{ paddingLeft: "10px", paddingRight: "5px" }}
-                rightStyle={{ paddingRight: "10px", paddingLeft: "5px" }}>
+                leftStyle={{ paddingLeft: "5px", paddingRight: "5px" }}
+                rightStyle={{ paddingRight: "5px", paddingLeft: "5px" }}>
                 {leftSide}
                 {rightSide}
             </TwoPane>

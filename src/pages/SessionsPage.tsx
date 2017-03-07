@@ -9,6 +9,7 @@ import { retrieveLogs } from "../actions/log";
 import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
 import { OutputList } from "../components/OutputList";
+import SessionListViewItem from "../components/Session/SessionListViewItem";
 import ConversationList from "../models/conversation-list";
 import ConversationListSummary from "../models/conversation-list-summary";
 import Log from "../models/log";
@@ -19,14 +20,14 @@ import Source from "../models/source";
 import { State } from "../reducers";
 import { LogMap } from "../reducers/log";
 
-interface MetricsPageProps {
+interface SessionsPageProps {
     logMap: LogMap;
     source: Source;
     isLoading: boolean;
     getLogs: (query: LogQuery) => Promise<Log[]>;
 }
 
-interface MetricsPageState {
+interface SessionsPageState {
     conversationList?: ConversationList;
     summary?: ConversationListSummary;
     startDate?: moment.Moment;
@@ -52,13 +53,14 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageState> implements LogReceiver {
+// TODO: Change to SessionsPage
+export class SessionsPage extends React.Component<SessionsPageProps, SessionsPageState> implements LogReceiver {
 
     postLog(log: Log) {
         this.state.debugLogs.push(Output.fromLog(log));
     }
 
-    constructor(props: MetricsPageProps) {
+    constructor(props: SessionsPageProps) {
         super(props);
         console.log("constructor");
 
@@ -70,7 +72,6 @@ export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageSt
         this.onFocusChange = this.onFocusChange.bind(this);
         this.requestLogs = this.requestLogs.bind(this);
         this.parseLogs = this.parseLogs.bind(this);
-
     }
 
     componentDidMount() {
@@ -78,8 +79,7 @@ export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageSt
         this.parseLogs();
     }
 
-
-    componentWillReceiveProps(nextProps: MetricsPageProps, context: any) {
+    componentWillReceiveProps(nextProps: SessionsPageProps, context: any) {
         console.log("willReceiveProps");
 
         if (!nextProps.source) {
@@ -147,10 +147,10 @@ export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageSt
 
         if (this.state.conversationList) {
             for (let session of this.state.summary.sessions) {
-                console.log(session);
+                // console.log(session);
                 let key = new Date(session.start.timestamp).getTime();
                 sessionList.push((
-                    <li key={key}>{session.content} {session.duration}</li>
+                    <SessionListViewItem session={session} key={key} />
                 ));
             }
         }
@@ -187,14 +187,16 @@ export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageSt
                             <Cell>
                                 <DataTile label="Unique Users" value={this.state.summary.totalUniqueUsers.toString()} />
                             </Cell>
+                            <Cell>
+                            <DataTile label="Session Errors" value={this.state.summary.failedSessions.length.toString()} />
+                            </Cell>
                         </Grid>
                         <Grid>
                             <Cell col={6}>
-                                <ul>
+                                <ul style={{ listStyle: "none" }}>
                                     {sessionList}
                                 </ul>
                             </Cell>
-
                         </Grid>
                     </span>
                 ) : undefined}
@@ -211,4 +213,4 @@ export class MetricsPage extends React.Component<MetricsPageProps, MetricsPageSt
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(MetricsPage);
+)(SessionsPage);

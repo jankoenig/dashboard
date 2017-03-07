@@ -5,7 +5,7 @@ import { ListItem } from "react-toolbox/lib/list";
 
 import MDLComponent from "../MDLComponent";
 
-const ListItemStyle = require("../../themes/listitem.scss");
+const ListItemStyle = require("../../themes/list-item.scss");
 
 export interface TwoLineItemProps {
     /**
