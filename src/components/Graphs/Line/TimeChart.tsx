@@ -48,7 +48,6 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
             return [];
         }
 
-        console.time("ticks");
         let highest: moment.Moment = moment(data[0].time).startOf("day");
         let lowest: moment.Moment = moment(data[0].time).startOf("day");
         let ticks: number[] = [ data[0].timeValue ];
@@ -62,7 +61,6 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
                 lowest = currentDate;
             }
         }
-        console.timeEnd("ticks");
         return ticks;
     }
 
