@@ -15,6 +15,7 @@ import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortP
 import Source from "../models/source";
 import { State } from "../reducers";
 import LogService from "../services/log";
+import { AMAZON_ORANGE, BLACK, GOOGLE_GREEN } from "../utils/colors";
 
 const DeleteButtonTheme = require("../themes/button_theme.scss");
 const DeleteDialogTheme = require("../themes/dialog_theme.scss");
@@ -327,26 +328,26 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
     static lines: LineProps[] = [{
         dataKey: "total",
         name: "Total",
-        stroke: "#000000"
+        stroke: BLACK
     }, {
         dataKey: "Amazon.Alexa",
         name: "Alexa",
-        stroke: "#FF9900"
+        stroke: AMAZON_ORANGE
     }, {
         dataKey: "Google.Home",
         name: "Home",
-        stroke: "#4885ed"
+        stroke: GOOGLE_GREEN
     }];
 
     static bars: BarProps[] = [ {
         dataKey: "Amazon.Alexa",
         name: "Alexa",
-        fill: "#FF9900",
+        fill: AMAZON_ORANGE,
         stackId: "a"
     }, {
         dataKey: "Google.Home",
         name: "Home",
-        fill: "#4885ed",
+        fill: GOOGLE_GREEN,
         stackId: "a"
     }];
 
