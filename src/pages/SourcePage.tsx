@@ -515,7 +515,6 @@ class Loader {
 function merge(summary: LogService.TimeSummary): PageTimeData[] {
     const merger: any = {};
     for (let bucket of summary.buckets) {
-        console.info("Adding");
         const date = new Date(bucket.date);
         date.setMinutes(0, 0, 0);
         const dateString = date.toISOString();
@@ -529,12 +528,7 @@ function merge(summary: LogService.TimeSummary): PageTimeData[] {
     join(merger, summary.amazonBuckets, "amazon.alexa");
     join(merger, summary.googleBuckets, "google.home");
 
-    console.info("Converting");
     const values = Object.keys(merger).map(key => merger[key]);
-    console.info("Checking");
-    console.log(merger);
-    console.log(values);
-    console.info("Checked");
     return values;
 }
 
@@ -545,7 +539,6 @@ function join(merger: any, buckets: LogService.TimeBucket[], key: "total" | "ama
         const dateString = date.toISOString();
         let obj: PageTimeData = merger[dateString];
         if (!obj) {
-            console.info("Does not exist " + dateString);
             obj = new PageTimeData(date);
             obj["total"] = bucket.count;
             obj["amazon.alexa"] = 0;

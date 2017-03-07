@@ -11,7 +11,7 @@ export interface LineProps {
 }
 
 export class TimeData {
-    time: Date ;
+    time: Date;
 
     constructor(time: Date | moment.Moment) {
         this.time = (time instanceof Date) ? time : time.toDate();
@@ -30,7 +30,7 @@ interface TimeChartProps {
 }
 
 interface TimeChartState {
-    ticks: Number[];
+    ticks: number[];
     lines: JSX.Element[];
 }
 
@@ -45,25 +45,21 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     static createTicks(props: TimeChartProps): number[] {
         const data: TimeData[] = props.data;
         if (data.length === 0) {
-            console.info("NO TICKS");
             return [];
         }
 
-        console.info("Creating ticks " + data.length);
         console.time("ticks");
-        let lastDate: moment.Moment = moment(data[0].time).startOf("day");
-        let ticks: number[] = [ ];
+        let highest: moment.Moment = moment(data[0].time).startOf("day");
+        let lowest: moment.Moment = moment(data[0].time).startOf("day");
+        let ticks: number[] = [ data[0].timeValue ];
         for (let i = 1; i < data.length; ++i) {
-            const time: Date = data[i].time;
-            const currentDate: moment.Moment = moment(time).startOf("day");
-            if (currentDate.isAfter(lastDate)) {
-                console.info("Pushing " + time.toISOString());
-                ticks.push(time.getTime());
-                lastDate = currentDate;
-            } else if (currentDate.isBefore(lastDate)) {
-                console.info("Shifting " + time.toISOString());
-                ticks.unshift(time.getTime());
-                lastDate = currentDate;
+            const currentDate: moment.Moment = moment(data[i].time).startOf("day");
+            if (currentDate.isAfter(highest)) {
+                ticks.push(data[i].timeValue);
+                highest = currentDate;
+            } else if (currentDate.isBefore(lowest)) {
+                ticks.unshift(data[i].timeValue);
+                lowest = currentDate;
             }
         }
         console.timeEnd("ticks");
@@ -74,7 +70,7 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
         const lines: JSX.Element[] = [];
         let i = 0;
         for (let line of props.lines) {
-            const prop = {...TimeChart.defaultLineProp, ...line};
+            const prop = { ...TimeChart.defaultLineProp, ...line };
             lines.push(<Line key={i++} {...prop} />);
         }
         return lines;
@@ -102,25 +98,17 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
         this.state.ticks = TimeChart.createTicks(nextProps);
         this.state.lines = TimeChart.createLines(nextProps);
         this.setState(this.state);
-        console.log(nextProps);
     }
 
     tickFormat(time: Date): string {
-        const format = moment(time).format(this.props.tickFormat);
-        console.info("FORMATTING " + time + " to " + format);
-        return format;
+        return moment(time).format(this.props.tickFormat);
     }
 
     labelFormat(time: string): string {
-        console.info("LABEL FORMAT");
-        console.log(time);
         return moment(time).format(this.props.labelFormat);
     }
 
     render() {
-        // console.info("RENDER " + this.state.ticks.length);
-        console.log(this.state.ticks);
-        console.log(this.props.data);
         return (
             <ResponsiveContainer>
                 <LineChart data={this.props.data} >
