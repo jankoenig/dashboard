@@ -176,12 +176,13 @@ describe("Source Page", function () {
         it("Tests that the time summary data is correct", function () {
             const timeData: any[] = wrapper.state("timeSummaryData");
             const timeBuckets: LogService.TimeBucket[] = timeSummary.buckets;
+            console.log(timeData);
+            console.log(timeSummary);
             expect(timeData).to.have.length(timeBuckets.length);
 
             for (let i = 0; i < timeData.length; ++i) {
-                expect(timeData[i].date).to.equalDate(new Date(timeBuckets[i].date));
-                expect(timeData[i].time).to.equal(new Date(timeBuckets[i].date).getTime());
-                expect(timeData[i].count).to.equal(timeBuckets[i].count);
+                expect(timeData[i].time).to.equalDate(new Date(timeBuckets[i].date));
+                expect(timeData[i].total).to.equal(timeBuckets[i].count);
             }
         });
 
@@ -351,9 +352,7 @@ function dummyTimeBuckets(size: number): LogService.TimeBucket[] {
             date: date.toISOString(),
             count: i
         });
-        if (i % 5 === 0) {
-            date.setDate(date.getDate() - 1);
-        }
+        date.setDate(date.getDate() - 1);
     }
 
     return buckets;

@@ -267,7 +267,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     </span>
                 ) : undefined}
                 <SummaryView
-                    PageTimeData={this.state.timeSummaryData}
+                    timeData={this.state.timeSummaryData}
                     intentData={this.state.intentSummaryData}
                     totalEvents={this.state.sourceStats.stats.totalEvents}
                     totalUniqueUsers={this.state.sourceStats.stats.totalUsers}
@@ -307,7 +307,7 @@ export default connect(
 )(SourcePage);
 
 interface SummaryViewProps {
-    PageTimeData: PageTimeData[];
+    timeData: PageTimeData[];
     intentData: CountData[];
     totalEvents: number;
     totalUniqueUsers: number;
@@ -412,7 +412,7 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                 <Grid>
                     <Cell col={12} style={{ height: 300 }}>
                         <TimeChart
-                            data={this.props.PageTimeData}
+                            data={this.props.timeData}
                             lines={SummaryView.lines} />
                     </Cell>
                 </Grid>
