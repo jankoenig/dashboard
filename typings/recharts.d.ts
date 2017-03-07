@@ -109,6 +109,7 @@ declare module "recharts" {
 
     export interface XAxisProps extends AxisProps {
         xAxisId?: string | number;
+        interval?: number;
     }
 
     export class XAxis extends React.Component<XAxisProps, any> { }

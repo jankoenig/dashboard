@@ -9,7 +9,7 @@ import Dialog from "react-toolbox/lib/dialog";
 import { deleteSource } from "../actions/source";
 import DataTile from "../components/DataTile";
 import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
-import TimeChart from "../components/Graphs/Line/TimeChart";
+import TimeChart, { LineProps, TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
 import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
 import Source from "../models/source";
@@ -23,11 +23,14 @@ enum DataState {
     LOADING, ERROR, LOADED
 }
 
-interface TimeData {
-    time: string;
-    total: number;
-    "amazon.alexa": number;
-    "google.home": number;
+class PageTimeData extends TimeData {
+    total?: number;
+    "amazon.alexa"?: number;
+    "google.home"?: number;
+
+    constructor(time: Date | moment.Moment) {
+        super(time);
+    }
 }
 
 interface SourcePageProps {
@@ -37,7 +40,7 @@ interface SourcePageProps {
 }
 
 interface SourcePageState {
-    timeSummaryData: TimeData[];
+    timeSummaryData: PageTimeData[];
     intentSummaryData: CountData[];
     sourceStats: LogService.SourceStats;
     timeLoaded: DataState;
@@ -89,7 +92,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         }];
 
         this.state = {
-            timeSummaryData: defaultTimeData(daysAgo(7), daysAgo(0)),
+            timeSummaryData: defaultPageTimeData(daysAgo(7), daysAgo(0)),
             intentSummaryData: defaultIntentData(),
             timeLoaded: DataState.LOADING,
             intentLoaded: DataState.LOADING,
@@ -123,20 +126,21 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     retrieveTimeSummary(source: Source) {
-        const dataLoader: DataLoader<LogService.TimeSummary, TimeData[]> = {
+        const dataLoader: DataLoader<LogService.TimeSummary, PageTimeData[]> = {
             loadData: function (query: Query): Promise<LogService.TimeSummary> {
                 return LogService.getTimeSummary(query);
             },
             map: function (data: LogService.TimeSummary): any[] {
-                return merge(data);
+                const mergedData = merge(data);
+                return mergedData;
             },
         };
 
-        const callback: GenericStateHandler<TimeData[]> = new GenericStateHandler(this.state, "timeLoaded", "timeSummaryData", this.setState.bind(this));
+        const callback: GenericStateHandler<PageTimeData[]> = new GenericStateHandler(this.state, "timeLoaded", "timeSummaryData", this.setState.bind(this));
         const onLoaded = callback.onLoaded.bind(callback);
-        callback.onLoaded = function (data: TimeData[]) {
+        callback.onLoaded = function (data: PageTimeData[]) {
             if (data.length === 0) {
-                data = defaultTimeData(daysAgo(7), daysAgo(0));
+                data = defaultPageTimeData(daysAgo(7), daysAgo(0));
             }
             onLoaded(data);
         };
@@ -170,7 +174,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             }
         };
 
-        const callback: GenericStateHandler<TimeData> = new GenericStateHandler(this.state, "intentLoaded", "intentSummaryData", this.setState.bind(this));
+        const callback: GenericStateHandler<PageTimeData> = new GenericStateHandler(this.state, "intentLoaded", "intentSummaryData", this.setState.bind(this));
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();
@@ -192,7 +196,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             }
         };
 
-        const callback: GenericStateHandler<TimeData> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState.bind(this));
+        const callback: GenericStateHandler<PageTimeData> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState.bind(this));
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();
@@ -259,7 +263,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     </span>
                 ) : undefined}
                 <SummaryView
-                    timeData={this.state.timeSummaryData}
+                    PageTimeData={this.state.timeSummaryData}
                     intentData={this.state.intentSummaryData}
                     totalEvents={this.state.sourceStats.stats.totalEvents}
                     totalUniqueUsers={this.state.sourceStats.stats.totalUsers}
@@ -299,7 +303,7 @@ export default connect(
 )(SourcePage);
 
 interface SummaryViewProps {
-    timeData: TimeData[];
+    PageTimeData: PageTimeData[];
     intentData: CountData[];
     totalEvents: number;
     totalUniqueUsers: number;
@@ -316,6 +320,20 @@ interface SummaryDataState {
 }
 
 class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
+
+    static lines: LineProps[] = [{
+        dataKey: "amazon.alexa",
+        name: "Alexa",
+        stroke: "#FF9900"
+    }, {
+        dataKey: "google.home",
+        name: "Home",
+        stroke: "#4885ed"
+    }, {
+        dataKey: "total",
+        name: "Total",
+        stroke: "#000000"
+    }];
 
     constructor(props: SummaryViewProps) {
         super(props);
@@ -378,7 +396,8 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                 <Grid>
                     <Cell col={12} style={{ height: 300 }}>
                         <TimeChart
-                            data={this.props.timeData} />
+                            data={this.props.PageTimeData}
+                            lines={SummaryView.lines} />
                     </Cell>
                 </Grid>
                 <Grid>
@@ -401,16 +420,15 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
     }
 }
 
-function defaultTimeData(start: Date, end: Date): TimeData[] {
-    let data: TimeData[] = [];
+function defaultPageTimeData(start: Date, end: Date): PageTimeData[] {
+    let data: PageTimeData[] = [];
     let currentDate: Date = new Date(start);
     while (currentDate.getDate() < end.getDate()) {
-        data.push({
-            time: currentDate.toISOString(),
-            total: 0,
-            "amazon.alexa": 0,
-            "google.home": 0
-        });
+        const newData: PageTimeData = new PageTimeData(currentDate);
+        newData.total = 0;
+        newData["amazon.alexa"] = 0;
+        newData["google.home"] = 0;
+        data.push(newData);
         currentDate.setDate(currentDate.getDate() + 1);
     }
     return data;
@@ -487,42 +505,51 @@ class Loader {
             this.stateHandler.stateChange(DataState.LOADED);
             this.loadCallback.onLoaded(loadedData);
         }).catch((err: Error) => {
+            console.error(err);
             this.stateHandler.stateChange(DataState.ERROR);
             this.loadCallback.onError(err);
         });
     }
 }
 
-function merge(summary: LogService.TimeSummary): TimeData[] {
+function merge(summary: LogService.TimeSummary): PageTimeData[] {
     const merger: any = {};
-    console.log(summary);
     for (let bucket of summary.buckets) {
+        console.info("Adding");
         const date = new Date(bucket.date);
         date.setMinutes(0, 0, 0);
         const dateString = date.toISOString();
-        merger[dateString] = {
-            time: date,
-            total: bucket.count
-        };
+        const newObj: PageTimeData = new PageTimeData(date);
+        newObj["total"] = bucket.count;
+        newObj["amazon.alexa"] = 0;
+        newObj["google.home"] = 0;
+        merger[dateString] = newObj;
     }
 
     join(merger, summary.amazonBuckets, "amazon.alexa");
     join(merger, summary.googleBuckets, "google.home");
 
+    console.info("Converting");
     const values = Object.keys(merger).map(key => merger[key]);
+    console.info("Checking");
+    console.log(merger);
+    console.log(values);
+    console.info("Checked");
     return values;
 }
 
-function join(merger: any, buckets: LogService.TimeBucket[], key: string) {
+function join(merger: any, buckets: LogService.TimeBucket[], key: "total" | "amazon.alexa" | "google.home") {
     for (let bucket of buckets) {
         const date = new Date(bucket.date);
         date.setMinutes(0, 0, 0);
         const dateString = date.toISOString();
-        let obj = merger[dateString];
+        let obj: PageTimeData = merger[dateString];
         if (!obj) {
-            obj = {
-                time: date
-            };
+            console.info("Does not exist " + dateString);
+            obj = new PageTimeData(date);
+            obj["total"] = bucket.count;
+            obj["amazon.alexa"] = 0;
+            obj["google.home"] = 0;
         }
         obj[key] = bucket.count;
         merger[dateString] = obj;

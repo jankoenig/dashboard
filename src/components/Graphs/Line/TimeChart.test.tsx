@@ -3,7 +3,7 @@ import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-import TimeChart from "./TimeChart";
+import TimeChart, { LineProps } from "./TimeChart";
 
 const expect = chai.expect;
 
@@ -13,6 +13,8 @@ const data: any[] = [];
 
 describe("CountChart", function() {
 
+    let lines: LineProps[];
+
     before(function() {
         let date: Date = new Date();
         for (let i = 0; i < DATA_LENGTH; ++i) {
@@ -21,10 +23,13 @@ describe("CountChart", function() {
                 count: i
             });
         }
+        lines = [{
+            dataKey: "count",
+        }];
     });
 
     it ("renders properly", function() {
-        const wrapper: ShallowWrapper<any, any> = shallow(<TimeChart data={data} />);
+        const wrapper: ShallowWrapper<any, any> = shallow(<TimeChart data={data} lines={lines} />);
         expect(wrapper.find(ResponsiveContainer)).to.have.length(1);
 
         const responsiveContainer: ShallowWrapper<any, any> = wrapper.childAt(0);
@@ -40,7 +45,7 @@ describe("CountChart", function() {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function() {
-            wrapper = shallow(<TimeChart data={data} />);
+            wrapper = shallow(<TimeChart data={data} lines={lines} />);
         });
 
         it ("Tests that the data sent in props makes it to it's final destination.", function() {
