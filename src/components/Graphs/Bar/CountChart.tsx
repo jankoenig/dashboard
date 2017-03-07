@@ -36,7 +36,6 @@ class IntentCountChart extends React.Component<IntentCountChartProps, IntentCoun
         const bars: JSX.Element[] = [];
         let i = 0;
         for (let bar of props.bars) {
-            console.info("Creating bar " + i);
             const prop = { ...IntentCountChart.defaultLineProp, ...bar };
             bars.push(<Bar key={i++} {...prop} />);
         }

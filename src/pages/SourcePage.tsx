@@ -8,7 +8,7 @@ import Dialog from "react-toolbox/lib/dialog";
 
 import { deleteSource } from "../actions/source";
 import DataTile from "../components/DataTile";
-import BarChart, { CountData } from "../components/Graphs/Bar/CountChart";
+import BarChart, { BarProps, CountData } from "../components/Graphs/Bar/CountChart";
 import TimeChart, { LineProps, TimeData } from "../components/Graphs/Line/TimeChart";
 import { Cell, Grid } from "../components/Grid";
 import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
@@ -25,12 +25,19 @@ enum DataState {
 
 class PageTimeData extends TimeData {
     total?: number;
-    "amazon.alexa"?: number;
-    "google.home"?: number;
+    "Amazon.Alexa"?: number;
+    "Google.Home"?: number;
 
     constructor(time: Date | moment.Moment) {
         super(time);
     }
+}
+
+class IntentCountData implements CountData {
+    title: string;
+    count: number;
+    "Amazon.Alexa"?: number;
+    "Google.Home"?: number;
 }
 
 interface SourcePageProps {
@@ -131,7 +138,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                 return LogService.getTimeSummary(query);
             },
             map: function (data: LogService.TimeSummary): any[] {
-                const mergedData = merge(data);
+                const mergedData = mergeTimeSummary(data);
                 return mergedData;
             },
         };
@@ -162,15 +169,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             loadData: function (query: Query): Promise<LogService.IntentSummary> {
                 return LogService.getIntentSummary(query);
             },
-            map: function (data: LogService.IntentSummary): CountData[] {
-                return data.count
-                    .map(function (value: LogService.IntentBucket, index: number, array: LogService.IntentBucket[]) {
-                        let intentData: CountData = {
-                            count: value.count,
-                            title: value.name
-                        };
-                        return intentData;
-                    });
+            map: function (data: LogService.IntentSummary): IntentCountData[] {
+                return mergeIntentSummary(data);
             }
         };
 
@@ -322,17 +322,28 @@ interface SummaryDataState {
 class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
 
     static lines: LineProps[] = [{
-        dataKey: "amazon.alexa",
+        dataKey: "Amazon.Alexa",
         name: "Alexa",
         stroke: "#FF9900"
     }, {
-        dataKey: "google.home",
+        dataKey: "Google.Home",
         name: "Home",
         stroke: "#4885ed"
     }, {
         dataKey: "total",
         name: "Total",
         stroke: "#000000"
+    }];
+
+    static bars: BarProps[] = [{
+        dataKey: "Amazon.Alexa",
+        fill: "#FF9900",
+    }, {
+        dataKey: "Google.Home",
+        fill: "#4885ed"
+    }, {
+        dataKey: "count",
+        fill: "#000000"
     }];
 
     constructor(props: SummaryViewProps) {
@@ -403,7 +414,8 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                 <Grid>
                     <Cell col={12} style={{ height: (this.props.intentData.length * 40) + 100 }} >
                         <BarChart
-                            data={this.props.intentData} />
+                            data={this.props.intentData}
+                            bars={SummaryView.bars} />
                     </Cell>
                 </Grid>
             </span>
@@ -426,8 +438,8 @@ function defaultPageTimeData(start: Date, end: Date): PageTimeData[] {
     while (currentDate.getDate() < end.getDate()) {
         const newData: PageTimeData = new PageTimeData(currentDate);
         newData.total = 0;
-        newData["amazon.alexa"] = 0;
-        newData["google.home"] = 0;
+        newData["Amazon.Alexa"] = 0;
+        newData["Google.Home"] = 0;
         data.push(newData);
         currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -512,7 +524,7 @@ class Loader {
     }
 }
 
-function merge(summary: LogService.TimeSummary): PageTimeData[] {
+function mergeTimeSummary(summary: LogService.TimeSummary): PageTimeData[] {
     const merger: any = {};
     for (let bucket of summary.buckets) {
         const date = new Date(bucket.date);
@@ -520,19 +532,19 @@ function merge(summary: LogService.TimeSummary): PageTimeData[] {
         const dateString = date.toISOString();
         const newObj: PageTimeData = new PageTimeData(date);
         newObj["total"] = bucket.count;
-        newObj["amazon.alexa"] = 0;
-        newObj["google.home"] = 0;
+        newObj["Amazon.Alexa"] = 0;
+        newObj["Google.Home"] = 0;
         merger[dateString] = newObj;
     }
 
-    join(merger, summary.amazonBuckets, "amazon.alexa");
-    join(merger, summary.googleBuckets, "google.home");
+    joinBuckets(merger, summary.amazonBuckets, "Amazon.Alexa");
+    joinBuckets(merger, summary.googleBuckets, "Google.Home");
 
     const values = Object.keys(merger).map(key => merger[key]);
     return values;
 }
 
-function join(merger: any, buckets: LogService.TimeBucket[], key: "total" | "amazon.alexa" | "google.home") {
+function joinBuckets(merger: any, buckets: LogService.TimeBucket[], key: "total" | LogService.Origin) {
     for (let bucket of buckets) {
         const date = new Date(bucket.date);
         date.setMinutes(0, 0, 0);
@@ -541,10 +553,28 @@ function join(merger: any, buckets: LogService.TimeBucket[], key: "total" | "ama
         if (!obj) {
             obj = new PageTimeData(date);
             obj["total"] = bucket.count;
-            obj["amazon.alexa"] = 0;
-            obj["google.home"] = 0;
+            obj["Amazon.Alexa"] = 0;
+            obj["Google.Home"] = 0;
         }
         obj[key] = bucket.count;
         merger[dateString] = obj;
     }
+}
+
+function mergeIntentSummary(summary: LogService.IntentSummary): IntentCountData[] {
+    let merger: any = {};
+    for (let bucket of summary.count) {
+        let obj = merger[bucket.name];
+        if (!obj) {
+            obj = new IntentCountData();
+            obj["title"] = bucket.name;
+            obj["count"] = 0; // Initial.  Will be added to.  It needs to include everything.
+            merger[bucket.name] = obj;
+        }
+        obj[bucket.origin] = bucket.count;
+        obj["count"] += bucket.count;
+    }
+
+    const values = Object.keys(merger).map(key => merger[key]);
+    return values;
 }
