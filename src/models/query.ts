@@ -56,7 +56,7 @@ export class SourceParameter implements QueryParameter {
 export class TimeParameter implements QueryParameter {
     readonly time: string;
 
-    constructor(time: Date) {
+    constructor(time: Date | moment.Moment) {
         this.value = time.toISOString();
     }
 

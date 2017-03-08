@@ -6,35 +6,23 @@ import { replace, RouterAction } from "react-router-redux";
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
 
-import { deleteSource } from "../actions/source";
-import DataTile from "../components/DataTile";
-import BarChart, { BarProps, CountData } from "../components/Graphs/Bar/CountChart";
-import TimeChart, { LineProps, TimeData } from "../components/Graphs/Line/TimeChart";
-import { Cell, Grid } from "../components/Grid";
-import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortParameter, SourceParameter, StartTimeParameter } from "../models/query";
-import Source from "../models/source";
-import { State } from "../reducers";
-import LogService from "../services/log";
-import { AMAZON_ORANGE, BLACK, GOOGLE_GREEN } from "../utils/colors";
+import { deleteSource } from "../../actions/source";
+import DataTile from "../../components/DataTile";
+import BarChart, { BarProps, CountData } from "../../components/Graphs/Bar/CountChart";
+import { Cell, Grid } from "../../components/Grid";
+import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../../models/query";
+import Source from "../../models/source";
+import { State } from "../../reducers";
+import LogService from "../../services/log";
+import { AMAZON_ORANGE, GOOGLE_GREEN } from "../../utils/colors";
 
-const DeleteButtonTheme = require("../themes/button_theme.scss");
-const DeleteDialogTheme = require("../themes/dialog_theme.scss");
+import SourceTimeSummary from "./SourceTimeSummary";
+
+const DeleteButtonTheme = require("../../themes/button_theme.scss");
+const DeleteDialogTheme = require("../../themes/dialog_theme.scss");
 
 enum DataState {
     LOADING, ERROR, LOADED
-}
-
-class PageTimeData extends TimeData {
-    total?: number;
-    "Amazon.Alexa"?: number;
-    "Google.Home"?: number;
-
-    constructor(time: Date | moment.Moment) {
-        super(time);
-        this["total"] = 0;
-        this["Amazon.Alexa"] = 0;
-        this["Google.Home"] = 0;
-    }
 }
 
 class IntentCountData implements CountData {
@@ -51,7 +39,6 @@ interface SourcePageProps {
 }
 
 interface SourcePageState {
-    timeSummaryData: PageTimeData[];
     intentSummaryData: CountData[];
     sourceStats: LogService.SourceStats;
     timeLoaded: DataState;
@@ -77,10 +64,6 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-class TimeSortParameter extends SortParameter {
-    parameter = "date_sort";
-}
-
 class IntentSortParameter extends SortParameter {
     parameter = "count_sort";
 }
@@ -103,7 +86,6 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         }];
 
         this.state = {
-            timeSummaryData: defaultPageTimeData(daysAgo(7), daysAgo(0)),
             intentSummaryData: defaultIntentData(),
             timeLoaded: DataState.LOADING,
             intentLoaded: DataState.LOADING,
@@ -122,7 +104,6 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     componentWillReceiveProps(nextProps: SourcePageProps, context: any) {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
-            this.retrieveTimeSummary(nextProps.source);
             this.retrieveIntentSummary(nextProps.source);
             this.retrieveSourceStats(nextProps.source);
         }
@@ -130,42 +111,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     componentDidMount() {
         if (this.props.source) {
-            this.retrieveTimeSummary(this.props.source);
             this.retrieveIntentSummary(this.props.source);
             this.retrieveSourceStats(this.props.source);
         }
-    }
-
-    retrieveTimeSummary(source: Source) {
-        const dataLoader: DataLoader<LogService.TimeSummary, PageTimeData[]> = {
-            loadData: function (query: Query): Promise<LogService.TimeSummary> {
-                return LogService.getTimeSummary(query);
-            },
-            map: function (data: LogService.TimeSummary): any[] {
-                const mergedData = mergeTimeSummary(data);
-                return mergedData;
-            },
-        };
-
-        const callback: GenericStateHandler<PageTimeData[]> = new GenericStateHandler(this.state, "timeLoaded", "timeSummaryData", this.setState.bind(this));
-        const onLoaded = callback.onLoaded.bind(callback);
-        callback.onLoaded = function (data: PageTimeData[]) {
-            if (data.length === 0) {
-                data = defaultPageTimeData(daysAgo(7), daysAgo(0));
-            }
-            onLoaded(data);
-        };
-        const loader: Loader = new Loader(dataLoader, callback, callback);
-
-        const query: Query = new Query();
-        query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(daysAgo(7)));
-        query.add(new EndTimeParameter(daysAgo(0)));
-        query.add(new GranularityParameter("hour"));
-        query.add(new TimeSortParameter("asc"));
-        query.add(new FillGapsParameter(true));
-
-        loader.load(query);
     }
 
     retrieveIntentSummary(source: Source) {
@@ -178,7 +126,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             }
         };
 
-        const callback: GenericStateHandler<PageTimeData> = new GenericStateHandler(this.state, "intentLoaded", "intentSummaryData", this.setState.bind(this));
+        const callback: GenericStateHandler<IntentCountData> = new GenericStateHandler(this.state, "intentLoaded", "intentSummaryData", this.setState.bind(this));
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();
@@ -200,7 +148,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             }
         };
 
-        const callback: GenericStateHandler<PageTimeData> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState.bind(this));
+        const callback: GenericStateHandler<IntentCountData> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState.bind(this));
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();
@@ -267,7 +215,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     </span>
                 ) : undefined}
                 <SummaryView
-                    timeData={this.state.timeSummaryData}
+                    source={this.props.source}
                     intentData={this.state.intentSummaryData}
                     totalEvents={this.state.sourceStats.stats.totalEvents}
                     totalUniqueUsers={this.state.sourceStats.stats.totalUsers}
@@ -307,7 +255,7 @@ export default connect(
 )(SourcePage);
 
 interface SummaryViewProps {
-    timeData: PageTimeData[];
+    source: Source;
     intentData: CountData[];
     totalEvents: number;
     totalUniqueUsers: number;
@@ -324,20 +272,6 @@ interface SummaryDataState {
 }
 
 class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
-
-    static lines: LineProps[] = [{
-        dataKey: "total",
-        name: "Total",
-        stroke: BLACK
-    }, {
-        dataKey: "Amazon.Alexa",
-        name: "Alexa",
-        stroke: AMAZON_ORANGE
-    }, {
-        dataKey: "Google.Home",
-        name: "Home",
-        stroke: GOOGLE_GREEN
-    }];
 
     static bars: BarProps[] = [ {
         dataKey: "Amazon.Alexa",
@@ -411,9 +345,10 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                 </Grid>
                 <Grid>
                     <Cell col={12} style={{ height: 300 }}>
-                        <TimeChart
-                            data={this.props.timeData}
-                            lines={SummaryView.lines} />
+                        <SourceTimeSummary
+                            source={this.props.source}
+                            startDate={moment(daysAgo(7))}
+                            endDate={moment(daysAgo(0))} />
                     </Cell>
                 </Grid>
                 <Grid>
@@ -435,20 +370,6 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
             </div>
         );
     }
-}
-
-function defaultPageTimeData(start: Date, end: Date): PageTimeData[] {
-    let data: PageTimeData[] = [];
-    let currentDate: Date = new Date(start);
-    while (currentDate.getDate() < end.getDate()) {
-        const newData: PageTimeData = new PageTimeData(currentDate);
-        newData.total = 0;
-        newData["Amazon.Alexa"] = 0;
-        newData["Google.Home"] = 0;
-        data.push(newData);
-        currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return data;
 }
 
 function daysAgo(days: number) {
@@ -526,43 +447,6 @@ class Loader {
             this.stateHandler.stateChange(DataState.ERROR);
             this.loadCallback.onError(err);
         });
-    }
-}
-
-function mergeTimeSummary(summary: LogService.TimeSummary): PageTimeData[] {
-    const merger: any = {};
-    for (let bucket of summary.buckets) {
-        const date = new Date(bucket.date);
-        date.setMinutes(0, 0, 0);
-        const dateString = date.toISOString();
-        const newObj: PageTimeData = new PageTimeData(date);
-        newObj["total"] = bucket.count;
-        newObj["Amazon.Alexa"] = 0;
-        newObj["Google.Home"] = 0;
-        merger[dateString] = newObj;
-    }
-
-    joinBuckets(merger, summary.amazonBuckets, "Amazon.Alexa");
-    joinBuckets(merger, summary.googleBuckets, "Google.Home");
-
-    const values = Object.keys(merger).map(key => merger[key]);
-    return values;
-}
-
-function joinBuckets(merger: any, buckets: LogService.TimeBucket[], key: "total" | LogService.Origin) {
-    for (let bucket of buckets) {
-        const date = new Date(bucket.date);
-        date.setMinutes(0, 0, 0);
-        const dateString = date.toISOString();
-        let obj: PageTimeData = merger[dateString];
-        if (!obj) {
-            obj = new PageTimeData(date);
-            obj["total"] = bucket.count;
-            obj["Amazon.Alexa"] = 0;
-            obj["Google.Home"] = 0;
-        }
-        obj[key] = bucket.count;
-        merger[dateString] = obj;
     }
 }
 

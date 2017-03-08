@@ -8,8 +8,8 @@ import * as sinonChai from "sinon-chai";
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
 
-import LogService from "../services/log";
-import { dummyLogs, dummySources } from "../utils/test";
+import LogService from "../../services/log";
+import { dummyLogs, dummySources } from "../../utils/test";
 import { SourcePage } from "./SourcePage";
 
 chai.use(sinonChai);
