@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { replace, RouterAction } from "react-router-redux";
 
 import { Button } from "react-toolbox/lib/button";
+import DatePicker from "react-toolbox/lib/date_picker";
 import Dialog from "react-toolbox/lib/dialog";
 
 import { deleteSource } from "../actions/source";
@@ -58,6 +59,7 @@ interface SourcePageState {
     intentLoaded: DataState;
     statsLoaded: DataState;
     deleteDialogActive: boolean;
+    currentStart: moment.Moment;
 }
 
 function mapStateToProps(state: State.All) {
@@ -93,6 +95,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         super(props);
         this.handleDeleteDialogToggle = this.handleDeleteDialogToggle.bind(this);
         this.handleDeleteSkill = this.handleDeleteSkill.bind(this);
+        this.handleStartChange = this.handleStartChange.bind(this);
 
         this.dialogActions = [{
             label: "Cancel",
@@ -109,6 +112,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             intentLoaded: DataState.LOADING,
             statsLoaded: DataState.LOADING,
             deleteDialogActive: false,
+            currentStart: moment(daysAgo(7)),
             sourceStats: {
                 source: "",
                 stats: {
@@ -159,7 +163,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(daysAgo(7)));
+        query.add(new StartTimeParameter(this.state.currentStart.toDate()));
         query.add(new EndTimeParameter(daysAgo(0)));
         query.add(new GranularityParameter("hour"));
         query.add(new TimeSortParameter("asc"));
@@ -183,7 +187,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(daysAgo(7)));
+        query.add(new StartTimeParameter(this.state.currentStart.toDate()));
         query.add(new EndTimeParameter(daysAgo(0)));
         query.add(new IntentSortParameter("desc"));
 
@@ -205,7 +209,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(daysAgo(7)));
+        query.add(new StartTimeParameter(this.state.currentStart.toDate()));
         query.add(new EndTimeParameter(daysAgo(0)));
 
         loader.load(query);
@@ -227,6 +231,13 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                 console.error(e);
                 return source;
             });
+    }
+
+    handleStartChange(start: moment.Moment) {
+        this.state.currentStart = start;
+        this.retrieveTimeSummary(this.props.source);
+        this.retrieveIntentSummary(this.props.source);
+        this.retrieveSourceStats(this.props.source);
     }
 
     render() {
@@ -274,8 +285,9 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     totalExceptions={this.state.sourceStats.stats.totalExceptions}
                     timeLoaded={this.state.timeLoaded}
                     intentLoaded={this.state.intentLoaded}
-                    statsLoaded={this.state.statsLoaded} />
-
+                    statsLoaded={this.state.statsLoaded}
+                    startDate={this.state.currentStart}
+                    onStartChange={this.handleStartChange} />
                 <Grid>
                     <Cell>
                         <Button
@@ -306,6 +318,35 @@ export default connect(
     mapDispatchToProps
 )(SourcePage);
 
+interface DateRangeProps {
+    start: moment.Moment;
+    onStartChange: (newStart: moment.Moment) => void;
+}
+
+class DateRangeView extends React.Component<DateRangeProps, any> {
+
+    constructor(props: DateRangeProps) {
+        super(props);
+
+        this.handleStartChange = this.handleStartChange.bind(this);
+    }
+
+    handleStartChange(date: Date) {
+        this.props.onStartChange(moment(date));
+    }
+
+    render() {
+        return (
+            <DatePicker
+                autoOk
+                maxDate={new Date()}
+                label="Start Date"
+                value={this.props.start.toDate()}
+                onChange={this.handleStartChange} />
+        );
+    }
+}
+
 interface SummaryViewProps {
     timeData: PageTimeData[];
     intentData: CountData[];
@@ -315,6 +356,8 @@ interface SummaryViewProps {
     timeLoaded: DataState;
     intentLoaded: DataState;
     statsLoaded: DataState;
+    startDate: moment.Moment;
+    onStartChange: (newStart: moment.Moment) => void;
 }
 
 interface SummaryDataState {
@@ -339,7 +382,7 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
         stroke: GOOGLE_GREEN
     }];
 
-    static bars: BarProps[] = [ {
+    static bars: BarProps[] = [{
         dataKey: "Amazon.Alexa",
         name: "Alexa",
         fill: AMAZON_ORANGE,
@@ -429,7 +472,16 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
         return (
             <div>
                 <Grid>
-                    <h4> Last Seven Day Summary </h4>
+                    <Cell>
+                        <h4> Last Seven Day Summary </h4>
+                    </Cell>
+                </Grid>
+                <Grid>
+                    <Cell col={2}>
+                        <DateRangeView
+                            start={this.props.startDate}
+                            onStartChange={this.props.onStartChange} />
+                    </Cell>
                 </Grid>
                 {summary}
             </div>
