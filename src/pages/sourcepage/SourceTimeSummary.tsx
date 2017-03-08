@@ -47,6 +47,8 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
     constructor(props: SourceTimeSummaryProps) {
         super(props);
 
+        this.setState = this.setState.bind(this);
+
         this.state = {
             timeData: [],
             timeLoaded: DataState.LOADING
@@ -70,7 +72,7 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
             },
         };
 
-        const callback: GenericStateHandler<PageTimeData[]> = new GenericStateHandler(this.state, "timeLoaded", "timeData", this.setState.bind(this));
+        const callback: GenericStateHandler<PageTimeData[]> = new GenericStateHandler(this.state, "timeLoaded", "timeData", this.setState);
         const onLoaded = callback.onLoaded.bind(callback);
         callback.onLoaded = function (data: PageTimeData[]) {
             if (data.length === 0) {

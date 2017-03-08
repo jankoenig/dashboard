@@ -45,6 +45,8 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
     constructor(props: SourceIntentSummaryProps) {
         super(props);
 
+        this.setState = this.setState.bind(this);
+
         this.state = {
             intentData: [],
             intentLoaded: DataState.LOADING
@@ -55,8 +57,10 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
         if (nextProps.source) {
             this.retrieveIntentSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
         } else {
-            this.state.intentData = [];
-            this.state.intentLoaded = DataState.LOADED;
+            this.setState({
+                intentData: [],
+                intentLoaded: DataState.LOADED
+            });
         }
     }
 
@@ -70,7 +74,7 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
             }
         };
 
-        const callback: GenericStateHandler<IntentCountData> = new GenericStateHandler(this.state, "intentLoaded", "intentData", this.setState.bind(this));
+        const callback: GenericStateHandler<IntentCountData> = new GenericStateHandler(this.state, "intentLoaded", "intentData", this.setState);
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();

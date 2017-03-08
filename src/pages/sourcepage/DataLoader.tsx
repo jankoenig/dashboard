@@ -32,11 +32,13 @@ export class GenericStateHandler<Data> implements StateHandler, LoadCallback<Dat
     }
 
     stateChange(state: DataState) {
+        console.info("STATE CHANGE " + state);
         this.state[this.dataStateVariable] = state;
         this.setState(this.state);
     }
 
     onLoaded(data: Data) {
+        console.info("ON LOADED");
         this.state[this.dataVariable] = data;
         this.setState(this.state);
     }
