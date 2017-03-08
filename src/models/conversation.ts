@@ -61,30 +61,23 @@ export interface Conversation {
 }
 
 export function createConvo(props: ConversationProperties): Conversation {
-    console.log(props);
     if (props.request) {
         const requestPayload = props.request.payload || {};
         if (requestPayload.request) { // amazon
-            console.info("FOUND ALEXA");
             return new AlexaConversation(props);
         } else if (requestPayload.result) { // google
-            console.info("FOUND GOOGLE");
             return new GoogleHomeConversation(props);
         }
     }
 
-    console.info("nothing in request found.");
     if (props.response) {
         const responsePayload = props.response.payload || {};
         if (responsePayload.response) {
-            console.info("FOUND ALEXA");
             return new AlexaConversation(props);
         } else if (responsePayload.speech) {
-            console.info("FOUND GOOGLE");
             return new GoogleHomeConversation(props);
         }
     }
-    console.info("GIVING UP");
     return new GenericConversation(props); // Give up
 }
 
