@@ -61,23 +61,30 @@ export interface Conversation {
 }
 
 export function createConvo(props: ConversationProperties): Conversation {
+    console.log(props);
     if (props.request) {
         const requestPayload = props.request.payload || {};
         if (requestPayload.request) { // amazon
+            console.info("FOUND ALEXA");
             return new AlexaConversation(props);
         } else if (requestPayload.result) { // google
+            console.info("FOUND GOOGLE");
             return new GoogleHomeConversation(props);
         }
     }
 
+    console.info("nothing in request found.");
     if (props.response) {
         const responsePayload = props.response.payload || {};
         if (responsePayload.response) {
+            console.info("FOUND ALEXA");
             return new AlexaConversation(props);
         } else if (responsePayload.speech) {
+            console.info("FOUND GOOGLE");
             return new GoogleHomeConversation(props);
         }
     }
+    console.info("GIVING UP");
     return new GenericConversation(props); // Give up
 }
 
@@ -99,7 +106,7 @@ class GenericConversation implements Conversation {
 
     readonly stackTraces: StackTrace[];
 
-    origin: Origin = Origin.AmazonAlexa;
+    origin: Origin = Origin.Unknown;
 
     sessionId: string | undefined;
     userId: string | undefined;
@@ -195,7 +202,7 @@ class GenericConversation implements Conversation {
 
 class AlexaConversation extends GenericConversation {
 
-    readonly source: Origin = Origin.AmazonAlexa;
+    readonly origin: Origin = Origin.AmazonAlexa;
 
     constructor(props: ConversationProperties) {
         super(props);
