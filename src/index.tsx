@@ -22,9 +22,9 @@ import ConvoPage from "./pages/logspage/ConvoPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SessionsPage from "./pages/SessionsPage";
-import SettingsPage from "./pages/SettingsPage";
 import SourceListPage from "./pages/SourceListPage";
 import SourcePage from "./pages/SourcePage";
+import SourceSettingsPage from "./pages/SourceSettingsPage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
@@ -140,7 +140,7 @@ let render = function () {
                         <Route path="/skills/:sourceId/logs" component={ConvoPage} />
                         <Route path="/skills/:sourceId/sessions" component={SessionsPage} />
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
-                        <Route path="/skills/:sourceId/settings" component={SettingsPage} />
+                        <Route path="/skills/:sourceId/settings" component={SourceSettingsPage} />
                     </Route>
                     <Route path="*" component={NotFoundPage} />
                 </Route>

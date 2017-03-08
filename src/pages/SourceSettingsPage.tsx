@@ -14,14 +14,13 @@ import { State } from "../reducers";
 const DeleteButtonTheme = require("../themes/button_theme.scss");
 const DeleteDialogTheme = require("../themes/dialog_theme.scss");
 
-
-interface SettingsPageProps {
+interface SourceSettingsPageProps {
     source: Source;
     goHome: () => RouterAction;
     removeSource: (source: Source) => Promise<Source>;
 }
 
-interface SettingsPageState {
+interface SourceSettingsPageState {
     deleteDialogActive: boolean;
 }
 
@@ -42,11 +41,11 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-export class SettingsPage extends React.Component<SettingsPageProps, SettingsPageState> {
+export class SourceSettingsPage extends React.Component<SourceSettingsPageProps, SourceSettingsPageState> {
 
     dialogActions: any[];
 
-    constructor(props: SettingsPageProps) {
+    constructor(props: SourceSettingsPageProps) {
         super(props);
 
         this.handleDeleteDialogToggle = this.handleDeleteDialogToggle.bind(this);
@@ -120,6 +119,11 @@ export class SettingsPage extends React.Component<SettingsPageProps, SettingsPag
                         </Grid>
                         <Grid>
                             <Cell>
+                                <h5>Danger Zone</h5>
+                            </Cell>
+                        </Grid>
+                        <Grid style={{backgroundColor: "red"}}>
+                            <Cell>
                                 <Button
                                     theme={DeleteButtonTheme}
                                     raised
@@ -147,4 +151,4 @@ export class SettingsPage extends React.Component<SettingsPageProps, SettingsPag
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(SettingsPage);
+)(SourceSettingsPage);

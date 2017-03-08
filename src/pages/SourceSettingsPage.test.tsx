@@ -9,7 +9,7 @@ import * as sinonChai from "sinon-chai";
 
 import DataTile from "../components/DataTile";
 import { dummySources } from "../utils/test";
-import { SettingsPage } from "./SettingsPage";
+import { SourceSettingsPage } from "./SourceSettingsPage";
 
 chai.use(sinonChai);
 let expect = chai.expect;
@@ -34,7 +34,7 @@ describe("Settings Page", function () {
 
     describe("with source", function () {
         const wrapper = shallow((
-            <SettingsPage source={source} goHome={goHome} removeSource={removeSource} />
+            <SourceSettingsPage source={source} goHome={goHome} removeSource={removeSource} />
         ));
         const dataTiles = wrapper.find(DataTile);
         it("has the source details header visible", function () {
@@ -62,7 +62,7 @@ describe("Settings Page", function () {
     describe("without source", function () {
         it("does not have the source details header visibile", function () {
             const wrapper = shallow((
-                <SettingsPage source={undefined} goHome={goHome} removeSource={removeSource} />
+                <SourceSettingsPage source={undefined} goHome={goHome} removeSource={removeSource} />
             ));
 
             const dataTiles = wrapper.find(DataTile);
@@ -78,7 +78,7 @@ describe("Settings Page", function () {
             beforeEach(function () {
                 goHome = sinon.stub();
                 removeSource = sinon.stub().returns(Promise.resolve(source));
-                wrapper = shallow(<SettingsPage source={source} goHome={goHome} removeSource={removeSource} />);
+                wrapper = shallow(<SourceSettingsPage source={source} goHome={goHome} removeSource={removeSource} />);
             });
 
             it("Tests the dialog is opened.", function () {
@@ -152,7 +152,7 @@ describe("Settings Page", function () {
             before(function () {
                 goHome = sinon.stub();
                 removeSource = sinon.stub().returns(Promise.reject(new Error("Error per requirements of the test.")));
-                wrapper = shallow(<SettingsPage source={source} goHome={goHome} removeSource={removeSource} />);
+                wrapper = shallow(<SourceSettingsPage source={source} goHome={goHome} removeSource={removeSource} />);
 
                 const actions = wrapper.find(Dialog).at(0).prop("actions");
                 const deleteAction = actions[1];
