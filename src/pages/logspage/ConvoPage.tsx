@@ -100,7 +100,7 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
         } else {
             this.state.iconStyle = ACTIVE_ICON_STYLE;
             this.state.iconTooltip = TOOLTIP_ACTIVE;
-            this.handleFilter(new UserIDFilter(convo.userId)); // This method will take care of setting state.
+            this.handleFilter(new UserIDFilter(convo.userId, true)); // This method will take care of setting state.
         }
     }
 

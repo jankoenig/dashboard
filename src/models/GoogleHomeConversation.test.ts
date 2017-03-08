@@ -34,7 +34,7 @@ describe("Google Conversation", function () {
             expect(conversation.outputs).to.have.length(outputs.length);
         });
 
-        it ("Tests the origin", function() {
+        it("Tests the origin", function () {
             expect(conversation.origin).to.equal(Origin.GoogleHome);
         });
 
@@ -103,16 +103,19 @@ describe("Google Conversation", function () {
 
     describe("userColors", function () {
         it("returns default colors for an undefined userId", function () {
-
-            let request = new Log({
-                payload: {},
-                log_type: "DEBUG",
-                source: "source",
-                transaction_id: "transaction_id",
-                timestamp: new Date(),
-                tags: [],
-                id: ""
-            });
+            let request = googleHomeRequestLog();
+            const payload = {
+                ...request.payload, ...{
+                    originalRequest: {
+                        data: {
+                            user: {
+                                user_id: undefined
+                            },
+                        }
+                    }
+                }
+            };
+            request = { ...request, ...{ payload } };
             let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
@@ -130,8 +133,9 @@ describe("Google Conversation", function () {
         });
 
         it("returns the default colors for an empty string userId", function () {
-            let request = new Log({
-                payload: {
+            let request = googleHomeRequestLog();
+            const payload = {
+                ...request.payload, ...{
                     originalRequest: {
                         data: {
                             user: {
@@ -139,14 +143,9 @@ describe("Google Conversation", function () {
                             },
                         }
                     }
-                },
-                log_type: "DEBUG",
-                source: "source",
-                transaction_id: "transaction_id",
-                timestamp: new Date(),
-                tags: [],
-                id: ""
-            });
+                }
+            };
+            request = { ...request, ...{ payload } };
             let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
@@ -164,8 +163,9 @@ describe("Google Conversation", function () {
         });
 
         it("returns the hex color for a hex userId", function () {
-            let request = new Log({
-                payload: {
+            let request = googleHomeRequestLog();
+            const payload = {
+                ...request.payload, ...{
                     originalRequest: {
                         data: {
                             user: {
@@ -173,14 +173,10 @@ describe("Google Conversation", function () {
                             },
                         }
                     }
-                },
-                log_type: "DEBUG",
-                source: "source",
-                transaction_id: "transaction_id",
-                timestamp: new Date(),
-                tags: [],
-                id: ""
-            });
+                }
+            };
+            request = { ...request, ...{ payload } };
+
             let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",
@@ -198,8 +194,9 @@ describe("Google Conversation", function () {
         });
 
         it("returns the hex value for a base 36 userId", function () {
-            let request = new Log({
-                payload: {
+            let request = googleHomeRequestLog();
+            const payload = {
+                ...request.payload, ...{
                     originalRequest: {
                         data: {
                             user: {
@@ -207,14 +204,9 @@ describe("Google Conversation", function () {
                             },
                         }
                     }
-                },
-                log_type: "DEBUG",
-                source: "source",
-                transaction_id: "transaction_id",
-                timestamp: new Date(),
-                tags: [],
-                id: ""
-            });
+                }
+            };
+            request = { ...request, ...{ payload } };
             let response = googleHomeRequestLog();
             let output = new Output({
                 message: "message",

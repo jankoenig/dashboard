@@ -71,6 +71,7 @@
     "sinon": "^1.17.6",
     "sinon-chai": "^2.8.0",
     "source-map-loader": "^0.1.5",
+    "source-map-support": "^0.4.11",
     "strip-ansi": "^3.0.1",
     "style-loader": "^0.13.1",
     "ts-loader": "2.0.0",

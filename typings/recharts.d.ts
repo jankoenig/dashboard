@@ -65,6 +65,8 @@ declare module "recharts" {
 
     export interface LineProps {
         dataKey: string | number;
+        stroke?: string;
+        name?: string;
         type?: 'basis' | 'basisClosed' | 'basisOpen' | 'linear' | 'linearClosed' | 'natural' | 'monotoneX' | 'monotoneY' | 'monotone' | 'step' | 'stepBefore' | 'stepAfter' | Function
         dot?: Dot;
     }
@@ -85,10 +87,12 @@ declare module "recharts" {
     export class BarChart extends React.Component<BarChartProps, any> { }
 
     export interface BarProps {
+        dataKey: string | number;
         layout?: Layout;
         fill?: string;
-        dataKey: string | number;
         barSize?: number;
+        name?: string;
+        stackId?: string;
     }
 
     export class Bar extends React.Component<BarProps, any> { }
@@ -107,6 +111,7 @@ declare module "recharts" {
 
     export interface XAxisProps extends AxisProps {
         xAxisId?: string | number;
+        interval?: number;
     }
 
     export class XAxis extends React.Component<XAxisProps, any> { }
