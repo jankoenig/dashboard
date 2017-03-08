@@ -123,7 +123,9 @@ describe("log service", function () {
 
 function dummyTimeSummary(): log.TimeSummary {
     let newSummary: log.TimeSummary = {
-        buckets: []
+        buckets: [],
+        amazonBuckets: [],
+        googleBuckets: []
     };
     let date: Date = new Date();
     for (let i = 0; i < 5; ++i) {
@@ -157,7 +159,8 @@ function dummyIntentSummary(): log.IntentSummary {
 function dummyIntent(name: string, count: number): log.IntentBucket {
     return {
         name: name,
-        count: count
+        count: count,
+        origin: "Amazon.Alexa"
     };
 }
 

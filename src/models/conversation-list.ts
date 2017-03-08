@@ -26,16 +26,18 @@ class ConversationList extends Array<Conversation> {
                     conversationMap[log.transaction_id] = { request: undefined, response: undefined, outputs: [], stackTraces: [] };
                 }
 
-                if (log.tags && log.tags.indexOf("request") > -1) {
-                    conversationMap[log.transaction_id].request = log;
-                }
+                if (log.tags) {
+                    // Assuming you can't have both.  Else it's wrong if that's the case.
+                    if (log.tags.indexOf("request") > -1) {
+                        conversationMap[log.transaction_id].request = log;
+                    }
 
-                if (log.tags && log.tags.indexOf("response") > -1) {
-                    conversationMap[log.transaction_id].response = log;
+                    if (log.tags.indexOf("response") > -1) {
+                        conversationMap[log.transaction_id].response = log;
+                    }
                 }
 
                 if (typeof log.payload === "string") {
-
                     if (log.stack) {
                         // We got one with a stack, parse it as a stack-trace
                         conversationMap[log.transaction_id].stackTraces.push(StackTrace.fromLog(log));

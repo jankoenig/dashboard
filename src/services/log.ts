@@ -6,6 +6,8 @@ import Query from "../models/query";
 
 namespace LogService {
 
+    export type Origin = "Google.Home" | "Amazon.Alexa";
+
     export interface Count {
         count: number;
     }
@@ -16,11 +18,14 @@ namespace LogService {
 
     export interface TimeSummary {
         buckets: TimeBucket[];
+        amazonBuckets: TimeBucket[];
+        googleBuckets: TimeBucket[];
     }
 
     export interface IntentBucket {
         name: string;
         count: number;
+        origin: Origin;
     }
 
     export interface IntentSummary {
