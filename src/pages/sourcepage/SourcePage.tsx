@@ -8,14 +8,13 @@ import Dialog from "react-toolbox/lib/dialog";
 
 import { deleteSource } from "../../actions/source";
 import DataTile from "../../components/DataTile";
-import BarChart, { BarProps, CountData } from "../../components/Graphs/Bar/CountChart";
 import { Cell, Grid } from "../../components/Grid";
-import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../../models/query";
+import Query, { EndTimeParameter, SourceParameter, StartTimeParameter } from "../../models/query";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 import LogService from "../../services/log";
-import { AMAZON_ORANGE, GOOGLE_GREEN } from "../../utils/colors";
 
+import SourceIntentSummary from "./SourceIntentSummary";
 import SourceTimeSummary from "./SourceTimeSummary";
 
 const DeleteButtonTheme = require("../../themes/button_theme.scss");
@@ -25,13 +24,6 @@ enum DataState {
     LOADING, ERROR, LOADED
 }
 
-class IntentCountData implements CountData {
-    title: string;
-    count?: number;
-    "Amazon.Alexa"?: number;
-    "Google.Home"?: number;
-}
-
 interface SourcePageProps {
     source: Source;
     goHome: () => RouterAction;
@@ -39,7 +31,6 @@ interface SourcePageProps {
 }
 
 interface SourcePageState {
-    intentSummaryData: CountData[];
     sourceStats: LogService.SourceStats;
     timeLoaded: DataState;
     intentLoaded: DataState;
@@ -64,10 +55,6 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-class IntentSortParameter extends SortParameter {
-    parameter = "count_sort";
-}
-
 export class SourcePage extends React.Component<SourcePageProps, SourcePageState> {
 
     dialogActions: any[];
@@ -86,7 +73,6 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         }];
 
         this.state = {
-            intentSummaryData: defaultIntentData(),
             timeLoaded: DataState.LOADING,
             intentLoaded: DataState.LOADING,
             statsLoaded: DataState.LOADING,
@@ -104,38 +90,14 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     componentWillReceiveProps(nextProps: SourcePageProps, context: any) {
         if (!this.props.source || !nextProps.source || this.props.source.id !== nextProps.source.id) {
-            this.retrieveIntentSummary(nextProps.source);
             this.retrieveSourceStats(nextProps.source);
         }
     }
 
     componentDidMount() {
         if (this.props.source) {
-            this.retrieveIntentSummary(this.props.source);
             this.retrieveSourceStats(this.props.source);
         }
-    }
-
-    retrieveIntentSummary(source: Source) {
-        const dataLoader: DataLoader<LogService.IntentSummary, CountData[]> = {
-            loadData: function (query: Query): Promise<LogService.IntentSummary> {
-                return LogService.getIntentSummary(query);
-            },
-            map: function (data: LogService.IntentSummary): IntentCountData[] {
-                return mergeIntentSummary(data);
-            }
-        };
-
-        const callback: GenericStateHandler<IntentCountData> = new GenericStateHandler(this.state, "intentLoaded", "intentSummaryData", this.setState.bind(this));
-        const loader: Loader = new Loader(dataLoader, callback, callback);
-
-        const query: Query = new Query();
-        query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(daysAgo(7)));
-        query.add(new EndTimeParameter(daysAgo(0)));
-        query.add(new IntentSortParameter("desc"));
-
-        loader.load(query);
     }
 
     retrieveSourceStats(source: Source) {
@@ -148,7 +110,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             }
         };
 
-        const callback: GenericStateHandler<IntentCountData> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState.bind(this));
+        const callback: GenericStateHandler<LogService.SourceStats> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState.bind(this));
         const loader: Loader = new Loader(dataLoader, callback, callback);
 
         const query: Query = new Query();
@@ -216,7 +178,6 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                 ) : undefined}
                 <SummaryView
                     source={this.props.source}
-                    intentData={this.state.intentSummaryData}
                     totalEvents={this.state.sourceStats.stats.totalEvents}
                     totalUniqueUsers={this.state.sourceStats.stats.totalUsers}
                     totalExceptions={this.state.sourceStats.stats.totalExceptions}
@@ -256,7 +217,6 @@ export default connect(
 
 interface SummaryViewProps {
     source: Source;
-    intentData: CountData[];
     totalEvents: number;
     totalUniqueUsers: number;
     totalExceptions: number;
@@ -272,18 +232,6 @@ interface SummaryDataState {
 }
 
 class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
-
-    static bars: BarProps[] = [ {
-        dataKey: "Amazon.Alexa",
-        name: "Alexa",
-        fill: AMAZON_ORANGE,
-        stackId: "a"
-    }, {
-        dataKey: "Google.Home",
-        name: "Home",
-        fill: GOOGLE_GREEN,
-        stackId: "a"
-    }];
 
     constructor(props: SummaryViewProps) {
         super(props);
@@ -324,6 +272,8 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
 
     render() {
         let summary: JSX.Element;
+        const start = moment(daysAgo(7));
+        const end = moment(daysAgo(0));
         summary = (
             <span>
                 <Grid>
@@ -347,15 +297,16 @@ class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
                     <Cell col={12} style={{ height: 300 }}>
                         <SourceTimeSummary
                             source={this.props.source}
-                            startDate={moment(daysAgo(7))}
-                            endDate={moment(daysAgo(0))} />
+                            startDate={start}
+                            endDate={end} />
                     </Cell>
                 </Grid>
                 <Grid>
-                    <Cell col={12} style={{ height: (this.props.intentData.length * 40) + 100 }} >
-                        <BarChart
-                            data={this.props.intentData}
-                            bars={SummaryView.bars} />
+                    <Cell col={12} >
+                        <SourceIntentSummary
+                            source={this.props.source}
+                            startDate={start}
+                            endDate={end} />
                     </Cell>
                 </Grid>
             </span>
@@ -376,11 +327,6 @@ function daysAgo(days: number) {
     const date: Date = new Date();
     date.setDate(date.getDate() - days);
     return date;
-}
-
-function defaultIntentData(): CountData[] {
-    const data: CountData[] = [];
-    return data;
 }
 
 interface DataLoader<ServerData, ClientData> {
@@ -448,22 +394,4 @@ class Loader {
             this.loadCallback.onError(err);
         });
     }
-}
-
-function mergeIntentSummary(summary: LogService.IntentSummary): IntentCountData[] {
-    let merger: any = {};
-    for (let bucket of summary.count) {
-        let obj = merger[bucket.name];
-        if (!obj) {
-            obj = new IntentCountData();
-            obj["title"] = bucket.name;
-            obj["count"] = 0; // Initial.  Will be added to.  It needs to include everything.
-            merger[bucket.name] = obj;
-        }
-        obj[bucket.origin] = bucket.count;
-        obj["count"] += bucket.count;
-    }
-
-    const values = Object.keys(merger).map(key => merger[key]);
-    return values;
 }

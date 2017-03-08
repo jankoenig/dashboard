@@ -12,7 +12,6 @@ interface SourceTimeSummaryProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
-    lineProps?: LineProps[];
 }
 
 interface SourceTimeSummaryState {
@@ -42,8 +41,7 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
     static defaultProps: SourceTimeSummaryProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
-        endDate: moment(),
-        lineProps: SourceTimeSummary.lines
+        endDate: moment()
     };
 
     constructor(props: SourceTimeSummaryProps) {
@@ -97,7 +95,7 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
         return (
             <TimeChart
                 data={this.state.timeData}
-                lines={this.props.lineProps} />
+                lines={SourceTimeSummary.lines} />
         );
     }
 }
