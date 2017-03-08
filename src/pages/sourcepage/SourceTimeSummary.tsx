@@ -80,7 +80,7 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
             }
             onLoaded(data);
         };
-        const loader: Loader = new Loader(dataLoader, callback, callback);
+        const loader: Loader<LogService.TimeSummary, PageTimeData[]> = new Loader<LogService.TimeSummary, PageTimeData[]>(dataLoader, callback, callback);
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));

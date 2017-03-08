@@ -105,7 +105,7 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
         };
 
         const callback: GenericStateHandler<LogService.SourceStats> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState);
-        const loader: Loader = new Loader(dataLoader, callback, callback);
+        const loader: Loader<LogService.SourceStats, LogService.SourceStats> = new Loader<LogService.SourceStats, LogService.SourceStats>(dataLoader, callback, callback);
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));

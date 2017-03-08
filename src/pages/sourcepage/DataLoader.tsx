@@ -32,13 +32,11 @@ export class GenericStateHandler<Data> implements StateHandler, LoadCallback<Dat
     }
 
     stateChange(state: DataState) {
-        console.info("STATE CHANGE " + state);
         this.state[this.dataStateVariable] = state;
         this.setState(this.state);
     }
 
     onLoaded(data: Data) {
-        console.info("ON LOADED");
         this.state[this.dataVariable] = data;
         this.setState(this.state);
     }
@@ -48,27 +46,30 @@ export class GenericStateHandler<Data> implements StateHandler, LoadCallback<Dat
     }
 }
 
-export class Loader {
-    dataLoader: DataLoader<any, any>;
+export class Loader<ServerData, ClientData> {
+    dataLoader: DataLoader<ServerData, ClientData>;
     stateHandler: StateHandler;
-    loadCallback: LoadCallback<any>;
+    loadCallback: LoadCallback<ClientData>;
 
-    constructor(dataLoader: DataLoader<any, any>, stateHandler: StateHandler, loadCallback: LoadCallback<any>) {
+    constructor(dataLoader: DataLoader<ServerData, ClientData>, stateHandler: StateHandler, loadCallback: LoadCallback<ClientData>) {
         this.dataLoader = dataLoader;
         this.stateHandler = stateHandler;
         this.loadCallback = loadCallback;
     }
 
-    load(query: Query) {
-        this.stateHandler.stateChange(DataState.LOADED);
-        this.dataLoader.loadData(query).then((value: any) => {
-            const loadedData: any = this.dataLoader.map(value);
-            this.stateHandler.stateChange(DataState.LOADED);
-            this.loadCallback.onLoaded(loadedData);
-        }).catch((err: Error) => {
-            console.error(err);
-            this.stateHandler.stateChange(DataState.ERROR);
-            this.loadCallback.onError(err);
-        });
+    load(query: Query): Promise<ClientData> {
+        this.stateHandler.stateChange(DataState.LOADING);
+        return this.dataLoader.loadData(query)
+            .then((value: ServerData) => {
+                const loadedData: ClientData = this.dataLoader.map(value);
+                this.stateHandler.stateChange(DataState.LOADED);
+                this.loadCallback.onLoaded(loadedData);
+                return loadedData;
+            }).catch((err: Error) => {
+                console.error(err);
+                this.stateHandler.stateChange(DataState.ERROR);
+                this.loadCallback.onError(err);
+                throw err;
+            });
     }
 }

@@ -65,7 +65,7 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
     }
 
     retrieveIntentSummary(source: Source, start: moment.Moment, end: moment.Moment) {
-        const dataLoader: DataLoader<LogService.IntentSummary, CountData[]> = {
+        const dataLoader: DataLoader<LogService.IntentSummary, IntentCountData[]> = {
             loadData: function (query: Query): Promise<LogService.IntentSummary> {
                 return LogService.getIntentSummary(query);
             },
@@ -74,8 +74,8 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
             }
         };
 
-        const callback: GenericStateHandler<IntentCountData> = new GenericStateHandler(this.state, "intentLoaded", "intentData", this.setState);
-        const loader: Loader = new Loader(dataLoader, callback, callback);
+        const callback: GenericStateHandler<IntentCountData[]> = new GenericStateHandler(this.state, "intentLoaded", "intentData", this.setState);
+        const loader: Loader<LogService.IntentSummary, IntentCountData[]> = new Loader<LogService.IntentSummary, IntentCountData[]>(dataLoader, callback, callback);
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
