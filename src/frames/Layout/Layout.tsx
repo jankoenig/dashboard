@@ -8,7 +8,7 @@ export default class Layout extends MDLComponent<any, any> {
 
     render() {
         return (
-            <div className={style.layout}>
+            <div className={style.layout} style={{height: "100vh"}}>
                 {this.props.children}
             </div>
         );
