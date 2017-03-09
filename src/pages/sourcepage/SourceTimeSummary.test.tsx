@@ -143,6 +143,23 @@ describe("SourceTimeSummary", function () {
                 expect(wrapper.find(TimeChart).prop("data")).to.have.length(0);
             });
         });
+
+        it("Tests the default data is present when nothing is returned.", function () {
+            const newSummary: LogService.TimeSummary = {
+                buckets: [],
+                amazonBuckets: [],
+                googleBuckets: []
+            };
+            timeService.restore();
+            timeService = sinon.stub(LogService, "getTimeSummary").returns(Promise.resolve(newSummary));
+
+            wrapper.setProps({ }); // causes a re-query.
+
+            return Promise.resolve(true).then(function() {
+                const daysBetween = end.diff(start, "days");
+                expect(wrapper.find(TimeChart).prop("data")).to.have.length(daysBetween); // It created default data.
+            });
+        });
     });
 });
 
