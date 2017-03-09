@@ -116,14 +116,17 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
     render() {
         return (
             <span>
-                <div style={{width: "100%", display: "inline-block"}}>
-                    <h6 style={{display:"inline-block"}}>REQUEST</h6>
-                    <CopyToClipboardButton style={{float:"right"}} text={JSON.stringify(this.props.request.payload, undefined, 2)} />
+                <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <h6>REQUEST</h6>
+                    <CopyToClipboardButton text={JSON.stringify(this.props.request.payload, undefined, 2)} />
                 </div>
                 {this.getTree(this.props.request)}
                 <h6>LOGS</h6>
                 <OutputList outputs={this.props.outputs} stackTraces={this.props.stackTraces} />
-                <h6>RESPONSE</h6>
+                <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <h6>RESPONSE</h6>
+                    <CopyToClipboardButton text={JSON.stringify(this.props.response.payload, undefined, 2)} />
+                </div>
                 {this.getTree(this.props.response)}
             </span>
         );
