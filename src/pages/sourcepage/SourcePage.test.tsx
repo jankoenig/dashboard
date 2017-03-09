@@ -1,6 +1,5 @@
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import * as moment from "moment";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
@@ -10,12 +9,14 @@ import Dialog from "react-toolbox/lib/dialog";
 
 import LogService from "../../services/log";
 import { dummyLogs, dummySources } from "../../utils/test";
+import SourceHeader from "./SourceHeader";
+// import SourceIntentSummary from "./SourceIntentSummary";
 import { SourcePage } from "./SourcePage";
+// import SourceStats from "./SourceStats";
+// import SourceTimeSummary from "./SourceTimeSummary";
 
 chai.use(sinonChai);
 let expect = chai.expect;
-
-const createdAtFormat = "MMM Do, YYYY";
 
 describe("Source Page", function () {
     let logs = dummyLogs(10);
@@ -59,8 +60,8 @@ describe("Source Page", function () {
                 <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
-            const dataTiles = wrapper.find("DataTile");
-            expect(dataTiles).to.have.length(4); // Data times are what are used to show source details.
+            const dataTiles = wrapper.find(SourceHeader);
+            expect(dataTiles).to.have.length(1);
         });
 
         it("Tests that the source details header is gone when source is not defined.", function () {
@@ -68,7 +69,7 @@ describe("Source Page", function () {
                 <SourcePage source={undefined} goHome={goHome} removeSource={removeSource} />
             ));
 
-            expect(wrapper.find("DataTile")).to.have.length(0);
+            expect(wrapper.find(SourceHeader)).to.have.length(0);
         });
 
         it("Tests that the source data tiles have their correct values.", function () {
@@ -76,21 +77,8 @@ describe("Source Page", function () {
                 <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
-            const dataTiles = wrapper.find("DataTile");
-
-            let dataTile = dataTiles.at(0);
-            expect(dataTile.prop("value")).to.equal(source.name);
-
-            dataTile = dataTiles.at(1);
-            expect(dataTile.prop("value")).to.equal(source.id);
-
-            dataTile = dataTiles.at(2);
-            expect(dataTile.prop("value")).to.equal(moment(source.created).format(createdAtFormat));
-
-            dataTile = dataTiles.at(3);
-            expect(dataTile.prop("value")).to.equal(source.secretKey);
-            expect(dataTile.prop("hidden")).to.equal(true);
-            expect(dataTile.prop("showable")).to.equal(true);
+            const dataTile = wrapper.find(SourceHeader).at(0);
+            expect(dataTile).to.have.prop("source", source);
         });
 
         it("Tests that the summary view is there.", function () {

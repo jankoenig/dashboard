@@ -7,11 +7,11 @@ import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
 
 import { deleteSource } from "../../actions/source";
-import DataTile from "../../components/DataTile";
 import { Cell, Grid } from "../../components/Grid";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 
+import SourceHeader from "./SourceHeader";
 import SourceIntentSummary from "./SourceIntentSummary";
 import SourceStats from "./SourceStats";
 import SourceTimeSummary from "./SourceTimeSummary";
@@ -87,44 +87,18 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     render() {
-        const tileColor = "#ECEFF1";
-        const sourceName = (this.props.source) ? this.props.source.name : "this skill";
+        const { source } = this.props;
+        const sourceName = (source) ? source.name : "this skill";
         return (
             <span>
                 {this.props.source ? (
                     <span>
-                        <Grid style={{ backgroundColor: "rgb(36, 48, 54)", paddingBottom: "0px", paddingTop: "0px" }}>
-                            <Cell col={3} hidePhone={true}>
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.name}
-                                    label={"Name"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.id}
-                                    label={"ID"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={moment(this.props.source.created).format("MMM Do, YYYY")}
-                                    label={"Created"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.secretKey}
-                                    label={"Secret Key"}
-                                    hidden={true}
-                                    showable={true} />
-                            </Cell>
-                        </Grid>
+                        <SourceHeader
+                            source={source} />
                     </span>
                 ) : undefined}
                 <SummaryView
-                    source={this.props.source} />
+                    source={source} />
                 <Grid>
                     <Cell>
                         <Button
