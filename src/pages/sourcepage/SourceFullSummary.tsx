@@ -53,8 +53,10 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     }
 
     render() {
-        const { header, source, startDate, endDate } = this.props;
+        const { header, ...others } = this.props;
         const options = SourceFullSummary.options;
+        const handleOriginChange = this.handleOriginChange;
+
         return (
             <div>
                 <Grid>
@@ -63,25 +65,20 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
 
                 <span>
                     <SourceOriginSelector
-                        options={options} />
+                        options={options}
+                        onCheck={handleOriginChange} />
                     <SourceStats
-                        source={source}
-                        startDate={startDate}
-                        endDate={endDate} />
+                        {...others} />
                     <Grid>
                         <Cell col={12} style={{ height: 300 }}>
                             <SourceTimeSummary
-                                source={source}
-                                startDate={startDate}
-                                endDate={endDate} />
+                                {...others} />
                         </Cell>
                     </Grid>
                     <Grid>
                         <Cell col={12} >
                             <SourceIntentSummary
-                                source={source}
-                                startDate={startDate}
-                                endDate={endDate} />
+                                {...others} />
                         </Cell>
                     </Grid>
                 </span>

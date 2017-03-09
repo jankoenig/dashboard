@@ -13,7 +13,7 @@ export interface SourceOption {
 
 interface SourceOriginSelectorProps {
     options: SourceOption[];
-    onChecked?: (index: number, label: string) => void;
+    onCheck?: (index: number, label: string) => void;
 }
 
 interface SourceOriginSelectorState {
@@ -24,19 +24,19 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
 
     static defaultProps: SourceOriginSelectorProps = {
         options: [],
-        onChecked: Noop
+        onCheck: Noop
     };
 
     static createBoxes(props: SourceOriginSelectorProps): JSX.Element[] {
-        const { options, onChecked } = props;
+        const { options, onCheck } = props;
         let boxes: JSX.Element[] = [];
         let i = 0;
         for (let option of options) {
             boxes.push(
-                <Cell key={i} col={2}>
+                <Cell key={i} col={1}>
                     <Checkbox
                         {...option}
-                        onChange={onChecked.bind(onChecked, i, option.label)}
+                        onChange={onCheck.bind(onCheck, i, option.label)}
                     />
                 </Cell>
             );

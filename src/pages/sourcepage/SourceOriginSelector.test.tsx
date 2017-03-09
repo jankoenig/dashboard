@@ -38,7 +38,7 @@ describe("SourceOriginSelector", function () {
             wrapper = shallow(
                 <SourceOriginSelector
                     options={options}
-                    onChecked={onChecked} />
+                    onCheck={onChecked} />
             );
         });
 
