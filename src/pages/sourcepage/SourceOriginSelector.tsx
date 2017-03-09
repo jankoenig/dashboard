@@ -13,7 +13,7 @@ export interface SourceOption {
 
 interface SourceOriginSelectorProps {
     options: SourceOption[];
-    onChecked?: (label: string) => void;
+    onChecked?: (index: number, label: string) => void;
 }
 
 interface SourceOriginSelectorState {
@@ -33,13 +33,14 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
         let i = 0;
         for (let option of options) {
             boxes.push(
-                <Cell key={i++} col={2}>
+                <Cell key={i} col={2}>
                     <Checkbox
                         {...option}
-                        onChange={onChecked.bind(onChecked, option.label)}
+                        onChange={onChecked.bind(onChecked, i, option.label)}
                     />
                 </Cell>
             );
+            ++i;
         }
         return boxes;
     }

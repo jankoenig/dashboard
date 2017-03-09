@@ -65,9 +65,12 @@ describe("SourceOriginSelector", function () {
                 boxes.at(2).simulate("change");
 
                 expect(onChecked).to.be.calledThrice;
-                expect(onChecked.args[0][0]).to.equal(options[0].label);
-                expect(onChecked.args[1][0]).to.equal(options[1].label);
-                expect(onChecked.args[2][0]).to.equal(options[2].label);
+                expect(onChecked.args[0][0]).to.equal(0);
+                expect(onChecked.args[0][1]).to.equal(options[0].label);
+                expect(onChecked.args[1][0]).to.equal(1);
+                expect(onChecked.args[1][1]).to.equal(options[1].label);
+                expect(onChecked.args[2][0]).to.equal(2);
+                expect(onChecked.args[2][1]).to.equal(options[2].label);
             });
         });
     });
