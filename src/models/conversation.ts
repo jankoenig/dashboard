@@ -58,6 +58,7 @@ export interface Conversation {
     hasException: boolean;
     hasCard: boolean;
     hasAudio: boolean;
+    audioUrl: string;
     isType(type: ConversationLevel | string): boolean;
     hasOutputType(type: string): boolean;
 }
@@ -188,6 +189,10 @@ class GenericConversation implements Conversation {
         return false;
     }
 
+    get audioUrl(): string {
+        return undefined;
+    }
+
     isType(type: ConversationLevel | string): boolean {
         return (this.request && this.request.log_type === type) || (this.response && this.response.log_type === type);
     }
@@ -286,7 +291,6 @@ class AlexaConversation extends GenericConversation {
     }
 
     get audioUrl(): string | undefined {
-
         let audioUrl: string | undefined;
         if (this.response && this.response.payload.response && this.response.payload.response.directives) {
             let directives = this.response.payload.response.directives as any[];
