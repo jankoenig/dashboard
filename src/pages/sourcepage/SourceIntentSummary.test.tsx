@@ -22,9 +22,11 @@ const summary: LogService.IntentSummary = {
 describe("SourceIntentSummary", function () {
 
     let source: Source;
+    let sources: Source[];
 
     before(function () {
-        source = dummySources(1)[0];
+        sources = dummySources(2);
+        source = sources[0];
     });
 
     describe("Renders", function () {
@@ -71,43 +73,50 @@ describe("SourceIntentSummary", function () {
                 endDate={end} />);
         });
 
+        afterEach(function () {
+            intentService.reset();
+        });
+
         after(function () {
             intentService.restore();
         });
 
         it("Tests the data queries on component will mount.", function () {
-            return Promise.resolve(true).then(function () {
-                const query: Query = intentService.args[0][0];
-                const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
-                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+            const query: Query = intentService.args[0][0];
+            const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
+            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
 
-                expect(startParameter.value).to.equal(start.toISOString());
-                expect(endParameter.value).to.equal(end.toISOString());
-                expect(sourceParameter.value).to.equal(source.secretKey);
-                expect(sortParameter.value).to.equal("desc");
-            });
+            expect(startParameter.value).to.equal(start.toISOString());
+            expect(endParameter.value).to.equal(end.toISOString());
+            expect(sourceParameter.value).to.equal(source.secretKey);
+            expect(sortParameter.value).to.equal("desc");
         });
 
         it("Tests the data query contains the appropriate parameters after a set props.", function () {
-            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
+            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
+            const query: Query = intentService.args[1][0]; // Called once from mount.
+            const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
+            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+
+            expect(startParameter.value).to.equal(start.toISOString());
+            expect(endParameter.value).to.equal(end.toISOString());
+            expect(sourceParameter.value).to.equal(sources[1].secretKey);
+            expect(sortParameter.value).to.equal("desc");
+        });
+
+        it("Tests the bar graph has the loaded data after mount.", function () {
             // Returning a promise ensures that the promise in the component is completed before everything else.
             return Promise.resolve(true).then(function () {
-                const query: Query = intentService.args[1][0]; // Called once from mount.
-                const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
-                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-
-                expect(startParameter.value).to.equal(start.toISOString());
-                expect(endParameter.value).to.equal(end.toISOString());
-                expect(sourceParameter.value).to.equal(source.secretKey);
-                expect(sortParameter.value).to.equal("desc");
+                expect(wrapper.find(BarChart).prop("data")).to.have.length(summary.count.length);
             });
         });
 
-        it("Tests the bar graph has the loaded data.", function () {
+        it("Tests the bar graph has the loaded data after prop change.", function () {
+            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
             return Promise.resolve(true).then(function () {
                 expect(wrapper.find(BarChart).prop("data")).to.have.length(summary.count.length);
             });
@@ -119,13 +128,18 @@ describe("SourceIntentSummary", function () {
                 startDate={start}
                 endDate={end} />);
 
-            expect(newWrapper.find(BarChart).prop("data")).to.have.length(0);
+            return Promise.resolve(true).then(function () {
+                expect(newWrapper.find(BarChart).prop("data")).to.have.length(0);
+            });
         });
 
         it("Tests the default stats when source is set to undefined through props.", function () {
-            wrapper.setProps({ source: undefined });
-
-            expect(wrapper.find(BarChart).prop("data")).to.have.length(0);
+            // Waiting until the original mount.
+            return Promise.resolve(true).then(function () {
+                wrapper.setProps({ source: undefined });
+                // Should be no need to wait.
+                expect(wrapper.find(BarChart).prop("data")).to.have.length(0);
+            });
         });
     });
 });
