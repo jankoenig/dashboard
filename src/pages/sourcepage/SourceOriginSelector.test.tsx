@@ -56,5 +56,19 @@ describe("SourceOriginSelector", function () {
                 expect(box).to.have.prop("theme", props.theme);
             }
         });
+
+        describe("events", function() {
+            it("tests that clicking on a checkbox yields the proper result.", function() {
+                const boxes = wrapper.find(Checkbox);
+                boxes.at(0).simulate("change");
+                boxes.at(1).simulate("change");
+                boxes.at(2).simulate("change");
+
+                expect(onChecked).to.be.calledThrice;
+                expect(onChecked.args[0][0]).to.equal(options[0].label);
+                expect(onChecked.args[1][0]).to.equal(options[1].label);
+                expect(onChecked.args[2][0]).to.equal(options[2].label);
+            });
+        });
     });
 });
