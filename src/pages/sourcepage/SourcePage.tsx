@@ -17,7 +17,9 @@ import SourceOriginSelector, { SourceOption } from "./SourceOriginSelector";
 
 const DeleteButtonTheme = require("../../themes/button_theme.scss");
 const DeleteDialogTheme = require("../../themes/dialog_theme.scss");
-const CheckboxTheme = require("./checkbox-theme.scss");
+const AllCheckboxTheme = require("./themes/checkbox-all-theme.scss");
+const AmazonCheckboxTheme = require("./themes/checkbox-amazon-theme.scss");
+const GoogleCheckboxTheme = require("./themes/checkbox-google-theme.scss");
 
 interface SourcePageProps {
     source: Source;
@@ -52,15 +54,15 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     options: SourceOption[] = [{
         label: "All",
-        theme: CheckboxTheme,
+        theme: AllCheckboxTheme,
         checked: true
     }, {
         label: "Amazon",
-        theme: CheckboxTheme,
+        theme: AmazonCheckboxTheme,
         checked: true
     }, {
         label: "Google",
-        theme: CheckboxTheme,
+        theme: GoogleCheckboxTheme,
         checked: true
     }];
 
