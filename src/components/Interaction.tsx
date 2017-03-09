@@ -1,6 +1,8 @@
 import * as React from "react";
 import JSONTree from "react-json-tree";
 
+import CopyToClipboardButton from "../components/CopyToClipboardButton";
+// import { Cell, Grid } from "../components/Grid";
 import { OutputList } from "../components/OutputList";
 import Log from "../models/log";
 import Output from "../models/output";
@@ -113,14 +115,17 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
 
     render() {
         return (
-            <div>
-                <h6>REQUEST</h6>
+            <span>
+                <div style={{width: "100%", display: "inline-block"}}>
+                    <h6 style={{display:"inline-block"}}>REQUEST</h6>
+                    <CopyToClipboardButton style={{float:"right"}} text={JSON.stringify(this.props.request.payload, undefined, 2)} />
+                </div>
                 {this.getTree(this.props.request)}
                 <h6>LOGS</h6>
                 <OutputList outputs={this.props.outputs} stackTraces={this.props.stackTraces} />
                 <h6>RESPONSE</h6>
                 {this.getTree(this.props.response)}
-            </div>
+            </span>
         );
     }
 }

@@ -1,0 +1,15 @@
+.button {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    overflow: hidden;
+
+    :hover {
+        background-color: mediumseagreen;
+        cursor: pointer;
+    }
+}
+
+.icon {
+    padding: 10px;
+}
