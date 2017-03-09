@@ -30,14 +30,13 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
     static createBoxes(props: SourceOriginSelectorProps): JSX.Element[] {
         const { options, onChecked } = props;
         let boxes: JSX.Element[] = [];
-        console.log(options);
         let i = 0;
         for (let option of options) {
             boxes.push(
                 <Cell key={i++} col={2}>
                     <Checkbox
                         {...option}
-                        onChange={onChecked.bind(onChecked, name)}
+                        onChange={onChecked.bind(onChecked, option.label)}
                     />
                 </Cell>
             );
