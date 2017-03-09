@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import AudioPlayer from "../../../components/AudioPlayer";
 import Conversation from "../../../models/conversation";
 import ConvoMainContent from "./ConvoMainContent";
 import ConvoPill from "./ConvoPill";
@@ -99,6 +100,13 @@ export default class ConvoListItem extends React.Component<ConvoListItemProps, C
                     <ConvoPill
                         show={this.props.conversation.hasException}
                         text={"exception"}
+                    />
+                    { this.props.conversation.hasAudio ? (
+                        <AudioPlayer url={this.props.conversation.audioUrl} />
+                    ) : undefined}
+                    <ConvoPill
+                        show={this.props.conversation.hasCard}
+                        text={"card"}
                     />
                 </div>
                 <Dropdown
