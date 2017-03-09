@@ -22,7 +22,7 @@ import LogsPage from "./pages/logspage/ConvoPage";
 import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SourceListPage from "./pages/SourceListPage";
-import SourcePage from "./pages/SourcePage";
+import SourcePage from "./pages/sourcepage/SourcePage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
