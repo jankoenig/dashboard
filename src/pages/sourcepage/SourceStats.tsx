@@ -96,7 +96,7 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
                 usersLabel: LOADING_VALUE,
                 errorsLabel: LOADING_VALUE
             };
-        } else if (state === DataState.ERROR) {
+        } else if (state === DataState.ERROR || sourceStats.source === DEFAULT_VALUE) {
             return {
                 eventsLabel: DEFAULT_VALUE,
                 usersLabel: DEFAULT_VALUE,

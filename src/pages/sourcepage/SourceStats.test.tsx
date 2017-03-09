@@ -64,7 +64,9 @@ describe("SourceStats", function () {
             end = moment().subtract(2, "days");
 
             timeService = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(summary));
+        });
 
+        beforeEach(function () {
             wrapper = shallow(<SourceStats
                 source={source}
                 startDate={start}
@@ -110,6 +112,25 @@ describe("SourceStats", function () {
                 expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "100"); // users
                 expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "200"); // errors
             });
+        });
+
+        it("Tests the defaults were set when source is undefined.", function () {
+            const newWrapper = shallow(<SourceStats
+                source={undefined}
+                startDate={start}
+                endDate={end} />);
+
+            expect(newWrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
+            expect(newWrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
+            expect(newWrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
+        });
+
+        it("Tests the defaults were set when source is set to undefined through props.", function () {
+            wrapper.setProps({ source: undefined });
+
+            expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
+            expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
+            expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
         });
     });
 

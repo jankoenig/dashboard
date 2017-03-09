@@ -64,7 +64,9 @@ describe("SourceTimeSummary", function () {
             end = moment().subtract(2, "days");
 
             timeService = sinon.stub(LogService, "getTimeSummary").returns(Promise.resolve(summary));
+        });
 
+        beforeEach(function () {
             wrapper = shallow(<SourceTimeSummary
                 source={source}
                 startDate={start}
@@ -120,9 +122,23 @@ describe("SourceTimeSummary", function () {
 
         it("Tests the bar graph has the loaded data.", function () {
             return Promise.resolve(true).then(function () {
-                console.log(wrapper.find(TimeChart).prop("data"));
                 expect(wrapper.find(TimeChart).prop("data")).to.have.length(summary.buckets.length);
             });
+        });
+
+        it("Tests the defaults were set when source is undefined.", function () {
+            const newWrapper = shallow(<SourceTimeSummary
+                source={undefined}
+                startDate={start}
+                endDate={end} />);
+
+            expect(newWrapper.find(TimeChart).prop("data")).to.have.length(0);
+        });
+
+        it("Tests the defaults were set when source is set to undefined through props.", function () {
+            wrapper.setProps({ source: undefined });
+
+            expect(wrapper.find(TimeChart).prop("data")).to.have.length(0);
         });
     });
 });

@@ -62,7 +62,9 @@ describe("SourceIntentSummary", function () {
             end = moment().subtract(2, "days");
 
             intentService = sinon.stub(LogService, "getIntentSummary").returns(Promise.resolve(summary));
+        });
 
+        beforeEach(function () {
             wrapper = shallow(<SourceIntentSummary
                 source={source}
                 startDate={start}
@@ -109,6 +111,21 @@ describe("SourceIntentSummary", function () {
             return Promise.resolve(true).then(function () {
                 expect(wrapper.find(BarChart).prop("data")).to.have.length(summary.count.length);
             });
+        });
+
+        it("Tests the default stats when source is undefined.", function () {
+            const newWrapper = shallow(<SourceIntentSummary
+                source={undefined}
+                startDate={start}
+                endDate={end} />);
+
+            expect(newWrapper.find(BarChart).prop("data")).to.have.length(0);
+        });
+
+        it("Tests the default stats when source is set to undefined through props.", function () {
+            wrapper.setProps({ source: undefined });
+
+            expect(wrapper.find(BarChart).prop("data")).to.have.length(0);
         });
     });
 });
