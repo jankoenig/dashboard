@@ -108,7 +108,6 @@ let onUpdate = function () {
 };
 
 let setSource = function (nextState: RouterState, replace: RedirectFunction) {
-    console.log("setSource");
     let sources: Source[] = store.getState().source.sources;
     let sourceId: string = nextState.params["sourceId"];
     IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources)
@@ -124,7 +123,7 @@ let removeSource = function () {
 };
 
 let render = function () {
-    console.log("render()");
+    console.log("index.tsx render()");
     ReactDOM.render((
         <Provider store={store}>
             <Router history={history} onUpdate={onUpdate}>
