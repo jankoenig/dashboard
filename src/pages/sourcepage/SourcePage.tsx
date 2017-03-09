@@ -13,9 +13,11 @@ import { State } from "../../reducers";
 
 import SourceFullSummary from "./SourceFullSummary";
 import SourceHeader from "./SourceHeader";
+import SourceOriginSelector, { SourceOption } from "./SourceOriginSelector";
 
 const DeleteButtonTheme = require("../../themes/button_theme.scss");
 const DeleteDialogTheme = require("../../themes/dialog_theme.scss");
+const CheckboxTheme = require("./checkbox-theme.scss");
 
 interface SourcePageProps {
     source: Source;
@@ -47,6 +49,20 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 export class SourcePage extends React.Component<SourcePageProps, SourcePageState> {
 
     dialogActions: any[];
+
+    options: SourceOption[] = [{
+        label: "All",
+        theme: CheckboxTheme,
+        checked: true
+    }, {
+        label: "Amazon",
+        theme: CheckboxTheme,
+        checked: true
+    }, {
+        label: "Google",
+        theme: CheckboxTheme,
+        checked: true
+    }];
 
     constructor(props: SourcePageProps) {
         super(props);
@@ -86,6 +102,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 
     render() {
         const { source } = this.props;
+        const options = this.options;
         const sourceName = (source) ? source.name : "this skill";
         const start = moment().subtract(7, "days");
         const end = moment();
@@ -97,6 +114,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                             source={source} />
                     </span>
                 ) : undefined}
+                <SourceOriginSelector
+                    options={options} />
                 <SourceFullSummary
                     header={"Last Seven Day Summary"}
                     source={source}
