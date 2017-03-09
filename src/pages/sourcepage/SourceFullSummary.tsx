@@ -79,10 +79,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     }
 
     handleOriginChange(index: number, label: string) {
-        console.info("Handle origin change " + index);
         this.state.sourceOptions[index].checked = !this.state.sourceOptions[index].checked;
-
-        console.log(this.state.sourceOptions);
         this.state.lines = [];
         this.state.bars = [];
         for (let i = 0; i < this.state.sourceOptions.length; ++i) {
@@ -91,9 +88,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                 this.state.lines.push(SourceFullSummary.lines[i]);
             }
             if (i > 0) {
-                console.info("CHECKING THINGS");
                 if (checked) {
-                    console.info("Adding " + i);
                     this.state.bars.push(SourceFullSummary.bars[i - 1]);
                 }
             }

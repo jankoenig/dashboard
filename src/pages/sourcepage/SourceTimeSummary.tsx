@@ -6,6 +6,7 @@ import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortP
 import Source from "../../models/source";
 import LogService from "../../services/log";
 import { AMAZON_ORANGE, BLACK, GOOGLE_GREEN } from "../../utils/colors";
+import SourceUtils from "../../utils/Source";
 import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader";
 
 export interface LineProps extends LineProps {
@@ -63,7 +64,9 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
 
     componentWillReceiveProps(nextProps: SourceTimeSummaryProps, context: any) {
         if (nextProps.source) {
-            this.retrieveTimeSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            if (!SourceUtils.equals(nextProps.source, this.props.source) || !nextProps.startDate.isSame(this.props.startDate) || !nextProps.endDate.isSame(this.props.endDate)) {
+                this.retrieveTimeSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            }
         } else {
             this.setState({
                 timeData: [],

@@ -57,18 +57,18 @@ describe("SourceStats", function () {
     describe("Loading", function () {
         let start: moment.Moment;
         let end: moment.Moment;
-        let timeService: Sinon.SinonStub;
+        let statsService: Sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
             start = moment().subtract(10, "days");
             end = moment().subtract(2, "days");
 
-            timeService = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(summary));
+            statsService = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(summary));
         });
 
         beforeEach(function () {
-            timeService.reset();
+            statsService.reset();
             wrapper = shallow(<SourceStats
                 source={source}
                 startDate={start}
@@ -76,13 +76,13 @@ describe("SourceStats", function () {
         });
 
         after(function () {
-            timeService.restore();
+            statsService.restore();
         });
 
         it("Tests the data query contains the appropriate parameters.", function () {
             // Returning a promise ensures that the promise in the component is completed before everything else.
             return Promise.resolve(true).then(function () {
-                const query: Query = timeService.args[0][0];
+                const query: Query = statsService.args[0][0];
                 const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
                 const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
                 const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
@@ -95,7 +95,7 @@ describe("SourceStats", function () {
 
         it("Tests the data query contains the appropriate parameters with new props.", function () {
             wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
-            const query: Query = timeService.args[1][0];
+            const query: Query = statsService.args[1][0];
             const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
             const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
             const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
@@ -103,6 +103,12 @@ describe("SourceStats", function () {
             expect(startParameter.value).to.equal(start.toISOString());
             expect(endParameter.value).to.equal(end.toISOString());
             expect(sourceParameter.value).to.equal(sources[1].secretKey);
+        });
+
+        it("Tests that the data does *not* load if the parameters are the same.", function() {
+            wrapper.setProps({ }); // Forces a call to componentWillReceiveProps with the same props.
+
+            expect(statsService).to.be.calledOnce; // Only on mount.
         });
 
         it("Tests the bar graph has the loaded data.", function () {

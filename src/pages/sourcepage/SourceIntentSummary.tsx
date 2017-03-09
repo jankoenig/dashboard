@@ -6,6 +6,7 @@ import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParam
 import Source from "../../models/source";
 import LogService from "../../services/log";
 import { AMAZON_ORANGE, GOOGLE_GREEN } from "../../utils/colors";
+import SourceUtils from "../../utils/Source";
 import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader";
 
 export interface BarProps extends BarProps {
@@ -61,7 +62,9 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
 
     componentWillReceiveProps(nextProps: SourceIntentSummaryProps, context: any) {
         if (nextProps.source) {
-            this.retrieveIntentSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            if (!SourceUtils.equals(nextProps.source, this.props.source) || !nextProps.startDate.isSame(this.props.startDate) || !nextProps.endDate.isSame(this.props.endDate)) {
+                this.retrieveIntentSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            }
         } else {
             this.setState({
                 intentData: [],

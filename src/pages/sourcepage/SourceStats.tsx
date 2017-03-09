@@ -6,6 +6,7 @@ import { Cell, Grid } from "../../components/Grid";
 import Query, { EndTimeParameter, SourceParameter, StartTimeParameter } from "../../models/query";
 import Source from "../../models/source";
 import LogService from "../../services/log";
+import SourceUtils from "../../utils/Source";
 import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader";
 
 const DEFAULT_VALUE: string = "N/A";
@@ -55,7 +56,9 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
 
     componentWillReceiveProps(nextProps: SourceStatsProps, context: any) {
         if (nextProps.source) {
-            this.retrieveSourceStats(nextProps.source, nextProps.startDate, nextProps.endDate);
+            if (!SourceUtils.equals(nextProps.source, this.props.source) || !nextProps.startDate.isSame(this.props.startDate) || !nextProps.endDate.isSame(this.props.endDate)) {
+                this.retrieveSourceStats(nextProps.source, nextProps.startDate, nextProps.endDate);
+            }
         } else {
             this.setState({
                 statsLoaded: DataState.LOADED,

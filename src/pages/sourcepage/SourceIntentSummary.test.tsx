@@ -141,6 +141,12 @@ describe("SourceIntentSummary", function () {
             expect(sortParameter.value).to.equal("desc");
         });
 
+        it("Tests that the data qyer does *not* load if the parameters are the same.", function() {
+            wrapper.setProps({ }); // Forces a call to componentWillReceiveProps with the same props.
+
+            expect(intentService).to.be.calledOnce; // Only on mount.
+        });
+
         it("Tests the bar graph has the loaded data after mount.", function () {
             // Returning a promise ensures that the promise in the component is completed before everything else.
             return Promise.resolve(true).then(function () {
