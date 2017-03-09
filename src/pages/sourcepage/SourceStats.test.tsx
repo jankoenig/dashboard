@@ -15,7 +15,8 @@ import SourceStats from "./SourceStats";
 chai.use(sinonChai);
 const expect = chai.expect;
 
-const source: Source = dummySources(1)[0];
+const sources: Source[] = dummySources(2);
+const source: Source = sources[0];
 const summary: LogService.SourceStats = {
     source: source.secretKey,
     stats: {
@@ -67,6 +68,7 @@ describe("SourceStats", function () {
         });
 
         beforeEach(function () {
+            timeService.reset();
             wrapper = shallow(<SourceStats
                 source={source}
                 startDate={start}
@@ -92,21 +94,19 @@ describe("SourceStats", function () {
         });
 
         it("Tests the data query contains the appropriate parameters with new props.", function () {
-            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
-            // Returning a promise ensures that the promise in the component is completed before everything else.
-            return Promise.resolve(true).then(function () {
-                const query: Query = timeService.args[1][0];
-                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
+            const query: Query = timeService.args[1][0];
+            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
 
-                expect(startParameter.value).to.equal(start.toISOString());
-                expect(endParameter.value).to.equal(end.toISOString());
-                expect(sourceParameter.value).to.equal(source.secretKey);
-            });
+            expect(startParameter.value).to.equal(start.toISOString());
+            expect(endParameter.value).to.equal(end.toISOString());
+            expect(sourceParameter.value).to.equal(sources[1].secretKey);
         });
 
         it("Tests the bar graph has the loaded data.", function () {
+            // Returning a promise ensures that the promise in the component is completed before everything else.
             return Promise.resolve(true).then(function () {
                 expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "300"); // events
                 expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "100"); // users
@@ -120,17 +120,20 @@ describe("SourceStats", function () {
                 startDate={start}
                 endDate={end} />);
 
-            expect(newWrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
-            expect(newWrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
-            expect(newWrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
+            return Promise.resolve(true).then(function () {
+                expect(newWrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
+                expect(newWrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
+                expect(newWrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
+            });
         });
 
         it("Tests the defaults were set when source is set to undefined through props.", function () {
-            wrapper.setProps({ source: undefined });
-
-            expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
-            expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
-            expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
+            return Promise.resolve(true).then(function () {
+                wrapper.setProps({ source: undefined });
+                expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
+                expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
+                expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
+            });
         });
     });
 

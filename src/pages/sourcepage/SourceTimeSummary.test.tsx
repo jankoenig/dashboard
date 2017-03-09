@@ -23,10 +23,12 @@ const summary: LogService.TimeSummary = {
 
 describe("SourceTimeSummary", function () {
 
+    let sources: Source[];
     let source: Source;
 
     before(function () {
-        source = dummySources(1)[0];
+        sources = dummySources(2);
+        source = sources[0];
     });
 
     describe("Renders", function () {
@@ -67,6 +69,8 @@ describe("SourceTimeSummary", function () {
         });
 
         beforeEach(function () {
+            timeService.reset();
+
             wrapper = shallow(<SourceTimeSummary
                 source={source}
                 startDate={start}
@@ -78,49 +82,45 @@ describe("SourceTimeSummary", function () {
         });
 
         it("Tests the data query contains the appropriate parameters when mounted.", function () {
-            // Returning a promise ensures that the promise in the component is completed before everything else.
-            return Promise.resolve(true).then(function () {
-                const query: Query = timeService.args[0][0];
-                const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
-                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-                const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
-                const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
+            const query: Query = timeService.args[0][0];
+            const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
+            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+            const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
+            const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
 
 
-                expect(startParameter.value).to.equal(start.toISOString());
-                expect(endParameter.value).to.equal(end.toISOString());
-                expect(sourceParameter.value).to.equal(source.secretKey);
-                expect(sortParameter.value).to.equal("asc");
-                expect(granulParameter.value).to.equal("hour");
-                expect(fillParameter.value).to.equal(true);
-            });
+            expect(startParameter.value).to.equal(start.toISOString());
+            expect(endParameter.value).to.equal(end.toISOString());
+            expect(sourceParameter.value).to.equal(source.secretKey);
+            expect(sortParameter.value).to.equal("asc");
+            expect(granulParameter.value).to.equal("hour");
+            expect(fillParameter.value).to.equal(true);
         });
 
         it("Tests the data query contains the appropriate parameters.", function () {
-            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
-            // Returning a promise ensures that the promise in the component is completed before everything else.
-            return Promise.resolve(true).then(function () {
-                const query: Query = timeService.args[1][0];
-                const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
-                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-                const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
-                const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
+            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
+
+            const query: Query = timeService.args[1][0];
+            const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
+            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+            const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
+            const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
 
 
-                expect(startParameter.value).to.equal(start.toISOString());
-                expect(endParameter.value).to.equal(end.toISOString());
-                expect(sourceParameter.value).to.equal(source.secretKey);
-                expect(sortParameter.value).to.equal("asc");
-                expect(granulParameter.value).to.equal("hour");
-                expect(fillParameter.value).to.equal(true);
-            });
+            expect(startParameter.value).to.equal(start.toISOString());
+            expect(endParameter.value).to.equal(end.toISOString());
+            expect(sourceParameter.value).to.equal(sources[1].secretKey);
+            expect(sortParameter.value).to.equal("asc");
+            expect(granulParameter.value).to.equal("hour");
+            expect(fillParameter.value).to.equal(true);
         });
 
         it("Tests the bar graph has the loaded data.", function () {
+            // Returning a promise ensures that the promise in the component is completed before everything else.
             return Promise.resolve(true).then(function () {
                 expect(wrapper.find(TimeChart).prop("data")).to.have.length(summary.buckets.length);
             });
@@ -132,13 +132,16 @@ describe("SourceTimeSummary", function () {
                 startDate={start}
                 endDate={end} />);
 
-            expect(newWrapper.find(TimeChart).prop("data")).to.have.length(0);
+            return Promise.resolve(true).then(function () {
+                expect(newWrapper.find(TimeChart).prop("data")).to.have.length(0);
+            });
         });
 
         it("Tests the defaults were set when source is set to undefined through props.", function () {
-            wrapper.setProps({ source: undefined });
-
-            expect(wrapper.find(TimeChart).prop("data")).to.have.length(0);
+            return Promise.resolve(true).then(function () {
+                wrapper.setProps({ source: undefined });
+                expect(wrapper.find(TimeChart).prop("data")).to.have.length(0);
+            });
         });
     });
 });
