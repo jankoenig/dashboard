@@ -529,7 +529,7 @@ describe("Filters.tsx", function () {
         it("Tests the Origin filter returns true on correct origin.", function () {
             const filter: OriginFilter = new OriginFilter(Origin.AmazonAlexa);
             const newConvo = createConvo({
-                request: new Log(responseProps),
+                request: new Log(requestProps),
                 response: new Log(responseProps)
             });
 

@@ -99,7 +99,7 @@ class GenericConversation implements Conversation {
 
     readonly stackTraces: StackTrace[];
 
-    origin: Origin = Origin.AmazonAlexa;
+    origin: Origin = Origin.Unknown;
 
     sessionId: string | undefined;
     userId: string | undefined;
@@ -195,7 +195,7 @@ class GenericConversation implements Conversation {
 
 class AlexaConversation extends GenericConversation {
 
-    readonly source: Origin = Origin.AmazonAlexa;
+    readonly origin: Origin = Origin.AmazonAlexa;
 
     constructor(props: ConversationProperties) {
         super(props);
