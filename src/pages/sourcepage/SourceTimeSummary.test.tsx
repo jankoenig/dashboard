@@ -69,15 +69,13 @@ describe("SourceTimeSummary", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
-
-            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
         });
 
-        after(function() {
+        after(function () {
             timeService.restore();
         });
 
-        it("Tests the data query contains the appropriate parameters.", function () {
+        it("Tests the data query contains the appropriate parameters when mounted.", function () {
             // Returning a promise ensures that the promise in the component is completed before everything else.
             return Promise.resolve(true).then(function () {
                 const query: Query = timeService.args[0][0];
@@ -98,7 +96,29 @@ describe("SourceTimeSummary", function () {
             });
         });
 
-        it("Tests the bar graph has the loaded data.", function() {
+        it("Tests the data query contains the appropriate parameters.", function () {
+            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
+            // Returning a promise ensures that the promise in the component is completed before everything else.
+            return Promise.resolve(true).then(function () {
+                const query: Query = timeService.args[1][0];
+                const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+                const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
+                const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
+
+
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(source.secretKey);
+                expect(sortParameter.value).to.equal("asc");
+                expect(granulParameter.value).to.equal("hour");
+                expect(fillParameter.value).to.equal(true);
+            });
+        });
+
+        it("Tests the bar graph has the loaded data.", function () {
             return Promise.resolve(true).then(function () {
                 console.log(wrapper.find(TimeChart).prop("data"));
                 expect(wrapper.find(TimeChart).prop("data")).to.have.length(summary.buckets.length);

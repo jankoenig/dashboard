@@ -73,7 +73,7 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
 
     componentWillMount() {
         if (this.props.source) {
-            this.retrieveSourceStats(nextProps.source, nextProps.startDate, nextProps.endDate);
+            this.retrieveSourceStats(this.props.source, this.props.startDate, this.props.endDate);
         } else {
             this.setState({
                 statsLoaded: DataState.LOADED,
