@@ -67,16 +67,13 @@ describe("SourceIntentSummary", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
-
-            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
         });
 
-        after(function() {
+        after(function () {
             intentService.restore();
         });
 
-        it("Tests the data query contains the appropriate parameters.", function () {
-            // Returning a promise ensures that the promise in the component is completed before everything else.
+        it("Tests the data queries on component will mount.", function () {
             return Promise.resolve(true).then(function () {
                 const query: Query = intentService.args[0][0];
                 const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
@@ -91,7 +88,24 @@ describe("SourceIntentSummary", function () {
             });
         });
 
-        it("Tests the bar graph has the loaded data.", function() {
+        it("Tests the data query contains the appropriate parameters after a set props.", function () {
+            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
+            // Returning a promise ensures that the promise in the component is completed before everything else.
+            return Promise.resolve(true).then(function () {
+                const query: Query = intentService.args[1][0]; // Called once from mount.
+                const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(source.secretKey);
+                expect(sortParameter.value).to.equal("desc");
+            });
+        });
+
+        it("Tests the bar graph has the loaded data.", function () {
             return Promise.resolve(true).then(function () {
                 expect(wrapper.find(BarChart).prop("data")).to.have.length(summary.count.length);
             });

@@ -64,6 +64,17 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
         }
     }
 
+    componentWillMount() {
+        if (this.props.source) {
+            this.retrieveIntentSummary(this.props.source, this.props.startDate, this.props.endDate);
+        } else {
+            this.setState({
+                intentData: [],
+                intentLoaded: DataState.LOADED
+            });
+        }
+    }
+
     retrieveIntentSummary(source: Source, start: moment.Moment, end: moment.Moment) {
         const dataLoader: DataLoader<LogService.IntentSummary, IntentCountData[]> = {
             loadData: function (query: Query): Promise<LogService.IntentSummary> {
