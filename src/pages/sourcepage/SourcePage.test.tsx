@@ -1,5 +1,6 @@
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
+import * as moment from "moment";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
@@ -9,13 +10,12 @@ import Dialog from "react-toolbox/lib/dialog";
 
 import LogService from "../../services/log";
 import { dummyLogs, dummySources } from "../../utils/test";
+import SourceFullSummary from "./SourceFullSummary";
 import SourceHeader from "./SourceHeader";
-// import SourceIntentSummary from "./SourceIntentSummary";
 import { SourcePage } from "./SourcePage";
-// import SourceStats from "./SourceStats";
-// import SourceTimeSummary from "./SourceTimeSummary";
 
 chai.use(sinonChai);
+chai.use(require("chai-datetime"));
 let expect = chai.expect;
 
 describe("Source Page", function () {
@@ -86,7 +86,24 @@ describe("Source Page", function () {
                 <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
             ));
 
-            expect(wrapper.find("SummaryView")).to.have.length(1);
+            expect(wrapper.find(SourceFullSummary)).to.have.length(1);
+        });
+
+        it("Tests that the summary view has the appropriate props.", function () {
+            const start = moment().subtract(7, "days");
+            const end = moment();
+            const wrapper = shallow((
+                <SourcePage source={source} goHome={goHome} removeSource={removeSource} />
+            ));
+
+            const summary = wrapper.find(SourceFullSummary);
+            expect(summary).to.have.prop("source", source);
+
+            // Can't use the convience of chai to check dates.
+            const startProp = summary.prop("startDate") as moment.Moment;
+            const endProp = summary.prop("endDate") as moment.Moment;
+            expect(startProp.toDate()).to.equalDate(start.toDate());
+            expect(endProp.toDate()).to.equalDate(end.toDate());
         });
     });
 
@@ -161,7 +178,7 @@ describe("Source Page", function () {
                         expect(removeSource).to.have.been.calledWith(source);
                     });
 
-                    it("Tests the delete action called GoHome once removed.", function() {
+                    it("Tests the delete action called GoHome once removed.", function () {
                         expect(goHome).to.be.calledOnce;
                     });
                 });

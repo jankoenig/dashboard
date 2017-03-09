@@ -11,10 +11,8 @@ import { Cell, Grid } from "../../components/Grid";
 import Source from "../../models/source";
 import { State } from "../../reducers";
 
+import SourceFullSummary from "./SourceFullSummary";
 import SourceHeader from "./SourceHeader";
-import SourceIntentSummary from "./SourceIntentSummary";
-import SourceStats from "./SourceStats";
-import SourceTimeSummary from "./SourceTimeSummary";
 
 const DeleteButtonTheme = require("../../themes/button_theme.scss");
 const DeleteDialogTheme = require("../../themes/dialog_theme.scss");
@@ -89,6 +87,8 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     render() {
         const { source } = this.props;
         const sourceName = (source) ? source.name : "this skill";
+        const start = moment().subtract(7, "days");
+        const end = moment();
         return (
             <span>
                 {this.props.source ? (
@@ -97,8 +97,11 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                             source={source} />
                     </span>
                 ) : undefined}
-                <SummaryView
-                    source={source} />
+                <SourceFullSummary
+                    header={"Last Seven Day Summary"}
+                    source={source}
+                    startDate={start}
+                    endDate={end} />
                 <Grid>
                     <Cell>
                         <Button
@@ -128,61 +131,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(SourcePage);
-
-interface SummaryViewProps {
-    source: Source;
-}
-
-interface SummaryDataState {
-}
-
-class SummaryView extends React.Component<SummaryViewProps, SummaryDataState> {
-
-    constructor(props: SummaryViewProps) {
-        super(props);
-        this.state = {
-            eventsLabel: "",
-            usersLabel: "",
-            errorsLabel: ""
-        };
-    }
-
-    render() {
-        let summary: JSX.Element;
-        const start = moment().subtract(7, "days");
-        const end = moment();
-        summary = (
-            <span>
-                <SourceStats
-                    source={this.props.source}
-                    startDate={start}
-                    endDate={end} />
-                <Grid>
-                    <Cell col={12} style={{ height: 300 }}>
-                        <SourceTimeSummary
-                            source={this.props.source}
-                            startDate={start}
-                            endDate={end} />
-                    </Cell>
-                </Grid>
-                <Grid>
-                    <Cell col={12} >
-                        <SourceIntentSummary
-                            source={this.props.source}
-                            startDate={start}
-                            endDate={end} />
-                    </Cell>
-                </Grid>
-            </span>
-        );
-
-        return (
-            <div>
-                <Grid>
-                    <h4> Last Seven Day Summary </h4>
-                </Grid>
-                {summary}
-            </div>
-        );
-    }
-}
