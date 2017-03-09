@@ -71,6 +71,24 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
         }
     }
 
+    componentWillMount() {
+        if (this.props.source) {
+            this.retrieveSourceStats(nextProps.source, nextProps.startDate, nextProps.endDate);
+        } else {
+            this.setState({
+                statsLoaded: DataState.LOADED,
+                sourceStats: {
+                    source: DEFAULT_VALUE,
+                    stats: {
+                        totalUsers: 0,
+                        totalExceptions: 0,
+                        totalEvents: 0
+                    }
+                }
+            });
+        }
+    }
+
     static getLabel(sourceStats: LogService.SourceStats, state: DataState): Labels {
         if (state === DataState.LOADING) {
             return {

@@ -69,8 +69,6 @@ describe("SourceStats", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
-
-            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
         });
 
         after(function () {
@@ -81,6 +79,21 @@ describe("SourceStats", function () {
             // Returning a promise ensures that the promise in the component is completed before everything else.
             return Promise.resolve(true).then(function () {
                 const query: Query = timeService.args[0][0];
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(source.secretKey);
+            });
+        });
+
+        it("Tests the data query contains the appropriate parameters with new props.", function () {
+            wrapper.setProps({}); // Forces a call to componentWillReceiveProps
+            // Returning a promise ensures that the promise in the component is completed before everything else.
+            return Promise.resolve(true).then(function () {
+                const query: Query = timeService.args[1][0];
                 const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
                 const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
                 const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
