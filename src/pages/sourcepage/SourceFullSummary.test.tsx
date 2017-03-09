@@ -110,6 +110,18 @@ describe("SummaryView", function () {
                 optionsProp = originSelector.prop("options");
                 expect(optionsProp[0].checked).to.equal(true);
             });
+
+            it("Tests the lines passed to the time summary are only what is checked.", function() {
+                originSelector.simulate("check", 0, "All");
+
+                const timesummary = wrapper.find(SourceTimeSummary).at(0);
+                const summarylines = timesummary.prop("lines");
+
+                expect(summarylines).to.have.length(2);
+
+                expect(summarylines[0]).to.have.property("dataKey", "Amazon.Alexa");
+                expect(summarylines[1]).to.have.property("dataKey", "Google.Home");
+            });
         });
     });
 });

@@ -10,7 +10,7 @@ import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, Query
 import Source from "../../models/source";
 import LogService from "../../services/log";
 import { dummySources } from "../../utils/test";
-import SourceTimeSummary from "./SourceTimeSummary";
+import SourceTimeSummary, { LineProps } from "./SourceTimeSummary";
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -52,6 +52,34 @@ describe("SourceTimeSummary", function () {
 
         it("Checks the bar graph has a default of empty data.", function () {
             expect(wrapper.find(TimeChart).prop("data")).to.deep.equal([]);
+        });
+
+        describe("Lines", function () {
+            const lines: LineProps[] = [{
+                dataKey: "all",
+                name: "All",
+                stroke: "#000000"
+            }, {
+                dataKey: "First",
+                name: "FirstName",
+                stroke: "#FF0000"
+            }, {
+                dataKey: "Second",
+                name: "SecondName",
+                stroke: "#FFFF00"
+            }];
+
+            before(function () {
+                wrapper = shallow(<SourceTimeSummary
+                    source={source}
+                    startDate={start}
+                    endDate={end}
+                    lines={lines} />);
+            });
+
+            it("Tests the lines are applied to the inner timechart.", function() {
+                expect(wrapper.find(TimeChart).at(0)).to.have.prop("lines", lines);
+            });
         });
     });
 
@@ -153,9 +181,9 @@ describe("SourceTimeSummary", function () {
             timeService.restore();
             timeService = sinon.stub(LogService, "getTimeSummary").returns(Promise.resolve(newSummary));
 
-            wrapper.setProps({ }); // causes a re-query.
+            wrapper.setProps({}); // causes a re-query.
 
-            return Promise.resolve(true).then(function() {
+            return Promise.resolve(true).then(function () {
                 const daysBetween = end.diff(start, "days");
                 expect(wrapper.find(TimeChart).prop("data")).to.have.length(daysBetween); // It created default data.
             });

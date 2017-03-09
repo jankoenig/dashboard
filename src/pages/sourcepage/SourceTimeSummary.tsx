@@ -8,10 +8,15 @@ import LogService from "../../services/log";
 import { AMAZON_ORANGE, BLACK, GOOGLE_GREEN } from "../../utils/colors";
 import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader";
 
+export interface LineProps extends LineProps {
+
+}
+
 interface SourceTimeSummaryProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
+    lines?: LineProps[];
 }
 
 interface SourceTimeSummaryState {
@@ -41,7 +46,8 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
     static defaultProps: SourceTimeSummaryProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
-        endDate: moment()
+        endDate: moment(),
+        lines: SourceTimeSummary.lines
     };
 
     constructor(props: SourceTimeSummaryProps) {
@@ -112,8 +118,8 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
     render() {
         return (
             <TimeChart
-                data={this.state.timeData}
-                lines={SourceTimeSummary.lines} />
+                lines={this.props.lines}
+                data={this.state.timeData} />
         );
     }
 }

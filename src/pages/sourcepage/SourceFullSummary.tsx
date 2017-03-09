@@ -2,10 +2,11 @@ import * as React from "react";
 
 import { Cell, Grid } from "../../components/Grid";
 import Source from "../../models/source";
+import { AMAZON_ORANGE, BLACK, GOOGLE_GREEN } from "../../utils/colors";
 import SourceIntentSummary from "./SourceIntentSummary";
 import SourceOriginSelector, { SourceOption } from "./SourceOriginSelector";
 import SourceStats from "./SourceStats";
-import SourceTimeSummary from "./SourceTimeSummary";
+import SourceTimeSummary, { LineProps } from "./SourceTimeSummary";
 
 const AllCheckboxTheme = require("./themes/checkbox-all-theme.scss");
 const AmazonCheckboxTheme = require("./themes/checkbox-amazon-theme.scss");
@@ -20,11 +21,12 @@ interface SourceFullSummaryProps {
 
 interface SourceFullSummaryState {
     sourceOptions: SourceOption[];
+    lines: LineProps[];
 }
 
 export class SourceFullSummary extends React.Component<SourceFullSummaryProps, SourceFullSummaryState> {
     static options: SourceOption[] = [{
-        label: "All",
+        label: "Total",
         theme: AllCheckboxTheme,
         checked: true
     }, {
@@ -37,23 +39,46 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         checked: true
     }];
 
+    static lines: LineProps[] = [{
+        dataKey: "total",
+        name: "Total",
+        stroke: BLACK
+    }, {
+        dataKey: "Amazon.Alexa",
+        name: "Alexa",
+        stroke: AMAZON_ORANGE
+    }, {
+        dataKey: "Google.Home",
+        name: "Home",
+        stroke: GOOGLE_GREEN
+    }];
+
+
     constructor(props: SourceFullSummaryProps) {
         super(props);
 
         this.handleOriginChange = this.handleOriginChange.bind(this);
 
         this.state = {
-            sourceOptions: SourceFullSummary.options.slice()
+            sourceOptions: SourceFullSummary.options.slice(),
+            lines: SourceFullSummary.lines.slice()
         };
     }
 
     handleOriginChange(index: number, label: string) {
         this.state.sourceOptions[index].checked = !this.state.sourceOptions[index].checked;
+        this.state.lines = [];
+        for (let i = 0; i < this.state.sourceOptions.length; ++i) {
+            if (this.state.sourceOptions[i].checked) {
+                this.state.lines.push(SourceFullSummary.lines[i]);
+            }
+        }
         this.setState(this.state);
     }
 
     render() {
         const { header, ...others } = this.props;
+        const { lines } = this.state;
         const options = SourceFullSummary.options;
         const handleOriginChange = this.handleOriginChange;
 
@@ -72,7 +97,8 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                     <Grid>
                         <Cell col={12} style={{ height: 300 }}>
                             <SourceTimeSummary
-                                {...others} />
+                                {...others}
+                                lines={lines} />
                         </Cell>
                     </Grid>
                     <Grid>
