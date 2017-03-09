@@ -116,10 +116,13 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
     }
 
     render() {
+        const { timeData } = this.state;
+        const { lines } = this.props;
+
         return (
             <TimeChart
-                lines={this.props.lines}
-                data={this.state.timeData} />
+                lines={lines}
+                data={timeData} />
         );
     }
 }

@@ -13,23 +13,20 @@ import SourceTimeSummary from "./SourceTimeSummary";
 
 const expect = chai.expect;
 
-describe("SummaryView", function () {
+describe("SourceFullSummary", function () {
 
+    let start: moment.Moment;
+    let end: moment.Moment;
     let source: Source;
 
     before(function () {
         source = dummySources(1)[0];
+        start = moment().subtract(10, "days");
+        end = moment().subtract(2, "days");
     });
 
     describe("Render", function () {
-        let start: moment.Moment;
-        let end: moment.Moment;
         let wrapper: ShallowWrapper<any, any>;
-
-        before(function () {
-            start = moment().subtract(10, "days");
-            end = moment().subtract(2, "days");
-        });
 
         beforeEach(function () {
             wrapper = shallow(<SourceFullSummary
@@ -86,42 +83,77 @@ describe("SummaryView", function () {
             expect(wrap.prop("onCheck")).to.exist;
         });
 
-        describe("Checkboxes", function () {
-            let originSelector: ShallowWrapper<any, any>;
+    });
 
-            beforeEach(function () {
-                originSelector = wrapper.find(SourceOriginSelector).at(0);
-            });
+    describe("Checkboxes", function () {
+        let wrapper: ShallowWrapper<any, any>;
+        let originSelector: ShallowWrapper<any, any>;
 
-            it("tests clicking on a checkbox will alter it", function () {
-                originSelector.simulate("check", 0, "All");
+        beforeEach(function () {
+            wrapper = shallow(<SourceFullSummary
+                source={source}
+                startDate={start}
+                endDate={end}
+                header={"Test Header"} />);
 
-                // rerenders
-                originSelector = wrapper.find(SourceOriginSelector).at(0);
+            originSelector = wrapper.find(SourceOriginSelector).at(0);
+        });
 
-                let optionsProp = originSelector.prop("options");
-                expect(optionsProp[0].checked).to.equal(false);
+        it("tests clicking on a checkbox will alter it", function () {
+            originSelector.simulate("check", 0, "All");
 
-                originSelector.simulate("check", 0, "All");
+            // rerenders
+            originSelector = wrapper.find(SourceOriginSelector).at(0);
 
-                // rerenders
-                originSelector = wrapper.find(SourceOriginSelector).at(0);
+            let optionsProp = originSelector.prop("options");
+            expect(optionsProp[0].checked).to.equal(false);
 
-                optionsProp = originSelector.prop("options");
-                expect(optionsProp[0].checked).to.equal(true);
-            });
+            originSelector.simulate("check", 0, "All");
 
-            it("Tests the lines passed to the time summary are only what is checked.", function() {
-                originSelector.simulate("check", 0, "All");
+            // rerenders
+            originSelector = wrapper.find(SourceOriginSelector).at(0);
 
-                const timesummary = wrapper.find(SourceTimeSummary).at(0);
-                const summarylines = timesummary.prop("lines");
+            optionsProp = originSelector.prop("options");
+            expect(optionsProp[0].checked).to.equal(true);
+        });
 
-                expect(summarylines).to.have.length(2);
+        it("Tests the lines passed to the time summary are only what is checked.", function () {
+            originSelector.simulate("check", 0, "All");
 
-                expect(summarylines[0]).to.have.property("dataKey", "Amazon.Alexa");
-                expect(summarylines[1]).to.have.property("dataKey", "Google.Home");
-            });
+            const timesummary = wrapper.find(SourceTimeSummary).at(0);
+            const summarylines = timesummary.prop("lines");
+
+            expect(summarylines).to.have.length(2);
+
+            expect(summarylines[0]).to.have.property("dataKey", "Amazon.Alexa");
+            expect(summarylines[1]).to.have.property("dataKey", "Google.Home");
+        });
+
+        it("Tests nothing happens to the bars if \"total\" is unchecked.", function () {
+            originSelector.simulate("check", 0, "Total");
+
+            const intentSummary = wrapper.find(SourceIntentSummary).at(0);
+            const summaryBars = intentSummary.prop("bars");
+
+            console.log(summaryBars);
+
+            expect(summaryBars).to.have.length(2);
+
+            expect(summaryBars[0]).to.have.property("dataKey", "Amazon.Alexa");
+            expect(summaryBars[1]).to.have.property("dataKey", "Google.Home");
+        });
+
+        it("Tests the bars passed to the intent summary are only what is checked.", function () {
+            originSelector.simulate("check", 1, "Amazon");
+
+            const intentSummary = wrapper.find(SourceIntentSummary).at(0);
+            const summaryBars = intentSummary.prop("bars");
+
+            console.log(summaryBars);
+
+            expect(summaryBars).to.have.length(1);
+
+            expect(summaryBars[0]).to.have.property("dataKey", "Google.Home");
         });
     });
 });
