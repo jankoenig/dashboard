@@ -161,21 +161,16 @@ function defaultPageTimeData(start: moment.Moment, end: moment.Moment): PageTime
 
 function mergeTimeSummary(summary: LogService.TimeSummary): PageTimeData[] {
     const merger: any = {};
-    for (let bucket of summary.buckets) {
-        const date = new Date(bucket.date);
-        date.setMinutes(0, 0, 0);
-        const dateString = date.toISOString();
-        const newObj: PageTimeData = new PageTimeData(date);
-        newObj["total"] = bucket.count;
-        newObj["Amazon.Alexa"] = 0;
-        newObj["Google.Home"] = 0;
-        merger[dateString] = newObj;
-    }
 
+    joinBuckets(merger, summary.buckets, "total");
     joinBuckets(merger, summary.amazonBuckets, "Amazon.Alexa");
     joinBuckets(merger, summary.googleBuckets, "Google.Home");
 
-    const values = Object.keys(merger).map(key => merger[key]);
+    const values = Object.keys(merger)
+        .map(key => merger[key])
+        .sort(function(b1: PageTimeData, b2: PageTimeData): number {
+            return b1.compare(b2);
+        });
     return values;
 }
 
@@ -187,9 +182,7 @@ function joinBuckets(merger: any, buckets: LogService.TimeBucket[], key: "total"
         let obj: PageTimeData = merger[dateString];
         if (!obj) {
             obj = new PageTimeData(date);
-            obj["total"] = bucket.count;
-            obj["Amazon.Alexa"] = 0;
-            obj["Google.Home"] = 0;
+            console.info("date" + date.toISOString());
         }
         obj[key] = bucket.count;
         merger[dateString] = obj;
