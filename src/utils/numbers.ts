@@ -45,6 +45,22 @@ export namespace Numbers {
         let multiplier = Math.pow(10, precision || 0);
         return Math.round(value * multiplier) / multiplier;
     }
+
+    /**
+     * Converts a string to a hash code
+     *
+     * @param str String
+     */
+    export function hashCode(str: string): number {
+        let hash = 0;
+        if (this.length === 0) return hash;
+        for (let i = 0; i < this.length; i++) {
+            let char = this.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    }
 }
 
 export default Numbers;

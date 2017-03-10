@@ -25,4 +25,16 @@ describe("Numbers", function() {
             expect(Numbers.round(0.5, 0)).to.equal(1);
         });
     });
+    describe("hash", function() {
+        let hashable = "this will be hashed";
+        let hashableAlso = "this will be hashed";
+        let hash = Numbers.hashCode(hashable);
+        let hashAlso = Numbers.hashCode(hashableAlso);
+        it("converts a string to a number", function() {
+            expect(hash).to.be.a("number");
+        });
+        it("returns the same hash for two similar strings", function() {
+            expect(hash).to.equal(hashAlso);
+        });
+    });
 });
