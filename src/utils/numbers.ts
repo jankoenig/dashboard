@@ -49,6 +49,7 @@ export namespace Numbers {
     /**
      * Converts a string to a hash code
      *
+     * @see http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
      * @param str String
      */
     export function hashCode(str: string): number {
