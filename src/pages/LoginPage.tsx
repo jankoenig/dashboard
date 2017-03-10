@@ -1,7 +1,5 @@
-﻿
-import * as React from "react";
+﻿import * as React from "react";
 import { connect } from "react-redux";
-
 
 import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
