@@ -110,8 +110,6 @@ describe("ConvoList", function () {
 
     describe("property expandListItemWhenActive", function () {
 
-        // jsdom(); // required by enzyme mount, mocks the entire dom
-
         let logs = dummyLogs(4);
         let conversations = ConversationList.fromLogs(logs);
 

@@ -3,10 +3,7 @@ import { mount, ReactWrapper, shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import * as sinon from "sinon";
 
-let jsdom = require("mocha-jsdom");
-
 import browser from "../utils/browser";
-
 import { Measure, MeasureProps } from "./Measure";
 
 let expect = chai.expect;
@@ -54,8 +51,6 @@ describe("Measure", function () {
     });
 
     describe("Full Render", function () {
-
-        jsdom();
 
         let wrappedEvent: TestingWrappedEvent;
         let sizeStub: Sinon.SinonStub;

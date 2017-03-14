@@ -2,8 +2,6 @@ import * as chai from "chai";
 import { mount } from "enzyme";
 import * as React from "react";
 
-let jsdom = require("mocha-jsdom");
-
 import { Source } from "../models/source";
 import { dummySources } from "../utils/test";
 import { SourceListPage } from "./SourceListPage";
@@ -24,9 +22,6 @@ describe("Source List Page", function () {
     });
 
     describe("Full render", function () {
-
-        jsdom();
-
         it("should render correctly", function () {
             const wrapper = mount(<SourceListPage sources={sources} />);
 

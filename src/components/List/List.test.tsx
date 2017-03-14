@@ -4,8 +4,6 @@ import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-let jsdom = require("mocha-jsdom");
-
 import List, { ListProps } from "./List";
 
 chai.use(sinonChai);
@@ -14,8 +12,6 @@ let expect = chai.expect;
 describe("List", function() {
 
     describe("Full render", function() {
-
-        jsdom();
 
         let itemRenderer: Sinon.SinonStub;
 

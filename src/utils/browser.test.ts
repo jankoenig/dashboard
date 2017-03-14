@@ -6,11 +6,6 @@ let expect = chai.expect;
 
 describe("Browser Util", function () {
     describe("isMobileOrTablet", function () {
-        it("throws an error on node.js", function () {
-            // navigator is not defined on node.js
-            expect(browser.isMobileOrTablet).to.throw(ReferenceError);
-        });
-
         it("checks mobile platform correctly", function () {
             expect(browser.isMobileOrTabletImpl("iphone", "")).to.be.true;
             expect(browser.isMobileOrTabletImpl("android", "")).to.be.true;
@@ -26,9 +21,6 @@ describe("Browser Util", function () {
         });
     });
     describe("isMobileWidth", function () {
-        it("throws an error on node.js if you don't pass in a window", function () {
-            expect(browser.isMobileWidth).to.throw(ReferenceError);
-        });
         it("returns true on small windows", function () {
             let dummyWindow = { innerWidth: (browser.mobileWidthThreshold - 1) };
             expect(browser.isMobileWidth(<Window>dummyWindow)).to.equal(true);

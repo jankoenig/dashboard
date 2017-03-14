@@ -1,5 +1,3 @@
-const jsdom = require("mocha-jsdom");
-
 import * as chai from "chai";
 import { mount, ReactWrapper } from "enzyme";
 import * as React from "react";
@@ -19,8 +17,6 @@ const style = {
 describe("VisibilityWatcher", function () {
 
     describe("Full Render", function () {
-
-        jsdom();
 
         let addEventListener: Sinon.SinonStub;
         let removeEventListener: Sinon.SinonStub;
