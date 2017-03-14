@@ -30,13 +30,13 @@ interface ConvoListPageStateProps {
     source: Source;
 }
 
-interface ConvoListPageReduxProps {
+interface ConvoListPageDispatchProps {
     getLogs: (query: LogQuery) => Promise<Log[]>;
     newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
     refresh: (logQueryEvent: LogQueryEvent) => Promise<PageResults>;
 }
 
-interface ConvoListPageStandardProps {
+interface ConvoListPageParentProps {
     refreshOn?: boolean;
     filter?: CompositeFilter<Conversation>;
     iconStyle?: React.CSSProperties;
@@ -45,8 +45,7 @@ interface ConvoListPageStandardProps {
     onIconClick?: (conversation: Conversation) => void;
 }
 
-interface ConvoListPageProps extends ConvoListPageStateProps, ConvoListPageReduxProps, ConvoListPageStandardProps {
-}
+interface ConvoListPageProps extends ConvoListPageStateProps, ConvoListPageDispatchProps, ConvoListPageParentProps { };
 
 interface ConvoListPageState {
     query: LogQuery;
@@ -62,7 +61,7 @@ function mapStateToProps(state: State.All): ConvoListPageStateProps {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageReduxProps {
+function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageDispatchProps {
     return {
         getLogs: function (query: LogQuery): Promise<Log[]> {
             const fetchLogs = retrieveLogs(query);
@@ -79,7 +78,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageReduxPr
     };
 }
 
-function mergeProps(stateProps: ConvoListPageStateProps, dispatchProps: ConvoListPageReduxProps, parentProps: ConvoListPageStandardProps): ConvoListPageProps {
+function mergeProps(stateProps: ConvoListPageStateProps, dispatchProps: ConvoListPageDispatchProps, parentProps: ConvoListPageParentProps): ConvoListPageProps {
     return { ...parentProps, ...dispatchProps, ...stateProps };
 }
 
