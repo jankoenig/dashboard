@@ -1,22 +1,19 @@
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
-import * as moment from "moment";
 import * as React from "react";
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import DataTile from "../components/DataTile";
-import { dummySources } from "../utils/test";
+import { dummySources } from "../../utils/test";
+import SourceHeader from "./SourceHeader";
 import { SourceSettingsPage } from "./SourceSettingsPage";
 
 chai.use(sinonChai);
 let expect = chai.expect;
 
-const createdAtFormat = "MMM Do, YYYY";
-
-describe("Settings Page", function () {
+describe("Source Settings Page", function () {
     let source = dummySources(1)[0];
 
     let goHome: Sinon.SinonStub;
@@ -36,27 +33,12 @@ describe("Settings Page", function () {
         const wrapper = shallow((
             <SourceSettingsPage source={source} goHome={goHome} removeSource={removeSource} />
         ));
-        const dataTiles = wrapper.find(DataTile);
-        it("has the source details header visible", function () {
-            expect(dataTiles).to.have.length(4); // Data times are what are used to show source details.
+        const sourceHeader = wrapper.find(SourceHeader);
+        it("has the source header visible", function () {
+            expect(sourceHeader).to.have.length(1); // Data times are what are used to show source details.
         });
-        it("sets the name on the first tile", function () {
-            let dataTile = dataTiles.at(0);
-            expect(dataTile.prop("value")).to.equal(source.name);
-        });
-        it("sets the id on the second tile", function () {
-            let dataTile = dataTiles.at(1);
-            expect(dataTile.prop("value")).to.equal(source.id);
-        });
-        it("sets the created data on the third tile", function () {
-            let dataTile = dataTiles.at(2);
-            expect(dataTile.prop("value")).to.equal(moment(source.created).format(createdAtFormat));
-        });
-        it("sets the secret key on the fourth tile", function () {
-            let dataTile = dataTiles.at(3);
-            expect(dataTile.prop("value")).to.equal(source.secretKey);
-            expect(dataTile.prop("hidden")).to.equal(true);
-            expect(dataTile.prop("showable")).to.equal(true);
+        it("sets the source on the source header", function() {
+            expect(sourceHeader).to.have.prop("source", source);
         });
     });
     describe("without source", function () {
@@ -65,8 +47,8 @@ describe("Settings Page", function () {
                 <SourceSettingsPage source={undefined} goHome={goHome} removeSource={removeSource} />
             ));
 
-            const dataTiles = wrapper.find(DataTile);
-            expect(dataTiles).to.have.length(0);
+            const sourceHeader = wrapper.find(SourceHeader);
+            expect(sourceHeader).to.have.length(0);
         });
     });
     describe("Delete source", function () {

@@ -1,18 +1,17 @@
-import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 import { replace, RouterAction } from "react-router-redux";
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
 
-import { deleteSource } from "../actions/source";
-import DataTile from "../components/DataTile";
-import { Cell, Grid } from "../components/Grid";
-import Source from "../models/source";
-import { State } from "../reducers";
+import { deleteSource } from "../../actions/source";
+import { Cell, Grid } from "../../components/Grid";
+import Source from "../../models/source";
+import { State } from "../../reducers";
+import SourceHeader from "./SourceHeader";
 
-const DeleteButtonTheme = require("../themes/button_theme.scss");
-const DeleteDialogTheme = require("../themes/dialog_theme.scss");
+const DeleteButtonTheme = require("../../themes/button_theme.scss");
+const DeleteDialogTheme = require("../../themes/dialog_theme.scss");
 
 interface SourceSettingsPageProps {
     source: Source;
@@ -84,39 +83,12 @@ export class SourceSettingsPage extends React.Component<SourceSettingsPageProps,
 
     render() {
         const sourceName = (this.props.source) ? this.props.source.name : "this skill";
-        const tileColor = "#ECEFF1";
         return (
             <span>
                 {this.props.source ? (
                     <span>
-                        <Grid style={{ backgroundColor: "rgb(36, 48, 54)", paddingBottom: "0px", paddingTop: "0px" }}>
-                            <Cell col={3} hidePhone={true}>
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.name}
-                                    label={"Name"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.id}
-                                    label={"ID"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={moment(this.props.source.created).format("MMM Do, YYYY")}
-                                    label={"Created"} />
-                            </Cell>
-                            <Cell col={3} hidePhone={true} >
-                                <DataTile
-                                    theme={{ inputTextColor: tileColor, bottomBorderColor: tileColor }}
-                                    value={this.props.source.secretKey}
-                                    label={"Secret Key"}
-                                    hidden={true}
-                                    showable={true} />
-                            </Cell>
-                        </Grid>
+                        <SourceHeader
+                            source={this.props.source} />
                         <Grid>
                             <Cell>
                                 <h5>Danger Zone</h5>

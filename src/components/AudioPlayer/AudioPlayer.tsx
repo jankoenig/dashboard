@@ -72,8 +72,6 @@ export class AudioPlayer extends React.Component<AudioPlayerProps, AudioPlayerSt
         let audio = new Audio(this.props.url);
         let key = Numbers.hashCode(audio.outerHTML);
 
-        console.log(this.props.audio);
-
         // check to see if an audio element already exists
         if (this.props.audio[key]) {
             // and if it does, associate it with this component.

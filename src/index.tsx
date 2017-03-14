@@ -23,8 +23,8 @@ import NewSourcePage from "./pages/NewSourcePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SessionsPage from "./pages/SessionsPage";
 import SourceListPage from "./pages/SourceListPage";
-import SourcePage from "./pages/SourcePage";
 import SourceSettingsPage from "./pages/SourceSettingsPage";
+import SourceSummaryPage from "./pages/SourceSummaryPage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
@@ -135,7 +135,7 @@ let render = function () {
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
-                        <IndexRoute component={SourcePage} />
+                        <IndexRoute component={SourceSummaryPage} />
                         <Route path="/skills/:sourceId/logs" component={ConvoPage} />
                         <Route path="/skills/:sourceId/sessions" component={SessionsPage} />
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />

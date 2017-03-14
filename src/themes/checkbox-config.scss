@@ -1,0 +1,6 @@
+@import "dashboard";
+@import "~react-toolbox/lib/checkbox/_config.scss";
+
+$checkbox-size: 1.1 * $unit;
+$checkbox-focus-size: $checkbox-size * 1.1;
+$checkbox-text-font-size: $font-size-small;
