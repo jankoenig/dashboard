@@ -4,7 +4,7 @@ import * as React from "react";
 import DataTile from "../../components/DataTile";
 import { Cell, Grid } from "../../components/Grid";
 import Source from "../../models/source";
-import { NAVY_BLUE } from "../../utils/colors";
+import { NAVY_BLUE, OFF_WHITE } from "../../utils/colors";
 
 const DEFAULT_TEXT_FORMAT = "MMM Do, YYYY";
 
@@ -30,8 +30,8 @@ export class SourceHeader extends React.Component<SourceHeaderProps, SourceHeade
 
     static defaultProps: SourceHeaderProps = {
         source: SourceHeader.DEFAULT_SOURCE,
-        rootStyle: { backgroundColor: "rgb(36, 48, 54)", paddingBottom: "0px", paddingTop: "0px" },
-        tileColor: NAVY_BLUE
+        rootStyle: { backgroundColor: NAVY_BLUE, paddingBottom: "0px", paddingTop: "0px" },
+        tileColor: OFF_WHITE
     };
 
     render() {

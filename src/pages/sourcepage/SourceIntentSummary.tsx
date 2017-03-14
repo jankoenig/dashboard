@@ -6,12 +6,18 @@ import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParam
 import Source from "../../models/source";
 import LogService from "../../services/log";
 import { AMAZON_ORANGE, GOOGLE_GREEN } from "../../utils/colors";
+import SourceUtils from "../../utils/Source";
 import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader";
+
+export interface BarProps extends BarProps {
+
+}
 
 interface SourceIntentSummaryProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
+    bars?: BarProps[];
 }
 
 interface SourceIntentSummaryState {
@@ -39,7 +45,8 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
     static defaultProps: SourceIntentSummaryProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
-        endDate: moment()
+        endDate: moment(),
+        bars: SourceIntentSummary.bars
     };
 
     constructor(props: SourceIntentSummaryProps) {
@@ -55,7 +62,9 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
 
     componentWillReceiveProps(nextProps: SourceIntentSummaryProps, context: any) {
         if (nextProps.source) {
-            this.retrieveIntentSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            if (!SourceUtils.equals(nextProps.source, this.props.source) || !nextProps.startDate.isSame(this.props.startDate) || !nextProps.endDate.isSame(this.props.endDate)) {
+                this.retrieveIntentSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            }
         } else {
             this.setState({
                 intentData: [],
@@ -99,11 +108,12 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
 
     render() {
         const { intentData } = this.state;
+        const { bars } = this.props;
         return (
             <div style={{ height: (intentData.length * 40) + 100 }} >
                 <BarChart
                     data={intentData}
-                    bars={SourceIntentSummary.bars}
+                    bars={bars}
                 />
             </div>
         );

@@ -13,7 +13,7 @@ const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
 const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss");
 const InputTheme = require("../../../themes/input-light.scss");
-const CheckboxTheme = require("../../../themes/checkbox-light.scss");
+const CheckboxTheme = require("../../../themes/checkbox-theme-light.scss");
 
 export interface DateRange {
     startTime?: Date | moment.Moment;

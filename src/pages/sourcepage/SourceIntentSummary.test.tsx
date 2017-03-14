@@ -10,7 +10,7 @@ import Query, { EndTimeParameter, QueryParameter, SortParameter, SourceParameter
 import Source from "../../models/source";
 import LogService from "../../services/log";
 import { dummySources } from "../../utils/test";
-import SourceIntentSummary from "./SourceIntentSummary";
+import SourceIntentSummary, { BarProps } from "./SourceIntentSummary";
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -50,6 +50,39 @@ describe("SourceIntentSummary", function () {
 
         it("Checks the bar graph has a default of empty data.", function () {
             expect(wrapper.find(BarChart).prop("data")).to.deep.equal([]);
+        });
+
+        describe("Bars", function () {
+            const bars: BarProps[] = [{
+                dataKey: "First",
+                name: "FirstName",
+                fill: "#FFFFFF",
+                stackId: "a"
+            }, {
+                dataKey: "Second",
+                name: "SecondName",
+                fill: "#FFFF00",
+                stackId: "a"
+            }, {
+                dataKey: "Second",
+                name: "SecondName",
+                fill: "#FFFF00",
+                stackId: "a"
+            }];
+
+            before(function () {
+                wrapper = shallow(<SourceIntentSummary
+                    source={source}
+                    startDate={start}
+                    endDate={end}
+                    bars={bars} />);
+            });
+
+            it("Tests the bars were applied to the inner bar chart.", function() {
+                const barWrapper = wrapper.find(BarChart);
+
+                expect(barWrapper).to.have.prop("bars", bars);
+            });
         });
     });
 
@@ -106,6 +139,12 @@ describe("SourceIntentSummary", function () {
             expect(endParameter.value).to.equal(end.toISOString());
             expect(sourceParameter.value).to.equal(sources[1].secretKey);
             expect(sortParameter.value).to.equal("desc");
+        });
+
+        it("Tests that the data qyer does *not* load if the parameters are the same.", function() {
+            wrapper.setProps({ }); // Forces a call to componentWillReceiveProps with the same props.
+
+            expect(intentService).to.be.calledOnce; // Only on mount.
         });
 
         it("Tests the bar graph has the loaded data after mount.", function () {

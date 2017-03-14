@@ -6,12 +6,18 @@ import Query, { EndTimeParameter, FillGapsParameter, GranularityParameter, SortP
 import Source from "../../models/source";
 import LogService from "../../services/log";
 import { AMAZON_ORANGE, BLACK, GOOGLE_GREEN } from "../../utils/colors";
+import SourceUtils from "../../utils/Source";
 import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader";
+
+export interface LineProps extends LineProps {
+
+}
 
 interface SourceTimeSummaryProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
+    lines?: LineProps[];
 }
 
 interface SourceTimeSummaryState {
@@ -41,7 +47,8 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
     static defaultProps: SourceTimeSummaryProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
-        endDate: moment()
+        endDate: moment(),
+        lines: SourceTimeSummary.lines
     };
 
     constructor(props: SourceTimeSummaryProps) {
@@ -57,7 +64,9 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
 
     componentWillReceiveProps(nextProps: SourceTimeSummaryProps, context: any) {
         if (nextProps.source) {
-            this.retrieveTimeSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            if (!SourceUtils.equals(nextProps.source, this.props.source) || !nextProps.startDate.isSame(this.props.startDate) || !nextProps.endDate.isSame(this.props.endDate)) {
+                this.retrieveTimeSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
+            }
         } else {
             this.setState({
                 timeData: [],
@@ -110,10 +119,13 @@ export class SourceTimeSummary extends React.Component<SourceTimeSummaryProps, S
     }
 
     render() {
+        const { timeData } = this.state;
+        const { lines } = this.props;
+
         return (
             <TimeChart
-                data={this.state.timeData}
-                lines={SourceTimeSummary.lines} />
+                lines={lines}
+                data={timeData} />
         );
     }
 }
