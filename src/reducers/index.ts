@@ -2,6 +2,7 @@ import { routerReducer } from "react-router-redux";
 import { combineReducers } from "redux";
 
 import { LOGOUT_USER } from "../constants";
+import { audio, AudioState } from "./audio";
 import { authForm, AuthFormState } from "./auth-form";
 import { log, LogState } from "./log";
 import { notification, NotificationState } from "./notification";
@@ -10,6 +11,7 @@ import { source, SourceState } from "./source";
 
 export namespace State {
   export type All = {
+    audio: AudioState,
     authForm: AuthFormState,
     log: LogState,
     notification: NotificationState,
@@ -20,6 +22,7 @@ export namespace State {
 }
 
 const appReducer = combineReducers<State.All>({
+  audio,
   authForm,
   log,
   notification,

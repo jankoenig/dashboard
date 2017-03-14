@@ -28,13 +28,19 @@ describe("Numbers", function() {
     describe("hash", function() {
         let hashable = "this will be hashed";
         let hashableAlso = "this will be hashed";
+        let hashableNoMatch = "doesn't match";
+
         let hash = Numbers.hashCode(hashable);
         let hashAlso = Numbers.hashCode(hashableAlso);
+        let hashNoMatch = Numbers.hashCode(hashableNoMatch);
         it("converts a string to a number", function() {
             expect(hash).to.be.a("number");
         });
         it("returns the same hash for two similar strings", function() {
             expect(hash).to.equal(hashAlso);
+        });
+        it("does not equal an unequal string", function() {
+            expect(hash).to.not.equal(hashNoMatch);
         });
     });
 });

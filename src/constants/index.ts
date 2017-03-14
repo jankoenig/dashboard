@@ -48,6 +48,12 @@ export const FETCH_SOURCES_SUCCESS: FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SU
 export type SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 export const SET_SNACKBAR_MESSAGE: SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 
+export type STORE_AUDIO = "bst/STORE_AUDIO";
+export const STORE_AUDIO: STORE_AUDIO = "bst/STORE_AUDIO";
+
+export type REMOVE_AUDIO = "bst/REMOVE_AUDIO";
+export const REMOVE_AUDIO: REMOVE_AUDIO  = "bst/REMOVE_AUDIO";
+
 export namespace COLORS {
     export const RED = "#F44336";
     export const GREEN = "#4CAF50";

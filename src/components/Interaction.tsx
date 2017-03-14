@@ -2,7 +2,6 @@ import * as React from "react";
 import JSONTree from "react-json-tree";
 
 import CopyToClipboardButton from "../components/CopyToClipboardButton";
-// import { Cell, Grid } from "../components/Grid";
 import { OutputList } from "../components/OutputList";
 import Log from "../models/log";
 import Output from "../models/output";
@@ -51,11 +50,21 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         return keyName.join(",");
     }
 
-    static getJSONTreeStyle() {
+    static getJSONTreeStyle(): React.CSSProperties {
         return {
             padding: "15px",
             borderRadius: "10px",
             borderStyle: "solid"
+        };
+    }
+
+    static getHeaderWrapperStyle(): React.CSSProperties {
+        return {
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center"
         };
     }
 
@@ -116,14 +125,14 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
     render() {
         return (
             <span>
-                <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={Interaction.getHeaderWrapperStyle()}>
                     <h6>REQUEST</h6>
                     <CopyToClipboardButton text={JSON.stringify(this.props.request.payload, undefined, 2)} />
                 </div>
                 {this.getTree(this.props.request)}
                 <h6>LOGS</h6>
                 <OutputList outputs={this.props.outputs} stackTraces={this.props.stackTraces} />
-                <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={Interaction.getHeaderWrapperStyle()}>
                     <h6>RESPONSE</h6>
                     <CopyToClipboardButton text={JSON.stringify(this.props.response.payload, undefined, 2)} />
                 </div>
