@@ -2,6 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 import { DateRangePicker, FocusedInputShape } from "react-dates";
 import { connect } from "react-redux";
+// import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import "!style!css!sass!react-dates/lib/css/_datepicker.css";
 
@@ -147,7 +148,6 @@ export class SessionsPage extends React.Component<SessionsPageProps, SessionsPag
 
         if (this.state.conversationList) {
             for (let session of this.state.summary.sessions) {
-                // console.log(session);
                 let key = new Date(session.start.timestamp).getTime();
                 sessionList.push((
                     <SessionListViewItem session={session} key={key} />
@@ -188,9 +188,23 @@ export class SessionsPage extends React.Component<SessionsPageProps, SessionsPag
                                 <DataTile label="Unique Users" value={this.state.summary.totalUniqueUsers.toString()} />
                             </Cell>
                             <Cell>
-                            <DataTile label="Session Errors" value={this.state.summary.failedSessions.length.toString()} />
+                                <DataTile label="Session Errors" value={this.state.summary.failedSessions.length.toString()} />
                             </Cell>
                         </Grid>
+                        {/**<Grid>
+                            <Cell col={12} style={{ height: 500 }} >
+                                <ResponsiveContainer>
+                                    <BarChart
+                                        data={this.state.summary.sessions}
+                                        margin={{}}>
+                                        <XAxis type="category" dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Bar dataKey="total" fill="rgb(49, 130, 189)" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </Cell>
+                        </Grid>**/}
                         <Grid>
                             <Cell col={6}>
                                 <ul style={{ listStyle: "none" }}>
