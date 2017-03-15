@@ -129,7 +129,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
         const selectedEntries = (entries instanceof Array) ? entries : [ entries ];
         const selectedStats: LogService.TotalStat[] = [];
         for (let entry of selectedEntries) {
-            selectedStats.push(sourceStats[entry]);
+            const stat = sourceStats[entry];
+            if (stat) {
+                selectedStats.push(stat);
+            }
         }
 
         const stats = addStats(selectedStats);

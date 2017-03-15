@@ -273,6 +273,13 @@ describe("SourceStats", function () {
             checkStats(stats);
         });
 
+        it("Tests that it handles entries that do not exist.", function() {
+            wrapper.setProps({ selectedEntries: [ "stats", "Noop" ]});
+
+            const stats = summary.stats;
+            checkStats(stats);
+        });
+
         function checkStats(stats: LogService.TotalStat) {
             expect(wrapper.find(DataTile).at(0)).to.have.prop("value", stats.totalEvents.toString()); // events
             expect(wrapper.find(DataTile).at(1)).to.have.prop("value", stats.totalUsers.toString()); // users
