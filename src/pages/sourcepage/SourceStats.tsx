@@ -12,6 +12,8 @@ import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader
 const DEFAULT_VALUE: string = "N/A";
 const LOADING_VALUE: string = "Loading...";
 
+type ENTRY = "stats" | "Amazon.Alexa" | "Google.Home" | "Unknown";
+
 interface Labels {
     eventsLabel: string;
     usersLabel: string;
@@ -22,6 +24,7 @@ interface SourceStatsProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
+    selectedEntry?: ENTRY;
 }
 
 interface SourceStatsState {
@@ -42,7 +45,8 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
     static defaultProps: SourceStatsProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
-        endDate: moment()
+        endDate: moment(),
+        selectedEntry: "stats"
     };
 
     constructor(props: SourceStatsProps) {
@@ -97,7 +101,7 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
         }
     }
 
-    static getLabel(sourceStats: LogService.SourceStats, state: DataState): Labels {
+    static getLabel(sourceStats: LogService.SourceStats, state: DataState, selectedEntry: ENTRY = "stats"): Labels {
         if (state === DataState.LOADING) {
             return {
                 eventsLabel: LOADING_VALUE,
@@ -112,7 +116,9 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
             };
         }
 
-        const stats = sourceStats.stats;
+        console.info("Selecting " + selectedEntry);
+        const stats = sourceStats[selectedEntry];
+        console.log(stats);
         return {
             eventsLabel: stats.totalEvents.toString(),
             usersLabel: stats.totalUsers.toString(),
@@ -142,7 +148,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
     }
 
     render() {
-        const { eventsLabel, usersLabel, errorsLabel } = SourceStats.getLabel(this.state.sourceStats, this.state.statsLoaded);
+        const { selectedEntry } = this.props;
+        const { sourceStats, statsLoaded } = this.state;
+        const { eventsLabel, usersLabel, errorsLabel } = SourceStats.getLabel(sourceStats, statsLoaded, selectedEntry);
+
         return (
             <Grid>
                 <Cell col={4}>
