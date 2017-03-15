@@ -128,7 +128,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                         options={options}
                         onCheck={handleOriginChange} />
                     <SourceStats
-                        selectedEntry={selectedStatEntry}
+                        selectedEntries={selectedStatEntry}
                         {...others} />
                     <Grid>
                         <Cell col={12} style={{ height: 300 }}>

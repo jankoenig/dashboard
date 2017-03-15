@@ -222,31 +222,42 @@ describe("SourceStats", function () {
         });
 
         it("Tests that Amazon Alexa is selected on props change.", function () {
-            wrapper.setProps({ selectedEntry: "Amazon.Alexa" });
+            wrapper.setProps({ selectedEntries: "Amazon.Alexa" });
 
             const stats = summary["Amazon.Alexa"];
             checkStats(stats);
         });
 
         it("Tests that Google Home is selected on props change.", function () {
-            wrapper.setProps({ selectedEntry: "Google.Home" });
+            wrapper.setProps({ selectedEntries: "Google.Home" });
 
             const stats = summary["Google.Home"];
             checkStats(stats);
         });
 
         it("Tests that Unknown is selected on props change.", function () {
-            wrapper.setProps({ selectedEntry: "Unknown" });
+            wrapper.setProps({ selectedEntries: "Unknown" });
 
             const stats = summary.Unknown;
             checkStats(stats);
         });
 
         it("Tests that the regular stats are selected on props change.", function () {
-            wrapper.setProps({ selectedEntry: "Amazon.Alexa" }); // Swapping to another.
-            wrapper.setProps({ selectedEntry: "stats" }); // Woops.  Swapping back.
+            wrapper.setProps({ selectedEntries: "Amazon.Alexa" }); // Swapping to another.
+            wrapper.setProps({ selectedEntries: "stats" }); // Woops.  Swapping back.
 
             const stats = summary.stats;
+            checkStats(stats);
+        });
+
+        it("Tests that it combines the entries are selected on props change.", function() {
+            wrapper.setProps({ selectedEntries: [ "Amazon.Alexa", "Google.Home" ]});
+
+            const stats = {
+                totalEvents: summary["Amazon.Alexa"].totalEvents + summary["Google.Home"].totalEvents,
+                totalExceptions: summary["Amazon.Alexa"].totalExceptions + summary["Google.Home"].totalExceptions,
+                totalUsers: summary["Amazon.Alexa"].totalUsers + summary["Google.Home"].totalUsers
+            };
             checkStats(stats);
         });
 

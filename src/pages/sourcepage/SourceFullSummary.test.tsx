@@ -156,7 +156,7 @@ describe("SourceFullSummary", function () {
 
             it("Tests the stat entry passed is defaulted to stats.", function () {
                 const statsSummary = wrapper.find(SourceStats).at(0);
-                const statEntry = statsSummary.prop("selectedEntry");
+                const statEntry = statsSummary.prop("selectedEntries");
 
                 expect(statEntry).to.equal("stats");
             });
@@ -165,7 +165,7 @@ describe("SourceFullSummary", function () {
                 originSelector.simulate("check", 1, "Amazon");
 
                 const statsSummary = wrapper.find(SourceStats).at(0);
-                const statEntry = statsSummary.prop("selectedEntry");
+                const statEntry = statsSummary.prop("selectedEntries");
 
                 expect(statEntry).to.equal("Amazon.Alexa");
             });
@@ -174,7 +174,7 @@ describe("SourceFullSummary", function () {
                 originSelector.simulate("check", 2, "Google");
 
                 const statsSummary = wrapper.find(SourceStats).at(0);
-                const statEntry = statsSummary.prop("selectedEntry");
+                const statEntry = statsSummary.prop("selectedEntries");
 
                 expect(statEntry).to.equal("Google.Home");
             });
@@ -184,7 +184,7 @@ describe("SourceFullSummary", function () {
                 originSelector.simulate("check", 0, "All");
 
                 const statsSummary = wrapper.find(SourceStats).at(0);
-                const statEntry = statsSummary.prop("selectedEntry");
+                const statEntry = statsSummary.prop("selectedEntries");
 
                 expect(statEntry).to.equal("stats");
             });

@@ -24,7 +24,7 @@ interface SourceStatsProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
-    selectedEntry?: ENTRY;
+    selectedEntries?: ENTRY | ENTRY[];
 }
 
 interface SourceStatsState {
@@ -40,13 +40,25 @@ function newStats(users: number = 0, exceptions: number = 0, events: number = 0)
     };
 }
 
+function addStats(stats: LogService.TotalStat[]): LogService.TotalStat {
+    console.log("Adding");
+    console.log(stats);
+    let addedStats = newStats();
+    for (let stat of stats) {
+        addedStats.totalEvents += stat.totalEvents;
+        addedStats.totalExceptions += stat.totalExceptions;
+        addedStats.totalUsers += stat.totalUsers;
+    }
+    return addedStats;
+}
+
 export class SourceStats extends React.Component<SourceStatsProps, SourceStatsState> {
 
     static defaultProps: SourceStatsProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
-        selectedEntry: "stats"
+        selectedEntries: ["stats"]
     };
 
     constructor(props: SourceStatsProps) {
@@ -101,7 +113,7 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
         }
     }
 
-    static getLabel(sourceStats: LogService.SourceStats, state: DataState, selectedEntry: ENTRY = "stats"): Labels {
+    static getLabel(sourceStats: LogService.SourceStats, state: DataState, entries: ENTRY | ENTRY[]): Labels {
         if (state === DataState.LOADING) {
             return {
                 eventsLabel: LOADING_VALUE,
@@ -116,9 +128,20 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
             };
         }
 
-        console.info("Selecting " + selectedEntry);
-        const stats = sourceStats[selectedEntry];
-        console.log(stats);
+        console.log(entries);
+        console.log(typeof entries);
+        console.log(entries instanceof String);
+        console.log(entries instanceof Array);
+        const selectedEntries = (entries instanceof Array) ? entries : [ entries ];
+        console.log(selectedEntries);
+        const selectedStats: LogService.TotalStat[] = [];
+        console.log(sourceStats);
+        for (let entry of selectedEntries) {
+            selectedStats.push(sourceStats[entry]);
+        }
+
+        const stats = addStats(selectedStats);
+
         return {
             eventsLabel: stats.totalEvents.toString(),
             usersLabel: stats.totalUsers.toString(),
@@ -148,9 +171,9 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
     }
 
     render() {
-        const { selectedEntry } = this.props;
+        const { selectedEntries } = this.props;
         const { sourceStats, statsLoaded } = this.state;
-        const { eventsLabel, usersLabel, errorsLabel } = SourceStats.getLabel(sourceStats, statsLoaded, selectedEntry);
+        const { eventsLabel, usersLabel, errorsLabel } = SourceStats.getLabel(sourceStats, statsLoaded, selectedEntries);
 
         return (
             <Grid>
