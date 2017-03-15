@@ -182,7 +182,6 @@ function joinBuckets(merger: any, buckets: LogService.TimeBucket[], key: "total"
         let obj: PageTimeData = merger[dateString];
         if (!obj) {
             obj = new PageTimeData(date);
-            console.info("date" + date.toISOString());
         }
         obj[key] = bucket.count;
         merger[dateString] = obj;
