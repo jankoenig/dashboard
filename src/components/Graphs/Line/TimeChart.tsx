@@ -12,13 +12,15 @@ export interface LineProps {
 
 export class TimeData {
     time: Date;
+    timeValue: number;
 
     constructor(time: Date | moment.Moment) {
         this.time = (time instanceof Date) ? time : time.toDate();
+        this.timeValue = this.time.getTime();
     }
 
-    get timeValue() {
-        return this.time.getTime();
+    compare(data: TimeData) {
+        return this.timeValue - data.timeValue;
     }
 }
 

@@ -53,6 +53,30 @@ describe("CountChart", function () {
         });
     });
 
+    describe("TimeData tests", function() {
+        it("Tests that compare returns 0 on equal.", function() {
+            const b1 = new TimeData(new Date(2017, 5, 5, 5, 5));
+            const b2 = new TimeData(new Date(2017, 5, 5, 5, 5));
+
+            expect(b1.compare(b2)).to.equal(0);
+            expect(b2.compare(b1)).to.equal(0);
+        });
+
+        it("Tests that compare returns negative when b1 is later than b2.", function() {
+            const b1 = new TimeData(new Date(2017, 5, 5, 5, 4));
+            const b2 = new TimeData(new Date(2017, 5, 5, 5, 5));
+
+            expect(b1.compare(b2)).to.lessThan(0);
+        });
+
+        it("Tests that compare returns negative when b1 is sooner than b2.", function() {
+            const b1 = new TimeData(new Date(2017, 5, 5, 5, 6));
+            const b2 = new TimeData(new Date(2017, 5, 5, 5, 5));
+
+            expect(b1.compare(b2)).to.greaterThan(0);
+        });
+    });
+
     describe("Lines tests", function () {
         let wrapper: ShallowWrapper<any, any>;
         let linesWrapper: ShallowWrapper<any, any>;
