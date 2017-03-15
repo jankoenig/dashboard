@@ -135,8 +135,6 @@ describe("SourceFullSummary", function () {
             const intentSummary = wrapper.find(SourceIntentSummary).at(0);
             const summaryBars = intentSummary.prop("bars");
 
-            console.log(summaryBars);
-
             expect(summaryBars).to.have.length(2);
 
             expect(summaryBars[0]).to.have.property("dataKey", "Amazon.Alexa");
@@ -149,11 +147,47 @@ describe("SourceFullSummary", function () {
             const intentSummary = wrapper.find(SourceIntentSummary).at(0);
             const summaryBars = intentSummary.prop("bars");
 
-            console.log(summaryBars);
-
             expect(summaryBars).to.have.length(1);
 
             expect(summaryBars[0]).to.have.property("dataKey", "Google.Home");
+        });
+
+        describe("SourcePage selection", function () {
+
+            it("Tests the stat entry passed is defaulted to stats.", function () {
+                const statsSummary = wrapper.find(SourceStats).at(0);
+                const statEntry = statsSummary.prop("selectedEntry");
+
+                expect(statEntry).to.equal("stats");
+            });
+
+            it("Tests the stat entry passed to the source stats are right when Amazon is checked.", function () {
+                originSelector.simulate("check", 1, "Amazon");
+
+                const statsSummary = wrapper.find(SourceStats).at(0);
+                const statEntry = statsSummary.prop("selectedEntry");
+
+                expect(statEntry).to.equal("Amazon.Alexa");
+            });
+
+            it("Tests the stat entry passed to the source stats are what when Google is checked.", function () {
+                originSelector.simulate("check", 2, "Google");
+
+                const statsSummary = wrapper.find(SourceStats).at(0);
+                const statEntry = statsSummary.prop("selectedEntry");
+
+                expect(statEntry).to.equal("Google.Home");
+            });
+
+            it("Tests the stat entry passed to the source stats are what when all is checked.", function () {
+                originSelector.simulate("check", 2, "Google");
+                originSelector.simulate("check", 0, "All");
+
+                const statsSummary = wrapper.find(SourceStats).at(0);
+                const statEntry = statsSummary.prop("selectedEntry");
+
+                expect(statEntry).to.equal("stats");
+            });
         });
     });
 });

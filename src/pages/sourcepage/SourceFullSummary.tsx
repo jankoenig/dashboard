@@ -12,6 +12,9 @@ const AllCheckboxTheme = require("./themes/checkbox-all-theme.scss");
 const AmazonCheckboxTheme = require("./themes/checkbox-amazon-theme.scss");
 const GoogleCheckboxTheme = require("./themes/checkbox-google-theme.scss");
 
+// corresponds with the stat entry on SourceStats.
+type SelectedStatEntry = "stats" | "Amazon.Alexa" | "Google.Home" | "Unknown";
+
 interface SourceFullSummaryProps {
     header: string;
     source: Source;
@@ -20,6 +23,7 @@ interface SourceFullSummaryProps {
 }
 
 interface SourceFullSummaryState {
+    selectedStatEntry: SelectedStatEntry;
     sourceOptions: SourceOption[];
     lines: LineProps[];
     bars: BarProps[];
@@ -66,6 +70,13 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         stackId: "a"
     }];
 
+    // The names correspond with the label for easy pickens.
+    static statEntries: any = {
+        "All": "stats",
+        "Amazon": "Amazon.Alexa",
+        "Google": "Google.Home"
+    };
+
     constructor(props: SourceFullSummaryProps) {
         super(props);
 
@@ -74,7 +85,8 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         this.state = {
             sourceOptions: SourceFullSummary.options.slice(),
             lines: SourceFullSummary.lines.slice(),
-            bars: SourceFullSummary.bars.slice()
+            bars: SourceFullSummary.bars.slice(),
+            selectedStatEntry: SourceFullSummary.statEntries["All"]
         };
     }
 
@@ -93,12 +105,15 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                 }
             }
         }
+
+        this.state.selectedStatEntry = SourceFullSummary.statEntries[label];
+
         this.setState(this.state);
     }
 
     render() {
         const { header, ...others } = this.props;
-        const { bars, lines } = this.state;
+        const { bars, lines, selectedStatEntry } = this.state;
         const options = SourceFullSummary.options;
         const handleOriginChange = this.handleOriginChange;
 
@@ -113,6 +128,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                         options={options}
                         onCheck={handleOriginChange} />
                     <SourceStats
+                        selectedEntry={selectedStatEntry}
                         {...others} />
                     <Grid>
                         <Cell col={12} style={{ height: 300 }}>
