@@ -100,7 +100,7 @@ describe("SourceFullSummary", function () {
         });
 
         it("tests clicking on a checkbox will alter it", function () {
-            originSelector.simulate("check", 0, "All");
+            originSelector.simulate("check", 0, "All", false);
 
             // rerenders
             originSelector = wrapper.find(SourceOriginSelector).at(0);
@@ -108,7 +108,7 @@ describe("SourceFullSummary", function () {
             let optionsProp = originSelector.prop("options");
             expect(optionsProp[0].checked).to.equal(false);
 
-            originSelector.simulate("check", 0, "All");
+            originSelector.simulate("check", 0, "All", true);
 
             // rerenders
             originSelector = wrapper.find(SourceOriginSelector).at(0);
@@ -118,7 +118,7 @@ describe("SourceFullSummary", function () {
         });
 
         it("Tests the lines passed to the time summary are only what is checked.", function () {
-            originSelector.simulate("check", 0, "All");
+            originSelector.simulate("check", 0, "All", false);
 
             const timesummary = wrapper.find(SourceTimeSummary).at(0);
             const summarylines = timesummary.prop("lines");
@@ -130,7 +130,7 @@ describe("SourceFullSummary", function () {
         });
 
         it("Tests nothing happens to the bars if \"total\" is unchecked.", function () {
-            originSelector.simulate("check", 0, "Total");
+            originSelector.simulate("check", 0, "Total", false);
 
             const intentSummary = wrapper.find(SourceIntentSummary).at(0);
             const summaryBars = intentSummary.prop("bars");
@@ -142,7 +142,7 @@ describe("SourceFullSummary", function () {
         });
 
         it("Tests the bars passed to the intent summary are only what is checked.", function () {
-            originSelector.simulate("check", 1, "Amazon");
+            originSelector.simulate("check", 1, "Amazon", false);
 
             const intentSummary = wrapper.find(SourceIntentSummary).at(0);
             const summaryBars = intentSummary.prop("bars");
@@ -158,35 +158,77 @@ describe("SourceFullSummary", function () {
                 const statsSummary = wrapper.find(SourceStats).at(0);
                 const statEntry = statsSummary.prop("selectedEntries");
 
-                expect(statEntry).to.equal("stats");
+                expect(statEntry).to.deep.equal(["stats"]);
             });
 
-            it("Tests the stat entry passed to the source stats are right when Amazon is checked.", function () {
-                originSelector.simulate("check", 1, "Amazon");
+            it("Tests that only stats is passed in when \"All\" is still selected", function () {
+                originSelector.simulate("check", 0, "Total", true);
+                originSelector.simulate("check", 1, "Amazon", false);
 
-                const statsSummary = wrapper.find(SourceStats).at(0);
-                const statEntry = statsSummary.prop("selectedEntries");
+                let statsSummary = wrapper.find(SourceStats).at(0);
+                let statEntry = statsSummary.prop("selectedEntries");
 
-                expect(statEntry).to.equal("Amazon.Alexa");
+                expect(statEntry).to.deep.equal(["stats"]);
+
+                originSelector.simulate("check", 2, "Google", false);
+
+                statsSummary = wrapper.find(SourceStats).at(0);
+                statEntry = statsSummary.prop("selectedEntries");
+
+                expect(statEntry).to.deep.equal(["stats"]);
             });
 
-            it("Tests the stat entry passed to the source stats are what when Google is checked.", function () {
-                originSelector.simulate("check", 2, "Google");
+            describe("All Not Selected", function () {
+                beforeEach(function () {
+                    originSelector.simulate("check", 0, "All", false);
+                });
 
-                const statsSummary = wrapper.find(SourceStats).at(0);
-                const statEntry = statsSummary.prop("selectedEntries");
+                it("Tests that the stat entry combines both parameters.", function () {
+                    originSelector.simulate("check", 1, "Amazon", true);
+                    originSelector.simulate("check", 2, "Google", true);
 
-                expect(statEntry).to.equal("Google.Home");
+                    const statsSummary = wrapper.find(SourceStats).at(0);
+                    const statEntry = statsSummary.prop("selectedEntries");
+
+                    expect(statEntry).to.have.length(2);
+                    expect(statEntry).to.contain("Amazon.Alexa");
+                    expect(statEntry).to.contain("Google.Home");
+                });
             });
 
-            it("Tests the stat entry passed to the source stats are what when all is checked.", function () {
-                originSelector.simulate("check", 2, "Google");
-                originSelector.simulate("check", 0, "All");
+            describe("No initial selected", function () {
+                beforeEach(function () {
+                    originSelector.simulate("check", 0, "All", false);
+                    originSelector.simulate("check", 1, "Amazon", false);
+                    originSelector.simulate("check", 2, "Google", false);
+                });
 
-                const statsSummary = wrapper.find(SourceStats).at(0);
-                const statEntry = statsSummary.prop("selectedEntries");
+                it("Tests the stat entry passed to the source stats are right when Amazon is checked.", function () {
+                    originSelector.simulate("check", 1, "Amazon", true);
 
-                expect(statEntry).to.equal("stats");
+                    const statsSummary = wrapper.find(SourceStats).at(0);
+                    const statEntry = statsSummary.prop("selectedEntries");
+
+                    expect(statEntry).to.deep.equal(["Amazon.Alexa"]);
+                });
+
+                it("Tests the stat entry passed to the source stats are what when Google is checked.", function () {
+                    originSelector.simulate("check", 2, "Google", true);
+
+                    const statsSummary = wrapper.find(SourceStats).at(0);
+                    const statEntry = statsSummary.prop("selectedEntries");
+
+                    expect(statEntry).to.deep.equal(["Google.Home"]);
+                });
+
+                it("Tests the stat entry passed to the source stats are what when all is checked.", function () {
+                    originSelector.simulate("check", 0, "All", true);
+
+                    const statsSummary = wrapper.find(SourceStats).at(0);
+                    const statEntry = statsSummary.prop("selectedEntries");
+
+                    expect(statEntry).to.deep.equal(["stats"]);
+                });
             });
         });
     });
