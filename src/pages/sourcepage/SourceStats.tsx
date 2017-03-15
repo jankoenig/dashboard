@@ -41,8 +41,6 @@ function newStats(users: number = 0, exceptions: number = 0, events: number = 0)
 }
 
 function addStats(stats: LogService.TotalStat[]): LogService.TotalStat {
-    console.log("Adding");
-    console.log(stats);
     let addedStats = newStats();
     for (let stat of stats) {
         addedStats.totalEvents += stat.totalEvents;
@@ -128,14 +126,8 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
             };
         }
 
-        console.log(entries);
-        console.log(typeof entries);
-        console.log(entries instanceof String);
-        console.log(entries instanceof Array);
         const selectedEntries = (entries instanceof Array) ? entries : [ entries ];
-        console.log(selectedEntries);
         const selectedStats: LogService.TotalStat[] = [];
-        console.log(sourceStats);
         for (let entry of selectedEntries) {
             selectedStats.push(sourceStats[entry]);
         }
