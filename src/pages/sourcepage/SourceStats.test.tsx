@@ -261,6 +261,18 @@ describe("SourceStats", function () {
             checkStats(stats);
         });
 
+        it("Tests that the default is selected when no entries are selected.", function() {
+            wrapper.setProps({ selectedEntries: [] });
+
+            const stats = {
+                totalEvents: 0,
+                totalExceptions: 0,
+                totalUsers: 0
+            };
+
+            checkStats(stats);
+        });
+
         function checkStats(stats: LogService.TotalStat) {
             expect(wrapper.find(DataTile).at(0)).to.have.prop("value", stats.totalEvents.toString()); // events
             expect(wrapper.find(DataTile).at(1)).to.have.prop("value", stats.totalUsers.toString()); // users
