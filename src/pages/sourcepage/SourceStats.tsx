@@ -29,6 +29,14 @@ interface SourceStatsState {
     statsLoaded: DataState;
 }
 
+function newStats(users: number = 0, exceptions: number = 0, events: number = 0): LogService.TotalStat {
+    return {
+        totalUsers: 0,
+        totalExceptions: 0,
+        totalEvents: 0
+    };
+}
+
 export class SourceStats extends React.Component<SourceStatsProps, SourceStatsState> {
 
     static defaultProps: SourceStatsProps = {
@@ -45,11 +53,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
             statsLoaded: DataState.LOADING,
             sourceStats: {
                 source: DEFAULT_VALUE,
-                stats: {
-                    totalUsers: 0,
-                    totalExceptions: 0,
-                    totalEvents: 0
-                }
+                stats: newStats(),
+                "Amazon.Alexa": newStats(),
+                "Google.Home": newStats(),
+                Unknown: newStats()
             }
         };
     }
@@ -64,11 +71,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
                 statsLoaded: DataState.LOADED,
                 sourceStats: {
                     source: DEFAULT_VALUE,
-                    stats: {
-                        totalUsers: 0,
-                        totalExceptions: 0,
-                        totalEvents: 0
-                    }
+                    stats: newStats(),
+                    "Amazon.Alexa": newStats(),
+                    "Google.Home": newStats(),
+                    Unknown: newStats()
                 }
             });
         }
@@ -82,11 +88,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
                 statsLoaded: DataState.LOADED,
                 sourceStats: {
                     source: DEFAULT_VALUE,
-                    stats: {
-                        totalUsers: 0,
-                        totalExceptions: 0,
-                        totalEvents: 0
-                    }
+                    stats: newStats(),
+                    "Amazon.Alexa": newStats(),
+                    "Google.Home": newStats(),
+                    Unknown: newStats()
                 }
             });
         }

@@ -224,6 +224,21 @@ function dummySourceStats(): LogService.SourceStats {
             totalUsers: 1000,
             totalEvents: 2000,
             totalExceptions: 5 // Don't want to go crazy here.
+        },
+        "Amazon.Alexa": {
+            totalUsers: 2000,
+            totalEvents: 1000,
+            totalExceptions: 6
+        },
+        "Google.Home": {
+            totalUsers: 5000,
+            totalEvents: 3000,
+            totalExceptions: 7
+        },
+        Unknown: {
+            totalUsers: 7000,
+            totalEvents: 4000,
+            totalExceptions: 8
         }
     };
 }

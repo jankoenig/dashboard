@@ -23,6 +23,21 @@ const summary: LogService.SourceStats = {
         totalUsers: 100,
         totalExceptions: 200,
         totalEvents: 300
+    },
+    "Amazon.Alexa": {
+        totalUsers: 200,
+        totalExceptions: 300,
+        totalEvents: 100,
+    },
+    "Google.Home": {
+        totalUsers: 300,
+        totalExceptions: 100,
+        totalEvents: 100
+    },
+    Unknown: {
+        totalUsers: 123,
+        totalExceptions: 312,
+        totalEvents: 231
     }
 };
 
