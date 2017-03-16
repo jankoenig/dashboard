@@ -364,10 +364,14 @@ class GoogleHomeConversation extends GenericConversation {
                 }
 
                 if (payload.result) {
-                    if (intent && intent !== payload.result.action) {
-                        intent += "." + payload.result.action;
+                    let action = payload.result.action;
+                    if (!action) {
+                        action = (payload.result.metadata) ? payload.result.metadata.intentName : undefined;
+                    }
+                    if (intent && intent !== action) {
+                        intent += "." + action;
                     } else {
-                        intent = payload.result.action;
+                        intent = action;
                     }
                 }
             }
