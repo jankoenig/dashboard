@@ -13,7 +13,7 @@ export interface SourceOption {
 
 interface SourceOriginSelectorProps {
     options: SourceOption[];
-    onCheck?: (index: number, label: string) => void;
+    onCheck?: (index: number, label: string, checked: boolean) => void;
 }
 
 interface SourceOriginSelectorState {
