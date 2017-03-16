@@ -12,6 +12,8 @@ import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader
 const DEFAULT_VALUE: string = "N/A";
 const LOADING_VALUE: string = "Loading...";
 
+type ENTRY = "stats" | "Amazon.Alexa" | "Google.Home" | "Unknown";
+
 interface Labels {
     eventsLabel: string;
     usersLabel: string;
@@ -22,6 +24,7 @@ interface SourceStatsProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
+    selectedEntries?: ENTRY | ENTRY[];
 }
 
 interface SourceStatsState {
@@ -29,12 +32,31 @@ interface SourceStatsState {
     statsLoaded: DataState;
 }
 
+function newStats(users: number = 0, exceptions: number = 0, events: number = 0): LogService.TotalStat {
+    return {
+        totalUsers: 0,
+        totalExceptions: 0,
+        totalEvents: 0
+    };
+}
+
+function addStats(stats: LogService.TotalStat[]): LogService.TotalStat {
+    let addedStats = newStats();
+    for (let stat of stats) {
+        addedStats.totalEvents += stat.totalEvents;
+        addedStats.totalExceptions += stat.totalExceptions;
+        addedStats.totalUsers += stat.totalUsers;
+    }
+    return addedStats;
+}
+
 export class SourceStats extends React.Component<SourceStatsProps, SourceStatsState> {
 
     static defaultProps: SourceStatsProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
-        endDate: moment()
+        endDate: moment(),
+        selectedEntries: ["stats"]
     };
 
     constructor(props: SourceStatsProps) {
@@ -45,11 +67,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
             statsLoaded: DataState.LOADING,
             sourceStats: {
                 source: DEFAULT_VALUE,
-                stats: {
-                    totalUsers: 0,
-                    totalExceptions: 0,
-                    totalEvents: 0
-                }
+                stats: newStats(),
+                "Amazon.Alexa": newStats(),
+                "Google.Home": newStats(),
+                Unknown: newStats()
             }
         };
     }
@@ -64,11 +85,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
                 statsLoaded: DataState.LOADED,
                 sourceStats: {
                     source: DEFAULT_VALUE,
-                    stats: {
-                        totalUsers: 0,
-                        totalExceptions: 0,
-                        totalEvents: 0
-                    }
+                    stats: newStats(),
+                    "Amazon.Alexa": newStats(),
+                    "Google.Home": newStats(),
+                    Unknown: newStats()
                 }
             });
         }
@@ -82,17 +102,16 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
                 statsLoaded: DataState.LOADED,
                 sourceStats: {
                     source: DEFAULT_VALUE,
-                    stats: {
-                        totalUsers: 0,
-                        totalExceptions: 0,
-                        totalEvents: 0
-                    }
+                    stats: newStats(),
+                    "Amazon.Alexa": newStats(),
+                    "Google.Home": newStats(),
+                    Unknown: newStats()
                 }
             });
         }
     }
 
-    static getLabel(sourceStats: LogService.SourceStats, state: DataState): Labels {
+    static getLabel(sourceStats: LogService.SourceStats, state: DataState, entries: ENTRY | ENTRY[]): Labels {
         if (state === DataState.LOADING) {
             return {
                 eventsLabel: LOADING_VALUE,
@@ -107,7 +126,17 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
             };
         }
 
-        const stats = sourceStats.stats;
+        const selectedEntries = (entries instanceof Array) ? entries : [ entries ];
+        const selectedStats: LogService.TotalStat[] = [];
+        for (let entry of selectedEntries) {
+            const stat = sourceStats[entry];
+            if (stat) {
+                selectedStats.push(stat);
+            }
+        }
+
+        const stats = addStats(selectedStats);
+
         return {
             eventsLabel: stats.totalEvents.toString(),
             usersLabel: stats.totalUsers.toString(),
@@ -137,7 +166,10 @@ export class SourceStats extends React.Component<SourceStatsProps, SourceStatsSt
     }
 
     render() {
-        const { eventsLabel, usersLabel, errorsLabel } = SourceStats.getLabel(this.state.sourceStats, this.state.statsLoaded);
+        const { selectedEntries } = this.props;
+        const { sourceStats, statsLoaded } = this.state;
+        const { eventsLabel, usersLabel, errorsLabel } = SourceStats.getLabel(sourceStats, statsLoaded, selectedEntries);
+
         return (
             <Grid>
                 <Cell col={4}>

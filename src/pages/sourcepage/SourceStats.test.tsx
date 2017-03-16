@@ -23,6 +23,21 @@ const summary: LogService.SourceStats = {
         totalUsers: 100,
         totalExceptions: 200,
         totalEvents: 300
+    },
+    "Amazon.Alexa": {
+        totalUsers: 200,
+        totalExceptions: 300,
+        totalEvents: 100,
+    },
+    "Google.Home": {
+        totalUsers: 300,
+        totalExceptions: 100,
+        totalEvents: 100
+    },
+    Unknown: {
+        totalUsers: 123,
+        totalExceptions: 312,
+        totalEvents: 231
     }
 };
 
@@ -105,8 +120,8 @@ describe("SourceStats", function () {
             expect(sourceParameter.value).to.equal(sources[1].secretKey);
         });
 
-        it("Tests that the data does *not* load if the parameters are the same.", function() {
-            wrapper.setProps({ }); // Forces a call to componentWillReceiveProps with the same props.
+        it("Tests that the data does *not* load if the parameters are the same.", function () {
+            wrapper.setProps({}); // Forces a call to componentWillReceiveProps with the same props.
 
             expect(statsService).to.be.calledOnce; // Only on mount.
         });
@@ -174,6 +189,102 @@ describe("SourceStats", function () {
                 expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
             });
         });
+    });
+
+    describe("Item Swapping", function () {
+        let start: moment.Moment;
+        let end: moment.Moment;
+        let statsService: Sinon.SinonStub;
+        let wrapper: ShallowWrapper<any, any>;
+
+        before(function () {
+            start = moment().subtract(10, "days");
+            end = moment().subtract(2, "days");
+
+            statsService = sinon.stub(LogService, "getSourceSummary").returns(Promise.resolve(summary));
+        });
+
+        beforeEach(function () {
+            statsService.reset();
+            wrapper = shallow(<SourceStats
+                source={source}
+                startDate={start}
+                endDate={end} />);
+
+            return Promise.resolve(true).then(function () {
+                // This will let the initial load finish before swapping.
+                wrapper.setProps(wrapper.props());
+            });
+        });
+
+        after(function() {
+            statsService.restore();
+        });
+
+        it("Tests that Amazon Alexa is selected on props change.", function () {
+            wrapper.setProps({ selectedEntries: "Amazon.Alexa" });
+
+            const stats = summary["Amazon.Alexa"];
+            checkStats(stats);
+        });
+
+        it("Tests that Google Home is selected on props change.", function () {
+            wrapper.setProps({ selectedEntries: "Google.Home" });
+
+            const stats = summary["Google.Home"];
+            checkStats(stats);
+        });
+
+        it("Tests that Unknown is selected on props change.", function () {
+            wrapper.setProps({ selectedEntries: "Unknown" });
+
+            const stats = summary.Unknown;
+            checkStats(stats);
+        });
+
+        it("Tests that the regular stats are selected on props change.", function () {
+            wrapper.setProps({ selectedEntries: "Amazon.Alexa" }); // Swapping to another.
+            wrapper.setProps({ selectedEntries: "stats" }); // Woops.  Swapping back.
+
+            const stats = summary.stats;
+            checkStats(stats);
+        });
+
+        it("Tests that it combines the entries are selected on props change.", function() {
+            wrapper.setProps({ selectedEntries: [ "Amazon.Alexa", "Google.Home" ]});
+
+            const stats = {
+                totalEvents: summary["Amazon.Alexa"].totalEvents + summary["Google.Home"].totalEvents,
+                totalExceptions: summary["Amazon.Alexa"].totalExceptions + summary["Google.Home"].totalExceptions,
+                totalUsers: summary["Amazon.Alexa"].totalUsers + summary["Google.Home"].totalUsers
+            };
+            checkStats(stats);
+        });
+
+        it("Tests that the default is selected when no entries are selected.", function() {
+            wrapper.setProps({ selectedEntries: [] });
+
+            const stats = {
+                totalEvents: 0,
+                totalExceptions: 0,
+                totalUsers: 0
+            };
+
+            checkStats(stats);
+        });
+
+        it("Tests that it handles entries that do not exist.", function() {
+            wrapper.setProps({ selectedEntries: [ "stats", "Noop" ]});
+
+            const stats = summary.stats;
+            checkStats(stats);
+        });
+
+        function checkStats(stats: LogService.TotalStat) {
+            expect(wrapper.find(DataTile).at(0)).to.have.prop("value", stats.totalEvents.toString()); // events
+            expect(wrapper.find(DataTile).at(1)).to.have.prop("value", stats.totalUsers.toString()); // users
+            expect(wrapper.find(DataTile).at(2)).to.have.prop("value", stats.totalExceptions.toString()); // errors
+        }
     });
 });
 

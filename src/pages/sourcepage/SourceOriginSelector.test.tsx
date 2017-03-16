@@ -29,7 +29,7 @@ describe("SourceOriginSelector", function () {
         let onChecked: Sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
-        before(function() {
+        before(function () {
             onChecked = sinon.stub();
         });
 
@@ -42,11 +42,11 @@ describe("SourceOriginSelector", function () {
             );
         });
 
-        it("Ensures the boxes are created.", function() {
+        it("Ensures the boxes are created.", function () {
             expect(wrapper.find(Checkbox)).to.have.length(3);
         });
 
-        it("Ensures the boxes have their props", function() {
+        it("Ensures the boxes have their props", function () {
             const boxes = wrapper.find(Checkbox);
             for (let i = 0; i < boxes.length; ++i) {
                 const box = wrapper.find(Checkbox).at(i);
@@ -57,20 +57,23 @@ describe("SourceOriginSelector", function () {
             }
         });
 
-        describe("events", function() {
-            it("tests that clicking on a checkbox yields the proper result.", function() {
+        describe("events", function () {
+            it("tests that clicking on a checkbox yields the proper result.", function () {
                 const boxes = wrapper.find(Checkbox);
-                boxes.at(0).simulate("change");
-                boxes.at(1).simulate("change");
-                boxes.at(2).simulate("change");
+                boxes.at(0).simulate("change", false);
+                boxes.at(1).simulate("change", false);
+                boxes.at(2).simulate("change", false);
 
                 expect(onChecked).to.be.calledThrice;
                 expect(onChecked.args[0][0]).to.equal(0);
                 expect(onChecked.args[0][1]).to.equal(options[0].label);
+                expect(onChecked.args[0][2]).to.equal(false);
                 expect(onChecked.args[1][0]).to.equal(1);
                 expect(onChecked.args[1][1]).to.equal(options[1].label);
+                expect(onChecked.args[1][2]).to.equal(false);
                 expect(onChecked.args[2][0]).to.equal(2);
                 expect(onChecked.args[2][1]).to.equal(options[2].label);
+                expect(onChecked.args[2][2]).to.equal(false);
             });
         });
     });

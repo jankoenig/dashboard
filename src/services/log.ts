@@ -32,13 +32,18 @@ namespace LogService {
         count: IntentBucket[];
     }
 
+    export interface TotalStat {
+        totalUsers: number;
+        totalExceptions: number;
+        totalEvents: number;
+    }
+
     export interface SourceStats {
         source: string;
-        stats: {
-            totalUsers: number,
-            totalExceptions: number,
-            totalEvents: number
-        };
+        stats: TotalStat;
+        "Amazon.Alexa": TotalStat;
+        "Google.Home": TotalStat;
+        Unknown: TotalStat;
     }
 
     // let BASE_URL = LOGLESS_BASE; // TODO: Get this to work with Mocha

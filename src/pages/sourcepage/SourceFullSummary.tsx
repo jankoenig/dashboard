@@ -12,6 +12,14 @@ const AllCheckboxTheme = require("./themes/checkbox-all-theme.scss");
 const AmazonCheckboxTheme = require("./themes/checkbox-amazon-theme.scss");
 const GoogleCheckboxTheme = require("./themes/checkbox-google-theme.scss");
 
+// corresponds with the stat entry on SourceStats.
+type SelectedStatEntry = "stats" | "Amazon.Alexa" | "Google.Home" | "Unknown";
+
+// The entry corresponds with the label for easy pickens.
+type LabelMap<T> = {
+    [label: string]: T;
+};
+
 interface SourceFullSummaryProps {
     header: string;
     source: Source;
@@ -20,51 +28,73 @@ interface SourceFullSummaryProps {
 }
 
 interface SourceFullSummaryState {
+    selectedStatEntry: SelectedStatEntry[];
     sourceOptions: SourceOption[];
     lines: LineProps[];
     bars: BarProps[];
 }
 
+function values<T>(obj: LabelMap<T>): T[] {
+    return Object.keys(obj).map(function (key) { return obj[key]; });
+}
+
 export class SourceFullSummary extends React.Component<SourceFullSummaryProps, SourceFullSummaryState> {
-    static options: SourceOption[] = [{
-        label: "Total",
-        theme: AllCheckboxTheme,
-        checked: true
-    }, {
-        label: "Amazon",
-        theme: AmazonCheckboxTheme,
-        checked: true
-    }, {
-        label: "Google",
-        theme: GoogleCheckboxTheme,
-        checked: true
-    }];
+    static options: LabelMap<SourceOption> = {
+        "Total": {
+            label: "Total",
+            theme: AllCheckboxTheme,
+            checked: true
+        },
+        "Amazon": {
+            label: "Amazon",
+            theme: AmazonCheckboxTheme,
+            checked: true
+        },
+        "Google": {
+            label: "Google",
+            theme: GoogleCheckboxTheme,
+            checked: true
+        }
+    };
 
-    static lines: LineProps[] = [{
-        dataKey: "total",
-        name: "Total",
-        stroke: BLACK
-    }, {
-        dataKey: "Amazon.Alexa",
-        name: "Alexa",
-        stroke: AMAZON_ORANGE
-    }, {
-        dataKey: "Google.Home",
-        name: "Home",
-        stroke: GOOGLE_GREEN
-    }];
+    static lines: LabelMap<LineProps> = {
+        "Total": {
+            dataKey: "total",
+            name: "Total",
+            stroke: BLACK
+        },
+        "Amazon": {
+            dataKey: "Amazon.Alexa",
+            name: "Alexa",
+            stroke: AMAZON_ORANGE
+        },
+        "Google": {
+            dataKey: "Google.Home",
+            name: "Home",
+            stroke: GOOGLE_GREEN
+        }
+    };
 
-    static bars: BarProps[] = [{
-        dataKey: "Amazon.Alexa",
-        name: "Alexa",
-        fill: AMAZON_ORANGE,
-        stackId: "a"
-    }, {
-        dataKey: "Google.Home",
-        name: "Home",
-        fill: GOOGLE_GREEN,
-        stackId: "a"
-    }];
+    static bars: LabelMap<BarProps> = {
+        "Amazon": {
+            dataKey: "Amazon.Alexa",
+            name: "Alexa",
+            fill: AMAZON_ORANGE,
+            stackId: "a"
+        },
+        "Google": {
+            dataKey: "Google.Home",
+            name: "Home",
+            fill: GOOGLE_GREEN,
+            stackId: "a"
+        }
+    };
+
+    static statEntries: LabelMap<SelectedStatEntry> = {
+        "Total": "stats",
+        "Amazon": "Amazon.Alexa",
+        "Google": "Google.Home"
+    };
 
     constructor(props: SourceFullSummaryProps) {
         super(props);
@@ -72,33 +102,47 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         this.handleOriginChange = this.handleOriginChange.bind(this);
 
         this.state = {
-            sourceOptions: SourceFullSummary.options.slice(),
-            lines: SourceFullSummary.lines.slice(),
-            bars: SourceFullSummary.bars.slice()
+            sourceOptions: values(SourceFullSummary.options),
+            lines: values(SourceFullSummary.lines),
+            bars: values(SourceFullSummary.bars),
+            selectedStatEntry: [SourceFullSummary.statEntries["Total"]]
         };
     }
 
-    handleOriginChange(index: number, label: string) {
-        this.state.sourceOptions[index].checked = !this.state.sourceOptions[index].checked;
+    handleOriginChange(index: number, label: string, checked: boolean) {
+        let totalChecked: boolean = false;
+
+        this.state.sourceOptions[index].checked = checked;
         this.state.lines = [];
         this.state.bars = [];
-        for (let i = 0; i < this.state.sourceOptions.length; ++i) {
-            const checked = this.state.sourceOptions[i].checked;
-            if (checked) {
-                this.state.lines.push(SourceFullSummary.lines[i]);
-            }
-            if (i > 0) {
-                if (checked) {
-                    this.state.bars.push(SourceFullSummary.bars[i - 1]);
+        this.state.selectedStatEntry = [];
+
+        for (let o of this.state.sourceOptions) {
+            console.info("o " + o.label + " " + o.checked);
+            if (o.checked) {
+                this.state.selectedStatEntry.push(SourceFullSummary.statEntries[o.label]);
+                this.state.lines.push(SourceFullSummary.lines[o.label]);
+                if (o.label !== "Total") {
+                    this.state.bars.push(SourceFullSummary.bars[o.label]);
+                } else {
+                    totalChecked = o.checked;
                 }
             }
         }
+
+        // We don't care what's check for stat entry if "Total" is selected.
+        if (totalChecked) {
+            this.state.selectedStatEntry = [SourceFullSummary.statEntries["Total"]];
+        }
+
+        console.log(this.state);
+
         this.setState(this.state);
     }
 
     render() {
         const { header, ...others } = this.props;
-        const { bars, lines } = this.state;
+        const { bars, lines, selectedStatEntry } = this.state;
         const options = SourceFullSummary.options;
         const handleOriginChange = this.handleOriginChange;
 
@@ -110,9 +154,10 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
 
                 <span>
                     <SourceOriginSelector
-                        options={options}
+                        options={values(options)}
                         onCheck={handleOriginChange} />
                     <SourceStats
+                        selectedEntries={selectedStatEntry}
                         {...others} />
                     <Grid>
                         <Cell col={12} style={{ height: 300 }}>
@@ -125,7 +170,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                         <Cell col={12} >
                             <SourceIntentSummary
                                 {...others}
-                                bars={bars}/>
+                                bars={bars} />
                         </Cell>
                     </Grid>
                 </span>
