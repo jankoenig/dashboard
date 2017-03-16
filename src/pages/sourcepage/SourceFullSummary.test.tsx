@@ -135,8 +135,6 @@ describe("SourceFullSummary", function () {
             const intentSummary = wrapper.find(SourceIntentSummary).at(0);
             const summaryBars = intentSummary.prop("bars");
 
-            console.log(summaryBars);
-
             expect(summaryBars).to.have.length(2);
 
             expect(summaryBars[0]).to.have.property("dataKey", "Amazon.Alexa");
@@ -148,8 +146,6 @@ describe("SourceFullSummary", function () {
 
             const intentSummary = wrapper.find(SourceIntentSummary).at(0);
             const summaryBars = intentSummary.prop("bars");
-
-            console.log(summaryBars);
 
             expect(summaryBars).to.have.length(1);
 
