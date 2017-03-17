@@ -45,16 +45,17 @@ class IntentCountChart extends React.Component<IntentCountChartProps, IntentCoun
     }
 
     render() {
+        console.log(this.props.data);
         return (
             <ResponsiveContainer>
                 <BarChart
                     layout="vertical"
                     data={this.props.data}
-                    margin={{ left: 200 }}
+                    margin={{ left: 15 }}
                     barSize={30}
                     barCategoryGap={80}>
                     <XAxis type="number" orientation="top" />
-                    <YAxis type="category" dataKey="title" />
+                    <YAxis width={150} type="category" dataKey="title" />
                     <Tooltip />
                     {IntentCountChart.createBars(this.props)}
                 </BarChart>

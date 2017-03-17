@@ -100,6 +100,7 @@ declare module "recharts" {
     export interface AxisProps {
         orientation?: Orientation;
         hide?: boolean;
+        width?: number;
         dataKey?: string | number;
         minTickGap?: number;
         tickCount?: number;
