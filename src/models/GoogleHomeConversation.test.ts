@@ -47,11 +47,15 @@ describe("Google Conversation", function () {
         });
 
         it("Tests the request payload type", function () {
-            expect(conversation.requestPayloadType).to.equal("assistant.intent.action.MAIN");
+            const type = request.payload.originalRequest.data.inputs[0].intent;
+            const name = request.payload.result.metadata.intentName;
+            expect(conversation.requestPayloadType).to.equal(type + "." + name);
         });
 
         it("Tests the intent", function () {
-            expect(conversation.intent).to.equal("assistant.intent.action.MAIN");
+            const type = request.payload.originalRequest.data.inputs[0].intent;
+            const name = request.payload.result.metadata.intentName;
+            expect(conversation.intent).to.equal(type + "." + name);
         });
 
         it("Tests the timestamp", function () {
