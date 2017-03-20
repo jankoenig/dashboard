@@ -243,7 +243,7 @@ describe("AuthForm", function () {
                 expect(wrapper.state("password")).to.equal("");
                 expect(wrapper.state("confirmPassword")).to.equal("");
                 expect(onSignUpWithEmail).to.have.been.calledOnce;
-                expect(onSignUpWithEmail).to.have.been.calledWith(state.email, state.password);
+                expect(onSignUpWithEmail).to.have.been.calledWith(state.email, newState.password, newState.confirmPassword);
             });
 
             it("Throws login and sets state when not showing confirm password.", function () {
