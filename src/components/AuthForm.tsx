@@ -11,7 +11,7 @@ export interface AuthFormProps {
     error?: string;
     onSubmit: (email: string, pass: string) => void;
     onLoginWithGithub?: () => void;
-    onSignUpWithEmail?: (email: string, pass: string) => void;
+    onSignUpWithEmail?: (email: string, pass: string, confirmPass: string) => void;
     onResetPassword?: (email: string) => void;
 }
 
@@ -105,7 +105,7 @@ export class LoginGithub extends React.Component<LoginGithubProps, any> {
 export interface NormalLoginFormProps {
     onEmailChange: (email: string) => void;
     onLogin: (email: string, pass: string) => void;
-    onSignUpWithEmail: (email: string, pass: string) => void;
+    onSignUpWithEmail: (email: string, pass: string, confirmPass: string) => void;
     onResetPassword: (email: string) => void;
     error?: string;
 }
@@ -170,7 +170,8 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
     onSubmitClicked() {
         let email = this.state.email;
         let pass = this.state.password;
-        let match = pass === this.state.confirmPassword;
+        let confirmPass = this.state.confirmPassword;
+        let match = pass === confirmPass;
 
         this.state.password = "";
         this.state.confirmPassword = "";
@@ -180,7 +181,7 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
         this.setState(this.state);
 
         if (match) {
-            this.props.onSignUpWithEmail(email, pass);
+            this.props.onSignUpWithEmail(email, pass, confirmPass);
         }
     }
 
