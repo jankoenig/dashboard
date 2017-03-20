@@ -64,7 +64,7 @@ namespace auth {
             if (password === confirmPassword) {
                 resolve(password);
             } else {
-                reject(new Error("Passwords to not match."));
+                reject(new Error("Passwords do not match."));
             }
         });
         let sizeProm = new Promise<any>(function (resolve, reject) {
