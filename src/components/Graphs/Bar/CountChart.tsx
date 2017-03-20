@@ -45,7 +45,6 @@ class IntentCountChart extends React.Component<IntentCountChartProps, IntentCoun
     }
 
     render() {
-        console.log(this.props.data);
         return (
             <ResponsiveContainer>
                 <BarChart
