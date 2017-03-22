@@ -37,6 +37,24 @@ describe("SourceForm", function () {
         expect(wrapper.find("FormInput").length).to.equal(2);
     });
 
+    it("Tests the onChange system.", function () {
+        const createSource = sinon.stub();
+        const onChange = sinon.stub();
+        let wrapper = shallow((
+            <SourceForm.SourceForm createSource={createSource}
+                onChange={onChange}
+                nameRule={undefined} />
+        ));
+
+        let formInputs = wrapper.find("FormInput");
+        let nameForm = formInputs.at(0);
+
+        nameForm.simulate("change", { target: { value: "ABCD" } });
+
+        expect(onChange).to.have.been.calledOnce;
+        expect(onChange).to.have.been.calledWith("ABCD");
+    });
+
     describe("Validator", function () {
         let positiveValidator: TestNameRule;
         let threeLengthValidator: TestNameRule;

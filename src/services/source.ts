@@ -1,11 +1,42 @@
 import * as Firebase from "firebase";
 import "isomorphic-fetch";
 
+import { Query } from "../models/query";
 import { Source } from "../models/source";
 import StringUtil from "../utils/string";
 import { remoteservice } from "./remote-service";
 
 export namespace source {
+
+    const NAME_GENERATING_URL: string = "http://ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com/v1/sourceName";
+
+    export interface SourceName {
+        name: string;
+        secretKey: string;
+    }
+
+    /**
+     * A function that will generate a unique source name.
+     * @param name
+     *      A name to check against.  If not provided, a random name will be supplied.
+     */
+    export function generateSourceName(name?: string): Promise<SourceName> {
+        const query: Query = new Query();
+        if (name) {
+            query.add({ parameter: "name", value: name });
+        }
+        const finalURL = NAME_GENERATING_URL + "?" + query.query();
+
+        const request = new Request(finalURL);
+        console.info("Getting " + request.url);
+        return Promise.resolve(name)
+            .then(function(name: string) {
+                return fetch(finalURL);
+            }).then(function(result: any) {
+                console.log(result);
+                return result.json();
+            });
+    }
 
     export function createSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return new Promise(function (callback, reject) {

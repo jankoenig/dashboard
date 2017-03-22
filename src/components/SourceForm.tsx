@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import Source from "../models/source";
+import Noop from "../utils/Noop";
 import Button from "./Button";
 import { ErrorHandler, FormInput } from "./FormInput";
 
@@ -13,7 +14,7 @@ interface SourceFormProps {
     uuid?: string;
     error?: Error;
     creatingSource?: boolean;
-    onChange?: (event: React.FormEvent) => any;
+    onChange?: (name: string) => any;
     nameRule: NameRule;
     createSource: (source: Source) => void;
 }
@@ -24,6 +25,15 @@ interface SourceFormState {
 }
 
 export class SourceForm extends React.Component<SourceFormProps, SourceFormState> {
+
+    static defaultProps = {
+        name: "",
+        uuid: "",
+        error: "",
+        creatingSource: "",
+        onChange: Noop,
+        nameRule: { regex: new RegExp(".*"), errorMessage: function(input: string): undefined { return undefined; }}
+    };
 
     constructor(props: SourceFormProps) {
         super(props);
@@ -52,6 +62,8 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
             name: target.value,
             source: (valid) ? new Source({ name: target.value }) : undefined,
         });
+
+        this.props.onChange(target.value);
     }
 
     onClick(event: React.FormEvent) {
