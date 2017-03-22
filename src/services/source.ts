@@ -49,6 +49,7 @@ export namespace source {
         return generateSourceId(source.id)
             .then(function (idResult: SourceName) {
                 mutableSource.id = idResult.id;
+                mutableSource.secretKey = idResult.secretKey;
                 mutableSource.members[user.uid] = "owner";
                 return mutableSource;
             }).then(function (source: Source) {
@@ -59,7 +60,6 @@ export namespace source {
                     });
             }).then(function () {
                 // And finally provide it back to the callback
-                console.log(mutableSource);
                 return mutableSource;
             });
     }
