@@ -34,7 +34,7 @@ describe("SourceForm", function () {
                 nameRule={validator} />
         ));
 
-        expect(wrapper.find("FormInput").length).to.equal(2);
+        expect(wrapper.find("FormInput").length).to.equal(1);
     });
 
     it("Tests the onChange system.", function () {
@@ -105,10 +105,6 @@ describe("SourceForm", function () {
 
             let nameForm = formInputs.at(0);
             expect(nameForm.props().value).to.equal("");
-
-
-            let keyForm = formInputs.at(1);
-            expect(keyForm.props().value).to.equal("");
         });
 
         it("Checks that the source is nulled when validator goes from true to false.", function () {

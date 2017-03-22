@@ -178,6 +178,7 @@ describe("Source Service", function () {
                 return SourceService.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
                         expect(source.id).to.equal("test-source-bhjas3"); // "The default "slugged" name is the source name made in to a URL format.
+                        console.log(source.members);
                         expect(source.members[mockAuth.currentUser.uid]).to.equal("owner");
                     });
             });

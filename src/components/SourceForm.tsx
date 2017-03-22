@@ -11,7 +11,6 @@ export interface NameRule extends ErrorHandler {
 
 interface SourceFormProps {
     name?: string;
-    uuid?: string;
     error?: Error;
     creatingSource?: boolean;
     onChange?: (name: string) => any;
@@ -28,7 +27,6 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
 
     static defaultProps = {
         name: "",
-        uuid: "",
         error: "",
         creatingSource: "",
         onChange: Noop,
@@ -85,14 +83,6 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                         floatingLabel={true}
                         autoComplete={"off"}
                         error={this.props.nameRule} />
-                    <FormInput style={this.textFieldStyleOverrides()}
-                        type={"text"}
-                        value={this.state.source ? this.state.source.secretKey : ""}
-                        onChange={this.onSecretChange.bind(this)}
-                        label={this.state.source ? "" : "Secret Key"}
-                        floatingLabel={true}
-                        autoComplete={"off"}
-                        readOnly={true} />
                 </form>
                 {!this.props.error ? (
                     <p> {this.props.error} </p>

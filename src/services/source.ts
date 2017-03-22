@@ -49,7 +49,7 @@ export namespace source {
         return generateSourceId(source.id)
             .then(function (idResult: SourceName) {
                 mutableSource.id = idResult.id;
-                console.log(mutableSource);
+                mutableSource.members[user.uid] = "owner";
                 return mutableSource;
             }).then(function (source: Source) {
                 return sourcesPath.child(source.id).set(source)
