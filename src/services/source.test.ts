@@ -133,7 +133,7 @@ describe("Source Service", function () {
         before(function () {
             mockResponse = new Response();
             mockResponse.json = sinon.stub().returns({ id: "test-source-bhjas3", secretKey: "ABC123456" });
-            fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceName\?.*/, function () {
+            fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, function () {
                 return mockResponse;
             });
         });
@@ -161,7 +161,7 @@ describe("Source Service", function () {
             before(function () {
                 mockResponse = new Response();
                 mockResponse.json = sinon.stub().returns({ id: "test-source-bhjas3", secretKey: "ABC123456" });
-                fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceName\?.*/, function () {
+                fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, function () {
                     return mockResponse;
                 });
             });
@@ -178,6 +178,7 @@ describe("Source Service", function () {
                 return SourceService.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
                         expect(source.id).to.equal("test-source-bhjas3"); // "The default "slugged" name is the source name made in to a URL format.
+                        expect(source.members[mockAuth.currentUser.uid]).to.equal("owner");
                     });
             });
 
