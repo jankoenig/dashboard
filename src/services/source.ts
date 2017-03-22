@@ -8,7 +8,7 @@ import { remoteservice } from "./remote-service";
 
 export namespace source {
 
-    const NAME_GENERATING_URL: string = "http://ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com/v1/sourceName";
+    const NAME_GENERATING_URL: string = "http://ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com/v1/sourceId";
 
     export interface SourceName {
         id: string;
