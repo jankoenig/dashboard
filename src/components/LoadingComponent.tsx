@@ -1,6 +1,10 @@
 import * as Bluebird from "bluebird";
 import * as React from "react";
 
+Bluebird.config({
+    cancellation: true
+});
+
 export enum LoadingState {
     NOT_LOADING, LOADING, LOADED, LOAD_ERROR
 }
