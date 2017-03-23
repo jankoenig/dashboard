@@ -63,6 +63,10 @@ export default class LoadingComponent<DATA, P extends LoadingComponentProps, S e
         }
     }
 
+    componentWillUnmount() {
+        this.cancel();
+    }
+
     /**
      * Force a reload of the data.
      */

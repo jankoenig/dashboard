@@ -77,5 +77,16 @@ describe("LoadingComponent", function () {
                 expect(mapSpy).to.have.been.calledOnce;
             });
         });
+
+        it("Cancels on unmount", function() {
+            wrapper.unmount();
+            return currentLoadingPromise.then(function() {
+                expect(cancelSpy).to.have.been.calledTwice;
+            });
+        });
+    });
+
+    describe("Props management", function() {
+
     });
 });
