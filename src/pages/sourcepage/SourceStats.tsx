@@ -105,10 +105,14 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
         super(props, SourceStats.defaultState);
     }
 
-    shouldUpdate(newProps: SourceStatsProps, oldProps: SourceStatsProps) {
-        return !SourceUtils.equals(newProps.source, this.props.source)
-            || !newProps.startDate.isSame(this.props.startDate)
-            || !newProps.endDate.isSame(this.props.endDate);
+    shouldUpdate(oldProps: SourceStatsProps, newProps: SourceStatsProps) {
+        if (!newProps) {
+            return oldProps.source !== undefined;
+        } else {
+            return !SourceUtils.equals(newProps.source, this.props.source)
+                || !newProps.startDate.isSame(this.props.startDate)
+                || !newProps.endDate.isSame(this.props.endDate);
+        }
     }
 
     startLoading(props: SourceStatsProps): Thenable<LogService.SourceStats> {

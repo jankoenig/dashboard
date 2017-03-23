@@ -27,7 +27,6 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
     static TAG = "LoadingComponent";
 
     loadingPromise: Bluebird<any>;
-    lastLoadedProps: P;
 
     constructor(props: P, defaultState: S) {
         super(props);
@@ -35,7 +34,6 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
         this.startLoading = this.startLoading.bind(this);
         this.map = this.map.bind(this);
 
-        console.log(defaultState);
         const realDefault = defaultState || {};
         this.state = { ...realDefault as any, ...{ state: LoadingState.NOT_LOADING } };
     }
@@ -43,12 +41,13 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
     /**
      * Children can override this to determine if the new props warrents an update.  If not, then no update will occur.
      * Default is always true.
-     * @param newProps
-     *      New props to check.
      * @param oldProps
      *      Old props to check against.
+     *
+     * @param newProps
+     *      New props to check.  Can be null if mounting for the first time.
      */
-    shouldUpdate(newProps: P, oldProps: P): boolean {
+    shouldUpdate(oldProps: P, newProps?: P | undefined): boolean {
         return true;
     }
 
@@ -56,7 +55,7 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
      * Overriding components *must* call the super of this method.
      */
     componentWillReceiveProps(newProps: P, context: any) {
-        if (this.shouldUpdate(newProps, this.props)) {
+        if (this.shouldUpdate(this.props, newProps)) {
             this.forceLoading(newProps);
         }
     }
@@ -65,7 +64,7 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
      * Overriding components *must* call the super of this method.
      */
     componentWillMount() {
-        if (this.lastLoadedProps === undefined && this.lastLoadedProps !== this.props) {
+        if (this.shouldUpdate(this.props)) {
             this.forceLoading(this.props);
         }
     }
@@ -91,8 +90,6 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
             })
             .then(this.map)
             .then((data: DATA) => {
-                // Save it now in case we got canceled.
-                this.lastLoadedProps = props;
                 return this.mapState({ data: data, state: LoadingState.LOADED });
             }).catch((err: Error) => {
                 this.onLoadError(err);
