@@ -86,9 +86,7 @@ describe("LoadingComponent", function () {
 
             it("Cancels on unmount", function () {
                 wrapper.unmount();
-                return currentLoadingPromise.then(function () {
-                    expect(cancelSpy).to.have.been.calledTwice;
-                });
+                expect(cancelSpy).to.have.been.calledTwice;
             });
 
             describe("Props management", function () {
@@ -143,8 +141,8 @@ describe("LoadingComponent", function () {
                     });
                 });
 
-                it("Tests that the onError method was called.", function() {
-                    return currentLoadingPromise.catch(function() {
+                it("Tests that the onError method was called.", function () {
+                    return currentLoadingPromise.catch(function () {
                         expect(errorSpy).to.be.calledOnce;
                     });
                 });
