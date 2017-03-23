@@ -41,7 +41,7 @@ const summary: LogService.SourceStats = {
     }
 };
 
-describe("SourceStats", function () {
+xdescribe("SourceStats", function () {
 
     describe("Renders", function () {
         let start: moment.Moment;

@@ -17,12 +17,14 @@ describe("LoadingComponent", function () {
         let cancelSpy: Sinon.SinonSpy;
         let startLoadingSpy: Sinon.SinonSpy;
         let mapSpy: Sinon.SinonSpy;
+        let errorSpy: Sinon.SinonSpy;
 
         before(function () {
             setStateSpy = sinon.spy(LoadingComponent.prototype, "setState");
             cancelSpy = sinon.spy(LoadingComponent.prototype, "cancel");
             startLoadingSpy = sinon.spy(LoadingComponent.prototype, "startLoading");
             mapSpy = sinon.spy(LoadingComponent.prototype, "map");
+            errorSpy = sinon.spy(LoadingComponent.prototype, "onLoadError");
         });
 
         afterEach(function () {
@@ -30,6 +32,7 @@ describe("LoadingComponent", function () {
             cancelSpy.reset();
             startLoadingSpy.reset();
             mapSpy.reset();
+            errorSpy.reset();
         });
 
         after(function () {
@@ -37,11 +40,12 @@ describe("LoadingComponent", function () {
             cancelSpy.restore();
             startLoadingSpy.restore();
             mapSpy.restore();
+            errorSpy.restore();
         });
 
         describe("Initial Load", function () {
             let wrapper: ShallowWrapper<any, any>;
-            let currentLoadingPromise: Thenable<any>;
+            let currentLoadingPromise: Bluebird<any>;
 
             beforeEach(function () {
                 wrapper = shallow(<LoadingComponent />);
@@ -107,6 +111,41 @@ describe("LoadingComponent", function () {
                     wrapper.setProps({ data: "Data" });
                     return currentLoadingPromise.then(function () {
                         expect(startLoadingSpy).to.have.been.calledOnce;
+                    });
+                });
+            });
+
+            describe("Load Error", function () {
+                let startLoadingStub: Sinon.SinonStub;
+
+                before(function () {
+                    startLoadingSpy.restore();
+                    startLoadingStub = sinon.stub(LoadingComponent.prototype, "startLoading", function () {
+                        return Promise.reject(new Error("Error per requirements of the test."));
+                    });
+                });
+
+                afterEach(function () {
+                    startLoadingStub.reset();
+                });
+
+                after(function () {
+                    startLoadingStub.restore();
+                    startLoadingSpy = sinon.spy(LoadingComponent.prototype, "startLoading");
+                });
+
+                it("Tests that an error state is in place on load error.", function () {
+                    return currentLoadingPromise.catch(function () {
+                        // It'll finish almost imediately.
+                        expect(setStateSpy).to.be.calledTwice;
+                        expect(setStateSpy.getCall(0).args[0]).to.have.property("state", LoadingState.LOADING);
+                        expect(setStateSpy.getCall(1).args[0]).to.have.property("state", LoadingState.LOAD_ERROR);
+                    });
+                });
+
+                it("Tests that the onError method was called.", function() {
+                    return currentLoadingPromise.catch(function() {
+                        expect(errorSpy).to.be.calledOnce;
                     });
                 });
             });

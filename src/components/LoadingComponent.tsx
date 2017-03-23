@@ -65,7 +65,7 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
      * Overriding components *must* call the super of this method.
      */
     componentWillMount() {
-        if (this.lastLoadedProps !== undefined && this.lastLoadedProps !== this.props) {
+        if (this.lastLoadedProps === undefined && this.lastLoadedProps !== this.props) {
             this.forceLoading(this.props);
         }
     }
@@ -87,24 +87,32 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
         this.loadingPromise = Bluebird.resolve(this.startLoading(props))
             .then(function (result: any) {
                 console.timeEnd(Component.TAG);
+                return result;
             })
             .then(this.map)
             .then((data: DATA) => {
+                // Save it now in case we got canceled.
+                this.lastLoadedProps = props;
                 return this.mapState({ data: data, state: LoadingState.LOADED });
+            }).catch((err: Error) => {
+                this.onLoadError(err);
+                return this.mapState({ state: LoadingState.LOADED });
             })
             .then((state: S) => {
                 this.setState(state);
-                // Save it now in case we got canceled.
-                this.lastLoadedProps = props;
             });
     }
 
-    startLoading<T>(props: P): Thenable<T> {
-        return Promise.resolve();
+    startLoading<T>(props: P): Thenable<T> | T {
+        return {} as any;
     }
 
     map<FROM, TO>(data: FROM): Thenable<TO> | TO {
         return data as any;
+    }
+
+    onLoadError(err: Error) {
+        console.error(err);
     }
 
     cancel() {
