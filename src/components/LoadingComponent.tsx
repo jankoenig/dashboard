@@ -22,7 +22,7 @@ export interface LoadingComponentState<DATA> {
  * The loading state is handled by this component and shoud not be written to outside of it.  In other words,
  * don't ever overwrite the state object like "this.state = <some new state>".
  */
-export default class LoadingComponent<DATA, P extends LoadingComponentProps, S extends LoadingComponentState<DATA>> extends React.Component<P, S> {
+export class Component<DATA, P extends LoadingComponentProps, S extends LoadingComponentState<DATA>> extends React.Component<P, S> {
 
     loadingPromise: Bluebird<any>;
     lastLoadedProps: P;
@@ -45,7 +45,7 @@ export default class LoadingComponent<DATA, P extends LoadingComponentProps, S e
      * @param oldProps
      *      Old props to check against.
      */
-    shouldUpdate(newProps: P, oldProps: P) {
+    shouldUpdate(newProps: P, oldProps: P): boolean {
         return true;
     }
 
@@ -120,3 +120,5 @@ export default class LoadingComponent<DATA, P extends LoadingComponentProps, S e
         return (<div />);
     }
 }
+
+export default Component;
