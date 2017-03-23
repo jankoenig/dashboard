@@ -24,17 +24,20 @@ export interface LoadingComponentState<DATA> {
  */
 export class Component<DATA, P extends LoadingComponentProps, S extends LoadingComponentState<DATA>> extends React.Component<P, S> {
 
+    static TAG = "LoadingComponent";
+
     loadingPromise: Bluebird<any>;
     lastLoadedProps: P;
 
-    constructor(props: P) {
+    constructor(props: P, defaultState: S) {
         super(props);
 
         this.startLoading = this.startLoading.bind(this);
         this.map = this.map.bind(this);
 
-        const st = this.state as any || {};
-        this.state = { ...st, ...{ state: LoadingState.NOT_LOADING, data: undefined } };
+        console.log(defaultState);
+        const realDefault = defaultState || {};
+        this.state = { ...realDefault as any, ...{ state: LoadingState.NOT_LOADING } };
     }
 
     /**
@@ -62,7 +65,7 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
      * Overriding components *must* call the super of this method.
      */
     componentWillMount() {
-        if (this.lastLoadedProps !== this.props) {
+        if (this.lastLoadedProps !== undefined && this.lastLoadedProps !== this.props) {
             this.forceLoading(this.props);
         }
     }
@@ -80,7 +83,11 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
     forceLoading(props: P) {
         this.cancel();
         this.setState({ state: LoadingState.LOADING } as any); // Need the "as any" to overcome the typescript stuff
+        console.time(Component.TAG);
         this.loadingPromise = Bluebird.resolve(this.startLoading(props))
+            .then(function (result: any) {
+                console.timeEnd(Component.TAG);
+            })
             .then(this.map)
             .then((data: DATA) => {
                 return this.mapState({ data: data, state: LoadingState.LOADED });

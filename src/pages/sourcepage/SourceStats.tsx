@@ -91,18 +91,18 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
         selectedEntries: ["stats"]
     };
 
-    constructor(props: SourceStatsProps) {
-        super(props);
-
-        this.setState({
-            sourceStats: {
+    static defaultState: any = {
+        data: {
                 source: DEFAULT_VALUE,
                 stats: newStats(),
                 "Amazon.Alexa": newStats(),
                 "Google.Home": newStats(),
                 Unknown: newStats()
             }
-        } as any);
+    };
+
+    constructor(props: SourceStatsProps) {
+        super(props, SourceStats.defaultState);
     }
 
     shouldUpdate(newProps: SourceStatsProps, oldProps: SourceStatsProps) {
@@ -116,7 +116,7 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
         query.add(new SourceParameter(props.source));
         query.add(new StartTimeParameter(props.startDate));
         query.add(new EndTimeParameter(props.endDate));
-        return LogService.getSourceSummary(query)
+        return LogService.getSourceSummary(query);
     }
 
     render() {
