@@ -38,20 +38,24 @@ export default class LoadingComponent<DATA, P extends LoadingComponentProps, S e
     }
 
     /**
+     * Children can override this to determine if the new props warrents an update.  If not, then no update will occur.
+     * Default is always true.
+     * @param newProps
+     *      New props to check.
+     * @param oldProps
+     *      Old props to check against.
+     */
+    shouldUpdate(newProps: P, oldProps: P) {
+        return true;
+    }
+
+    /**
      * Overriding components *must* call the super of this method.
      */
     componentWillReceiveProps(newProps: P, context: any) {
-        // this.cancel();
-
-        // this.setState({ state: LoadingState.LOADING } as any); // Need the "as any" to overcome the typescript stuff
-        // Bluebird.resolve(this.startLoading(newProps))
-        //     .then(this.map)
-        //     .then((data: DATA) => {
-        //         return this.mapState({ data: data, state: LoadingState.LOADED });
-        //     })
-        //     .then((state: S) => {
-        //         this.setState(state);
-        //     });
+        if (this.shouldUpdate(newProps, this.props)) {
+            this.forceLoading(newProps);
+        }
     }
 
     /**
@@ -63,6 +67,9 @@ export default class LoadingComponent<DATA, P extends LoadingComponentProps, S e
         }
     }
 
+    /**
+     * Overriding components *must* call the super of this method.
+     */
     componentWillUnmount() {
         this.cancel();
     }
@@ -80,6 +87,8 @@ export default class LoadingComponent<DATA, P extends LoadingComponentProps, S e
             })
             .then((state: S) => {
                 this.setState(state);
+                // Save it now in case we got canceled.
+                this.lastLoadedProps = props;
             });
     }
 

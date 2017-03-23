@@ -1,3 +1,4 @@
+import * as Bluebird from "bluebird";
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
@@ -11,82 +12,190 @@ const expect = chai.expect;
 
 describe("LoadingComponent", function () {
 
-    let setStateSpy: Sinon.SinonSpy;
-    let cancelSpy: Sinon.SinonSpy;
-    let startLoadingSpy: Sinon.SinonSpy;
-    let mapSpy: Sinon.SinonSpy;
+    describe("No stubs", function () {
+        let setStateSpy: Sinon.SinonSpy;
+        let cancelSpy: Sinon.SinonSpy;
+        let startLoadingSpy: Sinon.SinonSpy;
+        let mapSpy: Sinon.SinonSpy;
 
-    before(function () {
-        setStateSpy = sinon.spy(LoadingComponent.prototype, "setState");
-        cancelSpy = sinon.spy(LoadingComponent.prototype, "cancel");
-        startLoadingSpy = sinon.spy(LoadingComponent.prototype, "startLoading");
-        mapSpy = sinon.spy(LoadingComponent.prototype, "map");
+        before(function () {
+            setStateSpy = sinon.spy(LoadingComponent.prototype, "setState");
+            cancelSpy = sinon.spy(LoadingComponent.prototype, "cancel");
+            startLoadingSpy = sinon.spy(LoadingComponent.prototype, "startLoading");
+            mapSpy = sinon.spy(LoadingComponent.prototype, "map");
+        });
+
+        afterEach(function () {
+            setStateSpy.reset();
+            cancelSpy.reset();
+            startLoadingSpy.reset();
+            mapSpy.reset();
+        });
+
+        after(function () {
+            setStateSpy.restore();
+            cancelSpy.restore();
+            startLoadingSpy.restore();
+            mapSpy.restore();
+        });
+
+        describe("Initial Load", function () {
+            let wrapper: ShallowWrapper<any, any>;
+            let currentLoadingPromise: Thenable<any>;
+
+            beforeEach(function () {
+                wrapper = shallow(<LoadingComponent />);
+                currentLoadingPromise = (wrapper.instance() as LoadingComponent<any, any, any>).loadingPromise;
+            });
+
+            it("Tests that the currentLoadingPromise exists. If not, then the rest of the tests will fail.", function () {
+                expect(currentLoadingPromise).to.exist;
+            });
+
+            it("Tests that cancel is called on mount.", function () {
+                return currentLoadingPromise.then(function () {
+                    expect(cancelSpy).to.be.calledOnce;
+                });
+            });
+
+            it("Tests that the component loads all states.", function () {
+                return currentLoadingPromise.then(function () {
+                    // It'll finish almost imediately.
+                    expect(setStateSpy).to.be.calledTwice;
+                    expect(setStateSpy.getCall(0).args[0]).to.have.property("state", LoadingState.LOADING);
+                    expect(setStateSpy.getCall(1).args[0]).to.have.property("state", LoadingState.LOADED);
+                });
+            });
+
+            it("Tests that it starts loading on mount.", function () {
+                return currentLoadingPromise.then(function () {
+                    expect(startLoadingSpy).to.have.been.calledOnce;
+                    expect(startLoadingSpy).to.have.been.calledWith(wrapper.props());
+                });
+            });
+
+            it("Tests that the loading process going through the mapping function.", function () {
+                return currentLoadingPromise.then(function () {
+                    expect(mapSpy).to.have.been.calledOnce;
+                });
+            });
+
+            it("Cancels on unmount", function () {
+                wrapper.unmount();
+                return currentLoadingPromise.then(function () {
+                    expect(cancelSpy).to.have.been.calledTwice;
+                });
+            });
+
+            describe("Props management", function () {
+                it("Tests that an update is called with props update.", function () {
+                    wrapper.setProps({ data: "New data " });
+                    return currentLoadingPromise.then(function () {
+                        expect(startLoadingSpy).to.have.been.calledTwice; // Mount then props change.
+                    });
+                });
+
+                it("Tests that a cancel was called with props update.", function () {
+                    wrapper.setProps({ data: "new Data" });
+                    return currentLoadingPromise.then(function () {
+                        expect(cancelSpy).to.have.been.calledTwice; // Mount then props change.
+                    });
+                });
+
+                it("Tests that a load will not occur if the props are not the same.", function () {
+                    (wrapper.instance() as LoadingComponent<any, any, any>).shouldUpdate = sinon.stub().returns(false);
+                    wrapper.setProps({ data: "Data" });
+                    return currentLoadingPromise.then(function () {
+                        expect(startLoadingSpy).to.have.been.calledOnce;
+                    });
+                });
+            });
+        });
     });
 
-    afterEach(function() {
-        setStateSpy.reset();
-        cancelSpy.reset();
-        startLoadingSpy.reset();
-        mapSpy.reset();
-    });
+    xdescribe("Stubbed", function () {
 
-    after(function() {
-        setStateSpy.restore();
-        cancelSpy.restore();
-        startLoadingSpy.restore();
-        mapSpy.restore();
-    });
+        let setStateSpy: Sinon.SinonSpy;
+        let cancelSpy: Sinon.SinonSpy;
+        let startLoadingStub: Sinon.SinonStub;
+        let mapStub: Sinon.SinonStub;
 
-    describe("Initial Load", function () {
-        let wrapper: ShallowWrapper<any, any>;
-        let currentLoadingPromise: Thenable<any>;
+        let loadedData: any;
+        let mappedData: any;
+        let runLoad: boolean;
+        let runMap: boolean;
 
-        beforeEach(function() {
-            wrapper = shallow(<LoadingComponent />);
-            currentLoadingPromise = (wrapper.instance() as LoadingComponent<any, any, any>).loadingPromise;
-        });
-
-        it("Tests that the currentLoadingPromise exists. If not, then the rest of the tests will fail.", function() {
-            expect(currentLoadingPromise).to.exist;
-        });
-
-        it("Tests that cancel is called on mount.", function() {
-            return currentLoadingPromise.then(function() {
-                expect(cancelSpy).to.be.calledOnce;
+        before(function () {
+            runLoad = true;
+            runLoad = true;
+            loadedData = { data: "Data" };
+            mappedData = { mapData: "New data" };
+            setStateSpy = sinon.spy(LoadingComponent.prototype, "setState");
+            cancelSpy = sinon.spy(LoadingComponent.prototype, "cancel");
+            startLoadingStub = sinon.stub(LoadingComponent.prototype, "startLoading", function () {
+                return new Promise((resolve, reject) => {
+                    console.info("LOADING");
+                    while (runLoad);
+                    console.info("LOADED");
+                    resolve(loadedData);
+                });
+            });
+            mapStub = sinon.stub(LoadingComponent.prototype, "map", function () {
+                return new Promise((resolve, reject) => {
+                    console.info("MAPPING");
+                    while (runMap);
+                    console.info("MAPPED");
+                    resolve(mappedData);
+                });
             });
         });
 
-        it("Tests that the component loads all states.", function() {
-            return currentLoadingPromise.then(function() {
-                // It'll finish almost imediately.
-                expect(setStateSpy).to.be.calledTwice;
-                expect(setStateSpy.getCall(0).args[0]).to.have.property("state", LoadingState.LOADING);
-                expect(setStateSpy.getCall(1).args[0]).to.have.property("state", LoadingState.LOADED);
-            });
+        afterEach(function () {
+            setStateSpy.reset();
+            cancelSpy.reset();
+            startLoadingStub.reset();
+            mapStub.reset();
+            runLoad = true;
+            runMap = true;
         });
 
-        it("Tests that it starts loading on mount.", function() {
-            return currentLoadingPromise.then(function() {
-                expect(startLoadingSpy).to.have.been.calledOnce;
-                expect(startLoadingSpy).to.have.been.calledWith(wrapper.props());
-            });
+        after(function () {
+            setStateSpy.restore();
+            cancelSpy.restore();
+            startLoadingStub.restore();
+            mapStub.restore();
         });
 
-        it("Tests that the loading process going through the mapping function.", function() {
-            return currentLoadingPromise.then(function() {
-                expect(mapSpy).to.have.been.calledOnce;
+        function stopLoad() {
+            runLoad = false;
+        }
+
+        // function stopMap() {
+        //     runMap = false;
+        // }
+
+        describe("Prolonged load", function () {
+            let wrapper: ShallowWrapper<any, any>;
+            let instance: LoadingComponent<any, any, any>;
+            let currentLoadingPromise: Bluebird<any>;
+
+            beforeEach(function () {
+                wrapper = shallow(<LoadingComponent />);
+                instance = wrapper.instance() as LoadingComponent<any, any, any>;
+                currentLoadingPromise = instance.loadingPromise;
+            });
+
+            it("Tests cancel will stop the operation.", function () {
+                // if it gets stuck in the stub, then it'll cancel out and skip the map because data was never returned.
+                console.info("Stopping load.");
+                stopLoad();
+                console.info("Canceling");
+                instance.cancel();
+                return currentLoadingPromise
+                    .finally(function () {
+                        expect(mapStub).to.not.have.been.called;
+                    });
             });
         });
-
-        it("Cancels on unmount", function() {
-            wrapper.unmount();
-            return currentLoadingPromise.then(function() {
-                expect(cancelSpy).to.have.been.calledTwice;
-            });
-        });
-    });
-
-    describe("Props management", function() {
-
     });
 });
