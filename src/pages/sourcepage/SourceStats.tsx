@@ -49,37 +49,37 @@ function addStats(stats: LogService.TotalStat[]): LogService.TotalStat {
 }
 
 function getLabel(sourceStats: LogService.SourceStats, state: LoadingComponent.LoadingState, entries: ENTRY | ENTRY[]): Labels {
-        if (state === LoadingComponent.LoadingState.LOADING) {
-            return {
-                eventsLabel: LOADING_VALUE,
-                usersLabel: LOADING_VALUE,
-                errorsLabel: LOADING_VALUE
-            };
-        } else if (state === LoadingComponent.LoadingState.LOAD_ERROR || sourceStats.source === DEFAULT_VALUE) {
-            return {
-                eventsLabel: DEFAULT_VALUE,
-                usersLabel: DEFAULT_VALUE,
-                errorsLabel: DEFAULT_VALUE
-            };
-        }
-
-        const selectedEntries = (entries instanceof Array) ? entries : [ entries ];
-        const selectedStats: LogService.TotalStat[] = [];
-        for (let entry of selectedEntries) {
-            const stat = sourceStats[entry];
-            if (stat) {
-                selectedStats.push(stat);
-            }
-        }
-
-        const stats = addStats(selectedStats);
-
+    if (state === LoadingComponent.LoadingState.LOADING) {
         return {
-            eventsLabel: stats.totalEvents.toString(),
-            usersLabel: stats.totalUsers.toString(),
-            errorsLabel: stats.totalExceptions.toString()
+            eventsLabel: LOADING_VALUE,
+            usersLabel: LOADING_VALUE,
+            errorsLabel: LOADING_VALUE
+        };
+    } else if (state === LoadingComponent.LoadingState.LOAD_ERROR || sourceStats.source === DEFAULT_VALUE) {
+        return {
+            eventsLabel: DEFAULT_VALUE,
+            usersLabel: DEFAULT_VALUE,
+            errorsLabel: DEFAULT_VALUE
         };
     }
+
+    const selectedEntries = (entries instanceof Array) ? entries : [entries];
+    const selectedStats: LogService.TotalStat[] = [];
+    for (let entry of selectedEntries) {
+        const stat = sourceStats[entry];
+        if (stat) {
+            selectedStats.push(stat);
+        }
+    }
+
+    const stats = addStats(selectedStats);
+
+    return {
+        eventsLabel: stats.totalEvents.toString(),
+        usersLabel: stats.totalUsers.toString(),
+        errorsLabel: stats.totalExceptions.toString()
+    };
+}
 
 
 export class SourceStats extends LoadingComponent.Component<LogService.SourceStats, SourceStatsProps, SourceStatsState> {
@@ -107,7 +107,9 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
     }
 
     shouldUpdate(newProps: SourceStatsProps, oldProps: SourceStatsProps) {
-        return !SourceUtils.equals(newProps.source, this.props.source) || !newProps.startDate.isSame(this.props.startDate) || !newProps.endDate.isSame(this.props.endDate)
+        return !SourceUtils.equals(newProps.source, this.props.source)
+            || !newProps.startDate.isSame(this.props.startDate)
+            || !newProps.endDate.isSame(this.props.endDate);
     }
 
     startLoading(props: SourceStatsProps): Thenable<LogService.SourceStats> {
