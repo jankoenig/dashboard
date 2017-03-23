@@ -110,41 +110,6 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
         return !SourceUtils.equals(newProps.source, this.props.source) || !newProps.startDate.isSame(this.props.startDate) || !newProps.endDate.isSame(this.props.endDate)
     }
 
-    // componentWillReceiveProps(nextProps: SourceStatsProps, context: any) {
-    //     if (nextProps.source) {
-    //         if (!SourceUtils.equals(nextProps.source, this.props.source) || !nextProps.startDate.isSame(this.props.startDate) || !nextProps.endDate.isSame(this.props.endDate)) {
-    //             this.retrieveSourceStats(nextProps.source, nextProps.startDate, nextProps.endDate);
-    //         }
-    //     } else {
-    //         this.setState({
-    //             statsLoaded: DataState.LOADED,
-    //             sourceStats: {
-    //                 source: DEFAULT_VALUE,
-    //                 stats: newStats(),
-    //                 "Amazon.Alexa": newStats(),
-    //                 "Google.Home": newStats(),
-    //                 Unknown: newStats()
-    //             }
-    //         } as any);
-    //     }
-    // }
-
-    // componentWillMount() {
-    //     if (this.props.source) {
-    //         this.retrieveSourceStats(this.props.source, this.props.startDate, this.props.endDate);
-    //     } else {
-    //         this.setState({
-    //             sourceStats: {
-    //                 source: DEFAULT_VALUE,
-    //                 stats: newStats(),
-    //                 "Amazon.Alexa": newStats(),
-    //                 "Google.Home": newStats(),
-    //                 Unknown: newStats()
-    //             }
-    //         } as any);
-    //     }
-    // }
-
     startLoading(props: SourceStatsProps): Thenable<LogService.SourceStats> {
         const query: Query = new Query();
         query.add(new SourceParameter(props.source));
@@ -152,23 +117,6 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
         query.add(new EndTimeParameter(props.endDate));
         return LogService.getSourceSummary(query)
     }
-
-    // retrieveSourceStats(source: Source, start: moment.Moment, end: moment.Moment) {
-    //     const dataLoader: DataLoader<LogService.SourceStats, LogService.SourceStats> = {
-    //         loadData: function (query: Query): Promise<LogService.SourceStats> {
-    //             return LogService.getSourceSummary(query);
-    //         },
-    //         map: function (data: LogService.SourceStats): LogService.SourceStats {
-    //             return data;
-    //         }
-    //     };
-
-    //     const callback: GenericStateHandler<LogService.SourceStats> = new GenericStateHandler(this.state, "statsLoaded", "sourceStats", this.setState);
-    //     const loader: Loader<LogService.SourceStats, LogService.SourceStats> = new Loader<LogService.SourceStats, LogService.SourceStats>(dataLoader, callback, callback);
-
-
-    //     loader.load(query);
-    // }
 
     render() {
         const { selectedEntries } = this.props;
