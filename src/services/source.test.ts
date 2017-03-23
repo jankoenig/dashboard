@@ -128,14 +128,11 @@ describe("Source Service", function () {
     });
 
     describe("Tests the generate source ID function.", function () {
-        let mockResponse: Response;
+        let mockResponse: any;
 
         before(function () {
-            mockResponse = new Response();
-            mockResponse.json = sinon.stub().returns({ id: "test-source-bhjas3", secretKey: "ABC123456" });
-            fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, function () {
-                return mockResponse;
-            });
+            mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
+            fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
         });
 
         after(function () {
@@ -146,6 +143,7 @@ describe("Source Service", function () {
             return SourceService.generateSourceId()
                 .then(function (resource: SourceService.SourceName) {
                     expect(resource).to.exist;
+                    console.log(resource);
                     expect(resource.id).to.equal("test-source-bhjas3");
                     expect(resource.secretKey).to.equal("ABC123456");
                 });
@@ -156,14 +154,11 @@ describe("Source Service", function () {
 
         describe("Tests successful create responses.", function () {
 
-            let mockResponse: Response;
+            let mockResponse: any;
 
             before(function () {
-                mockResponse = new Response();
-                mockResponse.json = sinon.stub().returns({ id: "test-source-bhjas3", secretKey: "ABC123456" });
-                fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, function () {
-                    return mockResponse;
-                });
+                mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
+                fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
             });
 
             beforeEach(function () {
