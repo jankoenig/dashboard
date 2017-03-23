@@ -103,6 +103,8 @@ describe("SourceTimeSummary", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
+            const loadingPromise = (wrapper.instance() as SourceTimeSummary).loadingPromise;
+            return loadingPromise;
         });
 
         after(function () {
@@ -129,22 +131,24 @@ describe("SourceTimeSummary", function () {
 
         it("Tests the data query contains the appropriate parameters.", function () {
             wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
+            const loadingPromise = (wrapper.instance() as SourceTimeSummary).loadingPromise;
+            return loadingPromise.then(function () {
+                const query: Query = timeService.args[1][0];
+                const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+                const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
+                const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
 
-            const query: Query = timeService.args[1][0];
-            const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
-            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-            const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
-            const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
 
-
-            expect(startParameter.value).to.equal(start.toISOString());
-            expect(endParameter.value).to.equal(end.toISOString());
-            expect(sourceParameter.value).to.equal(sources[1].secretKey);
-            expect(sortParameter.value).to.equal("asc");
-            expect(granulParameter.value).to.equal("hour");
-            expect(fillParameter.value).to.equal(true);
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(sources[1].secretKey);
+                expect(sortParameter.value).to.equal("asc");
+                expect(granulParameter.value).to.equal("hour");
+                expect(fillParameter.value).to.equal(true);
+            });
         });
 
         it("Tests that the data qyer does *not* load if the parameters are the same.", function () {

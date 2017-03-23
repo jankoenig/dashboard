@@ -18,6 +18,7 @@ describe("LoadingComponent", function () {
         let startLoadingSpy: Sinon.SinonSpy;
         let mapSpy: Sinon.SinonSpy;
         let errorSpy: Sinon.SinonSpy;
+        let preloadSpy: Sinon.SinonSpy;
 
         before(function () {
             setStateSpy = sinon.spy(LoadingComponent.prototype, "setState");
@@ -25,6 +26,7 @@ describe("LoadingComponent", function () {
             startLoadingSpy = sinon.spy(LoadingComponent.prototype, "startLoading");
             mapSpy = sinon.spy(LoadingComponent.prototype, "map");
             errorSpy = sinon.spy(LoadingComponent.prototype, "onLoadError");
+            preloadSpy = sinon.spy(LoadingComponent.prototype, "preLoad");
         });
 
         afterEach(function () {
@@ -33,6 +35,7 @@ describe("LoadingComponent", function () {
             startLoadingSpy.reset();
             mapSpy.reset();
             errorSpy.reset();
+            preloadSpy.reset();
         });
 
         after(function () {
@@ -41,6 +44,7 @@ describe("LoadingComponent", function () {
             startLoadingSpy.restore();
             mapSpy.restore();
             errorSpy.restore();
+            preloadSpy.restore();
         });
 
         describe("Initial Load", function () {
@@ -89,9 +93,17 @@ describe("LoadingComponent", function () {
                 expect(cancelSpy).to.have.been.calledTwice;
             });
 
+            it("Tests that the preload callback was called.", function() {
+                return currentLoadingPromise.then(function() {
+                    expect(preloadSpy).to.be.calledOnce;
+                    expect(preloadSpy).to.be.calledWith(wrapper.props());
+                });
+            });
+
             describe("Props management", function () {
                 it("Tests that an update is called with props update.", function () {
                     wrapper.setProps({ data: "New data " });
+                    currentLoadingPromise = (wrapper.instance() as LoadingComponent<any, any, any>).loadingPromise;
                     return currentLoadingPromise.then(function () {
                         expect(startLoadingSpy).to.have.been.calledTwice; // Mount then props change.
                     });
@@ -99,6 +111,7 @@ describe("LoadingComponent", function () {
 
                 it("Tests that a cancel was called with props update.", function () {
                     wrapper.setProps({ data: "new Data" });
+                    currentLoadingPromise = (wrapper.instance() as LoadingComponent<any, any, any>).loadingPromise;
                     return currentLoadingPromise.then(function () {
                         expect(cancelSpy).to.have.been.calledTwice; // Mount then props change.
                     });
@@ -107,6 +120,7 @@ describe("LoadingComponent", function () {
                 it("Tests that a load will not occur if the props are not the same.", function () {
                     (wrapper.instance() as LoadingComponent<any, any, any>).shouldUpdate = sinon.stub().returns(false);
                     wrapper.setProps({ data: "Data" });
+                    currentLoadingPromise = (wrapper.instance() as LoadingComponent<any, any, any>).loadingPromise;
                     return currentLoadingPromise.then(function () {
                         expect(startLoadingSpy).to.have.been.calledOnce;
                     });

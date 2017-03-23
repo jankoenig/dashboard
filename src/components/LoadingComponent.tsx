@@ -35,6 +35,7 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
     constructor(props: P, defaultState: S) {
         super(props);
 
+        this.preLoad = this.preLoad.bind(this);
         this.startLoading = this.startLoading.bind(this);
         this.map = this.map.bind(this);
 
@@ -84,10 +85,36 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
      * Force a reload of the data.
      */
     forceLoading(props: P) {
+        // this.cancel();
+        // this.setState({ state: LoadingState.LOADING } as any); // Need the "as any" to overcome the typescript stuff
+        // console.time(Component.TAG);
+        // this.loadingPromise = Bluebird.resolve(this.startLoading(props))
+        //     .then(function (result: any) {
+        //         console.timeEnd(Component.TAG);
+        //         return result;
+        //     })
+        //     .then(this.map)
+        //     .then((data: DATA) => {
+        //         return this.mapState({ data: data, state: LoadingState.LOADED });
+        //     }).catch((err: Error) => {
+        //         this.onLoadError(err);
+        //         return this.mapState({ state: LoadingState.LOADED });
+        //     })
+        //     .then((state: S) => {
+        //         this.setState(state);
+        //     });
         this.cancel();
-        this.setState({ state: LoadingState.LOADING } as any); // Need the "as any" to overcome the typescript stuff
         console.time(Component.TAG);
-        this.loadingPromise = Bluebird.resolve(this.startLoading(props))
+        this.loadingPromise = Bluebird
+            .resolve(this.preLoad(props))
+            .then((preloadState: any) => {
+                const stateObj = { state: LoadingState.LOADING };
+                this.setState({ ...preloadState, ...stateObj });
+                return props;
+            })
+            .then((props: P) => {
+                return this.startLoading(props);
+            })
             .then(function (result: any) {
                 console.timeEnd(Component.TAG);
                 return result;
@@ -95,25 +122,43 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
             .then(this.map)
             .then((data: DATA) => {
                 return this.mapState({ data: data, state: LoadingState.LOADED });
-            }).catch((err: Error) => {
+            })
+            .catch((err: Error) => {
                 this.onLoadError(err);
-                return this.mapState({ state: LoadingState.LOADED });
+                return this.mapState({ state: LoadingState.LOAD_ERROR });
             })
             .then((state: S) => {
+                console.info("Set state");
                 this.setState(state);
             });
     }
 
+    /**
+     * Children can override this to provide state feedback for when the content is about to be loaded.
+     * @param props Props about to be sent to "startLoading";
+     */
+    preLoad(props: P): Thenable<S> | S {
+        console.info("preload");
+        return this.state;
+    }
+
     startLoading<T>(props: P): Thenable<T> | T {
+        console.info("start");
         return {} as any;
     }
 
     map<FROM, TO>(data: FROM): Thenable<TO> | TO {
+        console.info("map");
         return data as any;
     }
 
-    onLoadError(err: Error) {
+    /**
+     * Children can override this to provide state feedback.
+     * @param err Error that was caught.
+     */
+    onLoadError(err: Error): S {
         console.error(err);
+        return this.state;
     }
 
     cancel() {

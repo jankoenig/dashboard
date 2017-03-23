@@ -88,6 +88,9 @@ describe("SourceStats", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
+
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+            return loadingPromise;
         });
 
         after(function () {
@@ -96,35 +99,38 @@ describe("SourceStats", function () {
 
         it("Tests the data query contains the appropriate parameters.", function () {
             // Returning a promise ensures that the promise in the component is completed before everything else.
-            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
-            return loadingPromise.then(function () {
-                const query: Query = statsService.args[0][0];
-                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-
-                expect(startParameter.value).to.equal(start.toISOString());
-                expect(endParameter.value).to.equal(end.toISOString());
-                expect(sourceParameter.value).to.equal(source.secretKey);
-            });
-        });
-
-        it("Tests the data query contains the appropriate parameters with new props.", function () {
-            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
-            const query: Query = statsService.args[1][0];
+            const query: Query = statsService.args[0][0];
             const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
             const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
             const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
 
             expect(startParameter.value).to.equal(start.toISOString());
             expect(endParameter.value).to.equal(end.toISOString());
-            expect(sourceParameter.value).to.equal(sources[1].secretKey);
+            expect(sourceParameter.value).to.equal(source.secretKey);
+        });
+
+        it("Tests the data query contains the appropriate parameters with new props.", function () {
+            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+
+            return loadingPromise.then(function () {
+                const query: Query = statsService.args[1][0];
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(sources[1].secretKey);
+            });
         });
 
         it("Tests that the data does *not* load if the parameters are the same.", function () {
             wrapper.setProps({}); // Forces a call to componentWillReceiveProps with the same props.
-
-            expect(statsService).to.be.calledOnce; // Only on mount.
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+            return loadingPromise.then(function () {
+                expect(statsService).to.be.calledOnce; // Only on mount.
+            });
         });
 
         it("Tests the bar graph has the loaded data.", function () {
