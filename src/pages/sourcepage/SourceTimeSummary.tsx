@@ -55,7 +55,7 @@ export class SourceTimeSummary extends LoadingComponent.Component<TimeData[], So
 
     shouldUpdate(oldProps: SourceTimeSummaryProps, newProps: SourceTimeSummaryProps) {
         if (!newProps) {
-            return oldProps.source !== undefined;
+            return true;
         } else {
             return !SourceUtils.equals(newProps.source, oldProps.source)
                 || !newProps.startDate.isSame(oldProps.startDate)
@@ -64,11 +64,20 @@ export class SourceTimeSummary extends LoadingComponent.Component<TimeData[], So
     }
 
     preLoad(props: SourceTimeSummaryProps) {
-        return this.mapState({ data: defaultPageTimeData(props.startDate, props.endDate ) });
+        return this.mapState({ data: defaultPageTimeData(props.startDate, props.endDate) });
     }
 
     startLoading(props: SourceTimeSummaryProps): Thenable<LogService.TimeSummary> {
         const { source, startDate, endDate } = props;
+
+        if (!source) {
+            return Promise.resolve({
+                buckets: [],
+                amazonBuckets: [],
+                googleBuckets: []
+            });
+        }
+
         const query: Query = new Query();
         query.add(new SourceParameter(source));
         query.add(new StartTimeParameter(startDate));
