@@ -68,9 +68,7 @@ export class SourceIntentSummary extends LoadingComponent.Component<CountData[],
     startLoading(props: SourceIntentSummaryProps): Thenable<LogService.IntentSummary> {
         const { source, startDate, endDate } = props;
 
-        console.info("Start loading " );
         if (!source) {
-            console.info("SOURCE EMPTY");
             return Promise.resolve({ count: [] });
         }
 

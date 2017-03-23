@@ -110,7 +110,6 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
                 return this.mapState({ state: LoadingState.LOAD_ERROR });
             })
             .then((state: S) => {
-                console.info("Set state");
                 this.setState(state);
             });
     }
@@ -120,17 +119,14 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
      * @param props Props about to be sent to "startLoading";
      */
     preLoad(props: P): Thenable<S> | S {
-        console.info("preload");
         return this.state;
     }
 
     startLoading<T>(props: P): Thenable<T> | T {
-        console.info("start");
         return {} as any;
     }
 
     map<FROM, TO>(data: FROM): Thenable<TO> | TO {
-        console.info("map");
         return data as any;
     }
 
