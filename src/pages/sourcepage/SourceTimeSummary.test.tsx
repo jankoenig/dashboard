@@ -51,7 +51,7 @@ describe("SourceTimeSummary", function () {
         });
 
         it("Checks the bar graph has a default of data within range.", function () {
-            expect(wrapper.find(TimeChart).prop("data")).to.have.length(7); // One for each day.
+            expect(wrapper.find(TimeChart).prop("data")).to.have.length(end.diff(start, "hours")); // One for each day.
         });
 
         describe("Lines", function () {
@@ -172,7 +172,7 @@ describe("SourceTimeSummary", function () {
                 startDate={start}
                 endDate={end} />);
 
-            expect(newWrapper.find(TimeChart).prop("data")).to.have.length(10); // One for each day.
+            expect(newWrapper.find(TimeChart).prop("data")).to.have.length(end.diff(start, "hours"));
         });
     });
 });

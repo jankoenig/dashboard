@@ -63,6 +63,11 @@ export class SourceTimeSummary extends LoadingComponent.Component<TimeData[], So
         }
     }
 
+    preLoad(props: SourceTimeSummaryProps) {
+        console.info("PREFLOADING");
+        return this.mapState({ data: defaultPageTimeData(props.startDate, props.endDate ) });
+    }
+
     startLoading(props: SourceTimeSummaryProps): Thenable<LogService.TimeSummary> {
         const { source, startDate, endDate } = props;
         const query: Query = new Query();
@@ -119,7 +124,7 @@ function defaultPageTimeData(start: moment.Moment, end: moment.Moment): PageTime
         newData["Amazon.Alexa"] = 0;
         newData["Google.Home"] = 0;
         data.push(newData);
-        currentDate.add(1, "days");
+        currentDate.add(1, "hours");
     }
     return data;
 }

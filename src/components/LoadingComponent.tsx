@@ -85,30 +85,13 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
      * Force a reload of the data.
      */
     forceLoading(props: P) {
-        // this.cancel();
-        // this.setState({ state: LoadingState.LOADING } as any); // Need the "as any" to overcome the typescript stuff
-        // console.time(Component.TAG);
-        // this.loadingPromise = Bluebird.resolve(this.startLoading(props))
-        //     .then(function (result: any) {
-        //         console.timeEnd(Component.TAG);
-        //         return result;
-        //     })
-        //     .then(this.map)
-        //     .then((data: DATA) => {
-        //         return this.mapState({ data: data, state: LoadingState.LOADED });
-        //     }).catch((err: Error) => {
-        //         this.onLoadError(err);
-        //         return this.mapState({ state: LoadingState.LOADED });
-        //     })
-        //     .then((state: S) => {
-        //         this.setState(state);
-        //     });
         this.cancel();
         console.time(Component.TAG);
         this.loadingPromise = Bluebird
             .resolve(this.preLoad(props))
             .then((preloadState: any) => {
                 const stateObj = { state: LoadingState.LOADING };
+                console.log({ ...preloadState, ...stateObj });
                 this.setState({ ...preloadState, ...stateObj });
                 return props;
             })
