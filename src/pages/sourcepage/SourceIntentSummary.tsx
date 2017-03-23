@@ -2,34 +2,32 @@ import * as moment from "moment";
 import * as React from "react";
 
 import BarChart, { BarProps, CountData } from "../../components/Graphs/Bar/CountChart";
+import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../../models/query";
 import Source from "../../models/source";
 import LogService from "../../services/log";
 import { AMAZON_ORANGE, GOOGLE_GREEN } from "../../utils/colors";
 import SourceUtils from "../../utils/Source";
-import { DataLoader, DataState, GenericStateHandler, Loader } from "./DataLoader";
 
 export interface BarProps extends BarProps {
 
 }
 
-interface SourceIntentSummaryProps {
+interface SourceIntentSummaryProps extends LoadingComponent.LoadingComponentProps {
     source: Source;
     startDate: moment.Moment;
     endDate: moment.Moment;
     bars?: BarProps[];
 }
 
-interface SourceIntentSummaryState {
-    intentData: CountData[];
-    intentLoaded: DataState;
+interface SourceIntentSummaryState extends LoadingComponent.LoadingComponentState<CountData[]> {
 }
 
 class IntentSortParameter extends SortParameter {
     parameter = "count_sort";
 }
 
-export class SourceIntentSummary extends React.Component<SourceIntentSummaryProps, SourceIntentSummaryState> {
+export class SourceIntentSummary extends LoadingComponent.Component<CountData[], SourceIntentSummaryProps, SourceIntentSummaryState> {
     static bars: BarProps[] = [{
         dataKey: "Amazon.Alexa",
         name: "Alexa",
@@ -50,69 +48,52 @@ export class SourceIntentSummary extends React.Component<SourceIntentSummaryProp
     };
 
     constructor(props: SourceIntentSummaryProps) {
-        super(props);
-
-        this.setState = this.setState.bind(this);
-
-        this.state = {
-            intentData: [],
-            intentLoaded: DataState.LOADING
-        };
+        super(props, { data: [] } as SourceIntentSummaryState);
     }
 
-    componentWillReceiveProps(nextProps: SourceIntentSummaryProps, context: any) {
-        if (nextProps.source) {
-            if (!SourceUtils.equals(nextProps.source, this.props.source) || !nextProps.startDate.isSame(this.props.startDate) || !nextProps.endDate.isSame(this.props.endDate)) {
-                this.retrieveIntentSummary(nextProps.source, nextProps.startDate, nextProps.endDate);
-            }
+    shouldUpdate(oldProps: SourceIntentSummaryProps, newProps: SourceIntentSummaryProps) {
+        if (!newProps) {
+            return true;
         } else {
-            this.setState({
-                intentData: [],
-                intentLoaded: DataState.LOADED
-            });
+            return !SourceUtils.equals(newProps.source, oldProps.source)
+                || !newProps.startDate.isSame(oldProps.startDate)
+                || !newProps.endDate.isSame(oldProps.endDate);
         }
     }
 
-    componentWillMount() {
-        if (this.props.source) {
-            this.retrieveIntentSummary(this.props.source, this.props.startDate, this.props.endDate);
-        } else {
-            this.setState({
-                intentData: [],
-                intentLoaded: DataState.LOADED
-            });
-        }
+    preLoad(props: SourceIntentSummaryProps) {
+        return this.mapState({ data: [] });
     }
 
-    retrieveIntentSummary(source: Source, start: moment.Moment, end: moment.Moment) {
-        const dataLoader: DataLoader<LogService.IntentSummary, IntentCountData[]> = {
-            loadData: function (query: Query): Promise<LogService.IntentSummary> {
-                return LogService.getIntentSummary(query);
-            },
-            map: function (data: LogService.IntentSummary): IntentCountData[] {
-                return mergeIntentSummary(data);
-            }
-        };
+    startLoading(props: SourceIntentSummaryProps): Thenable<LogService.IntentSummary> {
+        const { source, startDate, endDate } = props;
 
-        const callback: GenericStateHandler<IntentCountData[]> = new GenericStateHandler(this.state, "intentLoaded", "intentData", this.setState);
-        const loader: Loader<LogService.IntentSummary, IntentCountData[]> = new Loader<LogService.IntentSummary, IntentCountData[]>(dataLoader, callback, callback);
+        console.info("Start loading " );
+        if (!source) {
+            console.info("SOURCE EMPTY");
+            return Promise.resolve({ count: [] });
+        }
 
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(start));
-        query.add(new EndTimeParameter(end));
+        query.add(new StartTimeParameter(startDate));
+        query.add(new EndTimeParameter(endDate));
         query.add(new IntentSortParameter("desc"));
 
-        loader.load(query);
+        return LogService.getIntentSummary(query);
+    }
+
+    map(data: LogService.IntentSummary): CountData[] {
+        return mergeIntentSummary(data);
     }
 
     render() {
-        const { intentData } = this.state;
+        const { data } = this.state;
         const { bars } = this.props;
         return (
-            <div style={{ height: (intentData.length * 40) + 100 }} >
+            <div style={{ height: (data.length * 40) + 100 }} >
                 <BarChart
-                    data={intentData}
+                    data={data}
                     bars={bars}
                 />
             </div>

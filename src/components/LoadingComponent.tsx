@@ -91,7 +91,6 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
             .resolve(this.preLoad(props))
             .then((preloadState: any) => {
                 const stateObj = { state: LoadingState.LOADING };
-                console.log({ ...preloadState, ...stateObj });
                 this.setState({ ...preloadState, ...stateObj });
                 return props;
             })

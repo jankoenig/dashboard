@@ -57,9 +57,9 @@ export class SourceTimeSummary extends LoadingComponent.Component<TimeData[], So
         if (!newProps) {
             return oldProps.source !== undefined;
         } else {
-            return !SourceUtils.equals(newProps.source, this.props.source)
-                || !newProps.startDate.isSame(this.props.startDate)
-                || !newProps.endDate.isSame(this.props.endDate);
+            return !SourceUtils.equals(newProps.source, oldProps.source)
+                || !newProps.startDate.isSame(oldProps.startDate)
+                || !newProps.endDate.isSame(oldProps.endDate);
         }
     }
 
