@@ -64,7 +64,6 @@ export class SourceTimeSummary extends LoadingComponent.Component<TimeData[], So
     }
 
     preLoad(props: SourceTimeSummaryProps) {
-        console.info("PREFLOADING");
         return this.mapState({ data: defaultPageTimeData(props.startDate, props.endDate ) });
     }
 
