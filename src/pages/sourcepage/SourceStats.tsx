@@ -94,7 +94,6 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
     constructor(props: SourceStatsProps) {
         super(props);
 
-        this.setState = this.setState.bind(this);
         this.setState({
             sourceStats: {
                 source: DEFAULT_VALUE,
