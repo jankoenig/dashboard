@@ -11,7 +11,7 @@ import IntegrationSpokesSwapper from "./IntegrationSpokesSwapper";
 chai.use(sinonChai);
 const expect = chai.expect;
 
-describe("IntegrationPage", function () {
+describe("Spokes Swapper", function () {
     describe("Renders", function () {
         let wrapper: ShallowWrapper<any, any>;
         let onChange: Sinon.SinonStub;
@@ -28,6 +28,7 @@ describe("IntegrationPage", function () {
 
             before(function() {
                 wrapper = shallow(<IntegrationSpokesSwapper
+                    theme={"TestTheme"}
                     showPage="http"
                     arn="TestArn"
                     iamAccessKey="TestAccessKey"
@@ -48,6 +49,7 @@ describe("IntegrationPage", function () {
             it("Tests the http page gets the appropriate props.", function() {
                 const httpWrapper = wrapper.find(IntegrationHttp).at(0);
                 expect(httpWrapper).to.have.prop("url", "TestUrl");
+                expect(httpWrapper).to.have.prop("theme", "TestTheme");
             });
 
             it("Tests the http page will pass up the url change..", function() {
@@ -62,6 +64,7 @@ describe("IntegrationPage", function () {
 
             before(function() {
                 wrapper = shallow(<IntegrationSpokesSwapper
+                    theme="TestTheme"
                     showPage="lambda"
                     arn="TestArn"
                     iamAccessKey="TestAccessKey"
@@ -79,8 +82,9 @@ describe("IntegrationPage", function () {
                 expect(wrapper.find(IntegrationLambda)).to.have.length(1);
             });
 
-            it("Tests the http page gets the appropriate props.", function() {
+            it("Tests the lambda page gets the appropriate props.", function() {
                 const lambdaWrapper = wrapper.find(IntegrationLambda).at(0);
+                expect(lambdaWrapper).to.have.prop("theme", "TestTheme");
                 expect(lambdaWrapper).to.have.prop("arn", "TestArn");
                 expect(lambdaWrapper).to.have.prop("iamAccessKey", "TestAccessKey");
                 expect(lambdaWrapper).to.have.prop("iamSecretKey", "TestSecretKey");

@@ -7,6 +7,7 @@ export type PAGE = "http" | "lambda";
 
 interface IntegrationSpokesSwapperProps {
     showPage: PAGE;
+    theme?: string;
     arn?: string;
     url?: string;
     iamAccessKey?: string;
@@ -34,12 +35,12 @@ export class IntegrationSpokesSwapper extends React.Component<IntegrationSpokesS
     }
 
     render() {
-        const { showPage } = this.props;
+        const { showPage, ...others } = this.props;
         switch (showPage) {
             case "http":
-                return (<IntegrationHttp {...this.props} onUrlChange={this.handleHttpChange} />);
+                return (<IntegrationHttp {...others} onUrlChange={this.handleHttpChange} />);
             case "lambda":
-                return (<IntegrationLambda {...this.props} />);
+                return (<IntegrationLambda {...others} />);
             default:
                 return (<div />);
         }

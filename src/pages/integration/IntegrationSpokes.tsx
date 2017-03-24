@@ -7,6 +7,7 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import IntegrationSpokesSwapper, { PAGE } from "./IntegrationSpokesSwapper";
 
 const DropdownTheme = require("./themes/dropdown.scss");
+const InputTheme = require("./themes/input.scss");
 
 interface DropdownValue {
     value: PAGE;
@@ -78,6 +79,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
                     onChange={this.handleSourceSwap}
                  />
                 <IntegrationSpokesSwapper
+                    theme={InputTheme}
                     showPage={showPage}
                     onChange={this.handleSwapperChange}
                     {...others} />

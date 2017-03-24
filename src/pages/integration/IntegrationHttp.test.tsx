@@ -19,6 +19,7 @@ describe("IntegrationHttp", function() {
         before(function() {
             onChange = sinon.stub();
             wrapper = shallow(<IntegrationHttp
+                theme={"TestTheme"}
                 url={"TestUrl"}
                 onUrlChange={onChange} />);
         });
@@ -34,6 +35,7 @@ describe("IntegrationHttp", function() {
         it("Tests the value of the url is passed to the input.", function() {
             const inputWrapper = wrapper.find(Input).at(0);
             expect(inputWrapper).to.have.prop("value", "TestUrl");
+            expect(inputWrapper).to.have.prop("theme", "TestTheme");
         });
 
         it("Tests the onUrlChange method is called with the new value.", function() {

@@ -19,6 +19,7 @@ describe("IntegrationLambda", function() {
         before(function() {
             onChange = sinon.stub();
             wrapper = shallow(<IntegrationLambda
+                theme={"TestTheme"}
                 arn={"TestArn"}
                 iamAccessKey={"TestAccessKey"}
                 iamSecretKey={"TestSecretKey"}

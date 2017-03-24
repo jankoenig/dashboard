@@ -3,6 +3,7 @@ import * as React from "react";
 import Input from "react-toolbox/lib/input";
 
 interface HttpProps {
+    theme?: string;
     url?: string;
     onUrlChange?: (newUrl: string) => void;
 }
@@ -17,8 +18,8 @@ export class IntegrationHttp extends React.Component<HttpProps, HttpState> {
     };
 
     render() {
-        const { url, onUrlChange } = this.props;
-        return (<Input label={"URL"} value={url} onChange={onUrlChange} />);
+        const { url, onUrlChange, ...others } = this.props;
+        return (<Input {...others} label={"URL"} value={url} onChange={onUrlChange} />);
     }
 }
 
