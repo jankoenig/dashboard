@@ -6,6 +6,8 @@ import Dropdown from "react-toolbox/lib/dropdown";
 
 import IntegrationSpokesSwapper, { PAGE } from "./IntegrationSpokesSwapper";
 
+const DropdownTheme = require("./themes/dropdown.scss");
+
 interface DropdownValue {
     value: PAGE;
     label: string;
@@ -70,6 +72,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
                     To use it, simply select your service type, then enter your URL or ARN:
                 </p>
                 <Dropdown
+                    theme={DropdownTheme}
                     source={IntegrationSpokes.PAGES}
                     value={showPage}
                     onChange={this.handleSourceSwap}
