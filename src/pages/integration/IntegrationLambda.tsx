@@ -24,12 +24,18 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
 
     constructor(props: LambdaProps) {
         super(props);
+
+        this.handleArnChange = this.handleChange.bind(this, "arn");
+        this.handleIamAccessKeyChange = this.handleChange.bind(this, "iamAccessKey");
+        this.handleIamSecretKeyChange = this.handleChange.bind(this, "iamSecretKey");
     }
 
+    handleArnChange: (type: string, newValue: string) => void;
+    handleIamAccessKeyChange: (type: string, newValue: string) => void;
+    handleIamSecretKeyChange: (type: string, newValue: string) => void;
     handleChange(type: "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) {
         const { onChange } = this.props;
         if (onChange) {
-            console.info("type " + type + " value = " + newValue);
             onChange(type, newValue);
         }
     }
@@ -41,15 +47,15 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
                 <Input
                     label={"Lambda ARN"}
                     value={arn}
-                    onChange={this.handleChange.bind(this, "arn")} />
+                    onChange={this.handleArnChange} />
                 <Input
                     label={"IAM Access Key"}
                     value={iamAccesskey}
-                    onChange={this.handleChange.bind(this, "iamAccessKey")} />
+                    onChange={this.handleIamAccessKeyChange} />
                 <Input
                     label={"IAM Secret Key"}
                     value={iamSecretKey}
-                    onChange={this.handleChange.bind(this, "iamSecretKey")} />
+                    onChange={this.handleIamSecretKeyChange} />
             </div>);
     }
 }
