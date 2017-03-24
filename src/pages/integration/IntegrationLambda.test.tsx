@@ -20,7 +20,7 @@ describe("IntegrationLambda", function() {
             onChange = sinon.stub();
             wrapper = shallow(<IntegrationLambda
                 arn={"TestArn"}
-                iamAccesskey={"TestAccessKey"}
+                iamAccessKey={"TestAccessKey"}
                 iamSecretKey={"TestSecretKey"}
                 onChange={onChange} />);
         });

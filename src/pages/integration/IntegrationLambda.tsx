@@ -4,7 +4,7 @@ import Input from "react-toolbox/lib/input";
 
 interface LambdaProps {
     arn?: string;
-    iamAccesskey?: string;
+    iamAccessKey?: string;
     iamSecretKey?: string;
     onChange?: (type: "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) => void;
 
@@ -18,7 +18,7 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
 
     static defaultProps: LambdaProps = {
         arn: "",
-        iamAccesskey: "",
+        iamAccessKey: "",
         iamSecretKey: ""
     };
 
@@ -30,9 +30,9 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
         this.handleIamSecretKeyChange = this.handleChange.bind(this, "iamSecretKey");
     }
 
-    handleArnChange: (type: string, newValue: string) => void;
-    handleIamAccessKeyChange: (type: string, newValue: string) => void;
-    handleIamSecretKeyChange: (type: string, newValue: string) => void;
+    handleArnChange: (type: "arn", newValue: string) => void;
+    handleIamAccessKeyChange: (type: "iamAccessKey", newValue: string) => void;
+    handleIamSecretKeyChange: (type: "iamSecretKey", newValue: string) => void;
     handleChange(type: "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) {
         const { onChange } = this.props;
         if (onChange) {
