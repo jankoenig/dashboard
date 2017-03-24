@@ -3,8 +3,10 @@ import * as React from "react";
 import IntegrationHttp from "./IntegrationHttp";
 import IntegrationLambda from "./IntegrationLambda";
 
+export type PAGE = "http" | "lambda";
+
 interface IntegrationSpokesSwapperProps {
-    showPage: "http" | "lambda";
+    showPage: PAGE;
     arn?: string;
     url?: string;
     iamAccessKey?: string;
