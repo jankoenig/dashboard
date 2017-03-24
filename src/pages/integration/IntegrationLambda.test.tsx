@@ -34,8 +34,11 @@ describe("IntegrationLambda", function() {
             const inputs = wrapper.find(Input);
             expect(inputs).to.have.length(3);
             expect(inputs.at(0)).to.have.prop("label", "Lambda ARN");
+            expect(inputs.at(0)).to.have.prop("theme", "TestTheme");
             expect(inputs.at(1)).to.have.prop("label", "IAM Access Key");
+            expect(inputs.at(1)).to.have.prop("theme", "TestTheme");
             expect(inputs.at(2)).to.have.prop("label", "IAM Secret Key");
+            expect(inputs.at(2)).to.have.prop("theme", "TestTheme");
         });
 
         it("Tests the value of the ARN is passed to the ARN input.", function() {

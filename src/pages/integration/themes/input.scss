@@ -1,1 +1,6 @@
-@import "../../../themes/input";
+@import "../../../themes/input-config";
+
+$input-field-font-size: 1.1em;
+$input-label-font-size: 1.1em;
+
+@import "~react-toolbox/lib/input/theme";
