@@ -6,6 +6,7 @@ import ResizingComponent from "../../components/ResizingComponent";
 import ExpressJS from "./IntegrationExpressJS";
 import Java from "./IntegrationJava";
 import NodeJS from "./IntegrationNodeJSLambda";
+import Spokes from "./IntegrationSpokes";
 
 let TabsTheme = require("./themes/tabs.scss");
 
@@ -52,6 +53,11 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
                         <Tab label="Java">
                             <ResizingComponent>
                                 <Java secretKey={this.props.secretKey} showSecret={this.props.showSecret} />
+                            </ResizingComponent>
+                        </Tab>
+                        <Tab label="Spokes">
+                            <ResizingComponent>
+                                <Spokes />
                             </ResizingComponent>
                         </Tab>
                     </Tabs>

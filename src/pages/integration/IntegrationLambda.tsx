@@ -41,7 +41,7 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
     }
 
     render() {
-        const { arn, iamAccesskey, iamSecretKey } = this.props;
+        const { arn, iamAccessKey, iamSecretKey } = this.props;
         return (
             <div>
                 <Input
@@ -50,7 +50,7 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
                     onChange={this.handleArnChange} />
                 <Input
                     label={"IAM Access Key"}
-                    value={iamAccesskey}
+                    value={iamAccessKey}
                     onChange={this.handleIamAccessKeyChange} />
                 <Input
                     label={"IAM Secret Key"}

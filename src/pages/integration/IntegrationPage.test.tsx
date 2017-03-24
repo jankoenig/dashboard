@@ -8,6 +8,7 @@ import IntegrationExpressJS from "./IntegrationExpressJS";
 import IntegrationJava from "./IntegrationJava";
 import IntegrationNodeJS from "./IntegrationNodeJSLambda";
 import IntegrationPage from "./IntegrationPage";
+import IntegrationSpokes from "./IntegrationSpokes";
 
 const expect = chai.expect;
 
@@ -22,7 +23,7 @@ describe("IntegrationPage", function () {
 
         it ("Tests there are the appropriate number of tabs.", function() {
             expect(wrapper.find(Tabs)).to.have.length(1);
-            expect(wrapper.find(Tab)).to.have.length(3);
+            expect(wrapper.find(Tab)).to.have.length(4);
         });
 
         it ("Tests the Tabs property has the default index.", function() {
@@ -49,6 +50,12 @@ describe("IntegrationPage", function () {
             const tabPage = tab.find(IntegrationJava);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.equal("ABCD123");
+        });
+
+        it("Tests the Spoke Page exists", function() {
+            const tab = wrapper.find(Tab).at(3);
+            const tabPage = tab.find(IntegrationSpokes);
+            expect(tabPage).to.have.length(1);
         });
     });
 
