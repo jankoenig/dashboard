@@ -19,6 +19,7 @@ interface IntegrationSpokesState {
     showPage: PAGE;
     enableLiveDebugging: boolean;
     url?: string;
+    arn?: string;
     iamAccessKey?: string;
     iamSecretKey?: string;
 }
@@ -33,6 +34,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
         this.handleSourceSwap = this.handleSourceSwap.bind(this);
         this.handleCheckChange = this.handleCheckChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
+        this.handleSwapperChange = this.handleSwapperChange.bind(this);
 
         this.state = {
             showPage: IntegrationSpokes.PAGES[0].value,
@@ -46,6 +48,13 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
 
     handleCheckChange(value: boolean) {
         this.setState({ enableLiveDebugging: value } as IntegrationSpokesState);
+    }
+
+    handleSwapperChange(key: "url" | "iamAccessKey" | "iamSecretKey" | "arn", value: string) {
+        let newObj = {} as any;
+        newObj[key] = value;
+        console.log(newObj);
+        this.setState(newObj);
     }
 
     handleSave() {
@@ -67,6 +76,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
                  />
                 <IntegrationSpokesSwapper
                     showPage={showPage}
+                    onChange={this.handleSwapperChange}
                     {...others} />
                 <Checkbox
                     label={"Enable Live Debugging"}

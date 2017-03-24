@@ -11,7 +11,7 @@ interface IntegrationSpokesSwapperProps {
     url?: string;
     iamAccessKey?: string;
     iamSecretKey?: string;
-    onChange?: (type: "http" | "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) => void;
+    onChange?: (type: "url" | "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) => void;
 }
 
 interface IntegrationSpokesSwapperState {
@@ -29,7 +29,7 @@ export class IntegrationSpokesSwapper extends React.Component<IntegrationSpokesS
     handleHttpChange(value: string) {
         const { onChange } = this.props;
         if (onChange) {
-            onChange("http", value);
+            onChange("url", value);
         }
     }
 

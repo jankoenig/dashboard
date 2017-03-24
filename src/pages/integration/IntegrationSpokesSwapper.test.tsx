@@ -54,7 +54,7 @@ describe("IntegrationPage", function () {
                 const httpWrapper = wrapper.find(IntegrationHttp).at(0);
                 httpWrapper.simulate("urlChange", "New Url");
                 expect(onChange).to.have.been.calledOnce;
-                expect(onChange).to.have.been.calledWith("http", "New Url");
+                expect(onChange).to.have.been.calledWith("url", "New Url");
             });
         });
 
