@@ -4,10 +4,13 @@ import { Button } from "react-toolbox/lib/button";
 import Checkbox from "react-toolbox/lib/checkbox";
 import Dropdown from "react-toolbox/lib/dropdown";
 
+import { Cell, Grid } from "../../components/Grid";
 import IntegrationSpokesSwapper, { PAGE } from "./IntegrationSpokesSwapper";
 
 const DropdownTheme = require("./themes/dropdown.scss");
 const InputTheme = require("./themes/input.scss");
+const CheckboxTheme = require("./themes/checkbox.scss");
+const ButtonTheme = require("./themes/button.scss");
 
 interface DropdownValue {
     value: PAGE;
@@ -29,7 +32,7 @@ interface IntegrationSpokesState {
 
 export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, IntegrationSpokesState> {
 
-    static PAGES: DropdownValue[] = [ { value: "http", label: "HTTP" }, { value: "lambda", label: "Lambda" } ];
+    static PAGES: DropdownValue[] = [{ value: "http", label: "HTTP" }, { value: "lambda", label: "Lambda" }];
 
     constructor(props: IntegrationSpokesProps) {
         super(props);
@@ -67,30 +70,48 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
     render() {
         const { showPage, enableLiveDebugging, ...others } = this.state;
         return (
-            <div>
-                <p>The HTTP SDK proxies traffic to your service (either HTTP or Lambda) via our Spokes.</p>
-                <p>
-                    To use it, simply select your service type, then enter your URL or ARN:
-                </p>
-                <Dropdown
-                    theme={DropdownTheme}
-                    source={IntegrationSpokes.PAGES}
-                    value={showPage}
-                    onChange={this.handleSourceSwap}
-                 />
-                <IntegrationSpokesSwapper
-                    theme={InputTheme}
-                    showPage={showPage}
-                    onChange={this.handleSwapperChange}
-                    {...others} />
-                <Checkbox
-                    label={"Enable Live Debugging"}
-                    checked={enableLiveDebugging}
-                    onChange={this.handleCheckChange} />
-                <Button
-                    label="Save"
-                    onClick={this.handleSave} />
-            </div>
+            <Grid>
+                <Cell col={3} />
+                <Cell col={12}>
+                    <p>The HTTP SDK proxies traffic to your service (either HTTP or Lambda) via our Spokes.</p>
+                    <p>To use it, simply select your service type, then enter your URL or ARN:</p>
+                </Cell>
+                <Cell col={3}>
+                    <Dropdown
+                        theme={DropdownTheme}
+                        source={IntegrationSpokes.PAGES}
+                        value={showPage}
+                        onChange={this.handleSourceSwap}
+                    />
+                </Cell>
+                <Cell col={9}/>
+                <Cell col={6}>
+                    <IntegrationSpokesSwapper
+                        theme={InputTheme}
+                        showPage={showPage}
+                        onChange={this.handleSwapperChange}
+                        {...others} />
+                </Cell>
+                <Cell col={6}/>
+                <Cell col={3}>
+                    <Checkbox
+                        theme={CheckboxTheme}
+                        label={"Enable Live Debugging"}
+                        checked={enableLiveDebugging}
+                        onChange={this.handleCheckChange} />
+                </Cell>
+                <Cell col={9}/>
+                <Cell col={1}>
+                    <Button
+                        theme={ButtonTheme}
+                        accent
+                        raised
+                        label="Save"
+                        onClick={this.handleSave} />
+
+                </Cell>
+                <Cell col={3} />
+            </Grid >
         );
     }
 }
