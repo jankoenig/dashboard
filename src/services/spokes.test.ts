@@ -1,0 +1,269 @@
+import * as chai from "chai";
+import * as fetchMock from "fetch-mock";
+// import * as sinon from "sinon";
+// import * as sinonChai from "sinon-chai";
+
+import Source from "../models/source";
+import Spoke from "../models/spoke";
+import { dummySources } from "../utils/test";
+import SpokesService from "./spokes";
+
+const expect = chai.expect;
+
+const BASE_URL = "https://api.bespoken.link";
+
+const source: Source = dummySources(1)[0];
+
+const fetchResponse = {
+    uuid: source.secretKey,
+    diagnosticKey: source.secretKey,
+    endPoint: {
+        name: source.id
+    },
+    http: {
+        url: "https://source.url/" + source.id
+    },
+    lambda: {
+        lamdaARN: "Lambda ARN",
+        awsAccessKey: "AWS Access Key",
+        awsSecretKey: "AWS Secret Key"
+    },
+    path: "http://spoke.url/" + source.secretKey,
+    pipeType: "HTTP", // In reality, the "lambda" wouldn't exist in a HTTP type, but it won't affect any tests here.
+    proxy: true
+};
+
+const mockFetchResponse = Promise.resolve(fetchResponse);
+const mockSaveResponse = Promise.resolve(200);
+const mockFetchNotFoundResponse = Promise.resolve(404);
+const mockSaveNotCreatedResponse = Promise.resolve(400);
+const mockFetchError = Promise.reject(new Error("Failure per requirements of the test."));
+const mockSaveError = Promise.reject(new Error("Failure per requirements of the test."));
+
+describe("Spokes Service", function () {
+    describe("Success Responses", function () {
+        describe("Fetch Pipe", function () {
+            before(function () {
+                fetchMock.get(/https:\/\/api.bespoken.link\/pipe\/.*/, mockFetchResponse);
+            });
+
+            afterEach(function () {
+                fetchMock.reset();
+            });
+
+            after(function () {
+                fetchMock.restore();
+            });
+
+            it("Tests the appropriately URL was created.", function () {
+                return SpokesService.fetchPipe(source)
+                    .then(function () {
+                        const url = BASE_URL + "/pipe/" + source.secretKey;
+                        expect(fetchMock.lastUrl()).to.equal(url);
+                    });
+            });
+
+            it("Tests the spoke returned by the service is correct.", function () {
+                return SpokesService.fetchPipe(source)
+                    .then(function (payload: Spoke) {
+                        expect(payload).to.exist;
+                        expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
+                        expect(payload.uuid).to.equal(fetchResponse.uuid);
+                        expect(payload.endPoint).to.deep.equal(fetchResponse.endPoint);
+                        expect(payload.pipeType).to.equal(fetchResponse.pipeType);
+                        expect(payload.path).to.equal(fetchResponse.path);
+                        expect(payload.proxy).to.equal(fetchResponse.proxy);
+                        expect((payload as any).lambda).to.not.exist;
+                        expect((payload as any).http).to.not.exist;
+                    });
+            });
+        });
+
+        describe("Save Pipe", function () {
+            before(function () {
+                fetchMock.post(/https:\/\/api.bespoken.link\/pipe/, mockSaveResponse);
+            });
+
+            afterEach(function () {
+                fetchMock.reset();
+            });
+
+            after(function () {
+                fetchMock.restore();
+            });
+
+            it("Tests the payload is returned upon successful save for http.", function () {
+                return SpokesService.savePipe(source, { url: "http:spoke.url/" }, true)
+                    .then(function (payload: Spoke) {
+                        expect(payload).to.exist;
+                    });
+            });
+
+            it("Tests the payload is returned upon successful save for lambda.", function () {
+                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                    .then(function (payload: Spoke) {
+                        expect(payload).to.exist;
+                    });
+            });
+
+            it("Tests the proper post object was sent by the service is correct for HTTP.", function () {
+                return SpokesService.savePipe(source, { url: "http:spoke.url/" }, true)
+                    .then(function (payload: Spoke) {
+                        const args = fetchMock.lastCall()[1] as RequestInit;
+                        expect(args.method).to.equal("POST");
+                        expect(args.headers["Content-Type"]).to.equal("application/json");
+                        expect(args.headers["x-access-token"]).to.exist;
+
+                        const reqObj = JSON.parse(args.body);
+                        expect(reqObj).to.exist;
+                        expect(reqObj.diagnosticKey).to.equal(source.secretKey);
+                        expect(reqObj.uuid).to.equal(source.secretKey);
+                        expect(reqObj.endPoint).to.deep.equal({ name: source.id });
+                        expect(reqObj.pipeType).to.equal("HTTP");
+                        expect(reqObj.path).to.equal("/");
+                        expect(reqObj.proxy).to.equal(true);
+                        expect(reqObj.http).to.deep.equal({ url: "http:spoke.url/" });
+                        expect(reqObj.lambda).to.not.exist;
+                    });
+            });
+
+            it("Tests the proper post object was sent by the service is correct for lamdba.", function () {
+                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                    .then(function (payload: Spoke) {
+                        const args = fetchMock.lastCall()[1] as RequestInit;
+                        expect(args.headers["Content-Type"]).to.equal("application/json");
+                        expect(args.headers["x-access-token"]).to.exist;
+
+                        const reqObj = JSON.parse(args.body);
+                        expect(reqObj).to.exist;
+                        expect(reqObj.diagnosticKey).to.equal(source.secretKey);
+                        expect(reqObj.uuid).to.equal(source.secretKey);
+                        expect(reqObj.endPoint).to.deep.equal({ name: source.id });
+                        expect(reqObj.pipeType).to.equal("LAMBDA");
+                        expect(reqObj.path).to.equal("/");
+                        expect(reqObj.proxy).to.equal(true);
+                        expect(reqObj.lambda).to.deep.equal({ lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
+                        expect(reqObj.http).to.not.exist;
+                    });
+            });
+
+            it("Tests the Spoke returned by the service is correct for HTTP.", function () {
+                return SpokesService.savePipe(source, { url: "http:spoke.url/" }, true)
+                    .then(function (payload: Spoke) {
+                        expect(payload).to.exist;
+                        expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
+                        expect(payload.uuid).to.equal(fetchResponse.uuid);
+                        expect(payload.endPoint).to.deep.equal(fetchResponse.endPoint);
+                        expect(payload.pipeType).to.equal(fetchResponse.pipeType);
+                        expect(payload.proxy).to.equal(fetchResponse.proxy);
+                        expect(payload.path).to.equal("/"); // This is always "/" currently in the API.
+                        expect((payload as any).lambda).to.not.exist;
+                        expect((payload as any).http).to.not.exist;
+                    });
+            });
+
+            it("Tests the Spoke returned by the service is correct for lambda.", function () {
+                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                    .then(function (payload: Spoke) {
+                        expect(payload).to.exist;
+                        expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
+                        expect(payload.uuid).to.equal(fetchResponse.uuid);
+                        expect(payload.endPoint).to.deep.equal(fetchResponse.endPoint);
+                        expect(payload.proxy).to.equal(fetchResponse.proxy);
+                        expect(payload.path).to.equal("/"); // This is always "/" currently in the API.
+                        expect(payload.pipeType).to.equal("LAMBDA");
+                        expect((payload as any).lambda).to.not.exist;
+                        expect((payload as any).http).to.not.exist;
+                    });
+            });
+        });
+    });
+
+    describe("Error returns", function () {
+        describe("Fetch Pipe", function () {
+            before(function () {
+                fetchMock.get(/https:\/\/api.bespoken.link\/pipe\/.*/, mockFetchNotFoundResponse);
+            });
+
+            afterEach(function () {
+                fetchMock.reset();
+            });
+
+            after(function () {
+                fetchMock.restore();
+            });
+
+            it("Tests the promise rejects upon not found.", function () {
+                return SpokesService.fetchPipe(source)
+                    .catch(function (err: Error) {
+                        expect(err).to.exist;
+                    });
+            });
+        });
+
+        describe("Save Pipe", function () {
+            before(function () {
+                fetchMock.post(/https:\/\/api.bespoken.link\/pipe/, mockSaveNotCreatedResponse);
+            });
+
+            afterEach(function () {
+                fetchMock.reset();
+            });
+
+            after(function () {
+                fetchMock.restore();
+            });
+
+            it("Tests the promise rejects upon not saved.", function () {
+                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                    .catch(function (err: Error) {
+                        expect(err).to.exist;
+                    });
+            });
+        });
+    });
+
+    describe("Error returns", function () {
+        describe("Fetch Pipe", function () {
+            before(function () {
+                fetchMock.get(/https:\/\/api.bespoken.link\/pipe\/.*/, mockFetchError);
+            });
+
+            afterEach(function () {
+                fetchMock.reset();
+            });
+
+            after(function () {
+                fetchMock.restore();
+            });
+
+            it("Tests the promise rejects upon network error..", function () {
+                return SpokesService.fetchPipe(source)
+                    .catch(function (err: Error) {
+                        expect(err).to.exist;
+                    });
+            });
+        });
+
+        describe("Save Pipe", function () {
+            before(function () {
+                fetchMock.post(/https:\/\/api.bespoken.link\/pipe/, mockSaveError);
+            });
+
+            afterEach(function () {
+                fetchMock.reset();
+            });
+
+            after(function () {
+                fetchMock.restore();
+            });
+
+            it("Tests the promise rejects upon network error.", function () {
+                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                .catch(function(err: Error) {
+                    expect(err).to.exist;
+                });
+            });
+        });
+    });
+});
