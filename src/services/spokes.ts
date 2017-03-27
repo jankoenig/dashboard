@@ -21,19 +21,24 @@ namespace spokes {
     /**
      * Returns a payload about the specified Pipe.
      */
-    export function fetchPipe(source: Source): Promise<Spoke.Spoke> {
+    export function fetchPipe(user: User, source: Source): Promise<Spoke.Spoke> {
         const URL = BASE_URL + "/pipe/" + source.secretKey;
-        return fetch(URL)
-            .then(function (result: Response) {
-                if (result.status === 200) {
-                    return result.json();
-                } else {
-                    return Promise.reject(new Error("Spoke not found."));
+        return resolveUser(user).then(function (user: User) {
+            return fetch(URL, {
+                headers: {
+                    "x-access-userid": user.userId
                 }
-            }).then(function (result: FetchSpokeResponse) {
-                scrub(result);
-                return new FetchSpokeResponseObj(result);
-            });
+            }).then(function (result: Response) {
+                    if (result.status === 200) {
+                        return result.json();
+                    } else {
+                        return Promise.reject(new Error("Spoke not found."));
+                    }
+                });
+        }).then(function (result: FetchSpokeResponse) {
+            scrub(result);
+            return new FetchSpokeResponseObj(result);
+        });
     }
 
     /**
@@ -43,14 +48,17 @@ namespace spokes {
     export function savePipe(user: User, source: Source, resource: HTTP | Lambda, liveDebugging: boolean): Promise<Spoke.Spoke> {
         const URL = BASE_URL + "/pipe";
         const postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
-        return fetch(URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-access-token": "Test Key",
-                "x-access-userid": user.userId
-            }, body: JSON.stringify(postObj)
-        }).then(function (result: Response) {
+        return resolveUser(user)
+            .then(function (user: User) {
+                return fetch(URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-access-token": "Test Key",
+                        "x-access-userid": user.userId
+                    }, body: JSON.stringify(postObj)
+                });
+            }).then(function (result: Response) {
                 scrub(postObj);
                 if (result.status === 200) {
                     return new FetchSpokeResponseObj(postObj);
@@ -64,6 +72,16 @@ namespace spokes {
 export default spokes;
 
 type PIPE_TYPE = Spoke.PIPE_TYPE;
+
+function resolveUser(user: User): Promise<User> {
+    return new Promise((resolve, reject) => {
+        if (user.userId) {
+            resolve(user);
+        } else {
+            reject(new Error("User must have a valie user ID"));
+        }
+    });
+}
 
 interface FetchSpokeResponse {
     /**

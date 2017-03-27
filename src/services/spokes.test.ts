@@ -58,15 +58,34 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the appropriately URL was created.", function () {
-                return SpokesService.fetchPipe(source)
+                return SpokesService.fetchPipe(user, source)
                     .then(function () {
                         const url = BASE_URL + "/pipe/" + source.secretKey;
                         expect(fetchMock.lastUrl()).to.equal(url);
                     });
             });
 
+            it("Tests that an error is thrown when an invalid user is not provided.", function () {
+                const copyUser = { ...user, ...{ userId: undefined } };
+                let caughtError: Error;
+                return SpokesService.fetchPipe(copyUser, source)
+                    .catch(function (err: Error) {
+                        caughtError = err;
+                    }).then(function () {
+                        expect(caughtError).to.exist;
+                    });
+            });
+
+            it("Tests the proper header is sent", function () {
+                return SpokesService.fetchPipe(user, source)
+                    .then(function (payload: Spoke) {
+                        const args = fetchMock.lastCall()[1] as RequestInit;
+                        expect(args.headers["x-access-userid"]).to.equal(user.userId);
+                    });
+            });
+
             it("Tests the spoke returned by the service is correct.", function () {
-                return SpokesService.fetchPipe(source)
+                return SpokesService.fetchPipe(user, source)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                         expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
@@ -115,6 +134,17 @@ describe("Spokes Service", function () {
                         expect(args.method).to.equal("POST");
                         expect(args.headers["Content-Type"]).to.equal("application/json");
                         expect(args.headers["x-access-userid"]).to.equal(user.userId);
+                    });
+            });
+
+            it("Tests that an error is thrown when an invalid user is not provided.", function () {
+                const copyUser = { ...user, ...{ userId: undefined } };
+                let caughtError: Error;
+                return SpokesService.savePipe(copyUser, source, { url: "http:spoke.url/" }, true)
+                    .catch(function (err: Error) {
+                        caughtError = err;
+                    }).then(function () {
+                        expect(caughtError).to.exist;
                     });
             });
 
@@ -199,9 +229,12 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the promise rejects upon not found.", function () {
-                return SpokesService.fetchPipe(source)
+                let caughtError: Error;
+                return SpokesService.fetchPipe(user, source)
                     .catch(function (err: Error) {
-                        expect(err).to.exist;
+                        caughtError = err;
+                    }).then(function() {
+                        expect(caughtError).to.exist;
                     });
             });
         });
@@ -220,9 +253,12 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the promise rejects upon not saved.", function () {
+                let caughtError: Error;
                 return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .catch(function (err: Error) {
-                        expect(err).to.exist;
+                        caughtError = err;
+                    }).then(function() {
+                        expect(caughtError).to.exist;
                     });
             });
         });
@@ -243,9 +279,12 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the promise rejects upon network error..", function () {
-                return SpokesService.fetchPipe(source)
+                let caughtError: Error;
+                return SpokesService.fetchPipe(user, source)
                     .catch(function (err: Error) {
-                        expect(err).to.exist;
+                        caughtError = err;
+                    }).then(function() {
+                        expect(caughtError).to.exist;
                     });
             });
         });
@@ -264,9 +303,12 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the promise rejects upon network error.", function () {
+                let caughtError: Error;
                 return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .catch(function (err: Error) {
-                        expect(err).to.exist;
+                        caughtError = err;
+                    }).then(function () {
+                        expect(caughtError).to.exist;
                     });
             });
         });
