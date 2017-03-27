@@ -5,6 +5,7 @@ import * as fetchMock from "fetch-mock";
 
 import Source from "../models/source";
 import Spoke from "../models/spoke";
+import User from "../models/user";
 import { dummySources } from "../utils/test";
 import SpokesService from "./spokes";
 
@@ -12,6 +13,7 @@ const expect = chai.expect;
 
 const BASE_URL = "https://api.bespoken.link";
 
+const user: User = new User({ userId: "ABCD1234", photoUrl: "https://www.photoasdfasdvawef.commmm/", email: "test@test.test", displayName: "Testy MyTestface" });
 const source: Source = dummySources(1)[0];
 
 const fetchResponse = {
@@ -93,27 +95,33 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the payload is returned upon successful save for http.", function () {
-                return SpokesService.savePipe(source, { url: "http:spoke.url/" }, true)
+                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                     });
             });
 
             it("Tests the payload is returned upon successful save for lambda.", function () {
-                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                     });
             });
 
-            it("Tests the proper post object was sent by the service is correct for HTTP.", function () {
-                return SpokesService.savePipe(source, { url: "http:spoke.url/" }, true)
+            it("Tests the proper header is sent", function () {
+                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         const args = fetchMock.lastCall()[1] as RequestInit;
                         expect(args.method).to.equal("POST");
                         expect(args.headers["Content-Type"]).to.equal("application/json");
-                        expect(args.headers["x-access-token"]).to.exist;
+                        expect(args.headers["x-access-userid"]).to.equal(user.userId);
+                    });
+            });
 
+            it("Tests the proper post object was sent by the service is correct for HTTP.", function () {
+                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
+                    .then(function (payload: Spoke) {
+                        const args = fetchMock.lastCall()[1] as RequestInit;
                         const reqObj = JSON.parse(args.body);
                         expect(reqObj).to.exist;
                         expect(reqObj.diagnosticKey).to.equal(source.secretKey);
@@ -128,12 +136,9 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the proper post object was sent by the service is correct for lamdba.", function () {
-                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .then(function (payload: Spoke) {
                         const args = fetchMock.lastCall()[1] as RequestInit;
-                        expect(args.headers["Content-Type"]).to.equal("application/json");
-                        expect(args.headers["x-access-token"]).to.exist;
-
                         const reqObj = JSON.parse(args.body);
                         expect(reqObj).to.exist;
                         expect(reqObj.diagnosticKey).to.equal(source.secretKey);
@@ -148,7 +153,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the Spoke returned by the service is correct for HTTP.", function () {
-                return SpokesService.savePipe(source, { url: "http:spoke.url/" }, true)
+                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                         expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
@@ -163,7 +168,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the Spoke returned by the service is correct for lambda.", function () {
-                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                         expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
@@ -215,7 +220,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the promise rejects upon not saved.", function () {
-                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .catch(function (err: Error) {
                         expect(err).to.exist;
                     });
@@ -259,10 +264,10 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the promise rejects upon network error.", function () {
-                return SpokesService.savePipe(source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
-                .catch(function(err: Error) {
-                    expect(err).to.exist;
-                });
+                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                    .catch(function (err: Error) {
+                        expect(err).to.exist;
+                    });
             });
         });
     });

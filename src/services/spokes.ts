@@ -2,6 +2,7 @@ import "isomorphic-fetch";
 
 import Source from "../models/source";
 import * as Spoke from "../models/spoke";
+import User from "../models/User";
 
 namespace spokes {
 
@@ -39,14 +40,15 @@ namespace spokes {
      * creates a Spokes pipe which can be later retrieved from `fetchPipe`.
      * @param secret
      */
-    export function savePipe(source: Source, resource: HTTP | Lambda, liveDebugging: boolean): Promise<Spoke.Spoke> {
+    export function savePipe(user: User, source: Source, resource: HTTP | Lambda, liveDebugging: boolean): Promise<Spoke.Spoke> {
         const URL = BASE_URL + "/pipe";
         const postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
         return fetch(URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "x-access-token": "Test Key"
+                "x-access-token": "Test Key",
+                "x-access-userid": user.userId
             }, body: JSON.stringify(postObj)
         }).then(function (result: Response) {
                 scrub(postObj);
