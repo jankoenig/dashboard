@@ -1,9 +1,7 @@
-// import * as Firebase from "firebase";
 import "isomorphic-fetch";
 
 import { Query } from "../models/query";
 import { Source } from "../models/source";
-// import StringUtil from "../utils/string";
 import { remoteservice } from "./remote-service";
 
 export namespace source {
