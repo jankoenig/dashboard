@@ -28,7 +28,7 @@ namespace spokes {
                 return fetch(URL, {
                     headers: {
                         "x-access-userid": user.userId,
-                        "x-access-token": "Test token"
+                        "x-access-token": "Test Key"
                     }
                 });
             }).then(function (result: Response) {
@@ -64,7 +64,7 @@ namespace spokes {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "x-access-token": "Test token",
+                        "x-access-token": "Test Key",
                         "x-access-userid": user.userId
                     }, body: JSON.stringify(postObj)
                 });
