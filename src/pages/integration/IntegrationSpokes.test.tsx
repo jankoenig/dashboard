@@ -161,8 +161,8 @@ describe("IntegrationSpokes", function () {
                 const button = wrapper.find(Button).at(0);
                 button.simulate("click");
 
-                return (wrapper.instance() as IntegrationSpokes)
-                    .savingPromise
+                const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
+                return promise
                     .then(function () {
                         expect(onSaved).to.be.calledOnce;
                     });

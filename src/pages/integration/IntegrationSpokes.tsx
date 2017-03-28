@@ -1,4 +1,3 @@
-import * as Bluebird from "bluebird";
 import * as React from "react";
 import { connect } from "react-redux";
 
@@ -6,6 +5,7 @@ import { Button } from "react-toolbox/lib/button";
 import Checkbox from "react-toolbox/lib/checkbox";
 import Dropdown from "react-toolbox/lib/dropdown";
 
+import { CancelableComponent } from "../../components/CancelableComponent";
 import { Cell, Grid } from "../../components/Grid";
 import Source from "../../models/source";
 import Spoke from "../../models/spoke";
@@ -60,11 +60,9 @@ function getResource(state: IntegrationSpokesState): SpokesService.HTTP | Spokes
     }
 }
 
-export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, IntegrationSpokesState> {
+export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProps, IntegrationSpokesState> {
 
     static PAGES: DropdownValue[] = [{ value: "http", label: "HTTP" }, { value: "lambda", label: "Lambda" }];
-
-    savingPromise: Bluebird<Spoke>;
 
     constructor(props: IntegrationSpokesProps) {
         super(props);
@@ -78,12 +76,6 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
             showPage: IntegrationSpokes.PAGES[0].value,
             enableLiveDebugging: false
         };
-    }
-
-    componentWillUnmount() {
-        if (this.savingPromise) {
-            this.savingPromise.cancel();
-        }
     }
 
     handleSourceSwap(value: PAGE) {
@@ -106,8 +98,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
         const { enableLiveDebugging } = this.state;
         const resource = getResource(this.state);
 
-        this.savingPromise = Bluebird
-            .resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging))
+        this.resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging))
             .then(function (spoke: Spoke) {
                 onSpokesSaved();
                 return spoke;

@@ -60,7 +60,7 @@ export class CancelableComponent<P extends PromiseComponentProps, S extends Prom
         this.cancelOnProps = [];
     }
 
-    resolve<T>(obj: T, cancelOnPropsChange?: boolean): Thenable<T> {
+    resolve<T>(obj: T | Thenable<T>, cancelOnPropsChange?: boolean): Thenable<T> {
         const newPromise = Bluebird.resolve(obj);
         this.registerCancelable(newPromise, cancelOnPropsChange);
         return newPromise;
