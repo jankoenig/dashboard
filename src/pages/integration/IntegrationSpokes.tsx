@@ -1,10 +1,17 @@
+import * as Bluebird from "bluebird";
 import * as React from "react";
+import { connect } from "react-redux";
 
 import { Button } from "react-toolbox/lib/button";
 import Checkbox from "react-toolbox/lib/checkbox";
 import Dropdown from "react-toolbox/lib/dropdown";
 
 import { Cell, Grid } from "../../components/Grid";
+import Source from "../../models/source";
+import Spoke from "../../models/spoke";
+import User from "../../models/user";
+import { State } from "../../reducers";
+import SpokesService from "../../services/spokes";
 import IntegrationSpokesSwapper, { PAGE } from "./IntegrationSpokesSwapper";
 
 const DropdownTheme = require("./themes/dropdown.scss");
@@ -17,8 +24,13 @@ interface DropdownValue {
     label: string;
 }
 
-interface IntegrationSpokesProps {
-    saveSpokes?(): void;
+interface IntegrationSpokesGlobalStateProps {
+    user: User;
+}
+
+interface IntegrationSpokesProps extends IntegrationSpokesGlobalStateProps {
+    source: Source;
+    onSpokesSaved?(): void;
 }
 
 interface IntegrationSpokesState {
@@ -30,9 +42,29 @@ interface IntegrationSpokesState {
     iamSecretKey?: string;
 }
 
+function mapStateToProps(state: State.All): IntegrationSpokesGlobalStateProps {
+    return {
+        user: state.session.user
+    };
+}
+
+function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+    return { /* nothing to match at the moment */ };
+}
+
+function getResource(state: IntegrationSpokesState): SpokesService.HTTP | SpokesService.Lambda {
+    if (state.showPage === "http") {
+        return { url: state.url };
+    } else if (state.showPage === "lambda") {
+        return { awsAccessKey: state.iamAccessKey, awsSecretKey: state.iamSecretKey, lambdaARN: state.arn };
+    }
+}
+
 export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, IntegrationSpokesState> {
 
     static PAGES: DropdownValue[] = [{ value: "http", label: "HTTP" }, { value: "lambda", label: "Lambda" }];
+
+    savingPromise: Bluebird<Spoke>;
 
     constructor(props: IntegrationSpokesProps) {
         super(props);
@@ -46,6 +78,12 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
             showPage: IntegrationSpokes.PAGES[0].value,
             enableLiveDebugging: false
         };
+    }
+
+    componentWillUnmount() {
+        if (this.savingPromise) {
+            this.savingPromise.cancel();
+        }
     }
 
     handleSourceSwap(value: PAGE) {
@@ -64,7 +102,16 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
     }
 
     handleSave() {
-        console.info("Saving");
+        const { user, source, onSpokesSaved } = this.props;
+        const { enableLiveDebugging } = this.state;
+        const resource = getResource(this.state);
+
+        this.savingPromise = Bluebird
+            .resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging))
+            .then(function (spoke: Spoke) {
+                onSpokesSaved();
+                return spoke;
+            });
     }
 
     render() {
@@ -84,7 +131,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
                         onChange={this.handleSourceSwap}
                     />
                 </Cell>
-                <Cell col={9}/>
+                <Cell col={9} />
                 <Cell col={6}>
                     <IntegrationSpokesSwapper
                         theme={InputTheme}
@@ -92,7 +139,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
                         onChange={this.handleSwapperChange}
                         {...others} />
                 </Cell>
-                <Cell col={6}/>
+                <Cell col={6} />
                 <Cell col={3}>
                     <Checkbox
                         theme={CheckboxTheme}
@@ -100,7 +147,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
                         checked={enableLiveDebugging}
                         onChange={this.handleCheckChange} />
                 </Cell>
-                <Cell col={9}/>
+                <Cell col={9} />
                 <Cell col={1}>
                     <Button
                         theme={ButtonTheme}
@@ -116,4 +163,7 @@ export class IntegrationSpokes extends React.Component<IntegrationSpokesProps, I
     }
 }
 
-export default IntegrationSpokes;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(IntegrationSpokes);

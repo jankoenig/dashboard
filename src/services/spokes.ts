@@ -9,7 +9,7 @@ namespace spokes {
     const BASE_URL = "https://api.bespoken.link";
 
     export interface Lambda {
-        lamdaARN: string;
+        lambdaARN: string;
         awsAccessKey: string;
         awsSecretKey: string;
     };
@@ -238,11 +238,11 @@ class SaveSpokeRequestObj implements SaveRequest {
             this.http = {
                 url: res.url
             };
-        } else if ((resource as spokes.Lambda).lamdaARN) {
+        } else if ((resource as spokes.Lambda).lambdaARN) {
             this.pipeType = "LAMBDA";
             const res = resource as spokes.Lambda;
             this.lambda = {
-                lamdaARN: res.lamdaARN,
+                lamdaARN: res.lambdaARN,
                 awsAccessKey: res.awsAccessKey,
                 awsSecretKey: res.awsSecretKey
             };

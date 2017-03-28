@@ -121,7 +121,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the payload is returned upon successful save for lambda.", function () {
-                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                     });
@@ -166,7 +166,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the proper post object was sent by the service is correct for lamdba.", function () {
-                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .then(function (payload: Spoke) {
                         const args = fetchMock.lastCall()[1] as RequestInit;
                         const reqObj = JSON.parse(args.body);
@@ -198,7 +198,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the Spoke returned by the service is correct for lambda.", function () {
-                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                         expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
@@ -254,7 +254,7 @@ describe("Spokes Service", function () {
 
             it("Tests the promise rejects upon not saved.", function () {
                 let caughtError: Error;
-                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .catch(function (err: Error) {
                         caughtError = err;
                     }).then(function() {
@@ -304,7 +304,7 @@ describe("Spokes Service", function () {
 
             it("Tests the promise rejects upon network error.", function () {
                 let caughtError: Error;
-                return SpokesService.savePipe(user, source, { lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
+                return SpokesService.savePipe(user, source, { lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .catch(function (err: Error) {
                         caughtError = err;
                     }).then(function () {
