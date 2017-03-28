@@ -39,7 +39,7 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
     render() {
         const { tabIndex } = this.state;
         const { showSecret, source } = this.props;
-        const { secretKey } = source;
+        const secretKey = (source) ? source.secretKey : undefined;
         return (
             <ResizingComponent overflowY="hidden" >
                 <section>

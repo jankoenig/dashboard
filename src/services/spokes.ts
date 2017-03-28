@@ -53,10 +53,12 @@ namespace spokes {
      */
     export function savePipe(user: User, source: Source, resource: HTTP | Lambda, liveDebugging: boolean): Promise<Spoke.Spoke> {
         const URL = BASE_URL + "/pipe";
-        const postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
-        return resolveUser(user)
-            .then(function (user: User) {
-                console.info("userID " + user.userId);
+        let postObj: SaveSpokeRequestObj;
+        return resolveSource(source)
+            .then(function (source: Source) {
+                 postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
+                return resolveUser(user);
+            }).then(function (user: User) {
                 return fetch(URL, {
                     method: "POST",
                     headers: {
@@ -66,8 +68,6 @@ namespace spokes {
                     }, body: JSON.stringify(postObj)
                 });
             }).then(function (result: Response) {
-                console.info(result.status);
-                console.log(postObj);
                 scrub(postObj);
                 if (result.status === 200) {
                     return new FetchSpokeResponseObj(postObj);
@@ -88,6 +88,16 @@ function resolveUser(user: User): Promise<User> {
             resolve(user);
         } else {
             reject(new Error("User must have a valie user ID"));
+        }
+    });
+}
+
+function resolveSource(source: Source): Promise<Source> {
+    return new Promise((resolve: (obj: Source) => void, reject: (err: Error) => void) => {
+        if (!source || !source.secretKey || !source.id) {
+            return reject(new Error("Source must be provided with key and id."));
+        } else {
+            return resolve(source);
         }
     });
 }

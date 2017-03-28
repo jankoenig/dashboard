@@ -211,6 +211,64 @@ describe("Spokes Service", function () {
                         expect((payload as any).http).to.not.exist;
                     });
             });
+
+            describe("Error checking", function () {
+                it("Tests that an error is thrown when user is undefined.", function () {
+                    let caughtError: Error;
+                    return SpokesService.savePipe(undefined, source, { url: "http:spoke.url/" }, true)
+                        .catch(function (err: Error) {
+                            caughtError = err;
+                        }).then(function () {
+                            expect(caughtError).to.exist;
+                        });
+                });
+
+                it("Tests that an error is thrown when source is undefined.", function () {
+                    const copyUser = { ...user };
+                    let caughtError: Error;
+                    return SpokesService.savePipe(copyUser, undefined, { url: "http:spoke.url/" }, true)
+                        .catch(function (err: Error) {
+                            caughtError = err;
+                        }).then(function () {
+                            expect(caughtError).to.exist;
+                        });
+                });
+
+                it("Tests that an error is thrown when source is undefined.", function () {
+                    const copyUser = { ...user };
+                    let caughtError: Error;
+                    return SpokesService.savePipe(copyUser, undefined, { url: "http:spoke.url/" }, true)
+                        .catch(function (err: Error) {
+                            caughtError = err;
+                        }).then(function () {
+                            expect(caughtError).to.exist;
+                        });
+                });
+
+                it("Tests that an error is thrown when source does not have a secret key.", function () {
+                    const copyUser = { ...user };
+                    const copySource = { ...source, ...{ secretKey: undefined } };
+                    let caughtError: Error;
+                    return SpokesService.savePipe(copyUser, copySource, { url: "http:spoke.url/" }, true)
+                        .catch(function (err: Error) {
+                            caughtError = err;
+                        }).then(function () {
+                            expect(caughtError).to.exist;
+                        });
+                });
+
+                it("Tests that an error is thrown when source does not have an ID.", function () {
+                    const copyUser = { ...user };
+                    const copySource = { ...source, ...{ id: undefined } };
+                    let caughtError: Error;
+                    return SpokesService.savePipe(copyUser, copySource, { url: "http:spoke.url/" }, true)
+                        .catch(function (err: Error) {
+                            caughtError = err;
+                        }).then(function () {
+                            expect(caughtError).to.exist;
+                        });
+                });
+            });
         });
     });
 
@@ -233,7 +291,7 @@ describe("Spokes Service", function () {
                 return SpokesService.fetchPipe(user, source)
                     .catch(function (err: Error) {
                         caughtError = err;
-                    }).then(function() {
+                    }).then(function () {
                         expect(caughtError).to.exist;
                     });
             });
@@ -257,7 +315,7 @@ describe("Spokes Service", function () {
                 return SpokesService.savePipe(user, source, { lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .catch(function (err: Error) {
                         caughtError = err;
-                    }).then(function() {
+                    }).then(function () {
                         expect(caughtError).to.exist;
                     });
             });
@@ -283,7 +341,7 @@ describe("Spokes Service", function () {
                 return SpokesService.fetchPipe(user, source)
                     .catch(function (err: Error) {
                         caughtError = err;
-                    }).then(function() {
+                    }).then(function () {
                         expect(caughtError).to.exist;
                     });
             });
