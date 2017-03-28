@@ -23,22 +23,28 @@ namespace spokes {
      */
     export function fetchPipe(user: User, source: Source): Promise<Spoke.Spoke> {
         const URL = BASE_URL + "/pipe/" + source.secretKey;
-        return resolveUser(user).then(function (user: User) {
-            return fetch(URL, {
-                headers: {
-                    "x-access-userid": user.userId
-                }
-            }).then(function (result: Response) {
-                    if (result.status === 200) {
-                        return result.json();
-                    } else {
-                        return Promise.reject(new Error("Spoke not found."));
+        return resolveUser(user)
+            .then(function (user: User) {
+                return fetch(URL, {
+                    headers: {
+                        "x-access-userid": user.userId
                     }
                 });
-        }).then(function (result: FetchSpokeResponse) {
-            scrub(result);
-            return new FetchSpokeResponseObj(result);
-        });
+            }).then(function (result: Response) {
+                return parse(result, "Spoke not found.");
+            })
+            .then(function (result: FetchSpokeResponse) {
+                scrub(result);
+                return new FetchSpokeResponseObj(result);
+            });
+    }
+
+    function parse<T>(result: Response, errMsg: string = "Could not parse result."): T | Thenable<T> {
+        if (result.status === 200) {
+            return result.json();
+        } else {
+            return Promise.reject(new Error(errMsg));
+        }
     }
 
     /**
@@ -74,7 +80,7 @@ export default spokes;
 type PIPE_TYPE = Spoke.PIPE_TYPE;
 
 function resolveUser(user: User): Promise<User> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve: (obj: User) => void, reject: (err: Error) => void) => {
         if (user.userId) {
             resolve(user);
         } else {
