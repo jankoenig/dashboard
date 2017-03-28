@@ -20,10 +20,10 @@ export class Source implements SourceProperties {
 
     readonly secretKey: string;
     readonly name: string;
-    readonly members: any;
+    readonly members: Members;
     readonly id: string;
     readonly profile?: SourceProfile;
-    readonly created: Date;
+    readonly created: string; // Firebase requires a "string" so this must be kept as a String.
 
     constructor(props: SourceProperties) {
 
@@ -31,15 +31,15 @@ export class Source implements SourceProperties {
         this.secretKey = props.secretKey ? props.secretKey : uuid.v4();
         this.id = props.id ? props.id : StringUtil.stringToSlug(this.name);
         this.profile = props.profile ? props.profile : SourceProfileUnspecified;
-        this.members = props.members ? props.members : [];
+        this.members = props.members ? props.members : {};
 
-        this.created = new Date();
+        this.created = new Date().toISOString();
 
         if (props.created) {
             if (props.created instanceof Date) {
-                this.created = props.created;
+                this.created = props.created.toISOString();
             } else if (typeof props.created  === "string") {
-                this.created = new Date(props.created);
+                this.created = props.created;
             }
         }
     }

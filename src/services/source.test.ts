@@ -1,10 +1,11 @@
 import * as chai from "chai";
+import * as fetchMock from "fetch-mock";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import * as SourceModel from "../models/source";
 import remoteservice from "./remote-service";
-import * as SourceService from "./source";
+import SourceService from "./source";
 
 chai.use(sinonChai);
 let expect = chai.expect;
@@ -126,57 +127,77 @@ describe("Source Service", function () {
         ref.child = sinon.stub().returns(ref);
     });
 
+    describe("Tests the generate source ID function.", function () {
+        let mockResponse: any;
+
+        before(function () {
+            mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
+            fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
+        });
+
+        after(function () {
+            fetchMock.restore();
+        });
+
+        it("Tests the resource is returned.", function () {
+            return SourceService.generateSourceId()
+                .then(function (resource: SourceService.SourceName) {
+                    expect(resource).to.exist;
+                    console.log(resource);
+                    expect(resource.id).to.equal("test-source-bhjas3");
+                    expect(resource.secretKey).to.equal("ABC123456");
+                });
+        });
+    });
+
     describe("Tests the createSource function.", function () {
 
         describe("Tests successful create responses.", function () {
+
+            let mockResponse: any;
+
+            before(function () {
+                mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
+                fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
+            });
+
             beforeEach(function () {
                 ref.set = sinon.stub().returns(successResponsePromise());
             });
 
+            after(function () {
+                fetchMock.restore();
+            });
+
             it("Creates a new Source", function () {
-                // It will only create a stub if it can't find a Source with the given slug.  That's determined by an error when queried.
-                ref.once = sinon.stub().returns(errorResponsePromise());
-
-                return SourceService.default.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
+                return SourceService.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
-                        expect(ref.once).to.be.calledOnce;
-                        expect(source.id).to.equal("test-source"); // "The default "slugged" name is the source name made in to a URL format.
+                        expect(source.id).to.equal("test-source-bhjas3"); // "The default "slugged" name is the source name made in to a URL format.
+                        expect(source.secretKey).to.equal("ABC123456");
+                        expect(source.members[mockAuth.currentUser.uid]).to.equal("owner");
                     });
             });
 
-            it("Creates a new Source when the slug already exists.", function () {
-                let onceStub = sinon.stub().returns(errorResponsePromise());
-                onceStub.onFirstCall().returns(successResponseSourcePromise());
-                ref.once = onceStub;
-
-                return SourceService.default.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
+            it("Sends the appropriate source to Firebase.", function () {
+                return SourceService.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
+                        // In order for these to be set, the firebase url "/sources/<sourceID>" must be set to "source" (checked above)
+                        // Immediately following the setting, the firebase url "users/<userID>/sources/<sourceID>" must be set to "owner"
+                        const childArgs = (ref.child as Sinon.SinonStub).args;
+                        const setargs = (ref.set as Sinon.SinonStub).args;
+                        // Check the first setting.
+                        expect(childArgs[0][0]).to.equal("sources");
+                        expect(childArgs[1][0]).to.equal("test-source-bhjas3");
+                        expect(setargs[0][0]).to.deep.equal(source);
 
-                        let base = "test-source";
-                        let firstPart = source.id.substr(0, base.length);
-                        let extension = source.id.substr(base.length);
+                        console.log(childArgs);
 
-                        expect(onceStub).to.be.calledTwice;
-                        expect(firstPart).to.equal(base);
-                        expect(extension.length).to.equal(6); // 5 ID numbers + dash (-).
-                    });
-            });
-
-            it("Creates a new Source when the first hundred slugs exist.", function () {
-                let onceStub = sinon.stub().returns(successResponsePromise());
-                onceStub.onCall(100).returns(errorResponsePromise());
-                ref.once = onceStub;
-
-                return SourceService.default.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
-                    .then(function (source: SourceModel.Source) {
-
-                        let base = "test-source";
-                        let firstPart = source.id.substr(0, base.length);
-                        let extension = source.id.substr(base.length);
-
-                        expect(ref.once).to.be.callCount(101);
-                        expect(firstPart).to.equal(base);
-                        expect(extension.length).to.equal(16); // ID number increases by 1 every 10 calls.  It should increase 10 times. (5 x 10) + dash (-).
+                        // Check the second setting.
+                        expect(childArgs[2][0]).to.equal("users");
+                        expect(childArgs[3][0]).to.equal(mockAuth.currentUser.uid);
+                        expect(childArgs[4][0]).to.equal("sources");
+                        expect(childArgs[5][0]).to.equal("test-source-bhjas3");
+                        expect(setargs[1][0]).to.equal("owner");
                     });
             });
         });
@@ -205,7 +226,7 @@ describe("Source Service", function () {
 
         describe("Success", function () {
             it("Tests the delete when to the appropriate Firebase url.", function () {
-                return SourceService.default.deleteSource(new SourceModel.Source(source), mockAuth, db)
+                return SourceService.deleteSource(new SourceModel.Source(source), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
                         // Deleting happens at "users/<uid>/sources/<source.id>";
                         const firstCall = childStub.firstCall;
@@ -224,7 +245,7 @@ describe("Source Service", function () {
             });
 
             it("Tests the delete sent a null to the Firebase url.", function () {
-                return SourceService.default.deleteSource(new SourceModel.Source(source), mockAuth, db)
+                return SourceService.deleteSource(new SourceModel.Source(source), mockAuth, db)
                     .then(function (source: SourceModel.Source) {
                         // tslint:disable:no-null-keyword
                         expect(setStub).to.be.calledWith(null);
@@ -232,9 +253,9 @@ describe("Source Service", function () {
                     });
             });
 
-            it ("Tests the returned source has been updated.", function() {
-                return SourceService.default.deleteSource(new SourceModel.Source(source), mockAuth, db)
-                    .then(function(source: SourceModel.Source) {
+            it("Tests the returned source has been updated.", function () {
+                return SourceService.deleteSource(new SourceModel.Source(source), mockAuth, db)
+                    .then(function (source: SourceModel.Source) {
                         expect(source.members[mockUser.uid]).to.not.exist;
                     });
             });
@@ -249,7 +270,7 @@ describe("Source Service", function () {
         it("Tests the get sources function with a successful payload.", function () {
             ref.once = sinon.stub().returns(successResponseSourcesArrayPromise());
 
-            return SourceService.default.getSources(mockAuth, db).then(function (retVal: any) {
+            return SourceService.getSources(mockAuth, db).then(function (retVal: any) {
                 expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
                 expect(retVal).to.not.be.undefined;
             });
@@ -258,7 +279,7 @@ describe("Source Service", function () {
         it("Tests the get sources function with a successful payload.", function () {
             ref.once = sinon.stub().returns(errorResponsePromise());
 
-            return SourceService.default.getSources(mockAuth, db).catch(function (retVal: any) {
+            return SourceService.getSources(mockAuth, db).catch(function (retVal: any) {
                 expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
                 expect(retVal).to.not.be.undefined;
             });
@@ -290,7 +311,7 @@ describe("Source Service", function () {
 
             (<Sinon.SinonStub>ref.child).onFirstCall().returns(subRef);
 
-            return SourceService.default.getSourcesObj(mockAuth, db).then(function (sources: SourceModel.Source[]) {
+            return SourceService.getSourcesObj(mockAuth, db).then(function (sources: SourceModel.Source[]) {
                 expect(ref.child).to.be.callCount(11);
                 expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
                 expect(sources.length).to.equal(10); // The side that the main promise returns.
@@ -303,7 +324,7 @@ describe("Source Service", function () {
 
             (<Sinon.SinonStub>ref.child).returns(subRef);
 
-            return SourceService.default.getSourcesObj(mockAuth, db).catch(function (retVal: any) {
+            return SourceService.getSourcesObj(mockAuth, db).catch(function (retVal: any) {
                 expect(ref.child).to.be.callCount(1);
                 expect(ref.child).to.be.calledWith("/users/" + mockUser.uid + "/sources");
                 expect(retVal).to.not.be.undefined;
@@ -317,7 +338,7 @@ describe("Source Service", function () {
 
             ref.once = sinon.stub().returns(successResponseSourcePromise("TestSourceId"));
 
-            return SourceService.default.getSource("TestSourceId", db).then(function (obj: any) {
+            return SourceService.getSource("TestSourceId", db).then(function (obj: any) {
                 expect(ref.once).to.be.calledOnce;
                 expect(ref.child).to.be.calledOnce;
                 expect(ref.child).to.be.calledWith("/sources/TestSourceId");
@@ -330,7 +351,7 @@ describe("Source Service", function () {
 
             ref.once = sinon.stub().returns(errorResponsePromise());
 
-            return SourceService.default.getSource("TestSourceId", db).catch(function (obj: any) {
+            return SourceService.getSource("TestSourceId", db).catch(function (obj: any) {
                 expect(ref.once).to.be.calledOnce;
                 expect(ref.child).to.be.calledOnce;
                 expect(ref.child).to.be.calledWith("/sources/TestSourceId");
@@ -346,7 +367,7 @@ describe("Source Service", function () {
 
             ref.once = sinon.stub().returns(successResponseSourcePromise("TestSourceId"));
 
-            return SourceService.default.getSourceObj("TestSourceId", db).then(function (obj: SourceModel.Source) {
+            return SourceService.getSourceObj("TestSourceId", db).then(function (obj: SourceModel.Source) {
                 expect(ref.once).to.be.calledOnce;
                 expect(ref.child).to.be.calledOnce;
                 expect(ref.child).to.be.calledWith("/sources/TestSourceId");
@@ -359,7 +380,7 @@ describe("Source Service", function () {
 
             ref.once = sinon.stub().returns(errorResponsePromise());
 
-            return SourceService.default.getSourceObj("TestSourceId", db).catch(function (obj: any) {
+            return SourceService.getSourceObj("TestSourceId", db).catch(function (obj: any) {
                 expect(ref.once).to.be.calledOnce;
                 expect(ref.child).to.be.calledOnce;
                 expect(ref.child).to.be.calledWith("/sources/TestSourceId");

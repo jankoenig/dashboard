@@ -34,7 +34,25 @@ describe("SourceForm", function () {
                 nameRule={validator} />
         ));
 
-        expect(wrapper.find("FormInput").length).to.equal(2);
+        expect(wrapper.find("FormInput").length).to.equal(1);
+    });
+
+    it("Tests the onChange system.", function () {
+        const createSource = sinon.stub();
+        const onChange = sinon.stub();
+        let wrapper = shallow((
+            <SourceForm.SourceForm createSource={createSource}
+                onChange={onChange}
+                nameRule={undefined} />
+        ));
+
+        let formInputs = wrapper.find("FormInput");
+        let nameForm = formInputs.at(0);
+
+        nameForm.simulate("change", { target: { value: "ABCD" } });
+
+        expect(onChange).to.have.been.calledOnce;
+        expect(onChange).to.have.been.calledWith("ABCD");
     });
 
     describe("Validator", function () {
@@ -87,10 +105,6 @@ describe("SourceForm", function () {
 
             let nameForm = formInputs.at(0);
             expect(nameForm.props().value).to.equal("");
-
-
-            let keyForm = formInputs.at(1);
-            expect(keyForm.props().value).to.equal("");
         });
 
         it("Checks that the source is nulled when validator goes from true to false.", function () {

@@ -202,7 +202,7 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
         const key = (hasKey) ? this.props.source.secretKey : undefined;
         return (
             <div>
-                <IntegrationPage secretKey={key} />
+                <IntegrationPage showSecret={true} secretKey={key} />
                 {
                     (hasKey) ?
                         (
