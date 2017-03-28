@@ -88,6 +88,9 @@ describe("SourceStats", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
+
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+            return loadingPromise;
         });
 
         after(function () {
@@ -96,39 +99,43 @@ describe("SourceStats", function () {
 
         it("Tests the data query contains the appropriate parameters.", function () {
             // Returning a promise ensures that the promise in the component is completed before everything else.
-            return Promise.resolve(true).then(function () {
-                const query: Query = statsService.args[0][0];
-                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-
-                expect(startParameter.value).to.equal(start.toISOString());
-                expect(endParameter.value).to.equal(end.toISOString());
-                expect(sourceParameter.value).to.equal(source.secretKey);
-            });
-        });
-
-        it("Tests the data query contains the appropriate parameters with new props.", function () {
-            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
-            const query: Query = statsService.args[1][0];
+            const query: Query = statsService.args[0][0];
             const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
             const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
             const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
 
             expect(startParameter.value).to.equal(start.toISOString());
             expect(endParameter.value).to.equal(end.toISOString());
-            expect(sourceParameter.value).to.equal(sources[1].secretKey);
+            expect(sourceParameter.value).to.equal(source.secretKey);
+        });
+
+        it("Tests the data query contains the appropriate parameters with new props.", function () {
+            wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+
+            return loadingPromise.then(function () {
+                const query: Query = statsService.args[1][0];
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(sources[1].secretKey);
+            });
         });
 
         it("Tests that the data does *not* load if the parameters are the same.", function () {
             wrapper.setProps({}); // Forces a call to componentWillReceiveProps with the same props.
-
-            expect(statsService).to.be.calledOnce; // Only on mount.
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+            return loadingPromise.then(function () {
+                expect(statsService).to.be.calledOnce; // Only on mount.
+            });
         });
 
         it("Tests the bar graph has the loaded data.", function () {
-            // Returning a promise ensures that the promise in the component is completed before everything else.
-            return Promise.resolve(true).then(function () {
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+            return loadingPromise.then(function () {
                 expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "300"); // events
                 expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "100"); // users
                 expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "200"); // errors
@@ -140,21 +147,9 @@ describe("SourceStats", function () {
                 source={undefined}
                 startDate={start}
                 endDate={end} />);
-
-            return Promise.resolve(true).then(function () {
-                expect(newWrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
-                expect(newWrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
-                expect(newWrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
-            });
-        });
-
-        it("Tests the defaults were set when source is set to undefined through props.", function () {
-            return Promise.resolve(true).then(function () {
-                wrapper.setProps({ source: undefined });
-                expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
-                expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
-                expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
-            });
+            expect(newWrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
+            expect(newWrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
+            expect(newWrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
         });
     });
 
@@ -183,7 +178,8 @@ describe("SourceStats", function () {
         });
 
         it("Tests the bar graph has the loaded data.", function () {
-            return Promise.resolve(true).then(function () {
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+            return loadingPromise.then(function () {
                 expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
                 expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
                 expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
@@ -211,13 +207,11 @@ describe("SourceStats", function () {
                 startDate={start}
                 endDate={end} />);
 
-            return Promise.resolve(true).then(function () {
-                // This will let the initial load finish before swapping.
-                wrapper.setProps(wrapper.props());
-            });
+            const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
+            return loadingPromise;
         });
 
-        after(function() {
+        after(function () {
             statsService.restore();
         });
 
@@ -250,8 +244,8 @@ describe("SourceStats", function () {
             checkStats(stats);
         });
 
-        it("Tests that it combines the entries are selected on props change.", function() {
-            wrapper.setProps({ selectedEntries: [ "Amazon.Alexa", "Google.Home" ]});
+        it("Tests that it combines the entries are selected on props change.", function () {
+            wrapper.setProps({ selectedEntries: ["Amazon.Alexa", "Google.Home"] });
 
             const stats = {
                 totalEvents: summary["Amazon.Alexa"].totalEvents + summary["Google.Home"].totalEvents,
@@ -261,7 +255,7 @@ describe("SourceStats", function () {
             checkStats(stats);
         });
 
-        it("Tests that the default is selected when no entries are selected.", function() {
+        it("Tests that the default is selected when no entries are selected.", function () {
             wrapper.setProps({ selectedEntries: [] });
 
             const stats = {
@@ -273,8 +267,8 @@ describe("SourceStats", function () {
             checkStats(stats);
         });
 
-        it("Tests that it handles entries that do not exist.", function() {
-            wrapper.setProps({ selectedEntries: [ "stats", "Noop" ]});
+        it("Tests that it handles entries that do not exist.", function () {
+            wrapper.setProps({ selectedEntries: ["stats", "Noop"] });
 
             const stats = summary.stats;
             checkStats(stats);

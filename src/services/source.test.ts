@@ -190,8 +190,6 @@ describe("Source Service", function () {
                         expect(childArgs[1][0]).to.equal("test-source-bhjas3");
                         expect(setargs[0][0]).to.deep.equal(source);
 
-                        console.log(childArgs);
-
                         // Check the second setting.
                         expect(childArgs[2][0]).to.equal("users");
                         expect(childArgs[3][0]).to.equal(mockAuth.currentUser.uid);

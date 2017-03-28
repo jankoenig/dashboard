@@ -25,15 +25,11 @@ export namespace source {
         }
 
         const finalURL = NAME_GENERATING_URL + "?" + query.query();
-
-        const request = new Request(finalURL);
-        console.info("Getting " + request.url);
+;
         return fetch(finalURL)
                .then(function (result: any) {
-                console.log(result);
                 return result.json();
             }).then(function(result: SourceName) {
-                console.log(result);
                 return result;
             });
     }
