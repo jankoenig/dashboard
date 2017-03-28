@@ -28,9 +28,12 @@ interface IntegrationSpokesGlobalStateProps {
     user: User;
 }
 
-interface IntegrationSpokesProps extends IntegrationSpokesGlobalStateProps {
+interface IntegrationSpokesStandardProps {
     source: Source;
     onSpokesSaved?(): void;
+}
+
+interface IntegrationSpokesProps extends IntegrationSpokesGlobalStateProps, IntegrationSpokesStandardProps {
 }
 
 interface IntegrationSpokesState {
@@ -58,6 +61,10 @@ function getResource(state: IntegrationSpokesState): SpokesService.HTTP | Spokes
     } else if (state.showPage === "lambda") {
         return { awsAccessKey: state.iamAccessKey, awsSecretKey: state.iamSecretKey, lambdaARN: state.arn };
     }
+}
+
+function mergeProps(stateProps: IntegrationSpokesGlobalStateProps, dispatchProps: any, parentProps: IntegrationSpokesStandardProps): IntegrationSpokesProps {
+    return { ...parentProps, ...dispatchProps, ...stateProps };
 }
 
 export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProps, IntegrationSpokesState> {
@@ -98,10 +105,19 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         const { enableLiveDebugging } = this.state;
         const resource = getResource(this.state);
 
+        console.info("Saving");
+        console.log(user);
+        console.log(source);
+        console.log(resource);
+        console.log(enableLiveDebugging);
         this.resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging))
             .then(function (spoke: Spoke) {
+                console.info("Spoke saved.");
+                console.log(spoke);
                 onSpokesSaved();
                 return spoke;
+            }).catch(function(err: Error) {
+                console.error(err);
             });
     }
 
@@ -157,4 +173,5 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
 export default connect(
     mapStateToProps,
     mapDispatchToProps,
+    mergeProps
 )(IntegrationSpokes);

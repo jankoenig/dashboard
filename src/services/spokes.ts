@@ -56,6 +56,7 @@ namespace spokes {
         const postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
         return resolveUser(user)
             .then(function (user: User) {
+                console.info("userID " + user.userId);
                 return fetch(URL, {
                     method: "POST",
                     headers: {
@@ -65,6 +66,8 @@ namespace spokes {
                     }, body: JSON.stringify(postObj)
                 });
             }).then(function (result: Response) {
+                console.info(result.status);
+                console.log(postObj);
                 scrub(postObj);
                 if (result.status === 200) {
                     return new FetchSpokeResponseObj(postObj);

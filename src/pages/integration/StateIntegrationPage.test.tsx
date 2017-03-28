@@ -28,13 +28,13 @@ describe("StateIntegrationPage", function () {
 
         it("Tests the IntegrationPage contains the appropriate props.", function () {
             const page = wrapper.find(IntegrationPage).at(0);
-            expect(page.prop("secretKey")).to.equal("ABC123");
+            expect(page.prop("source")).to.equal(source);
         });
 
         it ("Tests it renders properly on props change to undefined.", function() {
             wrapper.setProps({ source: undefined });
             const page = wrapper.find(IntegrationPage).at(0);
-            expect(page.prop("secretKey")).to.be.undefined;
+            expect(page.prop("source")).to.be.undefined;
         });
 
         it ("Tests it renders properly on props change to a new source.", function() {
@@ -46,7 +46,7 @@ describe("StateIntegrationPage", function () {
             wrapper.setProps({ source: newsource });
 
             const page = wrapper.find(IntegrationPage).at(0);
-            expect(page.prop("secretKey")).to.be.equal("123ABC");
+            expect(page.prop("source")).to.equal(newsource);
         });
     });
 
@@ -71,7 +71,7 @@ describe("StateIntegrationPage", function () {
             wrapper.setProps({ source: newsource });
 
             const page = wrapper.find(IntegrationPage).at(0);
-            expect(page.prop("secretKey")).to.be.equal("123ABC");
+            expect(page.prop("source")).to.equal(newsource);
         });
     });
 });

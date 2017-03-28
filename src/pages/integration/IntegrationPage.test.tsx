@@ -4,6 +4,8 @@ import * as React from "react";
 
 import { Tab, Tabs } from "react-toolbox";
 
+import Source from "../../models/source";
+import { dummySources } from "../../utils/test";
 import IntegrationExpressJS from "./IntegrationExpressJS";
 import IntegrationJava from "./IntegrationJava";
 import IntegrationNodeJS from "./IntegrationNodeJSLambda";
@@ -12,13 +14,15 @@ import IntegrationSpokes from "./IntegrationSpokes";
 
 const expect = chai.expect;
 
+const source: Source = dummySources(1)[0];
+
 describe("IntegrationPage", function () {
 
     describe("Rendering with key.", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
-            wrapper = shallow(<IntegrationPage secretKey={"ABCD123"} />);
+            wrapper = shallow(<IntegrationPage source={source} />);
         });
 
         it ("Tests there are the appropriate number of tabs.", function() {
@@ -35,21 +39,21 @@ describe("IntegrationPage", function () {
             const tabPage = tab.find(IntegrationNodeJS); // TODO: I'm not sure why this doesn't work.
             // const tabPage = tab.childAt(0);
             expect(tabPage).to.have.length(1);
-            expect(tabPage.prop("secretKey")).to.equal("ABCD123");
+            expect(tabPage.prop("secretKey")).to.equal(source.secretKey);
         });
 
         it ("Tests the second tab is IntegrationExpressJS and gets the secret key.", function() {
             const tab = wrapper.find(Tab).at(1);
             const tabPage = tab.find(IntegrationExpressJS);
             expect(tabPage).to.have.length(1);
-            expect(tabPage.prop("secretKey")).to.equal("ABCD123");
+            expect(tabPage.prop("secretKey")).to.equal(source.secretKey);
         });
 
         it ("Tests the third tab is IntegrationJava and gets the secret key.", function() {
             const tab = wrapper.find(Tab).at(2);
             const tabPage = tab.find(IntegrationJava);
             expect(tabPage).to.have.length(1);
-            expect(tabPage.prop("secretKey")).to.equal("ABCD123");
+            expect(tabPage.prop("secretKey")).to.equal(source.secretKey);
         });
 
         it("Tests the Spoke Page exists", function() {
@@ -63,7 +67,7 @@ describe("IntegrationPage", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         beforeEach(function () {
-            wrapper = shallow(<IntegrationPage secretKey={"ABCD123"} />);
+            wrapper = shallow(<IntegrationPage source={source} />);
         });
 
         it ("Tests the tab gets the appropriate state after change.", function() {
