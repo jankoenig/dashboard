@@ -36,6 +36,7 @@ export class SourceHeader extends React.Component<SourceHeaderProps, SourceHeade
     render() {
         const { source, rootStyle, tileColor } = this.props;
         const dataTileStyle = { inputTextColor: tileColor, bottomBorderColor: tileColor };
+        const createdDate = (source.created) ? moment(source.created).format(DEFAULT_TEXT_FORMAT) : "N/A";
         return (
             <Grid style={rootStyle}>
                 <Cell col={3} hidePhone={true}>
@@ -53,7 +54,7 @@ export class SourceHeader extends React.Component<SourceHeaderProps, SourceHeade
                 <Cell col={3} hidePhone={true} >
                     <DataTile
                         theme={dataTileStyle}
-                        value={moment(source.created).format(DEFAULT_TEXT_FORMAT)}
+                        value={createdDate}
                         label={"Created"} />
                 </Cell>
                 <Cell col={3} hidePhone={true} >
