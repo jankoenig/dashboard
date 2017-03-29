@@ -25,11 +25,12 @@ namespace spokes {
         const URL = BASE_URL + "/pipe/" + source.secretKey;
         return resolveUser(user)
             .then(function (user: User) {
-                return fetch(URL, {
-                    headers: {
+                const headers: Headers = new Headers({
                         "x-access-userid": user.userId,
                         "x-access-token": "Test Key"
-                    }
+                    });
+                return fetch(URL, {
+                    headers: headers
                 });
             }).then(function (result: Response) {
                 return parse(result, "Spoke not found.");
@@ -57,24 +58,31 @@ namespace spokes {
         let postObj: SaveSpokeRequestObj;
         return resolveSource(source)
             .then(function (source: Source) {
-                 postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
+                postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
                 return resolveUser(user);
             }).then(function (user: User) {
+                const headers = new Headers({
+                        "Content-Type": "application/json",
+                        "x-access-token": "4772616365-46696f72656c6c61",
+                        "x-access-userid": user.userId
+                    });
                 return fetch(URL, {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-access-token": "Test Key",
-                        "x-access-userid": user.userId
-                    }, body: JSON.stringify(postObj)
+                    headers: headers,
+                    body: JSON.stringify(postObj)
                 });
             }).then(function (result: Response) {
+                console.info("Return " + result.status);
+                console.log(result);
                 scrub(postObj);
                 if (result.status === 200) {
                     return new FetchSpokeResponseObj(postObj);
                 } else {
                     return Promise.reject("Could not save spoke.");
                 }
+            }).catch(function(err: Error) {
+                console.error(err);
+                throw err;
             });
     }
 }
