@@ -60,38 +60,59 @@ function mergeRemainingProps(stateProps: StateProps, dispatchProps: DispatchProp
     return { ...stateProps, ...dispatchProps, ...standardProps };
 }
 
+function checkParams(id: string, key: string): Promise<Query> {
+    return new Promise(function (resolve: (id: Query) => void, reject: (err: Error) => void) {
+        if (id && key) {
+            resolve({ id: id, key: key });
+        } else {
+            reject(new Error("Both ID and Key must be provided."));
+        }
+    });
+}
+
+interface QueryResult {
+    source: Source;
+    query: Query;
+}
+
+function getSource(sources: Source[], query: Query): Promise<QueryResult> {
+    return IndexUtils.findSource(sources, query.id)
+        .then(function (source: Source) {
+            return { source: source, query: query };
+        });
+}
+
+function checkResult(result: QueryResult): string {
+    const { source, query } = result;
+    if (source.secretKey === query.key) {
+        return query.id;
+    } else {
+        throw new Error("Keys do not match.");
+    }
+}
+
 export class CreateOrRoute extends CancelableComponent.CancelableComponent<CreateOrRouteProps, CreateOrRouteState> {
 
     componentWillMount() {
-        const { goTo, location } = this.props;
+        this.reroute(this.props);
+    }
+
+    reroute(props: CreateOrRouteProps): Promise<any> {
+        const { goTo, location, sources } = this.props;
         const { id, key } = location.query;
-        console.log(this.props);
-        if (id && key) {
-            return this.resolve(this.getSource(id))
-                .then(function(source: Source) {
-                    console.info("Found " + id);
-                    if (source.secretKey === key) {
-                        goTo("/skills/" + id);
-                    } else {
-                        goTo("/skills");
-                    }
-                }).catch(function() {
-                    console.info("Did not find " + id);
-                    goTo("/skills");
-                });
-        } else {
-            console.info("Going to skills");
-            goTo("/skills");
-        }
-    }
-
-    getSource(id: string): Promise<Source> {
-        const { sources } = this.props;
-        return IndexUtils.findSource(sources, id);
-    }
-
-    createSource(id: string, key: string) {
-
+        const promise = checkParams(id, key)
+            .then(function (query: Query) {
+                return getSource(sources, query);
+            })
+            .then(function (query: QueryResult) {
+                return checkResult(query);
+            })
+            .then(function (id: string) {
+                goTo("/skills/" + id);
+            }).catch(function (err: Error) {
+                goTo("/skills");
+            });
+        return this.resolve(promise);
     }
 
     render() {
@@ -103,4 +124,4 @@ export default connect(
     mapStateToProps,
     mapStateToDispatch,
     mergeRemainingProps)
-(CreateOrRoute);
+    (CreateOrRoute);

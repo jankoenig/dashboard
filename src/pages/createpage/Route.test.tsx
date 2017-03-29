@@ -1,3 +1,4 @@
+import * as Bluebird from "bluebird";
 import * as chai from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
@@ -27,27 +28,36 @@ describe("Route", function () {
             const sources: Source[] = [];
             const location = { query: {} };
             // It calls it on mount.
-            shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
+            const wrapper = shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
+            const instance = wrapper.instance() as CreateOrRoute;
 
-            expect(goTo).to.have.been.calledWith("/skills");
+            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
+                expect(goTo).to.have.been.calledWith("/skills");
+            });
         });
 
         it("Tests default route when when only ID exists.", function () {
             const sources: Source[] = dummySources(5);
             const location = { query: { id: sources[0].id } };
             // It calls it on mount.
-            shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
+            const wrapper = shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
+            const instance = wrapper.instance() as CreateOrRoute;
 
-            expect(goTo).to.have.been.calledWith("/skills");
+            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
+                expect(goTo).to.have.been.calledWith("/skills");
+            });
         });
 
         it("Tests default route when when only key exists exists.", function () {
             const sources: Source[] = dummySources(5);
             const location = { query: { key: sources[0].secretKey } };
             // It calls it on mount.
-            shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
+            const wrapper = shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
+            const instance = wrapper.instance() as CreateOrRoute;
 
-            expect(goTo).to.have.been.calledWith("/skills");
+            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
+                expect(goTo).to.have.been.calledWith("/skills");
+            });
         });
 
         it("Tests it routes to the skill when found.", function () {
@@ -57,7 +67,7 @@ describe("Route", function () {
             const wrapper = shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
             const instance = wrapper.instance() as CreateOrRoute;
 
-            return (instance.cancelables[0] as any).then(function() {
+            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
                 expect(goTo).to.have.been.calledWith("/skills/" + sources[3].id);
             });
         });
@@ -69,7 +79,7 @@ describe("Route", function () {
             const wrapper = shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
             const instance = wrapper.instance() as CreateOrRoute;
 
-            return (instance.cancelables[0] as any).then(function() {
+            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
                 expect(goTo).to.have.been.calledWith("/skills");
             });
         });
