@@ -20,7 +20,6 @@ function generateSourceProps(sourceId: string = undefined, members: SourceModel.
         secretKey: "SuperSecretKey",
         name: "Test Source",
         members: members,
-        profile: undefined,
         id: sourceId,
         created: new Date()
     };

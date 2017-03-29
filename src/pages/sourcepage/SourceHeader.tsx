@@ -24,7 +24,6 @@ export class SourceHeader extends React.Component<SourceHeaderProps, SourceHeade
         name: "N/A",
         secretKey: "N/A",
         id: "N/A",
-        profile: undefined,
         created: new Date(0, 0, 0, 0, 0, 0, 0)
     });
 

@@ -1,35 +1,38 @@
 import { expect } from "chai";
 
-import Source from "./source";
-import { SourceProfileAmazonAlexa } from "./source-profile";
+import Source, { Members } from "./source";
 
 describe("Source", function () {
     describe("constructor", function () {
-        it("provides a UUID", function () {
+        it("check defauts", function () {
             let source = new Source({ name: "source" });
-            expect(source).to.exist;
-            expect(source.name).to.equal("source");
-            expect(source.id).to.equal("source");
-            expect(source.secretKey).to.exist;
-            expect(source.profile).to.exist;
-            expect(source.created).to.exist;
+            expect(source.name).to.be.equal("source");
+            expect(source.members).to.exist;
+            expect(source.id).to.be.undefined;
+            expect(source.secretKey).to.be.undefined;
+            expect(source.created).to.be.undefined;
         });
 
         it("sets all properties", function () {
             let created = new Date();
+            let members: Members = {};
+            members["user1"] = "ABCD";
+            members["user2"] = "EFGH";
+            members["user3"] = "IJKL";
 
             let source = new Source({
                 name: "source",
                 secretKey: "id",
-                profile: SourceProfileAmazonAlexa,
-                created: created
+                created: created,
+                members: members,
+                id: "source-jfjfh"
             });
 
             expect(source).to.exist;
             expect(source.secretKey).to.equal("id");
             expect(source.name).to.equal("source");
-            expect(source.profile).to.equal(SourceProfileAmazonAlexa);
             expect(source.created).to.equal(created.toISOString());
+            expect(source.members).to.deep.equal(members);
         });
 
         it("sets the created property from a string", function() {
@@ -38,8 +41,6 @@ describe("Source", function () {
 
             let source = new Source({
                 name: "source",
-                secretKey: "id",
-                profile: SourceProfileAmazonAlexa,
                 created: created
             });
 
