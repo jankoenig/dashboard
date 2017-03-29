@@ -2,6 +2,7 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { replace } from "react-router-redux";
 
+import * as CancelableComponent from "../../components/CancelableComponent";
 import IndexUtils from "../../index-utils";
 import Source from "../../models/source";
 import { State } from "../../reducers";
@@ -14,8 +15,8 @@ import { State } from "../../reducers";
  * "?id=<value>&key=<value>"
  */
 interface Query {
-    id: string | undefined;
-    key: string | undefined;
+    id?: string | undefined;
+    key?: string | undefined;
 }
 
 interface Location {
@@ -34,10 +35,10 @@ interface StandardProps {
     location: Location;
 }
 
-interface CreateOrRouteProps extends StateProps, DispatchProps, StandardProps {
+interface CreateOrRouteProps extends StateProps, DispatchProps, StandardProps, CancelableComponent.PromiseComponentProps {
 }
 
-interface CreateOrRouteState {
+interface CreateOrRouteState extends CancelableComponent.PromiseComponentState {
 
 }
 
@@ -59,17 +60,21 @@ function mergeRemainingProps(stateProps: StateProps, dispatchProps: DispatchProp
     return { ...stateProps, ...dispatchProps, ...standardProps };
 }
 
-export class CreateOrRoute extends React.Component<CreateOrRouteProps, CreateOrRouteState> {
+export class CreateOrRoute extends CancelableComponent.CancelableComponent<CreateOrRouteProps, CreateOrRouteState> {
 
     componentWillMount() {
         const { goTo, location } = this.props;
         const { id, key } = location.query;
         console.log(this.props);
         if (id && key) {
-            return this.getSource(id)
+            return this.resolve(this.getSource(id))
                 .then(function(source: Source) {
                     console.info("Found " + id);
-                    goTo("/skills/" + id);
+                    if (source.secretKey === key) {
+                        goTo("/skills/" + id);
+                    } else {
+                        goTo("/skills");
+                    }
                 }).catch(function() {
                     console.info("Did not find " + id);
                     goTo("/skills");
@@ -90,7 +95,6 @@ export class CreateOrRoute extends React.Component<CreateOrRouteProps, CreateOrR
     }
 
     render() {
-        console.info(this.props);
         return (<div />);
     }
 }
