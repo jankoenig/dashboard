@@ -1,6 +1,11 @@
 ﻿import * as React from "react";
+import { Link } from "react-router";
 
 import SpeechBubble from "../components/Icon/SpeechBubbleIcon";
+
+import { Button } from "react-toolbox/lib/button";
+
+const ButtonTheme = require("../themes/button_theme.scss");
 
 const centerStyle = {
     margin: "auto",
@@ -18,10 +23,15 @@ export default class NotFoundPage extends React.Component<any, any> {
                     <h4 style={{
                         position: "absolute",
                         margin: "5rem",
-                        fontSize: "4.5em",
+                        fontSize: "5em",
                         lineHeight: "1em",
                         top: "0", left: "0", right: "0", bottom: "0"
-                    }}>It seems we can not find the requested page you are looking for.</h4>
+                    }}>It seems we can not find the requested page.</h4>
+                </div>
+                <div style={{ ...centerStyle, ...{ textAlign: "center" } }}>
+                    <Link to="/skills/" >
+                        <Button theme={ButtonTheme} accent raised label="Go Home" />
+                    </Link>
                 </div>
             </div >
         );
