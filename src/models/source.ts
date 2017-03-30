@@ -23,7 +23,7 @@ export class Source implements SourceProperties {
     readonly members: any;
     readonly id: string;
     readonly profile?: SourceProfile;
-    readonly created: Date;
+    readonly created: string; // Needed because Firebase does not allow Date.
 
     constructor(props: SourceProperties) {
 
@@ -33,13 +33,13 @@ export class Source implements SourceProperties {
         this.profile = props.profile ? props.profile : SourceProfileUnspecified;
         this.members = props.members ? props.members : [];
 
-        this.created = new Date();
+        this.created = new Date().toISOString();
 
         if (props.created) {
             if (props.created instanceof Date) {
-                this.created = props.created;
+                this.created = props.created.toISOString();
             } else if (typeof props.created  === "string") {
-                this.created = new Date(props.created);
+                this.created = new Date(props.created).toISOString();
             }
         }
     }
