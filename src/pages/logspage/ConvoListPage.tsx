@@ -278,14 +278,20 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     render() {
         let { ...others } = this.props;
+        const errMsg = (this.state.conversations.length === 0) ?
+            (<p style={{ width: "100%", textAlign: "center" }}> No logs have been sent yet!</p>) :
+            (<div />);
         return (
-            <ConvoList
-                {...others}
-                expandListItemWhenActive={BrowserUtils.isMobileWidth()}
-                onClick={this.props.onItemClick}
-                onScroll={this.handleScroll}
-                conversations={this.state.shownConversations}
-            />
+            <div>
+                {errMsg}
+                <ConvoList
+                    {...others}
+                    expandListItemWhenActive={BrowserUtils.isMobileWidth()}
+                    onClick={this.props.onItemClick}
+                    onScroll={this.handleScroll}
+                    conversations={this.state.shownConversations}
+                />
+            </div>
         );
     };
 }
