@@ -80,8 +80,8 @@ describe("Spokes Service", function () {
                 return SpokesService.fetchPipe(user, source)
                     .then(function (payload: Spoke) {
                         const args = fetchMock.lastCall()[1] as RequestInit;
-                        const header = args.headers as Headers;
-                        expect(header.get("x-access-userid")).to.equal(user.userId);
+                        const header = args.headers as any;
+                        expect(header["x-access-userid"]).to.equal(user.userId);
                     });
             });
 
@@ -132,10 +132,10 @@ describe("Spokes Service", function () {
                 return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         const args = fetchMock.lastCall()[1] as RequestInit;
-                        const headers = args.headers as Headers;
+                        const headers = args.headers as any;
                         expect(args.method).to.equal("POST");
-                        expect(headers.get("Content-Type")).to.equal("application/json");
-                        expect(headers.get("x-access-userid")).to.equal(user.userId);
+                        expect(headers["Content-Type"]).to.equal("application/json");
+                        expect(headers["x-access-userid"]).to.equal(user.userId);
                     });
             });
 

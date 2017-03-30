@@ -25,12 +25,11 @@ namespace spokes {
         const URL = BASE_URL + "/pipe/" + source.secretKey;
         return resolveUser(user)
             .then(function (user: User) {
-                const headers: Headers = new Headers({
-                        "x-access-userid": user.userId,
-                        "x-access-token": "Test Key"
-                    });
                 return fetch(URL, {
-                    headers: headers
+                    headers: {
+                        "x-access-userid": user.userId,
+                        "x-access-token": ""
+                    }
                 });
             }).then(function (result: Response) {
                 return parse(result, "Spoke not found.");
@@ -61,14 +60,13 @@ namespace spokes {
                 postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
                 return resolveUser(user);
             }).then(function (user: User) {
-                const headers = new Headers({
-                        "Content-Type": "application/json",
-                        "x-access-token": "4772616365-46696f72656c6c61",
-                        "x-access-userid": user.userId
-                    });
                 return fetch(URL, {
                     method: "POST",
-                    headers: headers,
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-access-token": "",
+                        "x-access-userid": user.userId
+                    },
                     body: JSON.stringify(postObj)
                 });
             }).then(function (result: Response) {
