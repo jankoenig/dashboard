@@ -28,7 +28,7 @@ namespace spokes {
                 return fetch(URL, {
                     headers: {
                         "x-access-userid": user.userId,
-                        "x-access-token": "Test Key"
+                        "x-access-token": ""
                     }
                 });
             }).then(function (result: Response) {
@@ -57,24 +57,30 @@ namespace spokes {
         let postObj: SaveSpokeRequestObj;
         return resolveSource(source)
             .then(function (source: Source) {
-                 postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
+                postObj = new SaveSpokeRequestObj(source, resource, liveDebugging);
                 return resolveUser(user);
             }).then(function (user: User) {
                 return fetch(URL, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "x-access-token": "Test Key",
+                        "x-access-token": "",
                         "x-access-userid": user.userId
-                    }, body: JSON.stringify(postObj)
+                    },
+                    body: JSON.stringify(postObj)
                 });
             }).then(function (result: Response) {
+                console.info("Return " + result.status);
+                console.log(result);
                 scrub(postObj);
                 if (result.status === 200) {
                     return new FetchSpokeResponseObj(postObj);
                 } else {
                     return Promise.reject("Could not save spoke.");
                 }
+            }).catch(function(err: Error) {
+                console.error(err);
+                throw err;
             });
     }
 }
