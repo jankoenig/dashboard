@@ -15,10 +15,11 @@ export class SpeechBubble extends React.Component<SpeechBubbleProps, SpeechBubbl
     render() {
         console.info("Speech bubble");
         console.log(Theme);
-        const names = classNames(Theme["triangle-obtuse"]);
+        const containerClass = classNames(Theme["content"])
+        const quoteClass = classNames(Theme["triangle-obtuse"]);
         return (
-            <div>
-                <blockquote className={names}>
+            <div className={containerClass}>
+                <blockquote className={quoteClass}>
                     <p>Simple can be harder than complex: You have to work hard to get your thinking clean to make it simple. But it’s worth it in the end because once you get there, you can move mountains.</p>
                     <cite> - Steve Jobs </cite>
                 </blockquote>

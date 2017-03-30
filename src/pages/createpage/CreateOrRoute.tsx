@@ -98,7 +98,7 @@ export class CreateOrRoute extends CancelableComponent.CancelableComponent<Creat
         const { id, key } = location.query;
         if (!id && !key) {
             // Params were not passed to us.  Just move on.
-            goTo("/skills");
+            goTo("/notFound");
         } else {
             this.reroute(this.props);
         }
