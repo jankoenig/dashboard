@@ -9,7 +9,6 @@ import "!style!css!sass!react-dates/lib/css/_datepicker.css";
 import { retrieveLogs } from "../actions/log";
 import DataTile from "../components/DataTile";
 import { Cell, Grid } from "../components/Grid";
-import { OutputList } from "../components/OutputList";
 import SessionListViewItem from "../components/Session/SessionListViewItem";
 import ConversationList from "../models/conversation-list";
 import ConversationListSummary from "../models/conversation-list-summary";
@@ -214,11 +213,6 @@ export class SessionsPage extends React.Component<SessionsPageProps, SessionsPag
                         </Grid>
                     </span>
                 ) : undefined}
-                <Grid style={{ height: 400, overflow: "auto" }}>
-                    <Cell col={12}>
-                        <OutputList outputs={this.state.debugLogs} stackTraces={[]} />
-                    </Cell>
-                </Grid>
             </span>
         );
     }

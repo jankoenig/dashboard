@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 
 import Source from "../../models/source";
 import { State } from "../../reducers";
-
 import SourceFullSummary from "./SourceFullSummary";
 
 interface SourcePageProps {

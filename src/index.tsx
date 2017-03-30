@@ -25,6 +25,7 @@ import SessionsPage from "./pages/SessionsPage";
 import SourceListPage from "./pages/SourceListPage";
 import SourceSettingsPage from "./pages/SourceSettingsPage";
 import SourceSummaryPage from "./pages/SourceSummaryPage";
+import UserSettingsPage from "./pages/UserSettingsPage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
@@ -141,6 +142,7 @@ let render = function () {
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
                         <Route path="/skills/:sourceId/settings" component={SourceSettingsPage} />
                     </Route>
+                    <Route path="/settings" component={UserSettingsPage} />
                     <Route path="*" component={NotFoundPage} />
                 </Route>
             </Router>

@@ -183,7 +183,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           <UserControl
             login={this.props.login}
             logout={this.props.logout}
-            user={this.props.user} />
+            user={this.props.user}
+            goTo={this.props.goTo} />
         </Header>
         <Body>
           <Content>

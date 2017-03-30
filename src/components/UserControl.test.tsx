@@ -16,7 +16,8 @@ describe("UserControl", function () {
         it("renders correctly", function () {
             const login = sinon.spy();
             const logout = sinon.spy();
-            const wrapper = shallow(<UserControl login={login} logout={logout} />);
+            const goTo = sinon.spy();
+            const wrapper = shallow(<UserControl login={login} logout={logout} goTo={goTo} />);
 
             let styledMenu = wrapper.find("StyledMenu");
 
@@ -35,8 +36,9 @@ describe("UserControl", function () {
             it("renders correctly", function () {
                 const login = sinon.spy();
                 const logout = sinon.spy();
+                const goTo = sinon.spy();
                 const user = new User({ email: "email", photoUrl: "http://data.whicdn.com/images/60302035/original.jpg" });
-                const wrapper = shallow(<UserControl login={login} logout={logout} user={user} />);
+                const wrapper = shallow(<UserControl login={login} logout={logout} goTo={goTo} user={user} />);
 
                 let styledMenu = wrapper.find("StyledMenu");
 
@@ -52,8 +54,9 @@ describe("UserControl", function () {
             it("renders correctly", function () {
                 const login = sinon.spy();
                 const logout = sinon.spy();
+                const goTo = sinon.spy();
                 const user = new User({ email: "email" });
-                const wrapper = shallow(<UserControl login={login} logout={logout} user={user} />);
+                const wrapper = shallow(<UserControl login={login} logout={logout} goTo={goTo} user={user} />);
 
                 let styledMenu = wrapper.find("StyledMenu");
 
@@ -64,6 +67,5 @@ describe("UserControl", function () {
                 expect(iconProps.type).to.be.a("function");
             });
         });
-
     });
 });

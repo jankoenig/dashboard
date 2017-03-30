@@ -98,7 +98,7 @@ class ConversationListSummary implements SourceSummary {
     private logReceiver: LogReceiver;
 
     log(message: string) {
-        // console.log(message);
+        console.log(message);
         if (this.logReceiver) {
             const timestamp = new Date();
             this.logReceiver.postLog(new Log({
@@ -170,6 +170,8 @@ class ConversationListSummary implements SourceSummary {
                 return new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
             });
 
+            console.log(conversations);
+
             // Then iterate through and build the sessions
             for (let conversation of conversations) {
 
@@ -186,6 +188,7 @@ class ConversationListSummary implements SourceSummary {
                         // If we already have an end, reset it.  We need a start
                         if (currentSessionProps.end) {
                             this.log("-----RESET: ODD DATA-------");
+                            console.log(currentSessionProps);
                             this.failedSessions.push(currentSessionProps);
                             currentSessionProps = {}; // reset, somehow had an end before a start
                         } else {
