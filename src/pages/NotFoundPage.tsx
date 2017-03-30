@@ -2,6 +2,7 @@
 import { Link } from "react-router";
 
 import SpeechBubble from "../components/Icon/SpeechBubbleIcon";
+import Speech from "../components/SpeechBubble";
 
 import { Button } from "react-toolbox/lib/button";
 
@@ -18,6 +19,7 @@ export default class NotFoundPage extends React.Component<any, any> {
         return (
             <div>
                 <h1 style={{ ...centerStyle, ...{ textAlign: "center" } }}>404</h1>
+                <Speech text="It seems we can not find the requested page."/>
                 <div style={{ ...centerStyle, ...{ position: "relative" } }}>
                     <SpeechBubble style={{ height: "auto" }} />
                     <h4 style={{
