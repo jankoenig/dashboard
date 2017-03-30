@@ -30,6 +30,7 @@ describe("Source", function () {
             expect(source.profile).to.equal(SourceProfileAmazonAlexa);
             expect(source.created).to.equal(created.toISOString());
         });
+
         it("sets the created property from a string", function () {
 
             let created = "2016-11-10T15:11:21.636Z";
@@ -42,6 +43,19 @@ describe("Source", function () {
             });
 
             expect(source.created).to.equal(created);
+        });
+
+        it("sets the created property from a string", function () {
+            let created = new Date().toString();
+
+            let source = new Source({
+                name: "source",
+                secretKey: "id",
+                profile: SourceProfileAmazonAlexa,
+                created: created
+            });
+
+            expect(source.created).to.equal(new Date(created).toISOString());
         });
     });
 });
