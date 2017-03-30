@@ -31,6 +31,15 @@
   border-radius: 10px;
 }
 
+.triangle-border {
+  position: relative;
+  padding: 15px;
+  margin: 1em 0 3em;
+  border: 5px solid #5a8f00;
+  color: #333;
+  border-radius: 10px;
+}
+
 /* Variant : for left/right positioned triangle
 ------------------------------------------ */
 
@@ -39,12 +48,13 @@
   background: #f3961c;
 }
 
-/* Variant : for left positioned triangle
------------------------------------------- */
-
 .triangle-obtuse.left {
   margin-left: 50px;
   background: #c81e2b;
+}
+
+.triangle-border.left {
+  margin-left: 30px;
 }
 
 /* Variant : for right positioned triangle
@@ -55,15 +65,16 @@
   background: #f3961c;
 }
 
-/* Variant : for right positioned triangle
------------------------------------------- */
-
 .triangle-obtuse.right {
   margin-right: 50px;
   background: #c81e2b;
 }
 
-/* creates triangle */
+.triangle-border.right {
+  margin-right: 30px;
+}
+
+/*-------------------------- TRIANGLE -------------------------------*/
 .triangle-isosceles:after {
   content: "";
   display: block; /* reduce the damage in FF3.0 */
@@ -83,8 +94,8 @@
   bottom: -50px; /* value = - border-top-width - border-bottom-width */
   left: 60px; /* controls horizontal position */
   border: 0;
-  border-right-width: 40px; /* vary this value to change the angle of the vertex */
-  border-bottom-width: 50px; /* vary this value to change the height of the triangle. must be equal to the corresponding value in :after */
+  border-right-width: 50px; /* vary this value to change the angle of the vertex */
+  border-bottom-width: 60px; /* vary this value to change the height of the triangle. must be equal to the corresponding value in :after */
   border-style: solid;
   border-color: transparent #c81e2b;
   /* reduce the damage in FF3.0 */
@@ -92,18 +103,46 @@
   width: 0;
 }
 
-/* creates the narrower right-angled triangle */
+/* creates the narrower right-angled triangle which covers up part of the big one.  Creates an illusion of obtuse. */
 .triangle-obtuse:after {
   content: "";
   position: absolute;
-  bottom: -50px; /* value = - border-top-width - border-bottom-width */
-  left: 80px; /* value = (:before's left) + (:before's border-right/left-width)  - (:after's border-right/left-width) */
+  bottom: -60px; /* value = - border-top-width - border-bottom-width */
+  left: 95px; /* value = (:before's left) + (:before's border-right/left-width)  - (:after's border-right/left-width) */
   border: 0;
   border-right-width: 20px; /* vary this value to change the angle of the vertex */
-  border-bottom-width: 50px; /* vary this value to change the height of the triangle. must be equal to the corresponding value in :before */
+  border-bottom-width: 60px; /* vary this value to change the height of the triangle. must be equal to the corresponding value in :before */
   border-style: solid;
-  border-color: transparent #c81e2b;
+  border-color: transparent #fff;
   /* reduce the damage in FF3.0 */
+  display: block;
+  width: 0;
+}
+
+.triangle-border:before {
+  content: "";
+  position: absolute;
+  bottom: -50px; /* value = - border-top-width - border-bottom-width */
+  left: 60px; /* controls horizontal position */
+  border: 0;
+  border-right-width: 60px; /* vary this value to change the angle of the vertex */
+  border-bottom-width: 50px; /* vary this value to change the height of the triangle. must be equal to the corresponding value in :after */
+  border-style: solid;
+  border-color:  transparent #5a8f00;
+  display: block;
+  width: 0;
+}
+
+.triangle-border:after {
+  content: "";
+  position: absolute;
+  bottom: -40px; /* value = - border-top-width - border-bottom-width */
+  left: 80px; /* value = (:before's left) + (:before's border-right/left-width)  - (:after's border-right/left-width) */
+  border: 0;
+  border-right-width: 30px; /* vary this value to change the angle of the vertex */
+  border-bottom-width: 40px; /* vary this value to change the height of the triangle. must be equal to the corresponding value in :before */
+  border-style: solid;
+  border-color:  transparent #fff;
   display: block;
   width: 0;
 }
@@ -137,6 +176,22 @@
   border-bottom-width: 30px; /* vary this value to change the height of the triangle */
   border-left-width: 90px; /* vary this value to change the width of the triangle. must be equal to the corresponding value in :before */
   border-color:#f3961c transparent;
+}
+
+.triangle-border.left:before {
+  top: 10px; /* controls vertical position */
+  bottom: auto;
+  left: -30px; /* value = - border-left-width - border-right-width */
+  border-width: 15px 30px 15px 0;
+  border-color: transparent #5a8f00;
+}
+
+.triangle-border.left:after {
+  top: 16px; /* value = (:before top) + (:before border-top) - (:after border-top) */
+  bottom: auto;
+  left: -21px; /* value = - border-left-width - border-right-width */
+  border-width: 9px 21px 9px 0;
+  border-color: transparent #fff;
 }
 
 /* Variant : right

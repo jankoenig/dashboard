@@ -15,7 +15,7 @@ export class SpeechBubble extends React.Component<SpeechBubbleProps, SpeechBubbl
     render() {
         console.info("Speech bubble");
         console.log(Theme);
-        const containerClass = classNames(Theme["content"])
+        const containerClass = classNames(Theme["content"]);
         const quoteClass = classNames(Theme["triangle-obtuse"]);
         return (
             <div className={containerClass}>
