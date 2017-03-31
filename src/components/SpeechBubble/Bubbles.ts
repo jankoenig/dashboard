@@ -1,14 +1,19 @@
+import { Modifiers } from './Bubbles';
 export type BubbleStyle = "isosceles" | "obtuse" | "border";
 
-export function getType(type: BubbleStyle) {
+export interface Modifiers {
+    color?: string;
+}
+
+export function getType(type: BubbleStyle, modifiers?: Modifiers) {
     switch (type) {
         case "obtuse":
-            return new BaseType(new ObtuseTriangle());
+            return new BaseType(new ObtuseTriangle(modifiers));
         case "border":
-            return new BaseType(new BorderTriangle());
+            return new BaseType(new BorderTriangle(modifiers));
         case "isosceles":
         default:
-            return new BaseType(new IsoscelesTriangle());
+            return new BaseType(new IsoscelesTriangle(modifiers));
     }
 }
 
@@ -23,12 +28,16 @@ export interface BubbleType {
 export class BaseType implements BubbleType {
     containerStyle: React.CSSProperties = {
         position: "relative",
+        display: "inline-block",
         zIndex: 1
     };
 
     quoteStyle: React.CSSProperties = {
         position: "relative",
-        padding: "15px",
+        paddingLeft: "2vw",
+        paddingRight: "2vw",
+        paddingTop: "3vh",
+        paddingBottom: "3vh",
         color: "#000",
         borderRadius: "10px",
         background: "#f3961c"
@@ -62,11 +71,24 @@ export class BaseType implements BubbleType {
 }
 
 class NoChange implements BubbleType {
+    static defaultModifiers: Modifiers = {};
+
+    static getDefaultModifier() {
+        return this.defaultModifiers;
+    }
+
+    modifiers: Modifiers;
+
     containerStyle: React.CSSProperties = {};
     quoteStyle: React.CSSProperties = {};
     trianglePosition: React.CSSProperties = {};
     beforeTriangleStyle: React.CSSProperties = {};
     afterTriangleStyle: React.CSSProperties = {};
+
+    constructor(modifiers: Modifiers = {}) {
+        const defaultModifier = (this.constructor as typeof NoChange).defaultModifiers;
+        this.modifiers = { ...defaultModifier , ...modifiers };
+    }
 }
 
 class IsoscelesTriangle extends NoChange {
@@ -108,8 +130,12 @@ class ObtuseTriangle extends NoChange {
 }
 
 class BorderTriangle extends NoChange {
+    static defaultModifiers: Modifiers = {
+        color: "#5a8f00"
+    };
+
     quoteStyle = {
-        border: "10px solid #5a8f00",
+        border: "10px solid " + this.modifiers.color,
         color: "#333",
         borderRadius: "30px",
         background: "#fff"
@@ -120,11 +146,11 @@ class BorderTriangle extends NoChange {
         borderRightWidth: "60px",
         borderBottomWidth: "50px",
         borderStyle: "solid",
-        borderColor: "transparent #5a8f00"
+        borderColor: "transparent " + this.modifiers.color
     };
 
     afterTriangleStyle = {
-        bottom: "-25px",
+        bottom: "-30px",
         left: "5px",
         border: 0,
         borderRightWidth: "45px",
