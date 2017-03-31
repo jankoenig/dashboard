@@ -32,7 +32,6 @@ class BaseType implements BubbleType {
     quoteStyle: React.CSSProperties = {
         position: "relative",
         padding: "15px",
-        margin: "1em 0 3em",
         color: "#000",
         borderRadius: "10px",
         background: "#f3961c"
@@ -41,19 +40,19 @@ class BaseType implements BubbleType {
     trianglePosition: React.CSSProperties = {
         display: "block", /* reduce the damage in FF3.0 */
         position: "absolute",
-        bottom: "-15px",
-        left: "50px",
+        left: "60px",
     };
 
     beforeTriangleStyle: React.CSSProperties = {
+        position: "absolute",
+        content: "",
+        width: 0,
     };
 
     afterTriangleStyle: React.CSSProperties = {
+        position: "absolute",
         content: "",
-        width: 0,
-        borderWidth: "15px 15px 0",
-        borderStyle: "solid",
-        borderColor: "#f3961c transparent"
+        width: 0
     };
 
     constructor(type: BubbleType) {
@@ -74,6 +73,13 @@ class NoChange implements BubbleType {
 }
 
 class IsoscelesTriangle extends NoChange {
+    afterTriangleStyle = {
+        content: "",
+        width: 0,
+        borderWidth: "15px 15px 0",
+        borderStyle: "solid",
+        borderColor: "#f3961c transparent"
+    };
 }
 
 class ObtuseTriangle extends NoChange {
@@ -83,7 +89,6 @@ class ObtuseTriangle extends NoChange {
     };
 
     trianglePosition = {
-        bottom: "-50px",
         left: "60px",
     };
 
@@ -93,12 +98,10 @@ class ObtuseTriangle extends NoChange {
         borderBottomWidth: "60px",
         borderStyle: "solid",
         borderColor: "transparent #c81e2b",
-        width: 0
     };
 
     afterTriangleStyle = {
-        bottom: "-60px",
-        left: "95px",
+        left: "30px",
         border: 0,
         borderRightWidth: "20px",
         borderBottomWidth: "60px",
@@ -107,27 +110,56 @@ class ObtuseTriangle extends NoChange {
     };
 }
 
+class BorderTriangle extends NoChange {
+    quoteStyle = {
+        border: "10px solid #5a8f00",
+        color: "#333",
+        borderRadius: "30px",
+        background: "#fff"
+    };
+
+    beforeTriangleStyle = {
+        border: 0,
+        borderRightWidth: "60px",
+        borderBottomWidth: "50px",
+        borderStyle: "solid",
+        borderColor: "transparent #5a8f00"
+    };
+
+    afterTriangleStyle = {
+        bottom: "-25px",
+        left: "5px",
+        border: 0,
+        borderRightWidth: "45px",
+        borderBottomWidth: "40px",
+        borderStyle: "solid",
+        borderColor: "transparent #fff"
+    };
+}
+
 export class SpeechBubble extends React.Component<SpeechBubbleProps, SpeechBubbleState> {
 
     private static styles: any = {
         "isosceles": new IsoscelesTriangle(),
-        "obtuse": new ObtuseTriangle()
+        "obtuse": new ObtuseTriangle(),
+        "border": new BorderTriangle()
     };
 
     render() {
         const type: BubbleType = new BaseType(SpeechBubble.styles["isosceles"]);
         const { containerStyle, quoteStyle, trianglePosition, beforeTriangleStyle, afterTriangleStyle } = type;
         const { text, cite } = this.props;
-        console.log(type);
         return (
             <div style={containerStyle}>
-                <blockquote style={quoteStyle}>
+                <div style={quoteStyle}>
                     <p>{text}</p>
                     {(cite) ? <cite>{cite}</cite> : undefined}
-                </blockquote>
+                </div>
                 <div style={trianglePosition} >
-                    <div style={beforeTriangleStyle} />
-                    <div style={afterTriangleStyle} />
+                    <div style={{ position: "relative" }}>
+                        <div style={beforeTriangleStyle} />
+                        <div style={afterTriangleStyle} />
+                    </div>
                 </div>
             </div>
         );
