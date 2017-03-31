@@ -39,14 +39,14 @@ export class BaseType implements BubbleType {
         paddingTop: "3vh",
         paddingBottom: "3vh",
         color: "#000",
-        borderRadius: "10px",
+        borderRadius: "3vw",
         background: "#f3961c"
     };
 
     trianglePosition: React.CSSProperties = {
         display: "block", /* reduce the damage in FF3.0 */
         position: "absolute",
-        left: "60px",
+        left: "7vw",
     };
 
     beforeTriangleStyle: React.CSSProperties = {
@@ -107,10 +107,6 @@ class ObtuseTriangle extends NoChange {
         background: "#c81e2b"
     };
 
-    trianglePosition = {
-        left: "60px",
-    };
-
     beforeTriangleStyle = {
         border: 0,
         borderRightWidth: "50px",
@@ -135,26 +131,25 @@ class BorderTriangle extends NoChange {
     };
 
     quoteStyle = {
-        border: "10px solid " + this.modifiers.color,
+        border: "1vw solid " + this.modifiers.color,
         color: "#333",
-        borderRadius: "30px",
         background: "#fff"
     };
 
     beforeTriangleStyle = {
         border: 0,
-        borderRightWidth: "60px",
-        borderBottomWidth: "50px",
+        borderRightWidth: "4vw",
+        borderBottomWidth: "4vw",
         borderStyle: "solid",
         borderColor: "transparent " + this.modifiers.color
     };
 
     afterTriangleStyle = {
-        bottom: "-30px",
-        left: "5px",
+        bottom: "-1.4vw",
+        left: "0.5vw",
         border: 0,
-        borderRightWidth: "45px",
-        borderBottomWidth: "40px",
+        borderRightWidth: "2.6vw",
+        borderBottomWidth: "2.6vw",
         borderStyle: "solid",
         borderColor: "transparent #fff"
     };

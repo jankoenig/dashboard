@@ -18,6 +18,7 @@ export class SpeechBubble extends React.Component<SpeechBubbleProps, SpeechBubbl
 
     static defaultTextStyle: React.CSSProperties = {
         fontSize: "2vw",
+        lineHeight: "2vw",
         margin: "2vw",
         color: "#000"
     };

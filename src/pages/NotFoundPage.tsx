@@ -1,7 +1,6 @@
 ﻿import * as React from "react";
 import { Link } from "react-router";
 
-import SpeechBubble from "../components/Icon/SpeechBubbleIcon";
 import Speech from "../components/SpeechBubble";
 
 import { Button } from "react-toolbox/lib/button";
@@ -19,18 +18,11 @@ export default class NotFoundPage extends React.Component<any, any> {
         return (
             <div>
                 <h1 style={{ ...centerStyle, ...{ textAlign: "center" } }}>404</h1>
-                <Speech text="It seems we can not find the requested page."
-                    style="border"
-                    modifiers={{ color: "#000" }} />
                 <div style={{ ...centerStyle, ...{ position: "relative" } }}>
-                    <SpeechBubble style={{ height: "auto" }} />
-                    <h4 style={{
-                        position: "absolute",
-                        margin: "5rem",
-                        fontSize: "5em",
-                        lineHeight: "1em",
-                        top: "0", left: "0", right: "0", bottom: "0"
-                    }}>It seems we can not find the requested page.</h4>
+                    <Speech text="It seems we can not find the requested page."
+                        style="border"
+                        modifiers={{ color: "#000" }}
+                        textStyle={{ fontSize: "5vw", lineHeight: "5vw", margin: "3vw"}} />
                 </div>
                 <div style={{ ...centerStyle, ...{ textAlign: "center" } }}>
                     <Link to="/skills/" >
