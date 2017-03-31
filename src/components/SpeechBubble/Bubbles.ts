@@ -1,4 +1,3 @@
-import { Modifiers } from './Bubbles';
 export type BubbleStyle = "isosceles" | "obtuse" | "border";
 
 export interface Modifiers {
