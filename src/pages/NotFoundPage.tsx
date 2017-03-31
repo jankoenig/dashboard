@@ -19,7 +19,8 @@ export default class NotFoundPage extends React.Component<any, any> {
         return (
             <div>
                 <h1 style={{ ...centerStyle, ...{ textAlign: "center" } }}>404</h1>
-                <Speech text="It seems we can not find the requested page."/>
+                <Speech text="It seems we can not find the requested page."
+                    blockStyle={{ borderColor: "#000" }} />
                 <div style={{ ...centerStyle, ...{ position: "relative" } }}>
                     <SpeechBubble style={{ height: "auto" }} />
                     <h4 style={{

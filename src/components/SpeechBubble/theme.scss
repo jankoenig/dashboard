@@ -35,9 +35,9 @@
   position: relative;
   padding: 15px;
   margin: 1em 0 3em;
-  border: 5px solid #5a8f00;
+  border: 10px solid #5a8f00;
   color: #333;
-  border-radius: 10px;
+  border-radius: 30px;
 }
 
 /* Variant : for left/right positioned triangle
@@ -136,11 +136,11 @@
 .triangle-border:after {
   content: "";
   position: absolute;
-  bottom: -40px; /* value = - border-top-width - border-bottom-width */
-  left: 80px; /* value = (:before's left) + (:before's border-right/left-width)  - (:after's border-right/left-width) */
+  bottom: -30px;
+  left: 65px;
   border: 0;
-  border-right-width: 30px; /* vary this value to change the angle of the vertex */
-  border-bottom-width: 40px; /* vary this value to change the height of the triangle. must be equal to the corresponding value in :before */
+  border-right-width: 45px;
+  border-bottom-width: 40px;
   border-style: solid;
   border-color:  transparent #fff;
   display: block;
