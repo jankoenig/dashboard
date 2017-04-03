@@ -193,6 +193,6 @@ export default connect(
 
 function validateUrl(check?: string): boolean {
     // We're not going to go crazy here.
-    const regex = /^(https?:\/\/).*/;
+    const regex = /^(https?:\/\/).+/;
     return regex.test(check);
 }
