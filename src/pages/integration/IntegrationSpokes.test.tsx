@@ -123,6 +123,12 @@ describe("IntegrationSpokes", function () {
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", false);
                 });
+
+                it("Tests that the save button is disabled when url is not actually a url.", function() {
+                    wrapper.setState({ url: "Hahaha You think this is real?" });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", true);
+                });
             });
 
             describe("In lambda page", function () {

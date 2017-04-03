@@ -126,7 +126,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         let saveDisabled: boolean;
         switch (showPage) {
             case "http":
-                saveDisabled = others.url === undefined;
+                saveDisabled = !validateUrl(others.url);
                 break;
             case "lambda":
                 saveDisabled = others.arn === undefined || others.iamAccessKey === undefined || others.iamSecretKey === undefined;
@@ -190,3 +190,9 @@ export default connect(
     mapDispatchToProps,
     mergeProps
 )(IntegrationSpokes);
+
+function validateUrl(check?: string): boolean {
+    // We're not going to go crazy here.
+    const regex = /^(https?:\/\/).*/;
+    return regex.test(check);
+}
