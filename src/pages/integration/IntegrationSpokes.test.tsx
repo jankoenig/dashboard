@@ -27,10 +27,17 @@ describe("IntegrationSpokes", function () {
         // let onChange: Sinon.SinonStub;
         let onSaved: Sinon.SinonStub;
         let savedState: any;
+        let prefetch: Sinon.SinonStub;
 
         before(function () {
             onSaved = sinon.stub();
+            // All of these tests were written *before* the prefetch was added so we're going to skip it and assume the spokes are fresh.
+            prefetch = sinon.stub(SpokesService, "fetchPipe").returns(Promise.reject(new Error("Error per requirements of the test.")));
+
             wrapper = shallow(<IntegrationSpokes user={user} source={source} onSpokesSaved={onSaved} />);
+
+            const prefetchPromise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
+            return prefetchPromise.catch(function() { /* don't care */}); // Lets this run through without worry.
         });
 
         beforeEach(function () {
@@ -40,6 +47,10 @@ describe("IntegrationSpokes", function () {
         afterEach(function () {
             wrapper.setState(wrapper);
             onSaved.reset();
+        });
+
+        after(function() {
+            prefetch.restore();
         });
 
         it("Tests the swapper is there.", function () {
@@ -92,21 +103,21 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests the ARN change will give the value to swapper.", function () {
-                swapper.simulate("change", "arn", "New ARN");
+                swapper.simulate("change", "lambdaARN", "New ARN");
 
-                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("arn", "New ARN");
+                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("lambdaARN", "New ARN");
             });
 
             it("Tests the IAM Access key change will give the value to swapper.", function () {
-                swapper.simulate("change", "iamAccessKey", "New Access Key");
+                swapper.simulate("change", "awsAccessKey", "New Access Key");
 
-                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("iamAccessKey", "New Access Key");
+                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("awsAccessKey", "New Access Key");
             });
 
             it("Tests the IAM Secret key change will give the value to swapper.", function () {
-                swapper.simulate("change", "iamSecretKey", "New Secret Key");
+                swapper.simulate("change", "awsSecretKey", "New Secret Key");
 
-                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("iamSecretKey", "New Secret Key");
+                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("awsSecretKey", "New Secret Key");
             });
         });
 
@@ -141,32 +152,32 @@ describe("IntegrationSpokes", function () {
                     wrapper.setState({ showPage: "lambda" });
                 });
 
-                it("Tests that the save button is disabled when arn, iamAccessKey, and iamSecretKey are undefined.", function () {
-                    wrapper.setState({ arn: undefined, iamAccessKey: undefined, iamSecretKey: undefined });
+                it("Tests that the save button is disabled when lambdaARN, awsAccessKey, and awsSecretKey are undefined.", function () {
+                    wrapper.setState({ lambdaARN: undefined, awsAccessKey: undefined, awsSecretKey: undefined });
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", true);
                 });
 
-                it("Tests that the save button is enabled when arn, iamAccessKey, and iamSecretKey are defined.", function () {
-                    wrapper.setState({ arn: "123ABC", iamAccessKey: "ABC123", iamSecretKey: "AABBCC112233" });
+                it("Tests that the save button is enabled when lambdaARN, awsAccessKey, and awsSecretKey are defined.", function () {
+                    wrapper.setState({ lambdaARN: "123ABC", awsAccessKey: "ABC123", awsSecretKey: "AABBCC112233" });
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", false);
                 });
 
-                it("Tests that the save button is disabled only when arn is undefined.", function () {
-                    wrapper.setState({ iamAccessKey: "ABC123", iamSecretKey: "AABBCC112233" });
+                it("Tests that the save button is disabled only when lambdaARN is undefined.", function () {
+                    wrapper.setState({ awsAccessKey: "ABC123", awsSecretKey: "AABBCC112233" });
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", false);
                 });
 
-                it("Tests that the save button is disabled only when iamAccessKey is undefined.", function () {
-                    wrapper.setState({ arn: "123ABC", iamSecretKey: "AABBCC112233" });
+                it("Tests that the save button is disabled only when awsAccessKey is undefined.", function () {
+                    wrapper.setState({ lambdaARN: "123ABC", awsSecretKey: "AABBCC112233" });
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", false);
                 });
 
-                it("Tests that the save button is disabled only when iamSecretKey is undefined.", function () {
-                    wrapper.setState({ arn: "123ABC", iamAccessKey: "ABC123" });
+                it("Tests that the save button is disabled only when awsSecretKey is undefined.", function () {
+                    wrapper.setState({ lambdaARN: "123ABC", awsAccessKey: "ABC123" });
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", false);
                 });
@@ -184,7 +195,7 @@ describe("IntegrationSpokes", function () {
                 });
 
                 it("Tests that the save button is disabled when the page is unknown to the component.", function () {
-                    wrapper.setState({ arn: "123ABC", iamAccessKey: "ABC123", iamSecretKey: "AABBCC112233" });
+                    wrapper.setState({ lambdaARN: "123ABC", awsAccessKey: "ABC123", awsSecretKey: "AABBCC112233" });
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", true);
                 });
@@ -195,14 +206,18 @@ describe("IntegrationSpokes", function () {
     describe("Saving Spokes", function () {
         let wrapper: ShallowWrapper<any, any>;
         let onSaved: Sinon.SinonStub;
+        let prefetch: Sinon.SinonStub;
         let saveSpoke: Sinon.SinonStub;
 
         before(function () {
             onSaved = sinon.stub();
+            prefetch = sinon.stub(SpokesService, "fetchPipe").returns(Promise.reject(new Error("Error per requirements of the test.")));
         });
 
         beforeEach(function () {
             wrapper = shallow(<IntegrationSpokes user={user} source={source} onSpokesSaved={onSaved} />);
+            const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
+            return promise.catch(function() { /* don't care */ });
         });
 
         afterEach(function () {
@@ -212,6 +227,7 @@ describe("IntegrationSpokes", function () {
 
         after(function () {
             saveSpoke.restore();
+            prefetch.restore();
         });
 
         describe("Successful saves", function () {
@@ -224,7 +240,7 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests the appropriate parameters are passed in on HTTP.", function () {
-                wrapper.setState({ showPage: "http", enableLiveDebugging: true, url: "http://test.url.fake/", arn: "fakeARN", iamAccessKey: "ABC123", iamSecretKey: "123ABC" });
+                wrapper.setState({ showPage: "http", enableLiveDebugging: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
                 const button = wrapper.find(Button).at(0);
                 button.simulate("click");
@@ -238,7 +254,7 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests the appropriate parameters are passed in on lambda.", function () {
-                wrapper.setState({ showPage: "lambda", enableLiveDebugging: true, url: "http://test.url.fake/", arn: "fakeARN", iamAccessKey: "ABC123", iamSecretKey: "123ABC" });
+                wrapper.setState({ showPage: "lambda", enableLiveDebugging: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
                 const button = wrapper.find(Button).at(0);
                 button.simulate("click");
@@ -252,7 +268,7 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests that the callback is called.", function () {
-                wrapper.setState({ showPage: "http", enableLiveDebugging: true, url: "http://test.url.fake/", arn: "fakeARN", iamAccessKey: "ABC123", iamSecretKey: "123ABC" });
+                wrapper.setState({ showPage: "http", enableLiveDebugging: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
                 const button = wrapper.find(Button).at(0);
                 button.simulate("click");

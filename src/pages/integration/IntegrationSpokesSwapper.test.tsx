@@ -30,9 +30,9 @@ describe("Spokes Swapper", function () {
                 wrapper = shallow(<IntegrationSpokesSwapper
                     theme={"TestTheme"}
                     showPage="http"
-                    arn="TestArn"
-                    iamAccessKey="TestAccessKey"
-                    iamSecretKey="TestSecretKey"
+                    lambdaARN="TestArn"
+                    awsAccessKey="TestAccessKey"
+                    awsSecretKey="TestSecretKey"
                     url="TestUrl"
                     onChange={onChange}
                 />);
@@ -66,9 +66,9 @@ describe("Spokes Swapper", function () {
                 wrapper = shallow(<IntegrationSpokesSwapper
                     theme="TestTheme"
                     showPage="lambda"
-                    arn="TestArn"
-                    iamAccessKey="TestAccessKey"
-                    iamSecretKey="TestSecretKey"
+                    lambdaARN="TestArn"
+                    awsAccessKey="TestAccessKey"
+                    awsSecretKey="TestSecretKey"
                     url="TestUrl"
                     onChange={onChange}
                 />);
@@ -85,16 +85,16 @@ describe("Spokes Swapper", function () {
             it("Tests the lambda page gets the appropriate props.", function() {
                 const lambdaWrapper = wrapper.find(IntegrationLambda).at(0);
                 expect(lambdaWrapper).to.have.prop("theme", "TestTheme");
-                expect(lambdaWrapper).to.have.prop("arn", "TestArn");
-                expect(lambdaWrapper).to.have.prop("iamAccessKey", "TestAccessKey");
-                expect(lambdaWrapper).to.have.prop("iamSecretKey", "TestSecretKey");
+                expect(lambdaWrapper).to.have.prop("lambdaARN", "TestArn");
+                expect(lambdaWrapper).to.have.prop("awsAccessKey", "TestAccessKey");
+                expect(lambdaWrapper).to.have.prop("awsSecretKey", "TestSecretKey");
             });
 
             it("Tests the http page will pass up the arn change.", function() {
                 const lambdaWrapper = wrapper.find(IntegrationLambda).at(0);
-                lambdaWrapper.simulate("change", "arn", "New Arn");
+                lambdaWrapper.simulate("change", "lambdaARN", "New Arn");
                 expect(onChange).to.have.been.calledOnce;
-                expect(onChange).to.have.been.calledWith("arn", "New Arn");
+                expect(onChange).to.have.been.calledWith("lambdaARN", "New Arn");
             });
         });
     });

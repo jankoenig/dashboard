@@ -28,7 +28,7 @@ namespace spokes {
                 return fetch(URL, {
                     headers: {
                         "x-access-userid": user.userId,
-                        "x-access-token": ""
+                        "x-access-token": "4772616365-46696f72656c6c61",
                     }
                 });
             }).then(function (result: Response) {
@@ -64,7 +64,7 @@ namespace spokes {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "x-access-token": "",
+                        "x-access-token": "4772616365-46696f72656c6c61",
                         "x-access-userid": user.userId
                     },
                     body: JSON.stringify(postObj)
@@ -94,7 +94,7 @@ function resolveUser(user: User): Promise<User> {
         if (user.userId) {
             resolve(user);
         } else {
-            reject(new Error("User must have a valie user ID"));
+            reject(new Error("User must have a valid user ID"));
         }
     });
 }

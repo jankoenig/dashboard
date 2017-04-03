@@ -4,10 +4,10 @@ import Input from "react-toolbox/lib/input";
 
 interface LambdaProps {
     theme?: string;
-    arn?: string;
-    iamAccessKey?: string;
-    iamSecretKey?: string;
-    onChange?: (type: "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) => void;
+    lambdaARN?: string;
+    awsAccessKey?: string;
+    awsSecretKey?: string;
+    onChange?: (type: "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) => void;
 
 }
 
@@ -18,23 +18,23 @@ interface LambdaState {
 export class IntegrationLambda extends React.Component<LambdaProps, LambdaState> {
 
     static defaultProps: LambdaProps = {
-        arn: "",
-        iamAccessKey: "",
-        iamSecretKey: ""
+        lambdaARN: "",
+        awsAccessKey: "",
+        awsSecretKey: ""
     };
 
     constructor(props: LambdaProps) {
         super(props);
 
-        this.handleArnChange = this.handleChange.bind(this, "arn");
-        this.handleIamAccessKeyChange = this.handleChange.bind(this, "iamAccessKey");
-        this.handleIamSecretKeyChange = this.handleChange.bind(this, "iamSecretKey");
+        this.handleArnChange = this.handleChange.bind(this, "lambdaARN");
+        this.handleIamAccessKeyChange = this.handleChange.bind(this, "awsAccessKey");
+        this.handleIamSecretKeyChange = this.handleChange.bind(this, "awsSecretKey");
     }
 
-    handleArnChange: (type: "arn", newValue: string) => void;
-    handleIamAccessKeyChange: (type: "iamAccessKey", newValue: string) => void;
-    handleIamSecretKeyChange: (type: "iamSecretKey", newValue: string) => void;
-    handleChange(type: "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) {
+    handleArnChange: (type: "lambdaARN", newValue: string) => void;
+    handleIamAccessKeyChange: (type: "awsAccessKey", newValue: string) => void;
+    handleIamSecretKeyChange: (type: "awsSecretKey", newValue: string) => void;
+    handleChange(type: "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) {
         const { onChange } = this.props;
         if (onChange) {
             onChange(type, newValue);
@@ -42,23 +42,23 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
     }
 
     render() {
-        const { arn, iamAccessKey, iamSecretKey, ...others } = this.props;
+        const { lambdaARN, awsAccessKey, awsSecretKey, ...others } = this.props;
         return (
             <div>
                 <Input
                     {...others}
                     label={"Lambda ARN"}
-                    value={arn}
+                    value={lambdaARN}
                     onChange={this.handleArnChange} />
                 <Input
                     {...others}
                     label={"IAM Access Key"}
-                    value={iamAccessKey}
+                    value={awsAccessKey}
                     onChange={this.handleIamAccessKeyChange} />
                 <Input
                     {...others}
                     label={"IAM Secret Key"}
-                    value={iamSecretKey}
+                    value={awsSecretKey}
                     onChange={this.handleIamSecretKeyChange} />
             </div>);
     }

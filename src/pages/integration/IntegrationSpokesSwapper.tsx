@@ -8,11 +8,11 @@ export type PAGE = "http" | "lambda";
 interface IntegrationSpokesSwapperProps {
     showPage: PAGE;
     theme?: string;
-    arn?: string;
+    lambdaARN?: string;
     url?: string;
-    iamAccessKey?: string;
-    iamSecretKey?: string;
-    onChange?: (type: "url" | "arn" | "iamAccessKey" | "iamSecretKey", newValue: string) => void;
+    awsAccessKey?: string;
+    awsSecretKey?: string;
+    onChange?: (type: "url" | "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) => void;
 }
 
 interface IntegrationSpokesSwapperState {

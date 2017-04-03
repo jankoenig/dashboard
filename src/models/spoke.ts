@@ -18,6 +18,14 @@ export interface Spoke {
          */
         name: string;
     };
+    http?: {
+        url: string;
+    };
+    lambda?: {
+        lambdaARN: string;
+        awsAccessKey: string;
+        awsSecretKey: string;
+    };
     /**
      * Location to the pipe.
      */

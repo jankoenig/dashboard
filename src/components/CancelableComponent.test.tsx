@@ -73,9 +73,9 @@ describe("CancelableComponent", function () {
         const component = wrapper.instance() as CancelableComponent<any, any>;
 
         const promise = component.resolve("Hello");
+        expect(component.cancelables).to.have.length(1);
         return promise.then(function (obj: any) {
             expect(obj).to.equal("Hello");
-            expect(component.cancelables[0]).to.equal(promise);
         });
     });
 
@@ -83,9 +83,45 @@ describe("CancelableComponent", function () {
         const component = wrapper.instance() as CancelableComponent<any, any>;
 
         const promise = component.resolve("Hello", true);
+        expect(component.cancelOnProps).to.have.length(1);
         return promise.then(function (obj: any) {
             expect(obj).to.equal("Hello");
-            expect(component.cancelOnProps[0]).to.equal(promise);
+        });
+    });
+
+    it("Tests that the cancelable is removed when the promise is finished with normal cancelables.", function () {
+        const component = wrapper.instance() as CancelableComponent<any, any>;
+
+        console.info("RESOLVING");
+        const promise = component.resolve("Hello");
+        return promise.then(function (obj: any) {
+            expect(component.cancelables).to.have.length(0);
+        });
+    });
+
+    it("Tests that the cancelable is removed when the promise is finished with props cancelables.", function () {
+        const component = wrapper.instance() as CancelableComponent<any, any>;
+
+        const promise = component.resolve("Hello", true);
+        return promise.then(function (obj: any) {
+            expect(component.cancelOnProps).to.have.length(0);
+        });
+    });
+
+    it("Tests that the cancelable is removed from the middle of the stack when finished.", function () {
+        const component = wrapper.instance() as CancelableComponent<any, any>;
+        component.resolve("Hello", true);
+        component.resolve("Hello", true);
+        const promise2 = component.resolve("Hello", true);
+        component.resolve("Hello", true);
+
+        return promise2.then(function () {
+            for (let c of component.cancelables) {
+                expect(c).to.not.equal(promise2);
+            }
+            for (let c of component.cancelOnProps) {
+                expect(c).to.not.equal(promise2);
+            }
         });
     });
 });

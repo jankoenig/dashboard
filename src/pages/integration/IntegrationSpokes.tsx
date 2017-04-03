@@ -47,9 +47,9 @@ interface IntegrationSpokesState {
     enableLiveDebugging: boolean;
     message?: Message;
     url?: string;
-    arn?: string;
-    iamAccessKey?: string;
-    iamSecretKey?: string;
+    lambdaARN?: string;
+    awsAccessKey?: string;
+    awsSecretKey?: string;
 }
 
 function mapStateToProps(state: State.All): IntegrationSpokesGlobalStateProps {
@@ -66,7 +66,7 @@ function getResource(state: IntegrationSpokesState): SpokesService.HTTP | Spokes
     if (state.showPage === "http") {
         return { url: state.url };
     } else if (state.showPage === "lambda") {
-        return { awsAccessKey: state.iamAccessKey, awsSecretKey: state.iamSecretKey, lambdaARN: state.arn };
+        return { awsAccessKey: state.awsAccessKey, awsSecretKey: state.awsSecretKey, lambdaARN: state.lambdaARN };
     }
 }
 
@@ -113,6 +113,10 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         };
     }
 
+    componentWillMount() {
+        this.downloadSpoke();
+    }
+
     handleSourceSwap(value: PAGE) {
         this.setState({ showPage: value } as IntegrationSpokesState);
     }
@@ -121,10 +125,9 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.setState({ enableLiveDebugging: value } as IntegrationSpokesState);
     }
 
-    handleSwapperChange(key: "url" | "iamAccessKey" | "iamSecretKey" | "arn", value: string) {
+    handleSwapperChange(key: "url"| "lambdaARN" | "awsAccessKey" | "awsSecretKey", value: string) {
         let newObj = {} as any;
         newObj[key] = value;
-        console.log(newObj);
         this.setState(newObj);
     }
 
@@ -133,16 +136,9 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         const { enableLiveDebugging } = this.state;
         const resource = getResource(this.state);
 
-        console.info("Saving");
-        console.log(user);
-        console.log(source);
-        console.log(resource);
-        console.log(enableLiveDebugging);
-        this.setState({ message: { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Saving..." }} as IntegrationSpokesState);
+        this.setState({ message: { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Saving..." } } as IntegrationSpokesState);
         this.resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging)
             .then(function (spoke: Spoke) {
-                console.info("Spoke saved.");
-                console.log(spoke);
                 onSpokesSaved();
                 return { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Spoke has been saved." };
             }).catch(function (err: Error) {
@@ -150,6 +146,19 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 return { style: IntegrationSpokes.ERROR_MESSAGE_STYLE, message: "An error ocurred while trying to save the spoke." };
             }).then((message?: Message) => {
                 this.setState({ message: message } as IntegrationSpokesState);
+            }));
+    }
+
+    downloadSpoke() {
+        const { user, source } = this.props;
+
+        this.resolve(SpokesService.fetchPipe(user, source)
+            .then((spoke: Spoke) => {
+                console.log(spoke);
+                const { http, lambda } = spoke;
+                const httpObj = (http) ? http : { url: undefined };
+                const lambdaObj = (lambda) ? lambda : { lambdaARN: undefined, awsAccessKey: undefined, awsSecretKey: undefined };
+                this.setState({ ...httpObj, ...lambdaObj } as IntegrationSpokesState);
             }));
     }
 
@@ -161,7 +170,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 saveDisabled = !validateUrl(others.url);
                 break;
             case "lambda":
-                saveDisabled = !(others.arn && others.iamAccessKey && others.iamSecretKey);
+                saveDisabled = !(others.lambdaARN && others.awsAccessKey && others.awsSecretKey);
                 break;
             default:
                 // We're apparently on something we don't know exists so don't let them go further.

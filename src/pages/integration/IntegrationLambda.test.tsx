@@ -20,9 +20,9 @@ describe("IntegrationLambda", function() {
             onChange = sinon.stub();
             wrapper = shallow(<IntegrationLambda
                 theme={"TestTheme"}
-                arn={"TestArn"}
-                iamAccessKey={"TestAccessKey"}
-                iamSecretKey={"TestSecretKey"}
+                lambdaARN={"TestArn"}
+                awsAccessKey={"TestAccessKey"}
+                awsSecretKey={"TestSecretKey"}
                 onChange={onChange} />);
         });
 
@@ -46,7 +46,7 @@ describe("IntegrationLambda", function() {
         });
 
         it("Tests the onUrlChange method is called with the new value.", function() {
-            testInputChange(0, "Value", "arn", "Value");
+            testInputChange(0, "Value", "lambdaARN", "Value");
         });
 
         it("Tests the value of the Access key is passed to the Access Key input.", function() {
@@ -54,7 +54,7 @@ describe("IntegrationLambda", function() {
         });
 
         it("Tests the onUrlChange method is called with the new value.", function() {
-            testInputChange(1, "New Value", "iamAccessKey", "New Value");
+            testInputChange(1, "New Value", "awsAccessKey", "New Value");
         });
 
         it("Tests the value of the Secret Key is passed to the Access Key input.", function() {
@@ -62,7 +62,7 @@ describe("IntegrationLambda", function() {
         });
 
         it("Tests the onUrlChange method is called with the new value.", function() {
-            testInputChange(2, "New Value", "iamSecretKey", "New Value");
+            testInputChange(2, "New Value", "awsSecretKey", "New Value");
         });
 
         function testInputValue(index: number, expectedValue: string) {
