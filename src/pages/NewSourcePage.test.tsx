@@ -187,7 +187,11 @@ describe("New Source Page", function () {
         let invalidChars = "!@#$%^&*()_+={}[];:'\"<,>.?/|\\~`";
 
         before(function () {
-            nameRule = new SourceNameRule;
+            nameRule = new SourceNameRule();
+        });
+
+        it("Tests that the name rule error message exists.", function() {
+            expect(nameRule.errorMessage).to.exist;
         });
 
         it("Tests the \"At leat 3 rule\"", function () {

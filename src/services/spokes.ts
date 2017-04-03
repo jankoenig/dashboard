@@ -42,10 +42,7 @@ namespace spokes {
 
     function parse<T>(result: Response, errMsg: string = "Could not parse result."): T | Thenable<T> {
         if (result.status === 200) {
-            return result.json().then(function(result: any) {
-                console.log(result);
-                return result;
-            });
+            return result.json();
         } else {
             return Promise.reject(new Error(errMsg));
         }
@@ -73,8 +70,6 @@ namespace spokes {
                     body: JSON.stringify(postObj)
                 });
             }).then(function (result: Response) {
-                console.info("Return " + result.status);
-                console.log(result);
                 scrub(postObj);
                 if (result.status === 200) {
                     return new FetchSpokeResponseObj(postObj);

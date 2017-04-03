@@ -91,8 +91,6 @@ describe("CancelableComponent", function () {
 
     it("Tests that the cancelable is removed when the promise is finished with normal cancelables.", function () {
         const component = wrapper.instance() as CancelableComponent<any, any>;
-
-        console.info("RESOLVING");
         const promise = component.resolve("Hello");
         return promise.then(function (obj: any) {
             expect(component.cancelables).to.have.length(0);
