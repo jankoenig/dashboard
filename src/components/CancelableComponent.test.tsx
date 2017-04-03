@@ -1,3 +1,4 @@
+import * as Bluebird from "bluebird";
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
@@ -108,10 +109,10 @@ describe("CancelableComponent", function () {
 
     it("Tests that the cancelable is removed from the middle of the stack when finished.", function () {
         const component = wrapper.instance() as CancelableComponent<any, any>;
-        component.resolve("Hello", true);
-        component.resolve("Hello", true);
+        component.resolve(delayPromise(1000, "Hello"));
+        component.resolve(delayPromise(1000, "Hello"));
         const promise2 = component.resolve("Hello", true);
-        component.resolve("Hello", true);
+        component.resolve(delayPromise(1000, "Hello"));
 
         return promise2.then(function () {
             for (let c of component.cancelables) {
@@ -120,6 +121,7 @@ describe("CancelableComponent", function () {
             for (let c of component.cancelOnProps) {
                 expect(c).to.not.equal(promise2);
             }
+            component.componentWillUnmount(); // Cancels the rest.
         });
     });
 });
@@ -134,4 +136,8 @@ class CancelableObj implements Cancelable {
     }
 
     cancel: Sinon.SinonStub;
+}
+
+function delayPromise(ms: number, returnObj: any): Promise<any> {
+    return Bluebird.delay(ms, returnObj);
 }
