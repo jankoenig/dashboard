@@ -26,13 +26,19 @@ describe("IntegrationSpokes", function () {
         let wrapper: ShallowWrapper<any, any>;
         // let onChange: Sinon.SinonStub;
         let onSaved: Sinon.SinonStub;
+        let savedState: any;
 
         before(function () {
             onSaved = sinon.stub();
             wrapper = shallow(<IntegrationSpokes user={user} source={source} onSpokesSaved={onSaved} />);
         });
 
+        beforeEach(function () {
+            savedState = wrapper.state();
+        });
+
         afterEach(function () {
+            wrapper.setState(wrapper);
             onSaved.reset();
         });
 
@@ -96,6 +102,81 @@ describe("IntegrationSpokes", function () {
                 swapper.simulate("change", "iamSecretKey", "New Secret Key");
 
                 expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("iamSecretKey", "New Secret Key");
+            });
+        });
+
+        describe("Disabling and enabling save button", function () {
+            describe("In http page", function () {
+
+                beforeEach(function () {
+                    wrapper.setState({ showPage: "http" });
+                });
+
+                it("Tests that the save button is disabled when url is undefined.", function () {
+                    wrapper.setState({ url: undefined });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", true);
+                });
+
+                it("Tests that the save button is enabled when url is defined.", function () {
+                    wrapper.setState({ url: "https://www.test.url/" });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", false);
+                });
+            });
+
+            describe("In lambda page", function () {
+                beforeEach(function () {
+                    wrapper.setState({ showPage: "lambda" });
+                });
+
+                it("Tests that the save button is disabled when arn, iamAccessKey, and iamSecretKey are undefined.", function () {
+                    wrapper.setState({ arn: undefined, iamAccessKey: undefined, iamSecretKey: undefined });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", true);
+                });
+
+                it("Tests that the save button is enabled when arn, iamAccessKey, and iamSecretKey are defined.", function () {
+                    wrapper.setState({ arn: "123ABC", iamAccessKey: "ABC123", iamSecretKey: "AABBCC112233" });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", false);
+                });
+
+                it("Tests that the save button is disabled only when arn is undefined.", function () {
+                    wrapper.setState({ iamAccessKey: "ABC123", iamSecretKey: "AABBCC112233" });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", false);
+                });
+
+                it("Tests that the save button is disabled only when iamAccessKey is undefined.", function () {
+                    wrapper.setState({ arn: "123ABC", iamSecretKey: "AABBCC112233" });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", false);
+                });
+
+                it("Tests that the save button is disabled only when iamSecretKey is undefined.", function () {
+                    wrapper.setState({ arn: "123ABC", iamAccessKey: "ABC123" });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", false);
+                });
+            });
+
+            describe("Some random page", function () {
+                let savedState: any;
+                before(function () {
+                    savedState = wrapper.state();
+                    wrapper.setState({ showPage: "Page That does not exist." });
+                });
+
+                after(function () {
+                    wrapper.setState(savedState);
+                });
+
+                it("Tests that the save button is disabled when the page is unknown to the component.", function () {
+                    wrapper.setState({ arn: "123ABC", iamAccessKey: "ABC123", iamSecretKey: "AABBCC112233" });
+                    const button = wrapper.find(Button).at(0);
+                    expect(button).to.have.prop("disabled", true);
+                });
             });
         });
     });

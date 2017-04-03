@@ -116,13 +116,27 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 console.log(spoke);
                 onSpokesSaved();
                 return spoke;
-            }).catch(function(err: Error) {
+            }).catch(function (err: Error) {
                 console.error(err);
             });
     }
 
     render() {
         const { showPage, enableLiveDebugging, ...others } = this.state;
+        let saveDisabled: boolean;
+        switch (showPage) {
+            case "http":
+                saveDisabled = others.url === undefined;
+                break;
+            case "lambda":
+                saveDisabled = others.arn === undefined || others.iamAccessKey === undefined || others.iamSecretKey === undefined;
+                break;
+            default:
+                // We're apparently on something we don't know exists so don't let them go further.
+                saveDisabled = true;
+        }
+        console.log(others);
+        console.log(saveDisabled);
         return (
             <Grid>
                 <Cell col={3} />
@@ -160,6 +174,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                         theme={ButtonTheme}
                         accent
                         raised
+                        disabled={saveDisabled}
                         label="Save"
                         onClick={this.handleSave} />
 
