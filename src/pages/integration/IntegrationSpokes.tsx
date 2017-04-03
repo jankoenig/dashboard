@@ -129,14 +129,13 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 saveDisabled = !validateUrl(others.url);
                 break;
             case "lambda":
-                saveDisabled = others.arn === undefined || others.iamAccessKey === undefined || others.iamSecretKey === undefined;
+                saveDisabled = !(others.arn && others.iamAccessKey && others.iamSecretKey);
                 break;
             default:
                 // We're apparently on something we don't know exists so don't let them go further.
                 saveDisabled = true;
         }
-        console.log(others);
-        console.log(saveDisabled);
+
         return (
             <Grid>
                 <Cell col={3} />
