@@ -44,6 +44,11 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
             <ResizingComponent overflowY="hidden" >
                 <section>
                     <Tabs theme={TabsTheme} fixed inverse index={tabIndex} onChange={this.handleTabChange} >
+                        <Tab label="Spokes">
+                            <ResizingComponent>
+                                <Spokes source={source} />
+                            </ResizingComponent>
+                        </Tab>
                         <Tab label="Node.JS Lambda">
                             <ResizingComponent>
                                 <NodeJS secretKey={secretKey} showSecret={showSecret} />
@@ -57,12 +62,6 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
                         <Tab label="Java">
                             <ResizingComponent>
                                 <Java secretKey={secretKey} showSecret={showSecret} />
-                            </ResizingComponent>
-                        </Tab>
-                        <Tab label="Spokes">
-                            <ResizingComponent>
-                                <Spokes
-                                source={source} />
                             </ResizingComponent>
                         </Tab>
                     </Tabs>
