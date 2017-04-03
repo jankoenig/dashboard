@@ -12,6 +12,7 @@ import Spoke from "../../models/spoke";
 import User from "../../models/user";
 import { State } from "../../reducers";
 import SpokesService from "../../services/spokes";
+import Noop from "../../utils/Noop";
 import IntegrationSpokesSwapper, { PAGE } from "./IntegrationSpokesSwapper";
 
 const DropdownTheme = require("./themes/dropdown.scss");
@@ -75,6 +76,12 @@ function mergeProps(stateProps: IntegrationSpokesGlobalStateProps, dispatchProps
 
 export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProps, IntegrationSpokesState> {
 
+    static defaultProps: IntegrationSpokesProps = {
+        user: undefined,
+        source: undefined,
+        onSpokesSaved: Noop,
+    };
+
     static PAGES: DropdownValue[] = [{ value: "http", label: "HTTP" }, { value: "lambda", label: "Lambda" }];
 
     static DEFAULT_MESSAGE_STYLE: React.CSSProperties = {
@@ -131,6 +138,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         console.log(source);
         console.log(resource);
         console.log(enableLiveDebugging);
+        this.setState({ message: { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Saving..." }} as IntegrationSpokesState);
         this.resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging)
             .then(function (spoke: Spoke) {
                 console.info("Spoke saved.");
@@ -192,7 +200,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                         onChange={this.handleCheckChange} />
                 </Cell>
                 <Cell col={9} />
-                <Cell col={1}>
+                <Cell col={2}>
                     <Button
                         theme={ButtonTheme}
                         accent
@@ -200,7 +208,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                         disabled={saveDisabled}
                         label="Save"
                         onClick={this.handleSave} />
-                    <span style={message.style}>{message.message}</span>
+                    <p style={message.style}>{message.message}</p>
                 </Cell>
                 <Cell col={3} />
             </Grid >
