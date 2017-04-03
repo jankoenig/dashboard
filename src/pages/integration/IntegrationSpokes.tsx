@@ -85,7 +85,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
     static PAGES: DropdownValue[] = [{ value: "http", label: "HTTP" }, { value: "lambda", label: "Lambda" }];
 
     static DEFAULT_MESSAGE_STYLE: React.CSSProperties = {
-        visibility: false
+        visibility: "hidden"
     };
 
     static STANDARD_MESSAGE_STYLE: React.CSSProperties = {

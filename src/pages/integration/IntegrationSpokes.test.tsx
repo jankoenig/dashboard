@@ -58,7 +58,8 @@ describe("IntegrationSpokes", function () {
         });
 
         it("Tests the error message exists.", function () {
-            expect(wrapper.find("p")).to.have.length(1);
+            expect(wrapper.find("p")).to.have.length(3); // There's two banner messages as well.
+            expect(wrapper.find("p").at(2)).to.have.style("visibility", "hidden");
         });
 
         it("Tests the dropdown for page selector exists.", function () {
@@ -269,7 +270,7 @@ describe("IntegrationSpokes", function () {
 
                 const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
                 return promise.then(function () {
-                    const message = wrapper.find("p").at(0);
+                    const message = wrapper.find("p").at(2);
                     expect(message.text()).to.exist;
                     expect(message).to.have.style("color", "#000000"); // it's black.
                 });
@@ -291,7 +292,7 @@ describe("IntegrationSpokes", function () {
 
                 const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
                 return promise.then(function () {
-                    const message = wrapper.find("p").at(0);
+                    const message = wrapper.find("p").at(2);
                     expect(message.text()).to.exist;
                     expect(message).to.have.style("color", "#FF0000"); // it's red.
                 });
