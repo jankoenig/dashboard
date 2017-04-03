@@ -240,7 +240,7 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests the appropriate parameters are passed in on HTTP.", function () {
-                wrapper.setState({ showPage: "http", enableLiveDebugging: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
+                wrapper.setState({ showPage: "http", proxy: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
                 const button = wrapper.find(Button).at(0);
                 button.simulate("click");
@@ -254,7 +254,7 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests the appropriate parameters are passed in on lambda.", function () {
-                wrapper.setState({ showPage: "lambda", enableLiveDebugging: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
+                wrapper.setState({ showPage: "lambda", proxy: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
                 const button = wrapper.find(Button).at(0);
                 button.simulate("click");
@@ -268,7 +268,7 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests that the callback is called.", function () {
-                wrapper.setState({ showPage: "http", enableLiveDebugging: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
+                wrapper.setState({ showPage: "http", proxy: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
                 const button = wrapper.find(Button).at(0);
                 button.simulate("click");

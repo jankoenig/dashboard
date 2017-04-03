@@ -23,10 +23,10 @@ const fetchResponse = {
         name: source.id
     },
     http: {
-        url: "https://source.url/" + source.id
+        url: "https://source.url/"
     },
     lambda: {
-        lamdaARN: "Lambda ARN",
+        lambdaARN: "Lambda ARN",
         awsAccessKey: "AWS Access Key",
         awsSecretKey: "AWS Secret Key"
     },
@@ -95,8 +95,8 @@ describe("Spokes Service", function () {
                         expect(payload.pipeType).to.equal(fetchResponse.pipeType);
                         expect(payload.path).to.equal(fetchResponse.path);
                         expect(payload.proxy).to.equal(fetchResponse.proxy);
-                        expect((payload as any).lambda).to.not.exist;
-                        expect((payload as any).http).to.not.exist;
+                        expect(payload.http).to.deep.equal(fetchResponse.http);
+                        expect((payload as Spoke).lambda.awsSecretKey).to.not.exist;
                     });
             });
         });
@@ -115,7 +115,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the payload is returned upon successful save for http.", function () {
-                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
+                return SpokesService.savePipe(user, source, { url: "http://spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                     });
@@ -129,7 +129,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the proper header is sent", function () {
-                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
+                return SpokesService.savePipe(user, source, { url: "http://spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         const args = fetchMock.lastCall()[1] as RequestInit;
                         const headers = args.headers as any;
@@ -142,7 +142,7 @@ describe("Spokes Service", function () {
             it("Tests that an error is thrown when an invalid user is not provided.", function () {
                 const copyUser = { ...user, ...{ userId: undefined } };
                 let caughtError: Error;
-                return SpokesService.savePipe(copyUser, source, { url: "http:spoke.url/" }, true)
+                return SpokesService.savePipe(copyUser, source, { url: "http://spoke.url/" }, true)
                     .catch(function (err: Error) {
                         caughtError = err;
                     }).then(function () {
@@ -151,7 +151,7 @@ describe("Spokes Service", function () {
             });
 
             it("Tests the proper post object was sent by the service is correct for HTTP.", function () {
-                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
+                return SpokesService.savePipe(user, source, { url: "http://spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         const args = fetchMock.lastCall()[1] as RequestInit;
                         const reqObj = JSON.parse(args.body);
@@ -162,7 +162,7 @@ describe("Spokes Service", function () {
                         expect(reqObj.pipeType).to.equal("HTTP");
                         expect(reqObj.path).to.equal("/");
                         expect(reqObj.proxy).to.equal(true);
-                        expect(reqObj.http).to.deep.equal({ url: "http:spoke.url/" });
+                        expect(reqObj.http).to.deep.equal({ url: "http://spoke.url/" });
                         expect(reqObj.lambda).to.not.exist;
                     });
             });
@@ -179,13 +179,13 @@ describe("Spokes Service", function () {
                         expect(reqObj.pipeType).to.equal("LAMBDA");
                         expect(reqObj.path).to.equal("/");
                         expect(reqObj.proxy).to.equal(true);
-                        expect(reqObj.lambda).to.deep.equal({ lamdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
+                        expect(reqObj.lambda).to.deep.equal({ lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
                         expect(reqObj.http).to.not.exist;
                     });
             });
 
             it("Tests the Spoke returned by the service is correct for HTTP.", function () {
-                return SpokesService.savePipe(user, source, { url: "http:spoke.url/" }, true)
+                return SpokesService.savePipe(user, source, { url: "http://spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
                         expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
@@ -194,8 +194,8 @@ describe("Spokes Service", function () {
                         expect(payload.pipeType).to.equal(fetchResponse.pipeType);
                         expect(payload.proxy).to.equal(fetchResponse.proxy);
                         expect(payload.path).to.equal("/"); // This is always "/" currently in the API.
+                        expect(payload.http).to.deep.equal({ url: "http://spoke.url/" });
                         expect((payload as any).lambda).to.not.exist;
-                        expect((payload as any).http).to.not.exist;
                     });
             });
 
@@ -209,7 +209,7 @@ describe("Spokes Service", function () {
                         expect(payload.proxy).to.equal(fetchResponse.proxy);
                         expect(payload.path).to.equal("/"); // This is always "/" currently in the API.
                         expect(payload.pipeType).to.equal("LAMBDA");
-                        expect((payload as any).lambda).to.not.exist;
+                        expect(payload.lambda).to.deep.equal({ lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: undefined});
                         expect((payload as any).http).to.not.exist;
                     });
             });
@@ -217,7 +217,7 @@ describe("Spokes Service", function () {
             describe("Error checking", function () {
                 it("Tests that an error is thrown when user is undefined.", function () {
                     let caughtError: Error;
-                    return SpokesService.savePipe(undefined, source, { url: "http:spoke.url/" }, true)
+                    return SpokesService.savePipe(undefined, source, { url: "http://spoke.url/" }, true)
                         .catch(function (err: Error) {
                             caughtError = err;
                         }).then(function () {
@@ -228,7 +228,7 @@ describe("Spokes Service", function () {
                 it("Tests that an error is thrown when source is undefined.", function () {
                     const copyUser = { ...user };
                     let caughtError: Error;
-                    return SpokesService.savePipe(copyUser, undefined, { url: "http:spoke.url/" }, true)
+                    return SpokesService.savePipe(copyUser, undefined, { url: "http://spoke.url/" }, true)
                         .catch(function (err: Error) {
                             caughtError = err;
                         }).then(function () {
@@ -239,7 +239,7 @@ describe("Spokes Service", function () {
                 it("Tests that an error is thrown when source is undefined.", function () {
                     const copyUser = { ...user };
                     let caughtError: Error;
-                    return SpokesService.savePipe(copyUser, undefined, { url: "http:spoke.url/" }, true)
+                    return SpokesService.savePipe(copyUser, undefined, { url: "http://spoke.url/" }, true)
                         .catch(function (err: Error) {
                             caughtError = err;
                         }).then(function () {
@@ -251,7 +251,7 @@ describe("Spokes Service", function () {
                     const copyUser = { ...user };
                     const copySource = { ...source, ...{ secretKey: undefined } };
                     let caughtError: Error;
-                    return SpokesService.savePipe(copyUser, copySource, { url: "http:spoke.url/" }, true)
+                    return SpokesService.savePipe(copyUser, copySource, { url: "http://spoke.url/" }, true)
                         .catch(function (err: Error) {
                             caughtError = err;
                         }).then(function () {
@@ -263,7 +263,7 @@ describe("Spokes Service", function () {
                     const copyUser = { ...user };
                     const copySource = { ...source, ...{ id: undefined } };
                     let caughtError: Error;
-                    return SpokesService.savePipe(copyUser, copySource, { url: "http:spoke.url/" }, true)
+                    return SpokesService.savePipe(copyUser, copySource, { url: "http://spoke.url/" }, true)
                         .catch(function (err: Error) {
                             caughtError = err;
                         }).then(function () {
