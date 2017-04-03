@@ -24,6 +24,11 @@ interface DropdownValue {
     label: string;
 }
 
+interface Message {
+    style?: React.CSSProperties;
+    message?: string;
+}
+
 interface IntegrationSpokesGlobalStateProps {
     user: User;
 }
@@ -39,6 +44,7 @@ interface IntegrationSpokesProps extends IntegrationSpokesGlobalStateProps, Inte
 interface IntegrationSpokesState {
     showPage: PAGE;
     enableLiveDebugging: boolean;
+    message?: Message;
     url?: string;
     arn?: string;
     iamAccessKey?: string;
@@ -71,6 +77,20 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
 
     static PAGES: DropdownValue[] = [{ value: "http", label: "HTTP" }, { value: "lambda", label: "Lambda" }];
 
+    static DEFAULT_MESSAGE_STYLE: React.CSSProperties = {
+        visibility: false
+    };
+
+    static STANDARD_MESSAGE_STYLE: React.CSSProperties = {
+        color: "#000000"
+    };
+
+    static ERROR_MESSAGE_STYLE: React.CSSProperties = {
+        ...IntegrationSpokes.STANDARD_MESSAGE_STYLE, ...{
+            color: "#FF0000"
+        }
+    };
+
     constructor(props: IntegrationSpokesProps) {
         super(props);
 
@@ -81,6 +101,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
 
         this.state = {
             showPage: IntegrationSpokes.PAGES[0].value,
+            message: { style: IntegrationSpokes.DEFAULT_MESSAGE_STYLE, message: "" },
             enableLiveDebugging: false
         };
     }
@@ -110,19 +131,22 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         console.log(source);
         console.log(resource);
         console.log(enableLiveDebugging);
-        this.resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging))
+        this.resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging)
             .then(function (spoke: Spoke) {
                 console.info("Spoke saved.");
                 console.log(spoke);
                 onSpokesSaved();
-                return spoke;
+                return { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Spoke has been saved." };
             }).catch(function (err: Error) {
                 console.error(err);
-            });
+                return { style: IntegrationSpokes.ERROR_MESSAGE_STYLE, message: "An error ocurred while trying to save the spoke." };
+            }).then((message?: Message) => {
+                this.setState({ message: message } as IntegrationSpokesState);
+            }));
     }
 
     render() {
-        const { showPage, enableLiveDebugging, ...others } = this.state;
+        const { showPage, enableLiveDebugging, message, ...others } = this.state;
         let saveDisabled: boolean;
         switch (showPage) {
             case "http":
@@ -176,7 +200,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                         disabled={saveDisabled}
                         label="Save"
                         onClick={this.handleSave} />
-
+                    <span style={message.style}>{message.message}</span>
                 </Cell>
                 <Cell col={3} />
             </Grid >

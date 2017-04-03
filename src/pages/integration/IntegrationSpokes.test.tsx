@@ -57,6 +57,10 @@ describe("IntegrationSpokes", function () {
             expect(wrapper.find(Button).at(0)).to.have.prop("label", "Save");
         });
 
+        it("Tests the error message exists.", function () {
+            expect(wrapper.find("span")).to.have.length(1);
+        });
+
         it("Tests the dropdown for page selector exists.", function () {
             expect(wrapper.find(Dropdown)).to.have.length(1);
         });
@@ -124,7 +128,7 @@ describe("IntegrationSpokes", function () {
                     expect(button).to.have.prop("disabled", false);
                 });
 
-                it("Tests that the save button is disabled when url is not actually a url.", function() {
+                it("Tests that the save button is disabled when url is not actually a url.", function () {
                     wrapper.setState({ url: "Hahaha You think this is real?" });
                     const button = wrapper.find(Button).at(0);
                     expect(button).to.have.prop("disabled", true);
@@ -214,6 +218,10 @@ describe("IntegrationSpokes", function () {
                 saveSpoke = sinon.stub(SpokesService, "savePipe").returns(Promise.resolve());
             });
 
+            after(function () {
+                saveSpoke.restore();
+            });
+
             it("Tests the appropriate parameters are passed in on HTTP.", function () {
                 wrapper.setState({ showPage: "http", enableLiveDebugging: true, url: "http://test.url.fake/", arn: "fakeARN", iamAccessKey: "ABC123", iamSecretKey: "123ABC" });
 
@@ -253,6 +261,40 @@ describe("IntegrationSpokes", function () {
                     .then(function () {
                         expect(onSaved).to.be.calledOnce;
                     });
+            });
+
+            it("Tests that the success message is displayed", function () {
+                const button = wrapper.find(Button).at(0);
+                button.simulate("click");
+
+                const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
+                return promise.then(function () {
+                    const message = wrapper.find("span").at(0);
+                    expect(message.text()).to.exist;
+                    expect(message).to.have.style("color", "#000000"); // it's black.
+                });
+            });
+        });
+
+        describe("Unsuccessful saves", function () {
+            before(function () {
+                saveSpoke = sinon.stub(SpokesService, "savePipe").returns(Promise.reject(new Error("Error per requirements of the test.")));
+            });
+
+            after(function () {
+                saveSpoke.restore();
+            });
+
+            it("Tests that the error message was displayed on error.", function () {
+                const button = wrapper.find(Button).at(0);
+                button.simulate("click");
+
+                const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
+                return promise.then(function () {
+                    const message = wrapper.find("span").at(0);
+                    expect(message.text()).to.exist;
+                    expect(message).to.have.style("color", "#FF0000"); // it's red.
+                });
             });
         });
     });
