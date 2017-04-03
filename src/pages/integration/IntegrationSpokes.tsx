@@ -44,7 +44,7 @@ interface IntegrationSpokesProps extends IntegrationSpokesGlobalStateProps, Inte
 
 interface IntegrationSpokesState {
     showPage: PAGE;
-    enableLiveDebugging: boolean;
+    proxy: boolean;
     message?: Message;
     url?: string;
     lambdaARN?: string;
@@ -109,7 +109,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.state = {
             showPage: IntegrationSpokes.PAGES[0].value,
             message: { style: IntegrationSpokes.DEFAULT_MESSAGE_STYLE, message: "" },
-            enableLiveDebugging: false
+            proxy: false
         };
     }
 
@@ -122,7 +122,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
     }
 
     handleCheckChange(value: boolean) {
-        this.setState({ enableLiveDebugging: value } as IntegrationSpokesState);
+        this.setState({ proxy: value } as IntegrationSpokesState);
     }
 
     handleSwapperChange(key: "url"| "lambdaARN" | "awsAccessKey" | "awsSecretKey", value: string) {
@@ -133,11 +133,11 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
 
     handleSave() {
         const { user, source, onSpokesSaved } = this.props;
-        const { enableLiveDebugging } = this.state;
+        const { proxy } = this.state;
         const resource = getResource(this.state);
 
         this.setState({ message: { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Saving..." } } as IntegrationSpokesState);
-        this.resolve(SpokesService.savePipe(user, source, resource, enableLiveDebugging)
+        this.resolve(SpokesService.savePipe(user, source, resource, proxy)
             .then(function (spoke: Spoke) {
                 onSpokesSaved();
                 return { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Spoke has been saved." };
@@ -154,16 +154,16 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
 
         this.resolve(SpokesService.fetchPipe(user, source)
             .then((spoke: Spoke) => {
-                console.log(spoke);
                 const { http, lambda } = spoke;
+                const proxy = { proxy: spoke.proxy };
                 const httpObj = (http) ? http : { url: undefined };
                 const lambdaObj = (lambda) ? lambda : { lambdaARN: undefined, awsAccessKey: undefined, awsSecretKey: undefined };
-                this.setState({ ...httpObj, ...lambdaObj } as IntegrationSpokesState);
+                this.setState({...proxy, ...httpObj, ...lambdaObj } as IntegrationSpokesState);
             }));
     }
 
     render() {
-        const { showPage, enableLiveDebugging, message, ...others } = this.state;
+        const { showPage, proxy, message, ...others } = this.state;
         let saveDisabled: boolean;
         switch (showPage) {
             case "http":
@@ -205,7 +205,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                     <Checkbox
                         theme={CheckboxTheme}
                         label={"Enable Live Debugging"}
-                        checked={enableLiveDebugging}
+                        checked={proxy}
                         onChange={this.handleCheckChange} />
                 </Cell>
                 <Cell col={9} />

@@ -28,7 +28,7 @@ namespace spokes {
                 return fetch(URL, {
                     headers: {
                         "x-access-userid": user.userId,
-                        "x-access-token": "4772616365-46696f72656c6c61",
+                        "x-access-token": "",
                     }
                 });
             }).then(function (result: Response) {
@@ -42,7 +42,10 @@ namespace spokes {
 
     function parse<T>(result: Response, errMsg: string = "Could not parse result."): T | Thenable<T> {
         if (result.status === 200) {
-            return result.json();
+            return result.json().then(function(result: any) {
+                console.log(result);
+                return result;
+            });
         } else {
             return Promise.reject(new Error(errMsg));
         }
@@ -64,7 +67,7 @@ namespace spokes {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "x-access-token": "4772616365-46696f72656c6c61",
+                        "x-access-token": "",
                         "x-access-userid": user.userId
                     },
                     body: JSON.stringify(postObj)
@@ -137,7 +140,7 @@ interface FetchSpokeResponse {
      * Spokes Lamda endpoint
      */
     lambda?: {
-        lamdaARN: string;
+        lambdaARN: string;
         awsAccessKey: string;
         awsSecretKey: string;
     };
@@ -183,7 +186,7 @@ interface SaveRequest {
      * Spokes Lamda endpoint
      */
     lambda?: {
-        lamdaARN: string;
+        lambdaARN: string;
         awsAccessKey: string;
         awsSecretKey: string;
     };
@@ -206,8 +209,9 @@ interface SaveRequest {
  * @param response Removes object
  */
 function scrub(response: FetchSpokeResponse | SaveRequest): void {
-    response.lambda = undefined;
-    response.http = undefined;
+    if (response.lambda) {
+        response.lambda.awsSecretKey = undefined;
+    }
 }
 
 /**
@@ -220,6 +224,14 @@ class FetchSpokeResponseObj implements Spoke.Spoke {
     endPoint: {
         name: string;
     };
+    http: {
+        url: string;
+    };
+    lambda: {
+        lambdaARN: string;
+        awsAccessKey: string;
+        awsSecretKey: string;
+    };
     path: string;
     pipeType: PIPE_TYPE;
     proxy: boolean;
@@ -231,6 +243,8 @@ class FetchSpokeResponseObj implements Spoke.Spoke {
         this.path = response.path;
         this.pipeType = response.pipeType;
         this.proxy = response.proxy;
+        this.http = response.http;
+        this.lambda = response.lambda;
     }
 }
 
@@ -244,7 +258,7 @@ class SaveSpokeRequestObj implements SaveRequest {
         url: string;
     };
     lambda?: {
-        lamdaARN: string;
+        lambdaARN: string;
         awsAccessKey: string;
         awsSecretKey: string;
     };
@@ -268,7 +282,7 @@ class SaveSpokeRequestObj implements SaveRequest {
             this.pipeType = "LAMBDA";
             const res = resource as spokes.Lambda;
             this.lambda = {
-                lamdaARN: res.lambdaARN,
+                lambdaARN: res.lambdaARN,
                 awsAccessKey: res.awsAccessKey,
                 awsSecretKey: res.awsSecretKey
             };
