@@ -3,7 +3,7 @@ import * as React from "react";
 import { Tab, Tabs } from "react-toolbox";
 
 import ResizingComponent from "../../components/ResizingComponent";
-import Source from "../../models/Source";
+import Source from "../../models/source";
 import ExpressJS from "./IntegrationExpressJS";
 import Java from "./IntegrationJava";
 import NodeJS from "./IntegrationNodeJSLambda";

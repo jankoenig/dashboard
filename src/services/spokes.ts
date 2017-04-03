@@ -2,7 +2,7 @@ import "isomorphic-fetch";
 
 import Source from "../models/source";
 import * as Spoke from "../models/spoke";
-import User from "../models/User";
+import User from "../models/user";
 
 namespace spokes {
 
