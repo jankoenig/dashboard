@@ -142,7 +142,6 @@ describe("Source Service", function () {
             return SourceService.generateSourceId()
                 .then(function (resource: SourceService.SourceName) {
                     expect(resource).to.exist;
-                    console.log(resource);
                     expect(resource.id).to.equal("test-source-bhjas3");
                     expect(resource.secretKey).to.equal("ABC123456");
                 });

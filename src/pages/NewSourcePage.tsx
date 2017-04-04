@@ -155,7 +155,6 @@ interface CodeFormProps {
 }
 
 interface CodeFormState {
-    secretKey: string;
 }
 
 class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
@@ -166,35 +165,11 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
         this.goToLogs = this.goToLogs.bind(this);
 
         this.state = {
-            secretKey: CodeForm.codeSecretKey(props.source)
         };
-    }
-
-    componentWillReceiveProps(nextProps: CodeFormProps, context: any) {
-        this.setState({
-            ...this.state, ...{
-                secretKey: CodeForm.codeSecretKey(nextProps.source)
-            }
-        });
     }
 
     goToLogs() {
         this.props.onGoToLogs(this.props.source);
-    }
-
-    codeStyle(): React.CSSProperties {
-        return {
-            margin: "10px",
-            padding: "20px",
-            backgroundColor: "#CFD8DC",
-            color: "#263238",
-            whiteSpace: "pre-line"
-        };
-    }
-
-    static codeSecretKey(source: Source | undefined): string {
-        let defaultKey = "/* secret key */";
-        return (source !== undefined && source.secretKey !== undefined) ? source.secretKey : defaultKey;
     }
 
     render(): JSX.Element {

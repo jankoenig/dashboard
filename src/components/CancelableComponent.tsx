@@ -63,7 +63,9 @@ export class CancelableComponent<P extends PromiseComponentProps, S extends Prom
     resolve<T>(obj: T | Thenable<T>, cancelOnPropsChange?: boolean): Promise<T> {
         const newPromise = Bluebird.resolve(obj);
         this.registerCancelable(newPromise, cancelOnPropsChange);
-        return newPromise;
+        return newPromise.finally(() => {
+            this.unregisterCancelable(newPromise, cancelOnPropsChange);
+        });
     }
 
     /**
@@ -78,6 +80,18 @@ export class CancelableComponent<P extends PromiseComponentProps, S extends Prom
         } else {
             this.cancelables.push(c);
         }
+    }
+
+    unregisterCancelable(c: Cancelable, cancelOnPropsChange: boolean = false) {
+        const arr = (cancelOnPropsChange) ? this.cancelOnProps : this.cancelables;
+        let index = 0;
+        for (let obj of arr) {
+            if (c === obj) {
+                break;
+            }
+            ++index;
+        }
+        arr.splice(index, 1);
     }
 
     render() {
