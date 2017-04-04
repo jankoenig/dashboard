@@ -28,12 +28,8 @@ describe("Route", function () {
             const sources: Source[] = [];
             const location = { query: {} };
             // It calls it on mount.
-            const wrapper = shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
-            const instance = wrapper.instance() as CreateOrRoute;
-
-            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
-                expect(goTo).to.have.been.calledWith("/skills");
-            });
+            shallow(<CreateOrRoute sources={sources} goTo={goTo} location={location} />);
+            expect(goTo).to.have.been.calledWith("/skills");
         });
 
         it("Tests default route when when only ID exists.", function () {
@@ -44,7 +40,7 @@ describe("Route", function () {
             const instance = wrapper.instance() as CreateOrRoute;
 
             return (instance.cancelables[0] as Bluebird<any>).finally(function () {
-                expect(goTo).to.have.been.calledWith("/skills");
+                expect(goTo).to.have.been.calledWith("/notFound");
             });
         });
 
@@ -56,7 +52,7 @@ describe("Route", function () {
             const instance = wrapper.instance() as CreateOrRoute;
 
             return (instance.cancelables[0] as Bluebird<any>).finally(function () {
-                expect(goTo).to.have.been.calledWith("/skills");
+                expect(goTo).to.have.been.calledWith("/notFound");
             });
         });
 
@@ -80,7 +76,7 @@ describe("Route", function () {
             const instance = wrapper.instance() as CreateOrRoute;
 
             return (instance.cancelables[0] as Bluebird<any>).finally(function () {
-                expect(goTo).to.have.been.calledWith("/skills");
+                expect(goTo).to.have.been.calledWith("/notFound");
             });
         });
     });

@@ -4,7 +4,7 @@ import "isomorphic-fetch";
 import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
-import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
+import { EnterHook, IndexRoute, LeaveHook, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
 import { replace, syncHistoryWithStore } from "react-router-redux";
 import { autoRehydrate, persistStore } from "redux-persist";
 
@@ -105,18 +105,18 @@ let onUpdate = function () {
     ReactGA.pageview(window.location.pathname);
 };
 
-let setSource = function (nextState: RouterState, replace: RedirectFunction) {
+let setSource: EnterHook = function (nextState: RouterState, redirect: RedirectFunction) {
     let sources: Source[] = store.getState().source.sources;
     let sourceId: string = nextState.params["sourceId"];
     IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources)
         .catch(function (a?: Error) {
-            console.info("ERROR " + a);
             console.error(a);
-            // TODO: Put in a 404.
+            // Can't use the redirect because this is asynchronous.
+            store.dispatch(replace("/notFound"));
         });
 };
 
-let removeSource = function () {
+let removeSource: LeaveHook = function () {
     IndexUtils.removeSelectedSource(store.dispatch);
 };
 
@@ -136,6 +136,7 @@ let render = function () {
                         <Route path="/skills/:sourceId/logs" component={LogsPage} />
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
                     </Route>
+                    <Route path="/notFound" component={NotFoundPage} />
                     <Route path="*" component={NotFoundPage} />
                 </Route>
             </Router>

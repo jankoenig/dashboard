@@ -89,14 +89,15 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
         const sourceName = (source) ? source.name : "this skill";
         const start = moment().subtract(7, "days");
         const end = moment();
+        if (!source) {
+            return (<div />);
+        }
         return (
             <span>
-                {this.props.source ? (
-                    <span>
-                        <SourceHeader
-                            source={source} />
-                    </span>
-                ) : undefined}
+                <span>
+                    <SourceHeader
+                        source={source} />
+                </span>
                 <SourceFullSummary
                     header={"Last Seven Day Summary"}
                     source={source}
@@ -112,7 +113,6 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                             label="Delete Skill" />
                     </Cell>
                 </Grid>
-
                 <Dialog
                     theme={DeleteDialogTheme}
                     actions={this.dialogActions}

@@ -94,7 +94,14 @@ function checkResult(result: QueryResult): string {
 export class CreateOrRoute extends CancelableComponent.CancelableComponent<CreateOrRouteProps, CreateOrRouteState> {
 
     componentWillMount() {
-        this.reroute(this.props);
+        const { location, goTo } = this.props;
+        const { id, key } = location.query;
+        if (!id && !key) {
+            // Params were not passed to us.  Just move on.
+            goTo("/skills");
+        } else {
+            this.reroute(this.props);
+        }
     }
 
     reroute(props: CreateOrRouteProps): Promise<any> {
@@ -110,7 +117,7 @@ export class CreateOrRoute extends CancelableComponent.CancelableComponent<Creat
             .then(function (id: string) {
                 goTo("/skills/" + id);
             }).catch(function (err: Error) {
-                goTo("/skills");
+                goTo("/notFound");
             });
         return this.resolve(promise);
     }
