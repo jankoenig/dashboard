@@ -27,6 +27,7 @@ export class IntegrationNodeJs extends IntegrationSubPage<IntegrationNodeJsProps
                             `\nvar logless = bst.Logless.middleware("` + this.state.secretText + `");` +
                             `\napp = express();` +
                             `\n` +
+                            `\n// Make sure to place bodyParser.json() before the logless.requestHandler` +
                             `\napp.use(bodyParser.json());` +
                             `\napp.use(logless.requestHandler);` +
                             `\n` +
