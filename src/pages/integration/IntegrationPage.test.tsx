@@ -34,8 +34,14 @@ describe("IntegrationPage", function () {
             expect(wrapper.find(Tabs).at(0).prop("index")).to.equal(0);
         });
 
-        it("Tests the first tab is IntegrationNodeJS and gets the secret key.", function () {
+        it("Tests the Spoke Page exists", function () {
             const tab = wrapper.find(Tab).at(0);
+            const tabPage = tab.find(IntegrationSpokes);
+            expect(tabPage).to.have.length(1);
+        });
+
+        it("Tests the first tab is IntegrationNodeJS and gets the secret key.", function () {
+            const tab = wrapper.find(Tab).at(1);
             const tabPage = tab.find(IntegrationNodeJS); // TODO: I'm not sure why this doesn't work.
             // const tabPage = tab.childAt(0);
             expect(tabPage).to.have.length(1);
@@ -43,23 +49,17 @@ describe("IntegrationPage", function () {
         });
 
         it("Tests the second tab is IntegrationExpressJS and gets the secret key.", function () {
-            const tab = wrapper.find(Tab).at(1);
+            const tab = wrapper.find(Tab).at(2);
             const tabPage = tab.find(IntegrationExpressJS);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.equal(source.secretKey);
         });
 
         it("Tests the third tab is IntegrationJava and gets the secret key.", function () {
-            const tab = wrapper.find(Tab).at(2);
+            const tab = wrapper.find(Tab).at(3);
             const tabPage = tab.find(IntegrationJava);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.equal(source.secretKey);
-        });
-
-        it("Tests the Spoke Page exists", function () {
-            const tab = wrapper.find(Tab).at(3);
-            const tabPage = tab.find(IntegrationSpokes);
-            expect(tabPage).to.have.length(1);
         });
     });
 
@@ -70,33 +70,32 @@ describe("IntegrationPage", function () {
             wrapper = shallow(<IntegrationPage source={undefined} />);
         });
 
-        it("Tests the first tab is IntegrationNodeJS and gets the secret key.", function () {
+        it("Tests the Spoke Page exists", function () {
             const tab = wrapper.find(Tab).at(0);
-            const tabPage = tab.find(IntegrationNodeJS); // TODO: I'm not sure why this doesn't work.
-            // const tabPage = tab.childAt(0);
+            const tabPage = tab.find(IntegrationSpokes);
+            expect(tabPage).to.have.length(1);
+            expect(tabPage.prop("source")).to.be.undefined;
+        });
+
+        it("Tests the first tab is IntegrationNodeJS and gets the secret key.", function () {
+            const tab = wrapper.find(Tab).at(1);
+            const tabPage = tab.find(IntegrationNodeJS);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.be.undefined;
         });
 
         it("Tests the second tab is IntegrationExpressJS and gets the secret key.", function () {
-            const tab = wrapper.find(Tab).at(1);
+            const tab = wrapper.find(Tab).at(2);
             const tabPage = tab.find(IntegrationExpressJS);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.be.undefined;
         });
 
         it("Tests the third tab is IntegrationJava and gets the secret key.", function () {
-            const tab = wrapper.find(Tab).at(2);
+            const tab = wrapper.find(Tab).at(3);
             const tabPage = tab.find(IntegrationJava);
             expect(tabPage).to.have.length(1);
             expect(tabPage.prop("secretKey")).to.be.undefined;
-        });
-
-        it("Tests the Spoke Page exists", function () {
-            const tab = wrapper.find(Tab).at(3);
-            const tabPage = tab.find(IntegrationSpokes);
-            expect(tabPage).to.have.length(1);
-            expect(tabPage.prop("source")).to.be.undefined;
         });
     });
 
