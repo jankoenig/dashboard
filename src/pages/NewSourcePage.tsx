@@ -155,7 +155,6 @@ interface CodeFormProps {
 }
 
 interface CodeFormState {
-    secretKey: string;
 }
 
 class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
@@ -166,43 +165,19 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
         this.goToLogs = this.goToLogs.bind(this);
 
         this.state = {
-            secretKey: CodeForm.codeSecretKey(props.source)
         };
-    }
-
-    componentWillReceiveProps(nextProps: CodeFormProps, context: any) {
-        this.setState({
-            ...this.state, ...{
-                secretKey: CodeForm.codeSecretKey(nextProps.source)
-            }
-        });
     }
 
     goToLogs() {
         this.props.onGoToLogs(this.props.source);
     }
 
-    codeStyle(): React.CSSProperties {
-        return {
-            margin: "10px",
-            padding: "20px",
-            backgroundColor: "#CFD8DC",
-            color: "#263238",
-            whiteSpace: "pre-line"
-        };
-    }
-
-    static codeSecretKey(source: Source | undefined): string {
-        let defaultKey = "/* secret key */";
-        return (source !== undefined && source.secretKey !== undefined) ? source.secretKey : defaultKey;
-    }
-
     render(): JSX.Element {
         const hasKey = this.props.source !== undefined;
-        const key = (hasKey) ? this.props.source.secretKey : undefined;
+        const { onGoBack, source } = this.props;
         return (
             <div>
-                <IntegrationPage showSecret={true} secretKey={key} />
+                <IntegrationPage showSecret={true} source={source} />
                 {
                     (hasKey) ?
                         (
@@ -211,7 +186,7 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
                                     <Button accent={true} raised={true} onClick={this.goToLogs}>Next: Check for Logs</Button>
                                 </Cell>
                                 <Cell col={12}>
-                                    <Button raised={true} onClick={this.props.onGoBack}>Create Another</Button>
+                                    <Button raised={true} onClick={onGoBack}>Create Another</Button>
                                 </Cell>
                             </Grid>
                         )

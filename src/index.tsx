@@ -68,7 +68,7 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     const lastUser = store.getState().session.user;
     // If there is a user, set it
     if (user) {
-        if (!lastUser || lastUser.email !== user.email) {
+        if (!lastUser || lastUser.userId !== user.uid) {
             store.dispatch(setUser(new FirebaseUser(user)));
             if (!lastUser) {
                 store.dispatch(replace("/#welcome"));

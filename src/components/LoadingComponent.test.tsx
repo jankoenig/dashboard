@@ -185,17 +185,13 @@ describe("LoadingComponent", function () {
             cancelSpy = sinon.spy(LoadingComponent.prototype, "cancel");
             startLoadingStub = sinon.stub(LoadingComponent.prototype, "startLoading", function () {
                 return new Promise((resolve, reject) => {
-                    console.info("LOADING");
                     while (runLoad);
-                    console.info("LOADED");
                     resolve(loadedData);
                 });
             });
             mapStub = sinon.stub(LoadingComponent.prototype, "map", function () {
                 return new Promise((resolve, reject) => {
-                    console.info("MAPPING");
                     while (runMap);
-                    console.info("MAPPED");
                     resolve(mappedData);
                 });
             });
@@ -238,9 +234,7 @@ describe("LoadingComponent", function () {
 
             it("Tests cancel will stop the operation.", function () {
                 // if it gets stuck in the stub, then it'll cancel out and skip the map because data was never returned.
-                console.info("Stopping load.");
                 stopLoad();
-                console.info("Canceling");
                 instance.cancel();
                 return currentLoadingPromise
                     .finally(function () {
