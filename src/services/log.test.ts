@@ -171,6 +171,21 @@ function dummySourceStat(): log.SourceStats {
             totalUsers: 1,
             totalExceptions: 2,
             totalEvents: 3
-        }
+        },
+        "Amazon.Alexa": {
+            totalUsers: 2,
+            totalExceptions: 3,
+            totalEvents: 1
+        },
+        "Google.Home": {
+            totalUsers: 3,
+            totalExceptions: 1,
+            totalEvents: 2
+        },
+        Unknown: {
+            totalUsers: 5,
+            totalExceptions: 6,
+            totalEvents: 7
+        },
     };
 }

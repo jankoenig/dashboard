@@ -37,8 +37,8 @@ describe("SourceTimeSummary", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
-            start = moment().subtract(7, "days");
-            end = moment();
+            end = moment(new Date(2017, 3, 20, 11, 30, 10));
+            start = end.clone().subtract(7, "days");
 
             wrapper = shallow(<SourceTimeSummary
                 source={source}
@@ -50,8 +50,8 @@ describe("SourceTimeSummary", function () {
             expect(wrapper.find(TimeChart)).to.have.length(1);
         });
 
-        it("Checks the bar graph has a default of empty data.", function () {
-            expect(wrapper.find(TimeChart).prop("data")).to.deep.equal([]);
+        it("Checks the bar graph has a default of data within range.", function () {
+            expect(wrapper.find(TimeChart).prop("data")).to.have.length(end.diff(start, "hours")); // One for each day.
         });
 
         describe("Lines", function () {
@@ -90,8 +90,8 @@ describe("SourceTimeSummary", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
-            start = moment().subtract(10, "days");
-            end = moment().subtract(2, "days");
+            end = moment(new Date(2017, 3, 15, 11, 10)).subtract(2, "days");
+            start = end.clone().subtract(10, "days");
 
             timeService = sinon.stub(LogService, "getTimeSummary").returns(Promise.resolve(summary));
         });
@@ -103,6 +103,8 @@ describe("SourceTimeSummary", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
+            const loadingPromise = (wrapper.instance() as SourceTimeSummary).loadingPromise;
+            return loadingPromise;
         });
 
         after(function () {
@@ -129,35 +131,37 @@ describe("SourceTimeSummary", function () {
 
         it("Tests the data query contains the appropriate parameters.", function () {
             wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
+            const loadingPromise = (wrapper.instance() as SourceTimeSummary).loadingPromise;
+            return loadingPromise.then(function () {
+                const query: Query = timeService.args[1][0];
+                const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+                const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
+                const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
 
-            const query: Query = timeService.args[1][0];
-            const sortParameter: SortParameter = findQueryParameter(query, "date_sort") as SortParameter;
-            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-            const fillParameter: FillGapsParameter = findQueryParameter(query, "fill_gaps") as FillGapsParameter;
-            const granulParameter: GranularityParameter = findQueryParameter(query, "granularity") as GranularityParameter;
 
-
-            expect(startParameter.value).to.equal(start.toISOString());
-            expect(endParameter.value).to.equal(end.toISOString());
-            expect(sourceParameter.value).to.equal(sources[1].secretKey);
-            expect(sortParameter.value).to.equal("asc");
-            expect(granulParameter.value).to.equal("hour");
-            expect(fillParameter.value).to.equal(true);
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(sources[1].secretKey);
+                expect(sortParameter.value).to.equal("asc");
+                expect(granulParameter.value).to.equal("hour");
+                expect(fillParameter.value).to.equal(true);
+            });
         });
 
         it("Tests that the data qyer does *not* load if the parameters are the same.", function () {
             wrapper.setProps({}); // Forces a call to componentWillReceiveProps with the same props.
-
-            return Promise.resolve(true).then(function () {
+            let loadingPromise = (wrapper.instance() as SourceTimeSummary).loadingPromise;
+            return loadingPromise.then(function () {
                 expect(timeService).to.be.calledOnce; // Only on mount.
             });
         });
 
         it("Tests the bar graph has the loaded data.", function () {
-            // Returning a promise ensures that the promise in the component is completed before everything else.
-            return Promise.resolve(true).then(function () {
+            let loadingPromise = (wrapper.instance() as SourceTimeSummary).loadingPromise;
+            return loadingPromise.then(function () {
                 expect(wrapper.find(TimeChart).prop("data")).to.have.length(summary.buckets.length);
             });
         });
@@ -168,33 +172,7 @@ describe("SourceTimeSummary", function () {
                 startDate={start}
                 endDate={end} />);
 
-            return Promise.resolve(true).then(function () {
-                expect(newWrapper.find(TimeChart).prop("data")).to.have.length(0);
-            });
-        });
-
-        it("Tests the defaults were set when source is set to undefined through props.", function () {
-            return Promise.resolve(true).then(function () {
-                wrapper.setProps({ source: undefined });
-                expect(wrapper.find(TimeChart).prop("data")).to.have.length(0);
-            });
-        });
-
-        it("Tests the default data is present when nothing is returned.", function () {
-            const newSummary: LogService.TimeSummary = {
-                buckets: [],
-                amazonBuckets: [],
-                googleBuckets: []
-            };
-            timeService.restore();
-            timeService = sinon.stub(LogService, "getTimeSummary").returns(Promise.resolve(newSummary));
-
-            wrapper.setProps({ source: sources[1] }); // causes a re-query.
-
-            return Promise.resolve(true).then(function () {
-                const daysBetween = end.diff(start, "days");
-                expect(wrapper.find(TimeChart).prop("data")).to.have.length(daysBetween); // It created default data.
-            });
+            expect(newWrapper.find(TimeChart).prop("data")).to.have.length(end.diff(start, "hours"));
         });
     });
 });

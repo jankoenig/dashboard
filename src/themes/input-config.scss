@@ -1,0 +1,11 @@
+@import "dashboard";
+@import "~react-toolbox/lib/input/config";
+
+$input-padding-bottom: 0;
+$input-padding-top: 0.7em;
+$input-filled-padding-bottom: 0.35em;
+$input-filled-padding-top: $input-filled-padding-bottom;
+
+$label-top: 1.3em;
+$label-filled-padding-top: 0;
+$label-filled-padding-left: 0;

@@ -78,7 +78,7 @@ describe("SourceIntentSummary", function () {
                     bars={bars} />);
             });
 
-            it("Tests the bars were applied to the inner bar chart.", function() {
+            it("Tests the bars were applied to the inner bar chart.", function () {
                 const barWrapper = wrapper.find(BarChart);
 
                 expect(barWrapper).to.have.prop("bars", bars);
@@ -104,6 +104,9 @@ describe("SourceIntentSummary", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
+
+            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
+            return loadingPromise;
         });
 
         afterEach(function () {
@@ -129,22 +132,28 @@ describe("SourceIntentSummary", function () {
 
         it("Tests the data query contains the appropriate parameters after a set props.", function () {
             wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
-            const query: Query = intentService.args[1][0]; // Called once from mount.
-            const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
-            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
+            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
+            return loadingPromise.then(function () {
+                const query: Query = intentService.args[1][0]; // Called once from mount.
+                const sortParameter: SortParameter = findQueryParameter(query, "count_sort") as SortParameter;
+                const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
+                const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
+                const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
 
-            expect(startParameter.value).to.equal(start.toISOString());
-            expect(endParameter.value).to.equal(end.toISOString());
-            expect(sourceParameter.value).to.equal(sources[1].secretKey);
-            expect(sortParameter.value).to.equal("desc");
+                expect(startParameter.value).to.equal(start.toISOString());
+                expect(endParameter.value).to.equal(end.toISOString());
+                expect(sourceParameter.value).to.equal(sources[1].secretKey);
+                expect(sortParameter.value).to.equal("desc");
+            });
         });
 
-        it("Tests that the data qyer does *not* load if the parameters are the same.", function() {
-            wrapper.setProps({ }); // Forces a call to componentWillReceiveProps with the same props.
+        it("Tests that the data qyer does *not* load if the parameters are the same.", function () {
+            wrapper.setProps({}); // Forces a call to componentWillReceiveProps with the same props.
 
-            expect(intentService).to.be.calledOnce; // Only on mount.
+            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
+            return loadingPromise.then(function () {
+                expect(intentService).to.be.calledOnce; // Only on mount.
+            });
         });
 
         it("Tests the bar graph has the loaded data after mount.", function () {
@@ -156,7 +165,8 @@ describe("SourceIntentSummary", function () {
 
         it("Tests the bar graph has the loaded data after prop change.", function () {
             wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
-            return Promise.resolve(true).then(function () {
+            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
+            return loadingPromise.then(function () {
                 expect(wrapper.find(BarChart).prop("data")).to.have.length(summary.count.length);
             });
         });
@@ -167,15 +177,16 @@ describe("SourceIntentSummary", function () {
                 startDate={start}
                 endDate={end} />);
 
-            return Promise.resolve(true).then(function () {
+            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
+            return loadingPromise.then(function () {
                 expect(newWrapper.find(BarChart).prop("data")).to.have.length(0);
             });
         });
 
         it("Tests the default stats when source is set to undefined through props.", function () {
-            // Waiting until the original mount.
-            return Promise.resolve(true).then(function () {
-                wrapper.setProps({ source: undefined });
+            wrapper.setProps({ source: undefined });
+            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
+            return loadingPromise.then(function () {
                 // Should be no need to wait.
                 expect(wrapper.find(BarChart).prop("data")).to.have.length(0);
             });

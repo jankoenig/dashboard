@@ -1,6 +1,6 @@
 {
   "name": "bespoken-dashboard",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "The dashboard for https://bespoken.tools",
   "repository": "https://github.com/bespoken/dashboard",
   "main": "./dist/scripts/dashboard.js",
@@ -85,6 +85,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "classnames": "^2.2.5",
     "clipboard": "^1.6.1",
     "d3-scale": "^1.0.4",
