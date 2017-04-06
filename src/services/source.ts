@@ -55,8 +55,6 @@ export namespace source {
         query.add({ parameter: "source", value: sourceName });
         query.add({ parameter: "user", value: { userId: user.userId } });
 
-        console.info("linking");
-        console.log(query.json());
         return fetch(LINK_URL, {
             method: "POST",
             headers: {
@@ -64,7 +62,6 @@ export namespace source {
             },
             body: query.json()
         }).then(function (result: any) {
-            console.log(result);
             if (result.status === 200) {
                 return result.json();
             } else {
