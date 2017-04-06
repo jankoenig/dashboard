@@ -16,13 +16,17 @@ const expect = chai.expect;
 
 describe("Route", function () {
     describe("No link Routing", function () {
+        let returnSources: Source[];
+        let getSources: Sinon.SinonStub;
         let linkSource: Sinon.SinonStub;
         let goTo: Sinon.SinonStub;
         let user: User;
 
         before(function () {
+            returnSources = dummySources(6);
             goTo = sinon.stub();
-            linkSource = sinon.stub(SourceService, "linkSource", Promise.reject(new Error("Error per requirements of the test.")));
+            getSources = sinon.stub(SourceService, "getSourcesObj").returns(Promise.resolve(returnSources));
+            linkSource = sinon.stub(SourceService, "linkSource").returns(Promise.reject(new Error("Error per requirements of the test.")));
             user = {
                 userId: "ABC123",
                 email: "test@test.com"
@@ -35,6 +39,7 @@ describe("Route", function () {
 
         after(function() {
             linkSource.restore();
+            getSources.restore();
         });
 
         it("Tests default route when no parameters in place.", function () {
@@ -45,8 +50,7 @@ describe("Route", function () {
         });
 
         it("Tests default route when when only ID exists.", function () {
-            const sources: Source[] = dummySources(5);
-            const location = { query: { id: sources[0].id } };
+            const location = { query: { id: returnSources[0].id } };
             // It calls it on mount.
             const wrapper = shallow(<CreateOrRoute currentUser={user} goTo={goTo} location={location} />);
             const instance = wrapper.instance() as CreateOrRoute;
@@ -57,8 +61,7 @@ describe("Route", function () {
         });
 
         it("Tests default route when when only key exists exists.", function () {
-            const sources: Source[] = dummySources(5);
-            const location = { query: { key: sources[0].secretKey } };
+            const location = { query: { key: returnSources[0].secretKey } };
             // It calls it on mount.
             const wrapper = shallow(<CreateOrRoute currentUser={user} goTo={goTo} location={location} />);
             const instance = wrapper.instance() as CreateOrRoute;
@@ -69,20 +72,18 @@ describe("Route", function () {
         });
 
         it("Tests it routes to the skill when found.", function () {
-            const sources: Source[] = dummySources(5);
-            const location = { query: { id: sources[3].id, key: sources[3].secretKey } };
+            const location = { query: { id: returnSources[3].id, key: returnSources[3].secretKey } };
             // It calls it on mount.
             const wrapper = shallow(<CreateOrRoute currentUser={user} goTo={goTo} location={location} />);
             const instance = wrapper.instance() as CreateOrRoute;
 
             return (instance.cancelables[0] as Bluebird<any>).finally(function () {
-                expect(goTo).to.have.been.calledWith("/skills/" + sources[3].id);
+                expect(goTo).to.have.been.calledWith("/skills/" + returnSources[3].id);
             });
         });
 
         it("Tests it routes to the default when both parameters exist and not found.", function () {
-            const sources: Source[] = dummySources(5);
-            const location = { query: { id: sources[3].id, key: "gibberish" } };
+            const location = { query: { id: returnSources[3].id, key: "gibberish" } };
             // It calls it on mount.
             const wrapper = shallow(<CreateOrRoute currentUser={user} goTo={goTo} location={location} />);
             const instance = wrapper.instance() as CreateOrRoute;

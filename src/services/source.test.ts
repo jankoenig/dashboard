@@ -132,7 +132,7 @@ describe("Source Service", function () {
 
         before(function () {
             mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
-            fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
+            fetchMock.get(/https:\/\/source-api\.bespoken\.tools\/v1\/sourceId\?.*/, mockResponse);
         });
 
         after(function () {
@@ -157,7 +157,7 @@ describe("Source Service", function () {
 
             before(function () {
                 mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
-                fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
+                fetchMock.get(/https:\/\/source-api\.bespoken\.tools\/v1\/sourceId\?.*/, mockResponse);
             });
 
             beforeEach(function () {
