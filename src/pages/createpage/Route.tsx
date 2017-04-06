@@ -102,7 +102,7 @@ function checkResult(result: QueryResult): string {
     }
 }
 
-export class CreateOrRoute extends CancelableComponent.CancelableComponent<CreateOrRouteProps, CreateOrRouteState> {
+export class Route extends CancelableComponent.CancelableComponent<CreateOrRouteProps, CreateOrRouteState> {
 
     componentWillMount() {
         const { location, goTo } = this.props;
@@ -148,4 +148,4 @@ export default connect(
     mapStateToProps,
     mapStateToDispatch,
     mergeRemainingProps)
-    (CreateOrRoute);
+    (Route);
