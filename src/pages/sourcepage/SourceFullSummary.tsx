@@ -118,7 +118,6 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         this.state.selectedStatEntry = [];
 
         for (let o of this.state.sourceOptions) {
-            console.info("o " + o.label + " " + o.checked);
             if (o.checked) {
                 this.state.selectedStatEntry.push(SourceFullSummary.statEntries[o.label]);
                 this.state.lines.push(SourceFullSummary.lines[o.label]);
@@ -134,8 +133,6 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         if (totalChecked) {
             this.state.selectedStatEntry = [SourceFullSummary.statEntries["Total"]];
         }
-
-        console.log(this.state);
 
         this.setState(this.state);
     }

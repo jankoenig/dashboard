@@ -3,14 +3,16 @@ import * as React from "react";
 import { Tab, Tabs } from "react-toolbox";
 
 import ResizingComponent from "../../components/ResizingComponent";
+import Source from "../../models/source";
 import ExpressJS from "./IntegrationExpressJS";
 import Java from "./IntegrationJava";
 import NodeJS from "./IntegrationNodeJSLambda";
+import Spokes from "./IntegrationSpokes";
 
 let TabsTheme = require("./themes/tabs.scss");
 
 interface IntegrationPageProps {
-    secretKey?: string;
+    source: Source;
     showSecret?: boolean;
 }
 
@@ -35,23 +37,31 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
     }
 
     render() {
+        const { tabIndex } = this.state;
+        const { showSecret, source } = this.props;
+        const secretKey = (source) ? source.secretKey : undefined;
         return (
             <ResizingComponent overflowY="hidden" >
                 <section>
-                    <Tabs theme={TabsTheme} fixed inverse index={this.state.tabIndex} onChange={this.handleTabChange} >
+                    <Tabs theme={TabsTheme} fixed inverse index={tabIndex} onChange={this.handleTabChange} >
+                        <Tab label="Spokes">
+                            <ResizingComponent>
+                                <Spokes source={source} />
+                            </ResizingComponent>
+                        </Tab>
                         <Tab label="Node.JS Lambda">
                             <ResizingComponent>
-                                <NodeJS secretKey={this.props.secretKey} showSecret={this.props.showSecret} />
+                                <NodeJS secretKey={secretKey} showSecret={showSecret} />
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Express.JS">
                             <ResizingComponent>
-                                <ExpressJS secretKey={this.props.secretKey} showSecret={this.props.showSecret} />
+                                <ExpressJS secretKey={secretKey} showSecret={showSecret} />
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Java">
                             <ResizingComponent>
-                                <Java secretKey={this.props.secretKey} showSecret={this.props.showSecret} />
+                                <Java secretKey={secretKey} showSecret={showSecret} />
                             </ResizingComponent>
                         </Tab>
                     </Tabs>

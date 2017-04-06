@@ -82,6 +82,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
+    "bluebird": "^3.5.0",
     "classnames": "^2.2.5",
     "d3-scale": "^1.0.4",
     "d3-time": "^1.0.4",

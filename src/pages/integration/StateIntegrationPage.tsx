@@ -10,7 +10,6 @@ interface StateIntegrationProps {
 }
 
 interface StateIntegrationState {
-    secretKey: string;
 }
 
 function mapStateToProps(state: State.All) {
@@ -21,22 +20,10 @@ function mapStateToProps(state: State.All) {
 
 export class StateIntegrationPage extends React.Component<StateIntegrationProps, StateIntegrationState> {
 
-    constructor(props: StateIntegrationProps) {
-        super(props);
-
-        this.state = {
-            secretKey: (props.source) ? props.source.secretKey : undefined
-        };
-    }
-
-    componentWillReceiveProps(props: StateIntegrationProps, context: any) {
-        this.state.secretKey = (props.source) ? props.source.secretKey : undefined;
-        this.setState(this.state);
-    }
-
     render() {
+        const { source } = this.props;
         return (
-            <IntegrationPage secretKey={this.state.secretKey} />
+            <IntegrationPage source={source} />
         );
     }
 }
