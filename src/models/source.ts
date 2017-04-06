@@ -39,7 +39,7 @@ export class Source implements SourceProperties {
             if (props.created instanceof Date) {
                 this.created = props.created.toISOString();
             } else if (typeof props.created  === "string") {
-                this.created = props.created;
+                this.created = new Date(props.created).toISOString();
             }
         }
     }

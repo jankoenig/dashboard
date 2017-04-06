@@ -45,7 +45,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         },
 
         goToLogs: function (source: Source): RouterAction {
-            return dispatch(push("/skills/" + source.id + "/logs"));
+            return dispatch(push("/skills/" + source.id));
         }
     };
 }
