@@ -7,13 +7,20 @@ import { remoteservice } from "./remote-service";
 
 export namespace source {
 
-    const SOURCE_URL: string = "http://ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com/v1/";
+    const SOURCE_URL: string = "https://source-api.bespoken.tools/v1/";
     const NAME_GENERATING_URL: string = SOURCE_URL + "sourceId";
     const LINK_URL: string = SOURCE_URL + "linkSource";
 
     export interface SourceName {
         id: string;
         secretKey: string;
+    }
+
+    export interface LinkResult {
+        user: {
+            userId: string;
+        };
+        source: Source;
     }
 
     /**
@@ -30,9 +37,9 @@ export namespace source {
         const finalURL = NAME_GENERATING_URL + "?" + query.query();
 
         return fetch(finalURL)
-               .then(function (result: any) {
+            .then(function (result: any) {
                 return result.json();
-            }).then(function(result: SourceName) {
+            }).then(function (result: SourceName) {
                 return result;
             });
     }
@@ -43,16 +50,26 @@ export namespace source {
      *
      * @param sourceName The name and ID of the source.
      */
-    export function linkSource(sourceName: SourceName, user: User) {
+    export function linkSource(sourceName: SourceName, user: User): Promise<LinkResult> {
         const query: Query = new Query();
         query.add({ parameter: "source", value: sourceName });
-        query.add({ parameter: "user", value: user.userId });
+        query.add({ parameter: "user", value: { userId: user.userId } });
 
+        console.info("linking");
+        console.log(query.json());
         return fetch(LINK_URL, {
             method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
             body: query.json()
         }).then(function (result: any) {
             console.log(result);
+            if (result.status === 200) {
+                return result.json();
+            } else {
+                return Promise.reject(new Error(result.statusText));
+            }
         }).catch(function (err: Error) {
             console.error(err);
             throw err;
