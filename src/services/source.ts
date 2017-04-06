@@ -2,11 +2,14 @@ import "isomorphic-fetch";
 
 import { Query } from "../models/query";
 import { Source } from "../models/source";
+import { User } from "../models/user";
 import { remoteservice } from "./remote-service";
 
 export namespace source {
 
-    const NAME_GENERATING_URL: string = "http://ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com/v1/sourceId";
+    const SOURCE_URL: string = "http://ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com/v1/";
+    const NAME_GENERATING_URL: string = SOURCE_URL + "sourceId";
+    const LINK_URL: string = SOURCE_URL + "linkSource";
 
     export interface SourceName {
         id: string;
@@ -25,13 +28,35 @@ export namespace source {
         }
 
         const finalURL = NAME_GENERATING_URL + "?" + query.query();
-;
+
         return fetch(finalURL)
                .then(function (result: any) {
                 return result.json();
             }).then(function(result: SourceName) {
                 return result;
             });
+    }
+
+    /**
+     * This service will link the source to the given user.  It will transfer ownership to this user if the
+     * source is not already owned by a user.
+     *
+     * @param sourceName The name and ID of the source.
+     */
+    export function linkSource(sourceName: SourceName, user: User) {
+        const query: Query = new Query();
+        query.add({ parameter: "source", value: sourceName });
+        query.add({ parameter: "user", value: user.userId });
+
+        return fetch(LINK_URL, {
+            method: "POST",
+            body: query.json()
+        }).then(function (result: any) {
+            console.log(result);
+        }).catch(function (err: Error) {
+            console.error(err);
+            throw err;
+        });
     }
 
     export function createSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
