@@ -35,7 +35,7 @@ describe("Source", function () {
             expect(source.members).to.deep.equal(members);
         });
 
-        it("sets the created property from a string", function() {
+        it("sets the created property from a string", function () {
 
             let created = "2016-11-10T15:11:21.636Z";
 

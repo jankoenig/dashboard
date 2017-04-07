@@ -4,6 +4,7 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import * as SourceModel from "../models/source";
+import User from "../models/user";
 import remoteservice from "./remote-service";
 import SourceService from "./source";
 
@@ -126,12 +127,113 @@ describe("Source Service", function () {
         ref.child = sinon.stub().returns(ref);
     });
 
+    describe("Tests the Link Source function", function () {
+        let mockResponse: any;
+        let fullSource: SourceModel.Source;
+        let sourceName: SourceService.SourceName;
+        let user: User;
+
+        before(function () {
+            sourceName = { id: "ABC123", secretKey: "SuperSecretKey" };
+            fullSource = new SourceModel.Source({ id: sourceName.id, secretKey: sourceName.secretKey, name: "Test Source" });
+            user = new User({ userId: "TestUserID", email: "test@test.com" });
+            mockResponse = { user: { userId: user.userId }, source: fullSource };
+            fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, mockResponse);
+        });
+
+        afterEach(function () {
+            fetchMock.reset();
+        });
+
+        after(function () {
+            fetchMock.restore();
+        });
+
+        it("Tests that the appropriate headers are sent.", function () {
+            return SourceService.linkSource(sourceName, user)
+                .then(function (value: SourceService.LinkResult) {
+                    const args = fetchMock.lastCall()[1] as RequestInit;
+                    const header = args.headers;
+                    expect(args.method).to.equal("POST");
+                    expect(header["Content-Type"]).to.equal("application/json");
+                });
+        });
+
+        it("Tests the appropriate body is sent", function () {
+            return SourceService.linkSource(sourceName, user)
+                .then(function (value: SourceService.LinkResult) {
+                    const args = fetchMock.lastCall()[1] as RequestInit;
+                    const body = JSON.parse(args.body);
+                    expect(body.source).to.deep.equal(sourceName);
+                    expect(body.user.userId).to.equal(user.userId);
+                });
+        });
+
+        it("Tests that the return value is good.", function () {
+            return SourceService.linkSource(sourceName, user)
+                .then(function (value: SourceService.LinkResult) {
+                    expect(value.user.userId).to.equal(user.userId);
+                    expect(value.source).to.deep.equal(fullSource);
+                });
+        });
+
+        describe("400 response", function () {
+            let errorResponse: Response;
+
+            before(function () {
+                errorResponse = new Response(undefined, { status: 400, statusText: "Error per requirement of the test." });
+                fetchMock.restore();
+                fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, errorResponse);
+            });
+
+            after(function () {
+                fetchMock.restore();
+                fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, mockResponse);
+            });
+
+            it("Tests that an error is thrown to the catch.", function () {
+                let caughtError: Error;
+                return SourceService.linkSource(sourceName, user)
+                    .catch(function (err: Error) {
+                        caughtError = err;
+                    }).then(function () {
+                        expect(caughtError).to.exist;
+                    });
+            });
+        });
+
+        describe("Thrown error", function () {
+            let errorResponse: () => Promise<any>;
+
+            before(function () {
+                errorResponse = () => { return Promise.reject("Error per requirements of the test."); };
+                fetchMock.restore();
+                fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, errorResponse);
+            });
+
+            after(function () {
+                fetchMock.restore();
+                fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, mockResponse);
+            });
+
+            it("Tests that an error is thrown to the catch.", function () {
+                let caughtError: Error;
+                return SourceService.linkSource(sourceName, user)
+                    .catch(function (err: Error) {
+                        caughtError = err;
+                    }).then(function () {
+                        expect(caughtError).to.exist;
+                    });
+            });
+        });
+    });
+
     describe("Tests the generate source ID function.", function () {
         let mockResponse: any;
 
         before(function () {
             mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
-            fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
+            fetchMock.get(/https:\/\/source-api\.bespoken\.tools\/v1\/sourceId\?.*/, mockResponse);
         });
 
         after(function () {
@@ -156,7 +258,7 @@ describe("Source Service", function () {
 
             before(function () {
                 mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
-                fetchMock.get(/http:\/\/ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com\/v1\/sourceId\?.*/, mockResponse);
+                fetchMock.get(/https:\/\/source-api\.bespoken\.tools\/v1\/sourceId\?.*/, mockResponse);
             });
 
             beforeEach(function () {

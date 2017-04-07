@@ -30,6 +30,15 @@ export class Query {
         }
         return "";
     }
+
+    json(): string {
+        const elements = this.queryElements;
+        const returnObj: any = {};
+        for (let e of elements) {
+            returnObj[e.parameter] = e.value;
+        }
+        return JSON.stringify(returnObj);
+    }
 }
 
 export default Query;

@@ -2,15 +2,25 @@ import "isomorphic-fetch";
 
 import { Query } from "../models/query";
 import { Source } from "../models/source";
+import { User } from "../models/user";
 import { remoteservice } from "./remote-service";
 
 export namespace source {
 
-    const NAME_GENERATING_URL: string = "http://ELB-ECS-SourceNameGenerator-dev-905620013.us-east-1.elb.amazonaws.com/v1/sourceId";
+    const SOURCE_URL: string = "https://source-api.bespoken.tools/v1/";
+    const NAME_GENERATING_URL: string = SOURCE_URL + "sourceId";
+    const LINK_URL: string = SOURCE_URL + "linkSource";
 
     export interface SourceName {
         id: string;
         secretKey: string;
+    }
+
+    export interface LinkResult {
+        user: {
+            userId: string;
+        };
+        source: Source;
     }
 
     /**
@@ -25,13 +35,42 @@ export namespace source {
         }
 
         const finalURL = NAME_GENERATING_URL + "?" + query.query();
-;
+
         return fetch(finalURL)
-               .then(function (result: any) {
+            .then(function (result: any) {
                 return result.json();
-            }).then(function(result: SourceName) {
+            }).then(function (result: SourceName) {
                 return result;
             });
+    }
+
+    /**
+     * This service will link the source to the given user.  It will transfer ownership to this user if the
+     * source is not already owned by a user.
+     *
+     * @param sourceName The name and ID of the source.
+     */
+    export function linkSource(sourceName: SourceName, user: User): Promise<LinkResult> {
+        const query: Query = new Query();
+        query.add({ parameter: "source", value: sourceName });
+        query.add({ parameter: "user", value: { userId: user.userId } });
+
+        return fetch(LINK_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: query.json()
+        }).then(function (result: any) {
+            if (result.status === 200) {
+                return result.json();
+            } else {
+                return Promise.reject(new Error(result.statusText));
+            }
+        }).catch(function (err: Error) {
+            console.error(err);
+            throw err;
+        });
     }
 
     export function createSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
