@@ -4,7 +4,7 @@ import Source, { Members } from "./source";
 
 describe("Source", function () {
     describe("constructor", function () {
-        it("check defauts", function () {
+        it("check defaults", function () {
             let source = new Source({ name: "source" });
             expect(source.name).to.be.equal("source");
             expect(source.members).to.exist;
