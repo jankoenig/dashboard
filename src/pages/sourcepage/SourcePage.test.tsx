@@ -64,12 +64,14 @@ describe("Source Page", function () {
             expect(dataTiles).to.have.length(1);
         });
 
-        it("Tests that the source details header is gone when source is not defined.", function () {
+        it("Tests that nothing is displayed when source is not defined.", function () {
             const wrapper = shallow((
                 <SourcePage source={undefined} goHome={goHome} removeSource={removeSource} />
             ));
 
             expect(wrapper.find(SourceHeader)).to.have.length(0);
+            expect(wrapper.find(SourceFullSummary)).to.have.length(0);
+            expect(wrapper.find(SourcePage)).to.have.length(0);
         });
 
         it("Tests that the source data tiles have their correct values.", function () {

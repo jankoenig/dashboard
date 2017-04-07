@@ -4,7 +4,7 @@ import "isomorphic-fetch";
 import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
-import { EnterHook, IndexRoute, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
+import { EnterHook, IndexRoute, LeaveHook, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
 import { replace, syncHistoryWithStore } from "react-router-redux";
 import { autoRehydrate, persistStore } from "redux-persist";
 
@@ -16,6 +16,7 @@ import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
 import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
+import CreateOrRoute from "./pages/createpage/Route";
 import IntegrationPage from "./pages/integration/StateIntegrationPage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/logspage/ConvoPage";
@@ -65,13 +66,16 @@ console.time("FirebaseInitialize");
 Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     console.timeEnd("FirebaseInitialize");
-    const lastUser = store.getState().session.user;
+    const state = store.getState();
+    const lastUser = state.session.user;
+    const location = state.routing.locationBeforeTransitions;
+    const newLocation = {...location, ...{pathname: "/" }}; // Doing this will pass along any query parameters that may exist.
     // If there is a user, set it
     if (user) {
         if (!lastUser || lastUser.userId !== user.uid) {
             store.dispatch(setUser(new FirebaseUser(user)));
             if (!lastUser) {
-                store.dispatch(replace("/#welcome"));
+                store.dispatch(replace(newLocation));
             }
         }
     } else {
@@ -95,7 +99,8 @@ let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFu
     if (!session.user) {
         replace({
             pathname: "/login",
-            state: { nextPathName: nextState.location.pathname }
+            query: nextState.location.query,
+            state: { nextPathName: nextState.location.pathname, query: nextState.location.query }
         });
     }
 };
@@ -104,18 +109,18 @@ let onUpdate = function () {
     ReactGA.pageview(window.location.pathname);
 };
 
-let setSource = function (nextState: RouterState, replace: RedirectFunction) {
+let setSource: EnterHook = function (nextState: RouterState, redirect: RedirectFunction) {
     let sources: Source[] = store.getState().source.sources;
     let sourceId: string = nextState.params["sourceId"];
     IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources)
         .catch(function (a?: Error) {
-            console.info("ERROR " + a);
             console.error(a);
-            // TODO: Put in a 404.
+            // Can't use the redirect because this is asynchronous.
+            store.dispatch(replace("/notFound"));
         });
 };
 
-let removeSource = function () {
+let removeSource: LeaveHook = function () {
     IndexUtils.removeSelectedSource(store.dispatch);
 };
 
@@ -127,7 +132,7 @@ let render = function () {
                     <IndexRoute component={LoginPage} />
                 </Route>
                 <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                    <IndexRoute component={SourceListPage} />
+                    <IndexRoute component={CreateOrRoute} />
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
@@ -135,6 +140,7 @@ let render = function () {
                         <Route path="/skills/:sourceId/logs" component={LogsPage} />
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
                     </Route>
+                    <Route path="/notFound" component={NotFoundPage} />
                     <Route path="*" component={NotFoundPage} />
                 </Route>
             </Router>

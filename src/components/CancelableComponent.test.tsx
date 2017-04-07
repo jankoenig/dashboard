@@ -107,12 +107,30 @@ describe("CancelableComponent", function () {
         });
     });
 
-    it("Tests that the cancelable is removed from the middle of the stack when finished.", function () {
+    it("Tests that the cancelable is removed from the middle of the canceled stack when finished.", function () {
         const component = wrapper.instance() as CancelableComponent<any, any>;
         component.resolve(delayPromise(1000, "Hello"));
         component.resolve(delayPromise(1000, "Hello"));
-        const promise2 = component.resolve("Hello", true);
+        const promise2 = component.resolve("Hello");
         component.resolve(delayPromise(1000, "Hello"));
+
+        return promise2.then(function () {
+            for (let c of component.cancelables) {
+                expect(c).to.not.equal(promise2);
+            }
+            for (let c of component.cancelOnProps) {
+                expect(c).to.not.equal(promise2);
+            }
+            component.componentWillUnmount(); // Cancels the rest.
+        });
+    });
+
+    it("Tests that the cancelable is removed from the middle of the cancelOnProps stack when finished.", function () {
+        const component = wrapper.instance() as CancelableComponent<any, any>;
+        component.resolve(delayPromise(1000, "Hello"), true);
+        component.resolve(delayPromise(1000, "Hello"), true);
+        const promise2 = component.resolve("Hello", true);
+        component.resolve(delayPromise(1000, "Hello"), true);
 
         return promise2.then(function () {
             for (let c of component.cancelables) {

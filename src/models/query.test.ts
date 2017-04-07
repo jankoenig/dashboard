@@ -88,5 +88,20 @@ describe("Query objects.", function() {
 
             expect(query.query()).to.equal("p1=1&p2=2&p3=3");
         });
+
+        it ("Tests that the query json method produces the appropriate JSON.", function() {
+            const query: Query = new Query();
+            query.add(new TestParameter("1", "p1"))
+                .add(new TestParameter(2, "p2"))
+                .add(new TestParameter({ value1: "5", value2: 3 }, "p3"))
+                .add(new TestParameter(true, "p4"));
+
+            const jsonString = query.json();
+            const jsonObj = JSON.parse(jsonString);
+            expect(jsonObj.p1).to.equal("1");
+            expect(jsonObj.p2).to.equal(2);
+            expect(jsonObj.p3).to.deep.equal({ value1: "5", value2: 3 });
+            expect(jsonObj.p4).to.equal(true);
+        });
     });
 });

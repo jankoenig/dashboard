@@ -6,7 +6,7 @@ export interface UserProperties {
   readonly photoUrl?: string;
 }
 
-export default class User implements UserProperties {
+export class User implements UserProperties {
 
   readonly userId: string;
   readonly email: string;
@@ -20,6 +20,8 @@ export default class User implements UserProperties {
     this.photoUrl = props.photoUrl;
   }
 }
+
+export default User;
 
 import * as Firebase from "firebase";
 

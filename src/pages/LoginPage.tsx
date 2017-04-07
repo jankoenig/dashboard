@@ -25,7 +25,6 @@ interface LoginPageProps {
     loginWithGithub: (redirectStrat?: SuccessCallback) => Promise<User>;
     signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) => Promise<User>;
     resetPassword: (email: string) => Promise<void>;
-    location?: RoutingData.Location<LoginConfig>;
 };
 
 interface LoginPageState {
