@@ -66,13 +66,16 @@ console.time("FirebaseInitialize");
 Firebase.initializeApp(firebaseConfig);
 Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     console.timeEnd("FirebaseInitialize");
-    const lastUser = store.getState().session.user;
+    const state = store.getState();
+    const lastUser = state.session.user;
+    const location = state.routing.locationBeforeTransitions;
+    const newLocation = {...location, ...{pathname: "/" }}; // Doing this will pass along any query parameters that may exist.
     // If there is a user, set it
     if (user) {
         if (!lastUser || lastUser.userId !== user.uid) {
             store.dispatch(setUser(new FirebaseUser(user)));
             if (!lastUser) {
-                store.dispatch(replace("/#welcome"));
+                store.dispatch(replace(newLocation));
             }
         }
     } else {
@@ -96,7 +99,8 @@ let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFu
     if (!session.user) {
         replace({
             pathname: "/login",
-            state: { nextPathName: nextState.location.pathname }
+            query: nextState.location.query,
+            state: { nextPathName: nextState.location.pathname, query: nextState.location.query }
         });
     }
 };
