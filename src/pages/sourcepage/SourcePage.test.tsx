@@ -64,7 +64,7 @@ describe("Source Page", function () {
             expect(dataTiles).to.have.length(1);
         });
 
-        it("Tests that nothign is displayed when source is not defined.", function () {
+        it("Tests that nothing is displayed when source is not defined.", function () {
             const wrapper = shallow((
                 <SourcePage source={undefined} goHome={goHome} removeSource={removeSource} />
             ));
