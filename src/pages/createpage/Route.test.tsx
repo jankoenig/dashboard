@@ -15,6 +15,60 @@ chai.use(sinonChai);
 const expect = chai.expect;
 
 describe("Route", function () {
+
+    describe("With Link Routing", function () {
+        let returnSources: Source[];
+        let getSources: Sinon.SinonStub;
+        let linkSource: Sinon.SinonStub;
+        let goTo: Sinon.SinonStub;
+        let user: User;
+
+        before(function () {
+            user = {
+                userId: "ABC123",
+                email: "test@test.com"
+            };
+            returnSources = dummySources(6);
+            goTo = sinon.stub();
+            getSources = sinon.stub(SourceService, "getSourcesObj").returns(Promise.resolve(returnSources));
+            linkSource = sinon.stub(SourceService, "linkSource").returns({ user: { userId: user.userId }, source: returnSources[3] });
+        });
+
+        afterEach(function () {
+            goTo.reset();
+        });
+
+        after(function () {
+            linkSource.restore();
+            getSources.restore();
+        });
+
+        it("Tests that the LinkSource method gets called with the appropriate parameters.", function () {
+            const location = { query: { id: returnSources[3].id, key: returnSources[3].secretKey } };
+            const wrapper = shallow(<Route currentUser={user} goTo={goTo} location={location} />);
+            const instance = wrapper.instance() as Route;
+            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
+                const sourceArg = linkSource.args[0][0];
+                expect(sourceArg).to.exist;
+                expect(sourceArg.id).to.equal(returnSources[3].id);
+                expect(sourceArg.secretKey).to.equal(returnSources[3].secretKey);
+
+                const userArg = linkSource.args[0][1];
+                expect(userArg).to.exist;
+                expect(userArg.userId).to.equal(user.userId);
+            });
+        });
+
+        it("Tests that it goes to the link sourced upon success", function () {
+            const location = { query: { id: returnSources[3].id, key: returnSources[3].secretKey } };
+            const wrapper = shallow(<Route currentUser={user} goTo={goTo} location={location} />);
+            const instance = wrapper.instance() as Route;
+            return (instance.cancelables[0] as Bluebird<any>).finally(function () {
+                expect(goTo).to.be.calledWith("/skills/" + returnSources[3].id);
+            });
+        });
+    });
+
     describe("No link Routing", function () {
         let returnSources: Source[];
         let getSources: Sinon.SinonStub;
@@ -37,7 +91,7 @@ describe("Route", function () {
             goTo.reset();
         });
 
-        after(function() {
+        after(function () {
             linkSource.restore();
             getSources.restore();
         });

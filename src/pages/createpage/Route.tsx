@@ -80,8 +80,11 @@ interface QueryResult {
 
 function linkSource(query: Query, user: User): Promise<QueryResult> {
     const { id, key } = query;
+    console.info("LINKING " + id + " " + key);
     return SourceService.linkSource({ id: id, secretKey: key }, user)
         .then(function (result: SourceService.LinkResult) {
+            console.info("RESULT");
+            console.log(result);
             return { source: result.source, query: query };
         });
 }
@@ -124,6 +127,7 @@ export class Route extends CancelableComponent.CancelableComponent<CreateOrRoute
                 return linkSource(query, currentUser)
                     .then(function(queryResult: QueryResult) {
                         // Re-query latest
+                        console.info("REQUERYING");
                         return getSource([], query);
                     });
             }).catch(function (err: Error) {
@@ -134,6 +138,7 @@ export class Route extends CancelableComponent.CancelableComponent<CreateOrRoute
             }).then(function (id: string) {
                 goTo("/skills/" + id);
             }).catch(function (err: Error) {
+                console.error(err);
                 goTo("/notFound");
             });
         return this.resolve(promise);
