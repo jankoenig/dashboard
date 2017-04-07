@@ -32,6 +32,13 @@ describe("SpeechBubble", function () {
         expect(newWrapper.find("cite")).to.have.length(0);
     });
 
+    it("Tests that the TextStyle can override text default text.", function() {
+        let newWrapper = shallow(<Bubble text="TestBubble" textStyle={{fontSize: "10px", lineHeight: "15px" }} />);
+        let textWrapper = newWrapper.find("p").at(0);
+        expect(textWrapper).to.have.style("font-size", "10px");
+        expect(textWrapper).to.have.style("line-height", "15px");
+    });
+
     describe("Styles", function () {
         it("Tests the default style.", function () {
             const expectedStyle = BubbleTypes.getType(undefined);
