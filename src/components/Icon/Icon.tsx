@@ -6,8 +6,8 @@ import ICON from "./constants";
 export interface IconProps {
     icon: ICON;
     style?: React.CSSProperties;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     color?: string;
 }
 
