@@ -106,7 +106,6 @@ export function dummySources(length: number): Source[] {
     let baseName: string = "Source Name";
     let baseSecret: string = "Super-Secret-Key";
     let baseMembers: any = [];
-    let baseProfile: any = undefined;
     let baseId: string = "Source-ID";
     let baseCreated: Date = new Date();
 
@@ -118,7 +117,6 @@ export function dummySources(length: number): Source[] {
             secretKey: baseSecret + i,
             id: baseId + i,
             members: baseMembers,
-            profile: baseProfile,
             created: baseCreated
         });
 

@@ -83,13 +83,14 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
 
     renderItem(index: number, key: string): JSX.Element {
         let source = this.props.sources[index];
+        const secondaryValue = (source.created) ? moment(source.created).format("MMM Do, YYYY") : " ";
         return (
             <ListItem
                 key={source.id}
                 index={index}
                 primaryValue={source.name}
                 routeTo={"/skills/" + source.id}
-                secondaryValue={moment(source.created).format("MMM Do, YYYY")} />
+                secondaryValue={secondaryValue} />
         );
     }
 
