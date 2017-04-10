@@ -6,7 +6,7 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import { Header, HeaderProps, HeaderState, Home, PageButton, PageSwap, Title } from "./Header";
+import { Header, HeaderButton, HeaderProps, HeaderState, Home, PageButton, PageSwap, Title } from "./Header";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -214,11 +214,11 @@ describe("Header", function () {
             });
 
             it("Tests the buttons are rendered properly.", function() {
-                expect(wrapper.find("Themed")).to.have.length(pages.length);
+                expect(wrapper.find(HeaderButton)).to.have.length(pages.length);
             });
 
             it ("Tests the callback", function() {
-                const buttons = wrapper.find("Themed").at(0);
+                const buttons = wrapper.find(HeaderButton).at(0);
                 buttons.simulate("click", pages[0]);
                 expect(onPageSelected).to.have.been.calledOnce;
                 expect(onPageSelected).to.have.been.calledWith(pages[0]);
