@@ -232,10 +232,12 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
   buildButtons(props: PageSwapProps) {
     const buttons = props.pageButtons;
     this.state.buttons = [];
+    let i = 0;
     for (let button of buttons) {
       this.state.buttons.push(
         (
           <HeaderButton
+            key={++i}
             button={button}
             onClick={this.handleSelected} />
         )
@@ -275,7 +277,6 @@ export class HeaderButton extends React.Component<HeaderButtonProps, any> {
       <TooltipButton
         theme={IconButtonTheme}
         accent
-        key={button.name}
         tooltip={button.name}
         icon={button.icon}
         onClick={this.handleClick} />
