@@ -37,12 +37,12 @@ describe("ConvoListPage", function () {
     let nextPage: Log[];
     let baseConversations: ConversationList;
     let fullNextPageConvoersations: ConversationList;
-    let getLogs: Sinon.SinonStub;
-    let newPage: Sinon.SinonStub;
-    let refresh: Sinon.SinonStub;
-    let onItemClick: Sinon.SinonStub;
-    let onIconClick: Sinon.SinonStub;
-    let isMobileWidth: Sinon.SinonStub;
+    let getLogs: sinon.SinonStub;
+    let newPage: sinon.SinonStub;
+    let refresh: sinon.SinonStub;
+    let onItemClick: sinon.SinonStub;
+    let onIconClick: sinon.SinonStub;
+    let isMobileWidth: sinon.SinonStub;
 
     before(function () {
         source = dummySources(1)[0];
@@ -296,7 +296,7 @@ describe("ConvoListPage", function () {
 
         let wrapper: ShallowWrapper<any, any>;
         let stubExecutor: StubExecutor;
-        let intervalStub: Sinon.SinonStub;
+        let intervalStub: sinon.SinonStub;
 
         before(function () {
             intervalStub = sinon.stub(Interval, "newExecutor", (ms: number, callback: () => void): Interval.Executor => {
@@ -349,8 +349,8 @@ class StubExecutor implements Interval.Executor {
     callback: () => void;
     ms: number;
 
-    start: Sinon.SinonStub;
-    end: Sinon.SinonStub;
+    start: sinon.SinonStub;
+    end: sinon.SinonStub;
 
     constructor(ms: number, callback: () => void) {
         this.callback = callback;

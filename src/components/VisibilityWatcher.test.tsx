@@ -22,9 +22,9 @@ describe("VisibilityWatcher", function () {
 
         jsdom();
 
-        let addEventListener: Sinon.SinonStub;
-        let removeEventListener: Sinon.SinonStub;
-        let onChangeListener: Sinon.SinonStub;
+        let addEventListener: sinon.SinonStub;
+        let removeEventListener: sinon.SinonStub;
+        let onChangeListener: sinon.SinonStub;
         let wrapper: ReactWrapper<any, any>;
 
         before(function () {

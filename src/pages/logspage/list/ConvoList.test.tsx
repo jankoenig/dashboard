@@ -16,7 +16,7 @@ let expect = chai.expect;
 
 describe("ConvoList", function () {
 
-    let noLogsRenderer: Sinon.SinonStub;
+    let noLogsRenderer: sinon.SinonStub;
 
     beforeEach(function () {
         noLogsRenderer = sinon.stub().returns((<p> No Logs Found </p>));
@@ -41,8 +41,8 @@ describe("ConvoList", function () {
             let wrapper: ShallowWrapper<any, any>;
             let logs: Log[];
             let conversations: ConversationList;
-            let onClick: Sinon.SinonSpy;
-            let onScroll: Sinon.SinonSpy;
+            let onClick: sinon.SinonSpy;
+            let onScroll: sinon.SinonSpy;
 
             before(function () {
                 logs = dummyLogs(4);
@@ -115,7 +115,7 @@ describe("ConvoList", function () {
         let logs = dummyLogs(4);
         let conversations = ConversationList.fromLogs(logs);
 
-        let onClick: Sinon.SinonSpy;
+        let onClick: sinon.SinonSpy;
         let wrapper: ShallowWrapper<ConvoListProps, ConvoListState>;
 
         describe("when true", function () {

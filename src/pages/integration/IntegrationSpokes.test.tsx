@@ -24,10 +24,10 @@ const user = new User({ email: "test@testMctest.com" });
 describe("IntegrationSpokes", function () {
     describe("Renders", function () {
         let wrapper: ShallowWrapper<any, any>;
-        // let onChange: Sinon.SinonStub;
-        let onSaved: Sinon.SinonStub;
+        // let onChange: sinon.SinonStub;
+        let onSaved: sinon.SinonStub;
         let savedState: any;
-        let prefetch: Sinon.SinonStub;
+        let prefetch: sinon.SinonStub;
 
         before(function () {
             onSaved = sinon.stub();
@@ -205,9 +205,9 @@ describe("IntegrationSpokes", function () {
 
     describe("Saving Spokes", function () {
         let wrapper: ShallowWrapper<any, any>;
-        let onSaved: Sinon.SinonStub;
-        let prefetch: Sinon.SinonStub;
-        let saveSpoke: Sinon.SinonStub;
+        let onSaved: sinon.SinonStub;
+        let prefetch: sinon.SinonStub;
+        let saveSpoke: sinon.SinonStub;
 
         before(function () {
             onSaved = sinon.stub();

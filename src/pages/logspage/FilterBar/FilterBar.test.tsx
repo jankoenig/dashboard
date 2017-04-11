@@ -19,7 +19,7 @@ chai.use(require("chai-datetime"));
 const expect = chai.expect;
 
 describe("Filter Bar", function () {
-    let onFilter: Sinon.SinonSpy;
+    let onFilter: sinon.SinonSpy;
     let logQuery: DateRange;
     let wrapper: ShallowWrapper<FilterProps, FilterState>;
 

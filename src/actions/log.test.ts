@@ -51,7 +51,7 @@ describe("Log Actions", function () {
             });
 
             describe("Success", function () {
-                let serviceStub: Sinon.SinonStub;
+                let serviceStub: sinon.SinonStub;
 
                 before(function () {
                     serviceStub = sinon.stub(LogsService, "getLogs").returns(new Promise((resolve, reject) => {
@@ -99,7 +99,7 @@ describe("Log Actions", function () {
 
             describe("Failure", function () {
 
-                let serviceStub: Sinon.SinonStub;
+                let serviceStub: sinon.SinonStub;
 
                 before(function () {
                     serviceStub = sinon.stub(LogsService, "getLogs").returns(new Promise((resolve, reject) => {
@@ -150,7 +150,7 @@ describe("Log Actions", function () {
             });
 
             describe("Success", function () {
-                let serviceStub: Sinon.SinonStub;
+                let serviceStub: sinon.SinonStub;
 
                 let originalQuery: LogQueryEvent;
 
@@ -245,7 +245,7 @@ describe("Log Actions", function () {
             });
 
             describe("Failure", function () {
-                let serviceStub: Sinon.SinonStub;
+                let serviceStub: sinon.SinonStub;
 
                 let originalQuery: LogQueryEvent;
 
@@ -312,7 +312,7 @@ describe("Log Actions", function () {
             });
 
             describe("Success", function () {
-                let serviceStub: Sinon.SinonStub;
+                let serviceStub: sinon.SinonStub;
 
                 let originalQueryEvent: LogQueryEvent;
 
@@ -415,7 +415,7 @@ describe("Log Actions", function () {
             });
 
             describe("Failure", function () {
-                let serviceStub: Sinon.SinonStub;
+                let serviceStub: sinon.SinonStub;
 
                 let originalQuery: LogQueryEvent;
 
@@ -462,7 +462,7 @@ describe("Log Actions", function () {
             let initialState: any;
             let store: any;
             let source: Source;
-            let serviceStub: Sinon.SinonStub;
+            let serviceStub: sinon.SinonStub;
 
             before(function () {
                 source = new Source({

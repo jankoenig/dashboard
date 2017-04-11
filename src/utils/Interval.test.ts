@@ -4,8 +4,8 @@ import * as sinon from "sinon";
 import Interval from "./Interval";
 
 describe("Interval", function () {
-    let clock: Sinon.SinonFakeTimers;
-    let callback: Sinon.SinonStub;
+    let clock: sinon.SinonFakeTimers;
+    let callback: sinon.SinonStub;
 
     let interval: Interval.Executor;
 
@@ -22,8 +22,8 @@ describe("Interval", function () {
 
     afterEach(function() {
         clock.reset();
-        (clock.setInterval as Sinon.SinonSpy).reset();
-        (clock.clearInterval as Sinon.SinonSpy).reset();
+        (clock.setInterval as sinon.SinonSpy).reset();
+        (clock.clearInterval as sinon.SinonSpy).reset();
         callback.reset();
     });
 
@@ -43,7 +43,7 @@ describe("Interval", function () {
         interval.end();
 
         expect(clock.clearInterval).to.be.calledOnce;
-        expect(clock.clearInterval).to.be.calledWith((clock.setInterval as Sinon.SinonSpy).returnValues[0]);
+        expect(clock.clearInterval).to.be.calledWith((clock.setInterval as sinon.SinonSpy).returnValues[0]);
     });
 
     it("Does nothing if you call end before calling start.", function() {

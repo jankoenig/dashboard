@@ -16,7 +16,7 @@ let expect = chai.expect;
 describe("Notification Action", function() {
     describe("displaySnackbar", function() {
 
-        let clock: Sinon.SinonFakeTimers;
+        let clock: sinon.SinonFakeTimers;
 
         beforeEach(function () {
             clock = sinon.useFakeTimers();

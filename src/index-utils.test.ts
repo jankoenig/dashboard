@@ -15,7 +15,7 @@ const mockStore = configureMockStore(middlewares);
 describe("Unit tests for the index-utils.ts", function () {
 
     let sources: Source[];
-    let getSourceSpy: Sinon.SinonStub;
+    let getSourceSpy: sinon.SinonStub;
 
     before(function () {
         sources = dummySources(5);

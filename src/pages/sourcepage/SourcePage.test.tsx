@@ -23,12 +23,12 @@ describe("Source Page", function () {
     let source = dummySources(1)[0];
 
     describe("Initial load", function () {
-        let getLogs: Sinon.SinonStub;
-        let getTimeSummary: Sinon.SinonStub;
-        let getIntentSummary: Sinon.SinonStub;
-        let getSourceSummary: Sinon.SinonStub;
-        let goHome: Sinon.SinonStub;
-        let removeSource: Sinon.SinonStub;
+        let getLogs: sinon.SinonStub;
+        let getTimeSummary: sinon.SinonStub;
+        let getIntentSummary: sinon.SinonStub;
+        let getSourceSummary: sinon.SinonStub;
+        let goHome: sinon.SinonStub;
+        let removeSource: sinon.SinonStub;
 
         before(function () {
             getLogs = sinon.stub(LogService, "getLogs").returns(Promise.resolve(logs));
@@ -110,8 +110,8 @@ describe("Source Page", function () {
     });
 
     describe("Delete source", function () {
-        let goHome: Sinon.SinonStub;
-        let removeSource: Sinon.SinonStub;
+        let goHome: sinon.SinonStub;
+        let removeSource: sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         describe("Successful deletes", function () {

@@ -13,7 +13,7 @@ chai.use(sinonChai);
 let expect = chai.expect;
 
 interface TestNameRule extends SourceForm.NameRule {
-    errorMessage: Sinon.SinonSpy;
+    errorMessage: sinon.SinonSpy;
 }
 
 describe("SourceForm", function () {
@@ -59,7 +59,7 @@ describe("SourceForm", function () {
         let positiveValidator: TestNameRule;
         let threeLengthValidator: TestNameRule;
         let noNumberValidator: TestNameRule;
-        let createSource: Sinon.SinonSpy;
+        let createSource: sinon.SinonSpy;
 
         beforeEach(function () {
             positiveValidator = {

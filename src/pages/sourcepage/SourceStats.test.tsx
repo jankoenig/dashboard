@@ -72,7 +72,7 @@ describe("SourceStats", function () {
     describe("Loading", function () {
         let start: moment.Moment;
         let end: moment.Moment;
-        let statsService: Sinon.SinonStub;
+        let statsService: sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
@@ -156,7 +156,7 @@ describe("SourceStats", function () {
     describe("Error condition", function () {
         let start: moment.Moment;
         let end: moment.Moment;
-        let timeService: Sinon.SinonStub;
+        let timeService: sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
@@ -190,7 +190,7 @@ describe("SourceStats", function () {
     describe("Item Swapping", function () {
         let start: moment.Moment;
         let end: moment.Moment;
-        let statsService: Sinon.SinonStub;
+        let statsService: sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {

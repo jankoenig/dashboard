@@ -13,7 +13,7 @@ const expect = chai.expect;
 
 describe("Dropdown", function () {
 
-    let onClick: Sinon.SinonStub;
+    let onClick: sinon.SinonStub;
     let conversation: Conversation;
 
     before(function () {

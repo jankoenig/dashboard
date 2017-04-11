@@ -17,7 +17,7 @@ describe("List", function() {
 
         jsdom();
 
-        let itemRenderer: Sinon.SinonStub;
+        let itemRenderer: sinon.SinonStub;
 
         beforeEach(function() {
             itemRenderer = sinon.stub().returns((<div className="listItem"/>));
@@ -34,7 +34,7 @@ describe("List", function() {
     });
 
     describe("Shallow Render", function() {
-        let itemRenderer: Sinon.SinonStub;
+        let itemRenderer: sinon.SinonStub;
         let wrapper: ShallowWrapper<ListProps, any>;
 
         beforeEach(function() {

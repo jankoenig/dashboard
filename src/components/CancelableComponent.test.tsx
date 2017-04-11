@@ -153,7 +153,7 @@ class CancelableObj implements Cancelable {
         this.cancel.reset();
     }
 
-    cancel: Sinon.SinonStub;
+    cancel: sinon.SinonStub;
 }
 
 function delayPromise(ms: number, returnObj: any): Promise<any> {

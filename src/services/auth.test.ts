@@ -43,7 +43,7 @@ describe("Auth ts not mocked", function () {
 
     describe("Log in with github.", function () {
 
-        let utilsStub: Sinon.SinonStub;
+        let utilsStub: sinon.SinonStub;
 
         before(function () {
             localStorage = new MemoryCacheStorage();

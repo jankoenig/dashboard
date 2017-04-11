@@ -5,7 +5,7 @@ import DateUtil from "./date";
 
 describe("DateUtil", function () {
     describe("daysAgo", function () {
-        let clock: Sinon.SinonFakeTimers;
+        let clock: sinon.SinonFakeTimers;
         beforeEach(function() {
             clock = sinon.useFakeTimers(new Date(1986, 6, 19, 14).getTime());
         });
@@ -20,7 +20,7 @@ describe("DateUtil", function () {
         });
     });
     describe("hoursAgo", function () {
-        let clock: Sinon.SinonFakeTimers;
+        let clock: sinon.SinonFakeTimers;
         beforeEach(function() {
             clock = sinon.useFakeTimers(new Date(1986, 6, 19, 14).getTime());
         });

@@ -283,8 +283,8 @@ describe("Source Service", function () {
                     .then(function (source: SourceModel.Source) {
                         // In order for these to be set, the firebase url "/sources/<sourceID>" must be set to "source" (checked above)
                         // Immediately following the setting, the firebase url "users/<userID>/sources/<sourceID>" must be set to "owner"
-                        const childArgs = (ref.child as Sinon.SinonStub).args;
-                        const setargs = (ref.set as Sinon.SinonStub).args;
+                        const childArgs = (ref.child as sinon.SinonStub).args;
+                        const setargs = (ref.set as sinon.SinonStub).args;
                         // Check the first setting.
                         expect(childArgs[0][0]).to.equal("sources");
                         expect(childArgs[1][0]).to.equal("test-source-bhjas3");
@@ -302,8 +302,8 @@ describe("Source Service", function () {
     });
 
     describe("Tests the \"deleteSource\" function.", function () {
-        let childStub: Sinon.SinonStub;
-        let setStub: Sinon.SinonStub;
+        let childStub: sinon.SinonStub;
+        let setStub: sinon.SinonStub;
         let source = generateSourceProps();
 
         beforeEach(function () {
@@ -391,7 +391,7 @@ describe("Source Service", function () {
          * going to put that in to the stub for each available source.
          */
         beforeEach(function () {
-            let mainStub: Sinon.SinonStub = sinon.stub().withArgs("/sources/").returns(errorResponsePromise());
+            let mainStub: sinon.SinonStub = sinon.stub().withArgs("/sources/").returns(errorResponsePromise());
             for (let i = 0; i < 10; i++) {
                 let subRef = <remoteservice.database.Reference>{};
                 subRef.once = sinon.stub().returns(successResponseSourcePromise("TestSourceId" + i));
@@ -407,7 +407,7 @@ describe("Source Service", function () {
             let subRef = <remoteservice.database.Reference>{};
             subRef.once = sinon.stub().returns(successGetOwnedSourcesPromise());
 
-            (<Sinon.SinonStub>ref.child).onFirstCall().returns(subRef);
+            (<sinon.SinonStub>ref.child).onFirstCall().returns(subRef);
 
             return SourceService.getSourcesObj(mockAuth, db).then(function (sources: SourceModel.Source[]) {
                 expect(ref.child).to.be.callCount(11);
@@ -420,7 +420,7 @@ describe("Source Service", function () {
             let subRef = <remoteservice.database.Reference>{};
             subRef.once = sinon.stub().returns(errorResponsePromise());
 
-            (<Sinon.SinonStub>ref.child).returns(subRef);
+            (<sinon.SinonStub>ref.child).returns(subRef);
 
             return SourceService.getSourcesObj(mockAuth, db).catch(function (retVal: any) {
                 expect(ref.child).to.be.callCount(1);

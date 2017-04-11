@@ -22,7 +22,7 @@ const tooltip = "Tools";
 
 describe("ConvoIcon", function () {
 
-    let onClick: Sinon.SinonStub;
+    let onClick: sinon.SinonStub;
 
     before(function () {
         onClick = sinon.stub();

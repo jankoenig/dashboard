@@ -51,7 +51,7 @@ describe("Source Actions", function () {
         });
 
         describe("deleteSource", function () {
-            let deleteSource: Sinon.SinonStub;
+            let deleteSource: sinon.SinonStub;
 
             describe("Success", function () {
                 before(function () {
