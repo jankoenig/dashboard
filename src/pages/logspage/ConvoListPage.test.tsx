@@ -1,5 +1,6 @@
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
+import { Moment } from "moment";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
@@ -143,8 +144,8 @@ describe("ConvoListPage", function () {
                     wrapper.setProps({ source: source });
                 }).then(function () {
                     const logQuery: LogQuery = getLogs.args[0][0];
-                    expect((logQuery.startTime as moment.Moment).toDate()).to.equalDate(dateFilter.startDate);
-                    expect((logQuery.endTime as moment.Moment).toDate()).to.equalDate(dateFilter.endDate);
+                    expect((logQuery.startTime as Moment).toDate()).to.equalDate(dateFilter.startDate);
+                    expect((logQuery.endTime as Moment).toDate()).to.equalDate(dateFilter.endDate);
                 });
             });
 

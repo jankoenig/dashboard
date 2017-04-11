@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 
 import { Cell, Grid } from "../../components/Grid";
