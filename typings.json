@@ -3,7 +3,6 @@
     "chai": "registry:dt/chai#3.4.0+20160601211834",
     "chai-enzyme": "registry:dt/chai-enzyme#0.5.0+20161121205806",
     "enzyme": "registry:dt/enzyme#2.4.1+20161004164857",
-    "fetch-mock": "registry:dt/fetch-mock#5.0.0+20160829142453",
     "node": "registry:dt/node#6.0.0+20161110151007",
     "object-assign": "registry:dt/object-assign#4.0.1+20161006140353",
     "react": "registry:dt/react#0.14.0+20160927082313",
