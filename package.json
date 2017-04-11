@@ -39,6 +39,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/bluebird": "^3.5.2",
+    "@types/d3-scale": "^1.0.8",
+    "@types/d3-time": "^1.0.5",
     "@types/isomorphic-fetch": "0.0.33",
     "@types/mocha": "^2.2.40",
     "browser-sync": "^2.18.8",
@@ -86,8 +88,8 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "classnames": "^2.2.5",
-    "d3-scale": "^1.0.4",
-    "d3-time": "^1.0.4",
+    "d3-scale": "^1.0.5",
+    "d3-time": "^1.0.6",
     "es6-promise": "^4.0.5",
     "getmdl-select": "^1.0.4",
     "history": "3.2.1",
