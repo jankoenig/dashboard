@@ -24,7 +24,7 @@ export function setUser(user: User | undefined): SetUser {
 }
 
 export interface SuccessCallback {
-  loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void;
+  readonly loginSuccess: (dispatch: Redux.Dispatch<any>, user: User) => void;
 }
 
 function loginMethod(dispatch: Redux.Dispatch<any>, loginStrat: () => Promise<User>, redirectStrat?: SuccessCallback): Promise<User> {

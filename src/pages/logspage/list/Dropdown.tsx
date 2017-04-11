@@ -8,9 +8,9 @@ import DefaultConvo from "../../../utils/DefaultConvo";
 import Noop from "../../../utils/Noop";
 
 interface DropdownProps {
-    conversation: Conversation;
-    active: boolean;
-    onClick?: () => void;
+    readonly conversation: Conversation;
+    readonly active: boolean;
+    readonly onClick?: () => void;
 }
 
 interface DropdownState {
@@ -44,8 +44,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 export default Dropdown;
 
 interface ActualProps {
-    conversation: Conversation;
-    onClick: (conversation: Conversation) => void;
+    readonly conversation: Conversation;
+    readonly onClick: (conversation: Conversation) => void;
 }
 
 class ActualComponent extends React.Component<ActualProps, any> {

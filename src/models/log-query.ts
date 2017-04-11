@@ -3,10 +3,10 @@ import DateUtil from "../utils/date";
 import Source from "./source";
 
 export interface LogQueryProperties {
-    startTime?: Date | moment.Moment;
-    endTime?: Date| moment.Moment;
-    limit?: number;
-    source: Source;
+    readonly startTime?: Date | moment.Moment;
+    readonly endTime?: Date| moment.Moment;
+    readonly limit?: number;
+    readonly source: Source;
 }
 
 export default class LogQuery implements LogQueryProperties {

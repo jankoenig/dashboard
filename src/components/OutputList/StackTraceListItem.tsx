@@ -8,11 +8,11 @@ import ListItemMessage from "./ListItemMessage";
 const style = require("./StackTraceListItemStyle.scss");
 
 interface StackTraceListItemProps {
-    stackTrace: StackTrace;
+    readonly stackTrace: StackTrace;
 }
 
 interface StackTraceListItemState {
-    displayElements: boolean;
+    readonly displayElements: boolean;
 }
 
 class StackTraceListItem extends React.Component<StackTraceListItemProps, StackTraceListItemState> {
@@ -33,8 +33,7 @@ class StackTraceListItem extends React.Component<StackTraceListItemProps, StackT
     }
 
     onClick(event: React.MouseEvent) {
-        this.state.displayElements = !this.state.displayElements;
-        this.setState(this.state);
+        this.setState({ displayElements: !this.state.displayElements });
     }
 
     render() {

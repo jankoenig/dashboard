@@ -5,12 +5,12 @@ import Noop from "../utils/Noop";
 export type VISIBLITY_STATE = "hidden" | "visible";
 
 interface VisibilityWatcherProps {
-    style?: React.CSSProperties;
-    onChange?: (visibilityState: VISIBLITY_STATE) => void;
+    readonly style?: React.CSSProperties;
+    readonly onChange?: (visibilityState: VISIBLITY_STATE) => void;
 }
 
 interface VisibilityWatcherState {
-    isVisible: boolean;
+    readonly isVisible: boolean;
 }
 
 export class VisibilityWatcher extends React.Component<VisibilityWatcherProps, VisibilityWatcherState> {

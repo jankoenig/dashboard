@@ -15,10 +15,11 @@ describe("Source", function () {
 
         it("sets all properties", function () {
             let created = new Date();
-            let members: Members = {};
-            members["user1"] = "ABCD";
-            members["user2"] = "EFGH";
-            members["user3"] = "IJKL";
+            let members: Members = {
+                "user1": "ABCD",
+                "user2": "EFGH",
+                "user3": "IJKL"
+            };
 
             let source = new Source({
                 name: "source",

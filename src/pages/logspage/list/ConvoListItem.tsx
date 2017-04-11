@@ -6,17 +6,17 @@ import ConvoPill from "./ConvoPill";
 import Dropdown from "./Dropdown";
 
 interface ConvoListItemProps {
-    conversation: Conversation;
-    onClick?: (conversation: Conversation) => void;
-    onIconClick?: (conversation: Conversation) => void;
-    iconTooltip?: string;
-    iconStyle?: React.CSSProperties;
-    active?: boolean;
-    showInteractionOnActive?: boolean;
+    readonly conversation: Conversation;
+    readonly onClick?: (conversation: Conversation) => void;
+    readonly onIconClick?: (conversation: Conversation) => void;
+    readonly iconTooltip?: string;
+    readonly iconStyle?: React.CSSProperties;
+    readonly active?: boolean;
+    readonly showInteractionOnActive?: boolean;
 }
 
 interface ConvoListItemState {
-    dropDownActive: boolean;
+    readonly dropDownActive: boolean;
 }
 
 export default class ConvoListItem extends React.Component<ConvoListItemProps, ConvoListItemState> {
@@ -64,8 +64,7 @@ export default class ConvoListItem extends React.Component<ConvoListItemProps, C
     componentWillReceiveProps(props: ConvoListItemProps, context: any) {
         const active = props.showInteractionOnActive && props.active;
         if (this.state.dropDownActive !== active) {
-            this.state.dropDownActive = active;
-            this.setState(this.state);
+            this.setState({ dropDownActive: active });
         }
     }
 

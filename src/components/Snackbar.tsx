@@ -2,13 +2,13 @@ import * as classNames from "classnames";
 import * as React from "react";
 
 export interface SnackbarProps {
-    text: string;
+    readonly text: string;
 };
 
 interface SnackbarState {
     // the internal state for showing or hiding is for
     // when the user dismisses the snackbar manually
-    show: boolean;
+    readonly show: boolean;
 }
 
 export default class Snackbar extends React.Component<SnackbarProps, SnackbarState> {

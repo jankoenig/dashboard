@@ -6,7 +6,7 @@ Bluebird.config({
 });
 
 export interface Cancelable {
-    cancel: () => void;
+    readonly cancel: () => void;
 }
 
 export interface PromiseComponentProps {

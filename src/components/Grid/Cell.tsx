@@ -4,18 +4,18 @@ import * as React from "react";
 export type CellAlignment = "top" | "middle" | "bottom" | "stretch";
 
 export interface CellProps {
-    align?: CellAlignment;
-    col?: number;
-    phone?: number;
-    tablet?: number;
-    offset?: number;
-    offsetDesktop?: number;
-    offsetTablet?: number;
-    offsetPhone?: number;
-    hideDesktop?: boolean;
-    hidePhone?: boolean;
-    hideTablet?: boolean;
-    style?: React.CSSProperties;
+    readonly align?: CellAlignment;
+    readonly col?: number;
+    readonly phone?: number;
+    readonly tablet?: number;
+    readonly offset?: number;
+    readonly offsetDesktop?: number;
+    readonly offsetTablet?: number;
+    readonly offsetPhone?: number;
+    readonly hideDesktop?: boolean;
+    readonly hidePhone?: boolean;
+    readonly hideTablet?: boolean;
+    readonly style?: React.CSSProperties;
 };
 
 /**

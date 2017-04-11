@@ -5,11 +5,11 @@ export interface FilterResult<T> {
     /**
      * The results of the filter.
      */
-    result: T[];
+    readonly result: T[];
     /**
      * True if the items were filtered or false if it's the same items.
      */
-    changed: boolean;
+    readonly changed: boolean;
 }
 
 /**

@@ -3,11 +3,11 @@ import * as React from "react";
 import FormInput, { FormInputTheme } from "./FormInput";
 
 interface DateTileProps {
-    label: string;
-    value: string;
-    theme?: FormInputTheme;
-    hidden?: boolean;
-    showable?: boolean;
+    readonly  label: string;
+    readonly value: string;
+    readonly theme?: FormInputTheme;
+    readonly hidden?: boolean;
+    readonly showable?: boolean;
 }
 
 export class DataTile extends React.Component<DateTileProps, any> {

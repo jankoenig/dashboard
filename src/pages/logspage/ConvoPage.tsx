@@ -18,7 +18,7 @@ const ACTIVE_ICON_STYLE: React.CSSProperties = {
 };
 
 interface ConvoPageStateProps {
-    source: Source;
+    readonly source: Source;
 }
 
 interface ConvoPageDispatchProps {
@@ -28,13 +28,13 @@ interface ConvoPageProps extends ConvoPageStateProps, ConvoPageDispatchProps {
 }
 
 interface ConvoPageState {
-    dateRange: DateRange;
-    filter: CompositeFilter<Conversation>;
-    refreshOn: boolean;
-    refreshDisabled: boolean;
-    savedRefreshState: boolean;
-    iconStyle: React.CSSProperties;
-    iconTooltip: string;
+    readonly dateRange: DateRange;
+    readonly filter: CompositeFilter<Conversation>;
+    readonly refreshOn: boolean;
+    readonly refreshDisabled: boolean;
+    readonly savedRefreshState: boolean;
+    readonly iconStyle: React.CSSProperties;
+    readonly iconTooltip: string;
 }
 
 function mapStateToProps(state: State.All): ConvoPageStateProps {
@@ -78,41 +78,31 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
     }
 
     handleFilter(filter: Filter<Conversation>) {
-        this.state.filter = this.state.filter.copyAndAddOrReplace(filter);
-        this.setState(this.state);
+        this.setState({ filter: this.state.filter.copyAndAddOrReplace(filter) } as ConvoPageState);
     }
 
     handleDateFilter(filter: DateFilter) {
         const endIsToday = isToday(filter.endDate);
-        this.state.dateRange = { startTime: filter.startDate, endTime: filter.endDate };
-        this.state.refreshOn = endIsToday;
-        this.state.refreshDisabled = !endIsToday;
         this.handleFilter(filter);
+        this.setState({ dateRange: { startTime: filter.startDate, endTime: filter.endDate }, refreshOn: endIsToday, refreshDisabled: !endIsToday } as ConvoPageState);
     }
 
     handleIconClick(convo: Conversation) {
         const alreadyFilteringUser = this.state.iconStyle !== undefined;
         if (alreadyFilteringUser) {
-            this.state.iconStyle = undefined;
-            this.state.iconTooltip = TOOLTIP_DEACTIVE;
-            this.state.filter = this.state.filter.copyAndRemove(UserIDFilter.type);
-            this.setState(this.state);
+            this.setState({ iconStyle: undefined, iconTooltip: TOOLTIP_DEACTIVE, filter: this.state.filter.copyAndRemove(UserIDFilter.type) } as ConvoPageState);
         } else {
-            this.state.iconStyle = ACTIVE_ICON_STYLE;
-            this.state.iconTooltip = TOOLTIP_ACTIVE;
-            this.handleFilter(new UserIDFilter(convo.userId, true)); // This method will take care of setting state.
+            this.setState({ iconStyle: ACTIVE_ICON_STYLE, iconTooltip: TOOLTIP_ACTIVE } as ConvoPageState);
+            this.handleFilter(new UserIDFilter(convo.userId, true));
         }
     }
 
     handleLiveUpdate(enabled: boolean) {
-        this.state.refreshOn = enabled;
-        this.state.savedRefreshState = enabled;
-        this.setState(this.state);
+        this.setState({ refreshOn: enabled, savedRefreshState: enabled } as ConvoPageState);
     }
 
     handleVisiblityChange(state: VISIBLITY_STATE) {
-        this.state.refreshOn = state === "visible" && this.state.savedRefreshState;
-        this.setState(this.state);
+        this.setState({ refreshOn: state === "visible" && this.state.savedRefreshState } as ConvoPageState);
     }
 
     render() {

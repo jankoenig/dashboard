@@ -3,12 +3,12 @@ import * as React from "react";
 import browser from "../utils/browser";
 
 export interface Dimensions {
-    width: number;
-    height: number;
+    readonly width: number;
+    readonly height: number;
 }
 
 export interface MeasureProps {
-    onMeasure: (newDimens: Dimensions) => void;
+    readonly onMeasure: (newDimens: Dimensions) => void;
 }
 
 interface MeasureState { }

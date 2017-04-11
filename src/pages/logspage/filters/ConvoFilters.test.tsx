@@ -410,9 +410,7 @@ describe("Filters.tsx", function () {
         });
 
         it("Tests that the user filter does match a defined if filtering for only undefined and get an undefined.", function() {
-            const copyConvo = {...convo};
-            copyConvo.userId = undefined;
-
+            const copyConvo = {...convo, ...{ userId: undefined }};
             const filter: UserIDFilter = new UserIDFilter(undefined, true);
             expect(filter.filter(copyConvo)).to.be.true;
         });

@@ -8,13 +8,13 @@ const HomeTheme = require("./home-theme.scss");
 const TooltipButton = Tooltip(IconButton);
 
 interface GoogleHomeProps {
-    theme?: string;
-    tooltip?: string;
-    style?: React.CSSProperties;
-    width?: string;
-    height?: string;
-    color?: string;
-    onClick?: () => void;
+    readonly theme?: string;
+    readonly tooltip?: string;
+    readonly style?: React.CSSProperties;
+    readonly width?: string;
+    readonly height?: string;
+    readonly color?: string;
+    readonly onClick?: () => void;
 }
 
 export default class GoogleHome extends React.Component<GoogleHomeProps, any> {

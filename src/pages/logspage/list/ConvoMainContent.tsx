@@ -8,12 +8,12 @@ import TimeTextComponent from "./ConvoTimeTextComponent";
 const noobj = {};
 
 interface MainContentProps {
-    conversation: Conversation;
-    primaryContentStyle?: React.CSSProperties;
-    subtitleStyle?: React.CSSProperties;
-    iconStyle?: React.CSSProperties;
-    onIconClick?: () => void;
-    iconTooltip?: string;
+    readonly conversation: Conversation;
+    readonly primaryContentStyle?: React.CSSProperties;
+    readonly subtitleStyle?: React.CSSProperties;
+    readonly iconStyle?: React.CSSProperties;
+    readonly onIconClick?: () => void;
+    readonly iconTooltip?: string;
 }
 
 class MainContentComponent extends React.Component<MainContentProps, any> {

@@ -9,9 +9,9 @@ import { NAVY_BLUE, OFF_WHITE } from "../../utils/colors";
 const DEFAULT_TEXT_FORMAT = "MMM Do, YYYY";
 
 interface SourceHeaderProps {
-    source: Source;
-    rootStyle?: React.CSSProperties;
-    tileColor?: string;
+    readonly source: Source;
+    readonly rootStyle?: React.CSSProperties;
+    readonly tileColor?: string;
 }
 
 interface SourceHeaderState {

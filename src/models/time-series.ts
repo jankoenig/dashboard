@@ -1,12 +1,12 @@
 
 
 export interface TimeSeriable {
-    timestamp: Date;
+    readonly timestamp: Date;
 }
 
 export interface TimeSeriesDatumProps {
-    date: Date;
-    data: TimeSeriable[];
+    readonly date: Date;
+    readonly data: TimeSeriable[];
 }
 
 export class TimeSeriesDatum {

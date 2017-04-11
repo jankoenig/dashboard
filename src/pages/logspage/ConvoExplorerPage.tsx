@@ -7,15 +7,15 @@ import ConvoViewPage from "./ConvoViewPage";
 import { CompositeFilter } from "./filters/Filters";
 
 interface ConvoExplorerPageProps {
-    filter?: CompositeFilter<Conversation>;
-    refreshOn?: boolean;
-    onIconClick?: (conversation: Conversation) => void;
-    iconStyle?: React.CSSProperties;
-    iconTooltip?: string;
+    readonly filter?: CompositeFilter<Conversation>;
+    readonly refreshOn?: boolean;
+    readonly onIconClick?: (conversation: Conversation) => void;
+    readonly iconStyle?: React.CSSProperties;
+    readonly iconTooltip?: string;
 }
 
 interface ConvoExplorerPageState {
-    selectedConvo: Conversation;
+    readonly selectedConvo: Conversation;
 }
 
 export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, ConvoExplorerPageState> {
@@ -31,8 +31,7 @@ export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, C
     }
 
     handleItemClick(convo: Conversation) {
-        this.state.selectedConvo = convo;
-        this.setState(this.state);
+        this.setState({ selectedConvo: convo });
     }
 
     render() {

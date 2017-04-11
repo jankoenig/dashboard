@@ -9,7 +9,7 @@ export type LogQueryEvent = {
 };
 
 export type LogMap = {
-    [sourceId: string]: LogQueryEvent;
+    readonly [sourceId: string]: LogQueryEvent;
 };
 
 export type LogState = {

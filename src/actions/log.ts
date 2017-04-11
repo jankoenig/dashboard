@@ -6,9 +6,9 @@ import { LogQueryEvent } from "../reducers/log";
 import service from "../services/log";
 
 export interface PageResults {
-    newLogs: Log[];
-    oldLogs: Log[];
-    totalLogs: Log[];
+    readonly newLogs: Log[];
+    readonly oldLogs: Log[];
+    readonly totalLogs: Log[];
 }
 
 export type SetLogsAction = {

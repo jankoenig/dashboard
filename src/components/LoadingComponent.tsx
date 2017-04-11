@@ -14,8 +14,8 @@ export interface LoadingComponentProps {
 }
 
 export interface LoadingComponentState<DATA> {
-    data: DATA;
-    state: LoadingState;
+    readonly data: DATA;
+    readonly state: LoadingState;
 }
 
 /**

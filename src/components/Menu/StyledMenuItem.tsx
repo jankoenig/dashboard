@@ -5,7 +5,7 @@ import { MenuItem, MenuItemProps } from "react-toolbox/lib/menu";
 const MenuTheme = require("../../themes/menu.scss");
 
 export interface StyledMenuItemProps extends MenuItemProps {
-    to?: string;
+    readonly to?: string;
 }
 
 interface StyledMenuItemState {

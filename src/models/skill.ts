@@ -1,4 +1,3 @@
-
 export interface SkillProperties {
     readonly id: string;
     readonly displayName: string;

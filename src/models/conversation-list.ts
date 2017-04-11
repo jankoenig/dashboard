@@ -1,14 +1,10 @@
-import Conversation, { ConversationProperties, createConvo } from "./conversation";
+import Conversation, { createConvo } from "./conversation";
 import Log from "./log";
 import Output from "./output";
 import StackTrace from "./stack-trace";
 
 export type ConversationMap = {
-    [id: string]: Conversation
-};
-
-type PropsMap = {
-    [id: string]: ConversationProperties;
+    readonly [id: string]: Conversation
 };
 
 class ConversationList extends Array<Conversation> {
@@ -16,7 +12,7 @@ class ConversationList extends Array<Conversation> {
     static fromLogs(logs: Log[]): ConversationList {
 
         let conversations = new ConversationList();
-        let conversationMap: PropsMap = {};
+        let conversationMap: any = {};
 
         if (logs) {
             for (let log of logs) {
@@ -27,14 +23,18 @@ class ConversationList extends Array<Conversation> {
                 }
 
                 if (log.tags) {
+                    let obj: any = {};
                     // Assuming you can't have both.  Else it's wrong if that's the case.
                     if (log.tags.indexOf("request") > -1) {
-                        conversationMap[log.transaction_id].request = log;
+                        obj = {...obj, ...{ request: log }};
                     }
 
                     if (log.tags.indexOf("response") > -1) {
-                        conversationMap[log.transaction_id].response = log;
+                        obj = {... obj, ...{ response: log }};
                     }
+
+                    const convo = conversationMap[log.transaction_id];
+                    conversationMap[log.transaction_id] = {...convo, ...obj};
                 }
 
                 if (typeof log.payload === "string") {

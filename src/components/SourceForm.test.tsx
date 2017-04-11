@@ -13,7 +13,7 @@ chai.use(sinonChai);
 let expect = chai.expect;
 
 interface TestNameRule extends SourceForm.NameRule {
-    errorMessage: Sinon.SinonSpy;
+    readonly errorMessage: Sinon.SinonSpy;
 }
 
 describe("SourceForm", function () {

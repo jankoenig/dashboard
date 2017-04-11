@@ -3,16 +3,16 @@ import * as React from "react";
 import MDLComponent from "../MDLComponent";
 
 export interface RippleContainerProps {
-    className?: string;
-    style?: React.CSSProperties;
+    readonly className?: string;
+    readonly style?: React.CSSProperties;
 }
 
 /**
  * Keeping the items cached in style so they're not calculated on every render.
  */
 interface RippleContainerState {
-    myClasses: string;
-    myStyle: React.CSSProperties;
+    readonly myClasses: string;
+    readonly myStyle: React.CSSProperties;
 }
 
 /**

@@ -2,9 +2,9 @@ import * as classNames from "classnames";
 import * as React from "react";
 
 export interface GridProps {
-    noSpacing?: boolean;
-    style?: React.CSSProperties;
-    className?: string;
+    readonly noSpacing?: boolean;
+    readonly style?: React.CSSProperties;
+    readonly className?: string;
 }
 
 /**

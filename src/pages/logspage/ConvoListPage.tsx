@@ -22,38 +22,38 @@ const LIMIT: number = 50;
 const UPDATE_TIME_MS = 5000;
 
 interface DateRange {
-    startTime?: moment.Moment;
-    endTime?: moment.Moment;
+    readonly startTime?: moment.Moment;
+    readonly endTime?: moment.Moment;
 }
 
 interface ConvoListPageStateProps {
-    source: Source;
+    readonly source: Source;
 }
 
 interface ConvoListPageReduxProps {
-    getLogs: (query: LogQuery) => Promise<Log[]>;
-    newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
-    refresh: (logQueryEvent: LogQueryEvent) => Promise<PageResults>;
+    readonly getLogs: (query: LogQuery) => Promise<Log[]>;
+    readonly newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
+    readonly refresh: (logQueryEvent: LogQueryEvent) => Promise<PageResults>;
 }
 
 interface ConvoListPageStandardProps {
-    refreshOn?: boolean;
-    filter?: CompositeFilter<Conversation>;
-    iconStyle?: React.CSSProperties;
-    iconTooltip?: string;
-    onItemClick?: (conversation: Conversation) => void;
-    onIconClick?: (conversation: Conversation) => void;
+    readonly refreshOn?: boolean;
+    readonly filter?: CompositeFilter<Conversation>;
+    readonly iconStyle?: React.CSSProperties;
+    readonly iconTooltip?: string;
+    readonly onItemClick?: (conversation: Conversation) => void;
+    readonly onIconClick?: (conversation: Conversation) => void;
 }
 
 interface ConvoListPageProps extends ConvoListPageStateProps, ConvoListPageReduxProps, ConvoListPageStandardProps {
 }
 
 interface ConvoListPageState {
-    query: LogQuery;
-    lastLogs: Log[];
-    conversations: ConversationList;
-    shownConversations: ConversationList;
-    endReached: boolean;
+    readonly query: LogQuery;
+    readonly lastLogs: Log[];
+    readonly conversations: ConversationList;
+    readonly shownConversations: ConversationList;
+    readonly endReached: boolean;
 }
 
 function mapStateToProps(state: State.All): ConvoListPageStateProps {
@@ -216,18 +216,17 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     getNextPage() {
         this.isLoading = true;
-        const newState = { ...this.state };
+        let newState = { ...this.state };
         const filterConvo = this.filterConvo;
         this.props
             .newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
             .then(function (result: PageResults) {
                 const endReached = result.newLogs.length === 0;
-                newState.endReached = endReached;
+                newState = {...newState, ...{endReached: endReached }};
                 if (!endReached) {
                     // The reason we can't just append right now is because we may have partial conversations from the previous batch.
                     const newConversations = ConversationList.fromLogs(result.totalLogs);
-                    newState.conversations = newConversations;
-                    newState.lastLogs = result.totalLogs;
+                    newState = {...newState, ...{conversations: newConversations, lastLogs: result.totalLogs }};
                     return filterConvo(newState);
                 } else {
                     return newState;
@@ -243,7 +242,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     getRefresh() {
         this.isLoading = true;
-        const newState = { ...this.state };
+        let newState = { ...this.state };
         const filterConvo = this.filterConvo;
         this.props
             .refresh({ query: this.state.query, logs: this.state.lastLogs })
@@ -251,8 +250,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
                 if (result.newLogs.length > 0) {
                     // The reason we can't just preppend right now is because we may have partial conversations from the previous batch.
                     const newConversations = ConversationList.fromLogs(result.totalLogs);
-                    newState.conversations = newConversations;
-                    newState.lastLogs = result.totalLogs;
+                    newState = {...newState, ...{conversations: newConversations, lastLogs: result.totalLogs }};
                     return filterConvo(newState);
                 } else {
                     return newState;
@@ -265,12 +263,13 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     filterConvo(state: ConvoListPageState, props?: ConvoListPageProps) {
         const useProps = props || this.props;
-        return filter(state.conversations, useProps.filter.filter)
+        let resultState = {...state};
+        return filter(resultState.conversations, useProps.filter.filter)
             .then((result: FilterResult<Conversation>) => {
                 let items = result.result;
-                state.shownConversations = items;
+                resultState = {...resultState, ...{shownConversations: items }};
             }).catch(function (err: Error) {
-                state.shownConversations = state.conversations;
+                resultState = {...resultState, ...{shownConversations: state.conversations }};
             }).then(function () {
                 return state;
             });

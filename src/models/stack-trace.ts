@@ -2,11 +2,11 @@ import Log from "./log";
 import StackTraceElement, { javaScriptStackTraceRegex } from "./stack-trace-element";
 
 interface StackTraceProperties {
-    id: string;
-    timestamp: Date;
-    raw: string;
-    message: string;
-    elements: StackTraceElement[];
+    readonly id: string;
+    readonly timestamp: Date;
+    readonly raw: string;
+    readonly message: string;
+    readonly elements: StackTraceElement[];
 }
 
 export default class StackTrace implements StackTraceProperties {

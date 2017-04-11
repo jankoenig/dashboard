@@ -5,11 +5,11 @@ import Measure, { Dimensions } from "./Measure";
 export type Overflow = "hidden" | "auto" | "visible";
 
 interface ResizingComponentProps {
-    overflowY?: Overflow;
+    readonly overflowY?: Overflow;
 }
 
 interface ResizingComponentState {
-    dimens: Dimensions;
+   readonly dimens: Dimensions;
 }
 
 export class ResizingComponent extends React.Component<ResizingComponentProps, ResizingComponentState> {
@@ -29,8 +29,7 @@ export class ResizingComponent extends React.Component<ResizingComponentProps, R
     }
 
     onMeasure(dimensions: Dimensions) {
-        this.state.dimens = dimensions;
-        this.setState(this.state);
+        this.setState({ dimens: dimensions });
     }
 
     render() {

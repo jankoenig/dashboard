@@ -1,9 +1,11 @@
 
 export namespace Browser {
+    // tslint:disable:readonly-interface
     export interface WrappedEvent {
         register(): void;
         unregister(): void;
     }
+    // tslint:enable:readonly-interface
 
     /**
      * Check if the browser is mobile or not

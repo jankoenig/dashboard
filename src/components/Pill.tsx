@@ -4,8 +4,8 @@ import * as React from "react";
 import { COLORS } from "../constants";
 
 interface PillProps {
-    style?: React.CSSProperties;
-    onClick?: (event: React.MouseEvent) => void;
+    readonly style?: React.CSSProperties;
+    readonly onClick?: (event: React.MouseEvent) => void;
 }
 
 export default class Pill extends React.Component<PillProps, any> {

@@ -6,6 +6,7 @@ import * as firebase from "firebase";
  * testing so they can provide their own unique implementations.  This is useful for dependency injection
  * in which case the remote connections can be flaky.
  */
+// tslint:disable:readonly-interface
 export namespace remoteservice {
     export interface Service {
         auth(): remoteservice.auth.Auth;
@@ -91,3 +92,4 @@ class FirebaseService implements remoteservice.Service {
         return firebase.database();
     }
 }
+// tslint:enable:readonly-interface

@@ -18,11 +18,11 @@ import WelcomePage from "./WelcomePage";
 const ButtonTheme = require("../themes/button_theme.scss");
 
 export interface SourceListPageProps {
-    sources: Source[];
+    readonly sources: Source[];
 }
 
 interface SourceListPageState {
-    listItems: JSX.Element[];
+    readonly listItems: JSX.Element[];
 }
 
 function mapStateToProps(state: State.All) {
@@ -67,7 +67,7 @@ export default connect(
 )(SourceListPage);
 
 interface SourceListProps {
-    sources: Source[];
+    readonly sources: Source[];
 }
 
 interface SourceListState {

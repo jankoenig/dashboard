@@ -18,13 +18,13 @@ const DeleteButtonTheme = require("../../themes/button_theme.scss");
 const DeleteDialogTheme = require("../../themes/dialog_theme.scss");
 
 interface SourcePageProps {
-    source: Source;
-    goHome: () => RouterAction;
-    removeSource: (source: Source) => Promise<Source>;
+    readonly source: Source;
+    readonly goHome: () => RouterAction;
+    readonly removeSource: (source: Source) => Promise<Source>;
 }
 
 interface SourcePageState {
-    deleteDialogActive: boolean;
+    readonly deleteDialogActive: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -67,8 +67,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     handleDeleteDialogToggle() {
-        this.state.deleteDialogActive = !this.state.deleteDialogActive;
-        this.setState(this.state);
+        this.setState({ deleteDialogActive: !this.state.deleteDialogActive });
     }
 
     handleDeleteSkill(): Promise<Source> {

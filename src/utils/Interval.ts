@@ -1,8 +1,10 @@
 namespace Interval {
+    // tslint:disable:readonly-interface
     export interface Executor {
         start: () => void;
         end: () => void;
     }
+    // tslint:enable:readonly-interface
 
     export function newExecutor(ms: number, callback: () => void): Executor {
         return new HiddenExecutor(ms, callback);

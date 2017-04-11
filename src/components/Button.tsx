@@ -3,20 +3,20 @@ import * as objectAssign from "object-assign";
 import * as React from "react";
 
 interface ButtonProps {
-  fab?: boolean;
-  ripple?: boolean;
-  primary?: boolean;
-  raised?: boolean;
-  colored?: boolean;
-  accent?: boolean;
-  onClick?: () => void;
-  type?: string;
-  className?: string;
-  id?: string;
-  testid?: string;
-  style?: React.CSSProperties;
-  href?: string;
-  to?: string;
+  readonly fab?: boolean;
+  readonly ripple?: boolean;
+  readonly primary?: boolean;
+  readonly raised?: boolean;
+  readonly colored?: boolean;
+  readonly accent?: boolean;
+  readonly onClick?: () => void;
+  readonly type?: string;
+  readonly className?: string;
+  readonly id?: string;
+  readonly testid?: string;
+  readonly style?: React.CSSProperties;
+  readonly href?: string;
+  readonly to?: string;
 };
 
 /**
@@ -47,12 +47,12 @@ class Button extends React.Component<ButtonProps, any> {
 
     // Clean off properties that were used for setting classes
     // They are not real and should not be passed on
-    delete properties.fab;
-    delete properties.accent;
-    delete properties.raised;
-    delete properties.colored;
-    delete properties.ripple;
-    delete properties.primary;
+    // delete properties.fab;
+    // delete properties.accent;
+    // delete properties.raised;
+    // delete properties.colored;
+    // delete properties.ripple;
+    // delete properties.primary;
 
     return React.createElement(component, properties);
   }

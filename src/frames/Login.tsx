@@ -9,8 +9,8 @@ import { CLASSES } from "../constants";
 import { State } from "../reducers";
 
 interface LoginProps {
-    snackBarMessage: string;
-    classNames?: string;
+    readonly snackBarMessage: string;
+    readonly classNames?: string;
 }
 
 function mapStateToProps(state: State.All) {

@@ -3,12 +3,12 @@ import * as React from "react";
 const HIDDEN_KEY_MESSAGE = "<SECRET_KEY>";
 
 export interface IntegrationSubPageProps {
-    secretKey?: string;
-    showSecret?: boolean;
+    readonly secretKey?: string;
+    readonly showSecret?: boolean;
 }
 
 export interface IntegrationSubPageState {
-    secretText: string;
+    readonly secretText: string;
 }
 
 export abstract class IntegrationSubPage<P extends IntegrationSubPageProps, S extends IntegrationSubPageState> extends React.Component<P, S> {
@@ -25,19 +25,17 @@ export abstract class IntegrationSubPage<P extends IntegrationSubPageProps, S ex
 
     componentWillReceiveProps(props: P, context: any) {
         const message = (props.showSecret && props.showSecret) ? props.secretKey : HIDDEN_KEY_MESSAGE;
-        this.state.secretText = message;
-        this.setState(this.state);
+        this.setState({ secretText: message } as S);
     }
 
     handleRevealClick() {
         if (this.props.secretKey) {
+            let secretText = HIDDEN_KEY_MESSAGE;
             if (this.state.secretText === HIDDEN_KEY_MESSAGE) {
-                this.state.secretText = this.props.secretKey;
-            } else {
-                this.state.secretText = HIDDEN_KEY_MESSAGE;
+                secretText = this.props.secretKey;
             }
 
-            this.setState(this.state);
+            this.setState({ secretText: secretText } as S);
         }
     }
 }

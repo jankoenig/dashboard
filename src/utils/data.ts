@@ -56,7 +56,7 @@ namespace DataUtil {
      */
     export function convertToTimeSeries<T extends TimeSeriable>(bucketSize: "days" | "hours", startTime: Date, endTime: Date, data: T[]): TimeSeriesDatum[] {
 
-        let dataMap: { [time: string]: T[] } = {};
+        let dataMap: any = {};
         let timeSeriesData: TimeSeriesDatum[] = [];
         let timeSeriesBuckets = DateUtil.timeBuckets(startTime, endTime, bucketSize);
 

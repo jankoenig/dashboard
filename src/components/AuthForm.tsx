@@ -8,16 +8,16 @@ import { Icon, ICON } from "./Icon";
 const theme = require("../themes/authform.scss");
 
 export interface AuthFormProps {
-    error?: string;
-    onSubmit: (email: string, pass: string) => void;
-    onLoginWithGithub?: () => void;
-    onSignUpWithEmail?: (email: string, pass: string, confirmPass: string) => void;
-    onResetPassword?: (email: string) => void;
+    readonly error?: string;
+    readonly onSubmit: (email: string, pass: string) => void;
+    readonly onLoginWithGithub?: () => void;
+    readonly onSignUpWithEmail?: (email: string, pass: string, confirmPass: string) => void;
+    readonly onResetPassword?: (email: string) => void;
 }
 
 export interface AuthFormState {
-    email: string;
-    isConfirmPasswordVisible?: boolean;
+    readonly email: string;
+    readonly isConfirmPasswordVisible?: boolean;
 }
 
 export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
@@ -34,8 +34,7 @@ export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
     }
 
     onRegister() {
-        this.state.isConfirmPasswordVisible = true;
-        this.setState(this.state);
+        this.setState({ isConfirmPasswordVisible: true } as AuthFormState);
     }
 
     onEmailChange(email: string) {
@@ -69,7 +68,7 @@ export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
 export default AuthForm;
 
 interface PasswordResetProps {
-    onPasswordReset: () => void;
+   readonly onPasswordReset: () => void;
 }
 
 export class PasswordReset extends React.Component<PasswordResetProps, any> {
@@ -86,7 +85,7 @@ export class PasswordReset extends React.Component<PasswordResetProps, any> {
 }
 
 interface LoginGithubProps {
-    onLoginWithGithub?: () => void;
+    readonly onLoginWithGithub?: () => void;
 }
 
 export class LoginGithub extends React.Component<LoginGithubProps, any> {
@@ -107,19 +106,19 @@ export class LoginGithub extends React.Component<LoginGithubProps, any> {
 }
 
 export interface NormalLoginFormProps {
-    onEmailChange: (email: string) => void;
-    onLogin: (email: string, pass: string) => void;
-    onSignUpWithEmail: (email: string, pass: string, confirmPass: string) => void;
-    onResetPassword: (email: string) => void;
-    error?: string;
+    readonly onEmailChange: (email: string) => void;
+    readonly onLogin: (email: string, pass: string) => void;
+    readonly onSignUpWithEmail: (email: string, pass: string, confirmPass: string) => void;
+    readonly onResetPassword: (email: string) => void;
+    readonly error?: string;
 }
 
 interface NormalLoginFormState {
-    error?: string;
-    email?: string;
-    password?: string;
-    confirmPassword?: string;
-    isConfirmPassword?: boolean;
+    readonly error?: string;
+    readonly email?: string;
+    readonly password?: string;
+    readonly confirmPassword?: string;
+    readonly isConfirmPassword?: boolean;
 }
 
 export class NormalLoginForm extends React.Component<NormalLoginFormProps, NormalLoginFormState> {
@@ -141,43 +140,34 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
     }
 
     componentWillReceiveProps(nextProps: NormalLoginFormProps, ctx: any) {
-        this.state.error = nextProps.error;
-        this.setState(this.state);
+        this.setState({ error: nextProps.error });
     }
 
     onEmailChange(value: string) {
-        this.state.email = value;
-        this.setState(this.state);
+        this.setState({ email: value});
         if (this.props.onEmailChange) {
             this.props.onEmailChange(value);
         }
     }
 
     onPasswordChange(value: string) {
-        this.state.password = value;
-        this.setState(this.state);
+        this.setState({ password: value });
     }
 
     onConfirmPassChange(value: string) {
-        this.state.confirmPassword = value;
-        this.setState(this.state);
+        this.setState({ confirmPassword: value });
     }
 
     onLogin() {
         let email = this.state.email;
         let pass = this.state.password;
-        this.state.password = "";
-        this.state.confirmPassword = "";
-        this.state.error = "";
-        this.setState(this.state);
+        this.setState({ password: "", confirmPassword: "", error: "" });
 
         this.props.onLogin(email, pass);
     }
 
     onSignUpClick() {
-        this.state.confirmPassword = "";
-        this.state.isConfirmPassword = true;
-        this.setState(this.state);
+        this.setState({ confirmPassword: "", isConfirmPassword: true });
     }
 
     onSubmitClicked() {
@@ -186,12 +176,9 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
         let confirmPass = this.state.confirmPassword;
         let match = pass === confirmPass;
 
-        this.state.password = "";
-        this.state.confirmPassword = "";
+        const error = (match) ? "" : "Passwords do not match.";
 
-        this.state.error = (match) ? "" : "Passwords do not match.";
-
-        this.setState(this.state);
+        this.setState({ password: "", confirmPassword: "", error: error });
 
         if (match) {
             this.props.onSignUpWithEmail(email, pass, confirmPass);
@@ -254,16 +241,16 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
 }
 
 export interface LoginFormsProps {
-    email: string;
-    password: string;
-    confirmPassword: string;
-    error: string;
-    showConfirmPassword: boolean;
-    onEmailChange: (newText: string) => void;
-    onPasswordChange: (newText: string) => void;
-    onConfirmPasswordChange: (newText: string) => void;
-    onPasswordSubmit: () => void;
-    onConfirmPasswordSubmit: () => void;
+    readonly email: string;
+    readonly password: string;
+    readonly confirmPassword: string;
+    readonly error: string;
+    readonly showConfirmPassword: boolean;
+    readonly onEmailChange: (newText: string) => void;
+    readonly onPasswordChange: (newText: string) => void;
+    readonly onConfirmPasswordChange: (newText: string) => void;
+    readonly onPasswordSubmit: () => void;
+    readonly onConfirmPasswordSubmit: () => void;
 }
 
 interface LoginFormsState {

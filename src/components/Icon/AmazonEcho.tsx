@@ -8,13 +8,13 @@ const IconTheme = require("./echo-theme.scss");
 const TooltipButton = Tooltip(IconButton);
 
 interface AmazonEchoProps {
-    theme?: string;
-    style?: React.CSSProperties;
-    tooltip?: string;
-    width?: string;
-    height?: string;
-    color?: string;
-    onClick?: () => void;
+    readonly theme?: string;
+    readonly style?: React.CSSProperties;
+    readonly tooltip?: string;
+    readonly width?: string;
+    readonly height?: string;
+    readonly color?: string;
+    readonly onClick?: () => void;
 }
 
 export default class AmazonEcho extends React.Component<AmazonEchoProps, any> {

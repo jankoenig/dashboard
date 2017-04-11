@@ -4,40 +4,40 @@ export interface Spoke {
     /**
      * Secret key of the skill.
      */
-    uuid: string;
+    readonly uuid: string;
     /**
      * A unique diagnostic key for the skill. Currently the same as the secret key.
      */
-    diagnosticKey: string;
+    readonly diagnosticKey: string;
     /**
      * The location that the skill would be retrieved from.
      */
-    endPoint: {
+    readonly endPoint: {
         /**
          * Skill ID.
          */
-        name: string;
+        readonly name: string;
     };
-    http?: {
-        url: string;
+    readonly http?: {
+        readonly url: string;
     };
-    lambda?: {
-        lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+    readonly lambda?: {
+        readonly lambdaARN: string;
+        readonly awsAccessKey: string;
+        readonly awsSecretKey: string;
     };
     /**
      * Location to the pipe.
      */
-    path: string;
+    readonly path: string;
     /**
      * Type of pipe this is.
      */
-    pipeType: PIPE_TYPE;
+    readonly pipeType: PIPE_TYPE;
     /**
      * True or false based on whether live debugging is enabled.
      */
-    proxy: boolean;
+    readonly proxy: boolean;
 }
 
 export default Spoke;

@@ -17,21 +17,21 @@ type SelectedStatEntry = "stats" | "Amazon.Alexa" | "Google.Home" | "Unknown";
 
 // The entry corresponds with the label for easy pickens.
 type LabelMap<T> = {
-    [label: string]: T;
+    readonly [label: string]: T;
 };
 
 interface SourceFullSummaryProps {
-    header: string;
-    source: Source;
-    startDate: moment.Moment;
-    endDate: moment.Moment;
+    readonly header: string;
+    readonly source: Source;
+    readonly startDate: moment.Moment;
+    readonly endDate: moment.Moment;
 }
 
 interface SourceFullSummaryState {
-    selectedStatEntry: SelectedStatEntry[];
-    sourceOptions: SourceOption[];
-    lines: LineProps[];
-    bars: BarProps[];
+    readonly selectedStatEntry: SelectedStatEntry[];
+    readonly sourceOptions: SourceOption[];
+    readonly lines: LineProps[];
+    readonly bars: BarProps[];
 }
 
 function values<T>(obj: LabelMap<T>): T[] {
@@ -112,17 +112,21 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     handleOriginChange(index: number, label: string, checked: boolean) {
         let totalChecked: boolean = false;
 
-        this.state.sourceOptions[index].checked = checked;
-        this.state.lines = [];
-        this.state.bars = [];
-        this.state.selectedStatEntry = [];
+        const sourceOptions = this.state.sourceOptions.splice(0);
+        const lines: LineProps[] = [];
+        const bars: BarProps[] = [];
+        const statEntries: SelectedStatEntry[] = [];
 
-        for (let o of this.state.sourceOptions) {
-            if (o.checked) {
-                this.state.selectedStatEntry.push(SourceFullSummary.statEntries[o.label]);
-                this.state.lines.push(SourceFullSummary.lines[o.label]);
-                if (o.label !== "Total") {
-                    this.state.bars.push(SourceFullSummary.bars[o.label]);
+        sourceOptions[index] = { ...sourceOptions[index], ...{ checked: checked } };
+
+        for (let o of sourceOptions) {
+            const { checked, label } = o;
+            console.info(label + ": " + checked);
+            if (checked) {
+                statEntries.push(SourceFullSummary.statEntries[label]);
+                lines.push(SourceFullSummary.lines[label]);
+                if (label !== "Total") {
+                    bars.push(SourceFullSummary.bars[label]);
                 } else {
                     totalChecked = o.checked;
                 }
@@ -130,19 +134,25 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         }
 
         // We don't care what's check for stat entry if "Total" is selected.
-        if (totalChecked) {
-            this.state.selectedStatEntry = [SourceFullSummary.statEntries["Total"]];
-        }
-
-        this.setState(this.state);
+        const selectedStatEntry = (totalChecked) ? [SourceFullSummary.statEntries["Total"]] : statEntries;
+        console.info("SourceOptions:");
+        console.log(sourceOptions);
+        console.info("SelectedStatEntry");
+        console.log(selectedStatEntry);
+        this.setState({ sourceOptions: sourceOptions, lines: lines, bars: bars, selectedStatEntry: selectedStatEntry });
     }
 
     render() {
         const { header, ...others } = this.props;
-        const { bars, lines, selectedStatEntry } = this.state;
+        const { sourceOptions, bars, lines, selectedStatEntry } = this.state;
         const options = SourceFullSummary.options;
         const handleOriginChange = this.handleOriginChange;
 
+        console.info("Options:");
+        console.log(options);
+        console.info("values(options)");
+        console.log(values(options));
+        console.log(sourceOptions);
         return (
             <div>
                 <Grid>
@@ -151,7 +161,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
 
                 <span>
                     <SourceOriginSelector
-                        options={values(options)}
+                        options={sourceOptions}
                         onCheck={handleOriginChange} />
                     <SourceStats
                         selectedEntries={selectedStatEntry}

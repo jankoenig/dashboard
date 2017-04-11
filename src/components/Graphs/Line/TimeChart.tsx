@@ -3,11 +3,11 @@ import * as React from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export interface LineProps {
-    dataKey: string;
-    type?: "basis" | "basisClosed" | "basisOpen" | "linear" | "linearClosed" | "natural" | "monotoneX" | "monotoneY" | "monotone" | "step" | "stepBefore" | "stepAfter" | Function;
-    dot?: boolean;
-    name?: string;
-    stroke?: string;
+    readonly dataKey: string;
+    readonly type?: "basis" | "basisClosed" | "basisOpen" | "linear" | "linearClosed" | "natural" | "monotoneX" | "monotoneY" | "monotone" | "step" | "stepBefore" | "stepAfter" | Function;
+    readonly dot?: boolean;
+    readonly name?: string;
+    readonly stroke?: string;
 }
 
 export class TimeData {
@@ -25,15 +25,15 @@ export class TimeData {
 }
 
 interface TimeChartProps {
-    data: TimeData[];
-    lines: LineProps[];
-    tickFormat?: string;
-    labelFormat?: string;
+    readonly data: TimeData[];
+    readonly lines: LineProps[];
+    readonly tickFormat?: string;
+    readonly labelFormat?: string;
 }
 
 interface TimeChartState {
-    ticks: number[];
-    lines: JSX.Element[];
+    readonly ticks: number[];
+    readonly lines: JSX.Element[];
 }
 
 class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
@@ -95,9 +95,7 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     };
 
     componentWillReceiveProps(nextProps: TimeChartProps, context: any) {
-        this.state.ticks = TimeChart.createTicks(nextProps);
-        this.state.lines = TimeChart.createLines(nextProps);
-        this.setState(this.state);
+        this.setState({ ticks: TimeChart.createTicks(nextProps), lines: TimeChart.createLines(nextProps) });
     }
 
     tickFormat(time: Date): string {

@@ -4,8 +4,8 @@ import * as React from "react";
 const DEFAULT_FORMAT = "MMM Do, h:mm:ss a";
 
 interface TimeTextProps {
-    timestamp: Date;
-    style?: React.CSSProperties;
+    readonly timestamp: Date;
+    readonly style?: React.CSSProperties;
 }
 
 class TimeTextComponent extends React.Component<TimeTextProps, any> {

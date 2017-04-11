@@ -6,13 +6,13 @@ import IntegrationLambda from "./IntegrationLambda";
 export type PAGE = "http" | "lambda";
 
 interface IntegrationSpokesSwapperProps {
-    showPage: PAGE;
-    theme?: string;
-    lambdaARN?: string;
-    url?: string;
-    awsAccessKey?: string;
-    awsSecretKey?: string;
-    onChange?: (type: "url" | "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) => void;
+    readonly showPage: PAGE;
+    readonly theme?: string;
+    readonly lambdaARN?: string;
+    readonly url?: string;
+    readonly awsAccessKey?: string;
+    readonly awsSecretKey?: string;
+    readonly onChange?: (type: "url" | "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) => void;
 }
 
 interface IntegrationSpokesSwapperState {

@@ -1,13 +1,13 @@
 export interface Members {
-    [userId: string]: string;
+    readonly [userId: string]: string;
 }
 
 export interface SourceProperties {
-    name: string;
-    secretKey?: string;
-    members?: Members;
-    id?: string;
-    created?: Date | string;
+    readonly name: string;
+    readonly secretKey?: string;
+    readonly members?: Members;
+    readonly id?: string;
+    readonly created?: Date | string;
 }
 
 export class Source implements SourceProperties {

@@ -14,10 +14,10 @@ export interface BarProps extends BarProps {
 }
 
 interface SourceIntentSummaryProps extends LoadingComponent.LoadingComponentProps {
-    source: Source;
-    startDate: moment.Moment;
-    endDate: moment.Moment;
-    bars?: BarProps[];
+    readonly source: Source;
+    readonly startDate: moment.Moment;
+    readonly endDate: moment.Moment;
+    readonly bars?: BarProps[];
 }
 
 interface SourceIntentSummaryState extends LoadingComponent.LoadingComponentState<CountData[]> {

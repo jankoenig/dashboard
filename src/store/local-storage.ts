@@ -1,4 +1,6 @@
 // tslint:disable:no-null-keyword
+// tslint:disable:readonly-interface
+// tslint:disable:readonly-indexer
 // localStorage from the browser returns "null" for all it's stuff rather than "undefined".
 /**
  * An interface for the standard localStorage that can be mocked or implemented in different varieties.
@@ -79,3 +81,5 @@ export class MemoryCacheStorage implements LocalStorage {
     }
 }
 // tslint:enable:no-null-keyword
+// tslint:enable:readonly-interface
+// tslint:disable:readonly-indexer

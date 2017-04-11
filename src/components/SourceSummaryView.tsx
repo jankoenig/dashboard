@@ -8,7 +8,7 @@ import SourceSummary from "../models/source-summary";
 import DataUtil from "../utils/data";
 
 interface SourceSummaryViewProps {
-    sourceSummary: SourceSummary;
+    readonly sourceSummary: SourceSummary;
 }
 
 export default class SourceSummaryView extends React.Component<SourceSummaryViewProps, any> {

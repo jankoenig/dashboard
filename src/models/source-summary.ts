@@ -2,27 +2,27 @@
 import { TimeSeriesDatum } from "./time-series";
 
 export interface SummaryDatum {
-    name: string;
-    total: number;
+    readonly name: string;
+    readonly total: number;
 }
 
 interface SourceSummary {
 
-    startTime: Date;
+    readonly startTime: Date;
 
-    endTime: Date;
+    readonly endTime: Date;
 
-    totalUniqueUsers: number;
+    readonly totalUniqueUsers: number;
 
-    totalExceptions: number;
+    readonly totalExceptions: number;
 
-    events: TimeSeriesDatum[];
+    readonly events: TimeSeriesDatum[];
 
-    totalEvents: number;
+    readonly totalEvents: number;
 
-    eventLabel: string;
+    readonly eventLabel: string;
 
-    requests: SummaryDatum[];
+    readonly requests: SummaryDatum[];
 }
 
 export default SourceSummary;

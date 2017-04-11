@@ -1,5 +1,5 @@
 {
-    "extends": ["tslint-react"],
+    "rulesDirectory": ["./node_modules/tslint-react/rules", "./node_modules/tslint-immutable/rules"],
     "rules": {
         "class-name": true,
         "comment-format": [
@@ -60,7 +60,9 @@
         "ordered-imports": [true],
         "jsx-no-lambda": true,
         "jsx-alignment": false,
-        "jsx-no-multiline-js": false
-
+        "jsx-no-multiline-js": false,
+        "readonly-interface": true,
+        "readonly-indexer": [true, {"ignore-prefix": "mutable"}],
+        "readonly-array": true
     }
 }

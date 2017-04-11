@@ -12,15 +12,15 @@ export namespace source {
     const LINK_URL: string = SOURCE_URL + "linkSource";
 
     export interface SourceName {
-        id: string;
-        secretKey: string;
+        readonly id: string;
+        readonly secretKey: string;
     }
 
     export interface LinkResult {
-        user: {
-            userId: string;
+        readonly user: {
+            readonly userId: string;
         };
-        source: Source;
+        readonly source: Source;
     }
 
     /**

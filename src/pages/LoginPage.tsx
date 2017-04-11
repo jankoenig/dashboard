@@ -17,18 +17,18 @@ export interface LoginConfig {
     /**
      * The next path to go to once logged in.
      */
-    nextPathName?: string;
+    readonly nextPathName?: string;
 }
 
 interface LoginPageProps {
-    login: (email: string, password: string, redirectStrat?: SuccessCallback) => Promise<User>;
-    loginWithGithub: (redirectStrat?: SuccessCallback) => Promise<User>;
-    signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) => Promise<User>;
-    resetPassword: (email: string) => Promise<void>;
+    readonly login: (email: string, password: string, redirectStrat?: SuccessCallback) => Promise<User>;
+    readonly loginWithGithub: (redirectStrat?: SuccessCallback) => Promise<User>;
+    readonly signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) => Promise<User>;
+    readonly resetPassword: (email: string) => Promise<void>;
 };
 
 interface LoginPageState {
-    error?: string;
+    readonly error?: string;
 }
 
 function mapStateToProps(state: State.All) {
@@ -74,24 +74,21 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     handleFormSubmit(email: string, pass: string) {
         this.props.login(email, pass)
             .catch((err: Error) => {
-                this.state.error = err.message;
-                this.setState(this.state);
+                this.setState({ error: err.message });
             });
     }
 
     handleFormLoginWithGithub() {
         this.props.loginWithGithub()
             .catch((err: Error) => {
-                this.state.error = err.message;
-                this.setState(this.state);
+                this.setState({ error: err.message });
             });
     }
 
     handleFormSignUpWithEmail(email: string, pass: string, confirmPass: string) {
         this.props.signUpWithEmail(email, pass, confirmPass)
             .catch((err: Error) => {
-                this.state.error = err.message;
-                this.setState(this.state);
+                this.setState({ error: err.message });
             });
     }
 

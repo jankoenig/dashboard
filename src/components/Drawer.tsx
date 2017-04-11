@@ -2,8 +2,8 @@ import * as classNames from "classnames";
 import * as React from "react";
 
 export interface DrawerProps {
-    title?: string;
-    className?: string;
+    readonly title?: string;
+    readonly className?: string;
 }
 
 export default class Drawer extends React.Component<DrawerProps, any> {

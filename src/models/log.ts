@@ -2,14 +2,14 @@
 import { LOG_LEVELS } from "../constants";
 
 export interface LogProperties {
-    payload: string | any;
-    stack?: string;
-    log_type: LOG_LEVELS;
-    source: string;
-    transaction_id: string;
-    timestamp: Date;
-    tags: string[];
-    id: string;
+    readonly payload: string | any;
+    readonly stack?: string;
+    readonly log_type: LOG_LEVELS;
+    readonly source: string;
+    readonly transaction_id: string;
+    readonly timestamp: Date;
+    readonly tags: string[];
+    readonly id: string;
 }
 
 export class Log implements LogProperties {

@@ -4,17 +4,17 @@ export const javaStackTraceRegex = /((\S*.?){1}\(\w*.java:\d*\)\n)+/;
 const javaLineNumberRegex = /:(\d*)/;
 const javaFileNameRegex = /\((\D*):\d*\)/;
 
-export const javaScriptStackTraceElementRegex =  / {4}at .*:\d*:\d*\)?\n/;
+export const javaScriptStackTraceElementRegex = / {4}at .*:\d*:\d*\)?\n/;
 export const javaScriptStackTraceRegex = new RegExp(".*\n(" + javaScriptStackTraceElementRegex.source + ")+");
 const javaScriptLineNumberRegex = /:(\d*):\d*/;
 const javaScriptFileNameRegex = /(.+\/|\()(.+\.js)/;
 
 interface StackTraceElementProperties {
-    raw: string;
-    line: number;
-    file: string;
-    class?: string;
-    method?: string;
+    readonly raw: string;
+    readonly line: number;
+    readonly file: string;
+    readonly class?: string;
+    readonly method?: string;
 }
 
 export default class StackTraceElement implements StackTraceElementProperties {
@@ -47,13 +47,13 @@ export default class StackTraceElement implements StackTraceElementProperties {
         let lines = javaLineNumberRegex.exec(element);
 
         if (lines) {
-            props.line = parseInt(lines[1]);
+            props = { ...props, ...{ line: parseInt(lines[1]) } };
         }
 
         let files = javaFileNameRegex.exec(element);
 
         if (files) {
-            props.file = files[1];
+            props = { ...props, ...{ file: files[1] } };
         }
 
         // For class and method, we need to split the string
@@ -63,8 +63,10 @@ export default class StackTraceElement implements StackTraceElementProperties {
         let packageParts = packageString.split(".");
 
         if (packageParts.length > 2) {
-            props.class = packageParts[packageParts.length - 2];
-            props.method = packageParts[packageParts.length - 1];
+            props = {...props, ...{
+                class: packageParts[packageParts.length - 2],
+                method: packageParts[packageParts.length - 1]
+            }};
         }
 
         return new StackTraceElement(props);
@@ -81,12 +83,12 @@ export default class StackTraceElement implements StackTraceElementProperties {
 
         let linesCapture = javaScriptLineNumberRegex.exec(element);
         if (linesCapture) {
-            props.line = parseInt(linesCapture[1]);
+            props = {...props, ...{ line: parseInt(linesCapture[1]) }};
         }
 
         let fileNameCapture = javaScriptFileNameRegex.exec(element);
         if (fileNameCapture) {
-            props.file = fileNameCapture[2];
+            props = {...props, ...{ file: fileNameCapture[2] }};
         }
 
         return new StackTraceElement(props);

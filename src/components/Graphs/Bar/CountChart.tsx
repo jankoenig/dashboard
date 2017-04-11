@@ -2,20 +2,20 @@ import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export interface BarProps {
-    dataKey: string;
-    fill?: string;
-    name?: string;
-    stackId?: string;
+    readonly dataKey: string;
+    readonly fill?: string;
+    readonly name?: string;
+    readonly stackId?: string;
 }
 
 export interface CountData {
-    title: string;
-    count?: number;
+    readonly title: string;
+    readonly count?: number;
 }
 
 interface IntentCountChartProps {
-    data: CountData[];
-    bars?: BarProps[];
+    readonly data: CountData[];
+    readonly bars?: BarProps[];
 }
 
 interface IntentCountChartState {

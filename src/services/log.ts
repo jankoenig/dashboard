@@ -9,41 +9,41 @@ namespace LogService {
     export type Origin = "Google.Home" | "Amazon.Alexa";
 
     export interface Count {
-        count: number;
+        readonly count: number;
     }
 
     export interface TimeBucket extends Count {
-        date: string;
+        readonly date: string;
     }
 
     export interface TimeSummary {
-        buckets: TimeBucket[];
-        amazonBuckets: TimeBucket[];
-        googleBuckets: TimeBucket[];
+        readonly buckets: TimeBucket[];
+        readonly amazonBuckets: TimeBucket[];
+        readonly googleBuckets: TimeBucket[];
     }
 
     export interface IntentBucket {
-        name: string;
-        count: number;
-        origin: Origin;
+        readonly name: string;
+        readonly count: number;
+        readonly origin: Origin;
     }
 
     export interface IntentSummary {
-        count: IntentBucket[];
+        readonly count: IntentBucket[];
     }
 
     export interface TotalStat {
-        totalUsers: number;
-        totalExceptions: number;
-        totalEvents: number;
+        readonly totalUsers: number;
+        readonly totalExceptions: number;
+        readonly totalEvents: number;
     }
 
     export interface SourceStats {
-        source: string;
-        stats: TotalStat;
-        "Amazon.Alexa": TotalStat;
-        "Google.Home": TotalStat;
-        Unknown: TotalStat;
+        readonly source: string;
+        readonly stats: TotalStat;
+        readonly "Amazon.Alexa": TotalStat;
+        readonly "Google.Home": TotalStat;
+        readonly Unknown: TotalStat;
     }
 
     // let BASE_URL = LOGLESS_BASE; // TODO: Get this to work with Mocha

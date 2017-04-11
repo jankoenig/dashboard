@@ -13,7 +13,7 @@ export interface ErrorHandler {
     /**
      * The regex to set to the form to check against.  An undefined means that any text will be accepted.
      */
-    regex: RegExp;
+    readonly regex: RegExp;
     /**
      * If the input doesn't match the input prodided, this method will be called to retrieve the error message to display to the user.
      *
@@ -21,33 +21,33 @@ export interface ErrorHandler {
      *      The input that the user has shown.
      *
      */
-    errorMessage: (input: string) => string | undefined;
+    readonly errorMessage: (input: string) => string | undefined;
 }
 
 export interface FormInputTheme {
-    inputTextColor: string;
-    bottomBorderColor?: string;
+    readonly inputTextColor: string;
+    readonly bottomBorderColor?: string;
 };
 
 interface FormInputProps {
-    theme?: FormInputTheme;
-    label: string;
-    type: "text" | "password";
-    value: string;
-    autoFocus?: boolean;
-    floatingLabel?: boolean;
-    onChange?: (event: React.FormEvent) => any;
-    style?: React.CSSProperties;
-    readOnly?: boolean;
-    autoComplete?: "off" | "on";
-    hidden?: boolean;
-    error?: ErrorHandler;
-    showable?: boolean;
+    readonly theme?: FormInputTheme;
+    readonly label: string;
+    readonly type: "text" | "password";
+    readonly value: string;
+    readonly autoFocus?: boolean;
+    readonly floatingLabel?: boolean;
+    readonly onChange?: (event: React.FormEvent) => any;
+    readonly style?: React.CSSProperties;
+    readonly readOnly?: boolean;
+    readonly autoComplete?: "off" | "on";
+    readonly hidden?: boolean;
+    readonly error?: ErrorHandler;
+    readonly showable?: boolean;
 }
 
 interface FormState {
-    errorMsg?: string;
-    show: boolean;
+    readonly errorMsg?: string;
+    readonly show: boolean;
 }
 
 export class FormInput extends MDLComponent<FormInputProps, FormState> {
@@ -95,8 +95,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
             errorMsg = this.props.error.errorMessage(target.value);
         }
 
-        this.state.errorMsg = errorMsg;
-        this.setState(this.state);
+        this.setState({ errorMsg: errorMsg } as FormState);
 
         if (this.props.onChange) {
             this.props.onChange(event);

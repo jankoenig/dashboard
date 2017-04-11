@@ -4,13 +4,13 @@ import { Cell, Grid } from "./Grid";
 import { Dimensions, Measure } from "./Measure";
 
 export interface TwoPaneProps {
-    spacing: boolean;
-    leftStyle?: React.CSSProperties;
-    rightStyle?: React.CSSProperties;
+    readonly spacing: boolean;
+    readonly leftStyle?: React.CSSProperties;
+    readonly rightStyle?: React.CSSProperties;
 }
 
 interface TwoPaneState {
-    myHeight: number;
+    readonly myHeight: number;
 }
 
 /**
@@ -29,8 +29,7 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
     }
 
     onMeasure(dimensions: Dimensions) {
-        this.state.myHeight = dimensions.height;
-        this.setState(this.state);
+        this.setState({ myHeight: dimensions.height });
     }
 
     render(): JSX.Element {

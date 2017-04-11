@@ -4,9 +4,9 @@ import * as React from "react";
 import MDLComponent from "./MDLComponent";
 
 export interface LayoutProps {
-    drawer?: boolean;
-    header?: boolean;
-    style?: React.CSSProperties;
+    readonly drawer?: boolean;
+    readonly header?: boolean;
+    readonly style?: React.CSSProperties;
 };
 
 export default class Layout extends MDLComponent<LayoutProps, any> {

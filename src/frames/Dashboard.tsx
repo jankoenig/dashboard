@@ -33,15 +33,15 @@ class SourceDropdownableAdapter implements Dropdownable {
 }
 
 interface DashboardProps {
-  user: User;
-  currentSource: Source;
-  sources: Source[];
-  location: Location;
-  login: () => (dispatch: Redux.Dispatch<any>) => void;
-  logout: () => (dispatch: Redux.Dispatch<any>) => void;
-  getSources: () => Redux.ThunkAction<any, any, any>;
-  setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
-  goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
+  readonly user: User;
+  readonly currentSource: Source;
+  readonly sources: Source[];
+  readonly location: Location;
+  readonly login: () => (dispatch: Redux.Dispatch<any>) => void;
+  readonly logout: () => (dispatch: Redux.Dispatch<any>) => void;
+  readonly getSources: () => Redux.ThunkAction<any, any, any>;
+  readonly setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
+  readonly goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
 }
 
 interface DashboardState {

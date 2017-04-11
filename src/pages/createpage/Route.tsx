@@ -17,24 +17,24 @@ import SourceService from "../../services/source";
  * "?id=<value>&key=<value>"
  */
 interface Query {
-    id?: string | undefined;
-    key?: string | undefined;
+    readonly id?: string | undefined;
+    readonly key?: string | undefined;
 }
 
 interface Location {
-    query: Query;
+    readonly query: Query;
 }
 
 interface StateProps {
-    currentUser: User;
+    readonly currentUser: User;
 }
 
 interface DispatchProps {
-    goTo: (url: string) => void;
+    readonly goTo: (url: string) => void;
 }
 
 interface StandardProps {
-    location: Location;
+    readonly location: Location;
 }
 
 interface CreateOrRouteProps extends StateProps, DispatchProps, StandardProps, CancelableComponent.PromiseComponentProps {
@@ -74,8 +74,8 @@ function checkParams(query: Query): Promise<Query> {
 }
 
 interface QueryResult {
-    source: Source;
-    query: Query;
+    readonly source: Source;
+    readonly query: Query;
 }
 
 function linkSource(query: Query, user: User): Promise<QueryResult> {

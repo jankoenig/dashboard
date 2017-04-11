@@ -6,7 +6,7 @@ import { State } from "../../reducers";
 import IntegrationPage from "./IntegrationPage";
 
 interface StateIntegrationProps {
-    source: Source;
+    readonly source: Source;
 }
 
 interface StateIntegrationState {

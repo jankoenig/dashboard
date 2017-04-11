@@ -7,15 +7,15 @@ let ReactList = require("react-list");
 export type ListType = "simple" | "uniform" | "variable";
 
 export interface ListProps {
-    itemRenderer: (index: number, key: string) => JSX.Element;
-    onSelect?: (index: number) => void;
-    onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
-    length: number;
-    type?: ListType;
+    readonly itemRenderer: (index: number, key: string) => JSX.Element;
+    readonly onSelect?: (index: number) => void;
+    readonly onScroll?: (firstVisibleIndex: number, lastVisibleIndex: number, total: number) => void;
+    readonly length: number;
+    readonly type?: ListType;
 }
 
 interface ListState {
-    dimens: Dimensions;
+    readonly dimens: Dimensions;
 }
 
 /**
@@ -45,8 +45,7 @@ class StaticList extends React.Component<ListProps, ListState> {
     };
 
     updateDimensions(dimensions: Dimensions) {
-        this.state.dimens = dimensions;
-        this.setState(this.state);
+        this.setState({ dimens: dimensions });
     }
 
     handleScroll(event: React.UIEvent) {

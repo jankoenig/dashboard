@@ -3,9 +3,9 @@ import * as React from "react";
 import Input from "react-toolbox/lib/input";
 
 interface HttpProps {
-    theme?: string;
-    url?: string;
-    onUrlChange?: (newUrl: string) => void;
+    readonly theme?: string;
+    readonly url?: string;
+    readonly onUrlChange?: (newUrl: string) => void;
 }
 
 interface HttpState {

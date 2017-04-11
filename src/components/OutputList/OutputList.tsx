@@ -6,8 +6,8 @@ import OutputListItem from "./OutputListItem";
 import StackTraceListItem from "./StackTraceListItem";
 
 interface OutputListProps {
-    outputs: Output[];
-    stackTraces: StackTrace[];
+    readonly outputs: Output[];
+    readonly stackTraces: StackTrace[];
 }
 
 export default class OutputList extends React.Component<OutputListProps, any> {

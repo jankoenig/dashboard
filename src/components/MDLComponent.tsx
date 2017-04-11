@@ -6,10 +6,10 @@ import { findDOMNode } from "react-dom";
  * about the MDL componentHandler object.
  */
 interface MDLWindow extends Window {
-    componentHandler: {
-        upgradeElement: (any);
-        downgradeElements: (any);
-        upgradeDom: () => void;
+    readonly componentHandler: {
+        readonly upgradeElement: (any);
+        readonly downgradeElements: (any);
+        readonly upgradeDom: () => void;
     };
 }
 

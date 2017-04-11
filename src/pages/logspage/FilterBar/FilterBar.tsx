@@ -16,42 +16,42 @@ const InputTheme = require("../../../themes/input-light.scss");
 const CheckboxTheme = require("../../../themes/checkbox-theme-light.scss");
 
 export interface DateRange {
-    startTime?: Date | moment.Moment;
-    endTime?: Date | moment.Moment;
+    readonly startTime?: Date | moment.Moment;
+    readonly endTime?: Date | moment.Moment;
 }
 
 export interface FilterProps {
     // query: LogQuery;
-    dateRange: DateRange;
-    liveUpdateEnabled: boolean;
-    onFilterLogLevel: (filter: LogLevelFilter) => void;
-    onFilterRequest: (filter: RequestFilter) => void;
-    onFilterIntent: (filter: IntentFilter) => void;
-    onFilterDate: (filter: DateFilter) => void;
-    onFilterException: (filter: ExceptionFilter) => void;
-    onFilterOrigin: (filter: OriginFilter) => void;
-    onLiveUpdate: (enabled: boolean) => void;
-    disableLiveUpdateCheckbox?: boolean;
-    className?: string;
+    readonly dateRange: DateRange;
+    readonly liveUpdateEnabled: boolean;
+    readonly onFilterLogLevel: (filter: LogLevelFilter) => void;
+    readonly onFilterRequest: (filter: RequestFilter) => void;
+    readonly onFilterIntent: (filter: IntentFilter) => void;
+    readonly onFilterDate: (filter: DateFilter) => void;
+    readonly onFilterException: (filter: ExceptionFilter) => void;
+    readonly onFilterOrigin: (filter: OriginFilter) => void;
+    readonly onLiveUpdate: (enabled: boolean) => void;
+    readonly disableLiveUpdateCheckbox?: boolean;
+    readonly className?: string;
 }
 
 export interface FilterState {
-    startDate?: Date;
-    endDate?: Date;
-    logTypes?: LogType[];
-    origins?: LogType[];
-    selectedType?: string;
-    selectedOrigin?: string;
-    requestValue?: string;
-    intentValue?: string;
-    exceptionsOnly?: boolean;
-    filterMap: any;
-    filterbarHidden: boolean;
+    readonly startDate?: Date;
+    readonly endDate?: Date;
+    readonly logTypes?: LogType[];
+    readonly origins?: LogType[];
+    readonly selectedType?: string;
+    readonly selectedOrigin?: string;
+    readonly requestValue?: string;
+    readonly intentValue?: string;
+    readonly exceptionsOnly?: boolean;
+    readonly filterMap: any;
+    readonly filterbarHidden: boolean;
 }
 
 interface LogType {
-    value: string;
-    label: string;
+    readonly value: string;
+    readonly label: string;
 }
 
 function convertDate(date: Date | moment.Moment): Date {
@@ -116,16 +116,16 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     setDateRange(startDate: Date | moment.Moment, endDate: Date | moment.Moment) {
-        this.state.startDate = convertDate(startDate);
-        if (this.state.startDate) {
-            this.state.startDate.setHours(0, 0, 0, 0);
+        const start = convertDate(startDate);
+        if (start) {
+            start.setHours(0, 0, 0, 0);
         }
 
-        this.state.endDate = convertDate(endDate);
-        if (this.state.endDate) {
-            this.state.endDate.setHours(23, 59, 59, 999);
+        const end = convertDate(endDate);
+        if (end) {
+            end.setHours(23, 59, 59, 999);
         }
-        this.setState(this.state);
+        this.setState({ startDate: start, endDate: end } as FilterState);
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
@@ -139,34 +139,29 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleLogTypeChange(value: string) {
-        this.state.selectedType = value;
-        this.setState(this.state);
+        this.setState({ selectedType: value } as FilterState);
         this.props.onFilterLogLevel(new LogLevelFilter(value));
     }
 
     handleRequestChange(value: string) {
-        this.state.requestValue = value;
-        this.setState(this.state);
+        this.setState({ requestValue: value } as FilterState);
         this.props.onFilterRequest(new RequestFilter(value));
     }
 
     handleIntentChange(value: string) {
-        this.state.intentValue = value;
-        this.setState(this.state);
+        this.setState({ intentValue: value } as FilterState);
         this.props.onFilterIntent(new IntentFilter(value));
     }
 
     handleExceptionOnlyChange(value: boolean) {
-        this.state.exceptionsOnly = value;
-        this.setState(this.state);
+        this.setState({ exceptionsOnly: value } as FilterState);
 
         let filter: ExceptionFilter = (value) ? new ExceptionFilter() : new FakeExceptionFilter();
         this.props.onFilterException(filter);
     }
 
     handleOriginChange(value: string) {
-        this.state.selectedOrigin = value;
-        this.setState(this.state);
+        this.setState({ selectedOrigin: value } as FilterState);
 
         let origin: Origin;
         switch (value) {

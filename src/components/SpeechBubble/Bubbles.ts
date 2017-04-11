@@ -1,7 +1,7 @@
 export type BubbleStyle = "isosceles" | "obtuse" | "border";
 
 export interface Modifiers {
-    color?: string;
+    readonly color?: string;
 }
 
 export function getType(type: BubbleStyle, modifiers?: Modifiers) {
@@ -17,11 +17,11 @@ export function getType(type: BubbleStyle, modifiers?: Modifiers) {
 }
 
 export interface BubbleType {
-    containerStyle: React.CSSProperties;
-    quoteStyle: React.CSSProperties;
-    trianglePosition: React.CSSProperties;
-    beforeTriangleStyle: React.CSSProperties;
-    afterTriangleStyle: React.CSSProperties;
+    readonly containerStyle: React.CSSProperties;
+    readonly quoteStyle: React.CSSProperties;
+    readonly trianglePosition: React.CSSProperties;
+    readonly beforeTriangleStyle: React.CSSProperties;
+    readonly afterTriangleStyle: React.CSSProperties;
 }
 
 export class BaseType implements BubbleType {

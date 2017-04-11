@@ -4,7 +4,7 @@ import Output from "../../models/output";
 import ListItemMessage from "./ListItemMessage";
 
 interface OutputListItemProps {
-    output: Output;
+    readonly output: Output;
 }
 
 export default class OutputListItem extends React.Component<OutputListItemProps, any> {

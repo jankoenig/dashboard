@@ -2,13 +2,13 @@ import * as moment from "moment";
 import * as React from "react";
 
 interface ListItemMessageProps {
-    timestamp: Date | moment.Moment;
-    level: string;
-    message: string;
-    levelColor?: string;
-    messageColor?: string;
-    style?: React.CSSProperties;
-    onClick?: (event: React.MouseEvent) => void;
+    readonly timestamp: Date | moment.Moment;
+    readonly level: string;
+    readonly message: string;
+    readonly levelColor?: string;
+    readonly messageColor?: string;
+    readonly style?: React.CSSProperties;
+    readonly onClick?: (event: React.MouseEvent) => void;
 }
 
 export const DEFAULT_TIME_FORMAT = "hh:mm:ss.SSSSS";

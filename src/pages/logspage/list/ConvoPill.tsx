@@ -3,8 +3,8 @@ import * as React from "react";
 import Pill from "../../../components/Pill";
 
 interface PillProps {
-    show: boolean;
-    text: string;
+    readonly show: boolean;
+    readonly text: string;
 }
 
 class ConvoPill extends React.Component<PillProps, any> {

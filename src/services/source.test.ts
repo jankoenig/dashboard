@@ -307,12 +307,13 @@ describe("Source Service", function () {
         let source = generateSourceProps();
 
         beforeEach(function () {
-            const owner: SourceModel.Members = {};
-            owner[mockUser.uid] = "owner";
-            owner["123ABC"] = "visitor";
-            owner["234BCD"] = "visitor";
-            owner["345CDE"] = "visitor";
-            owner["456DEF"] = "visitor";
+            const owner: SourceModel.Members = {
+                [mockUser.uid]: "owner",
+                "123ABC": "visitor",
+                "234BCD": "visitor",
+                "345CDE": "visitor",
+                "456DEF": "visitor"
+            };
 
             childStub = sinon.stub().returns(ref);
             setStub = sinon.stub().returns(successResponsePromise());

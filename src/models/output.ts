@@ -2,12 +2,12 @@ import { LOG_LEVELS } from "../constants";
 import Log from "./log";
 
 export interface OutputProperties {
-    message: string;
-    level: LOG_LEVELS;
-    timestamp: Date;
-    transaction_id: string;
-    id: string;
-    stack?: string;
+    readonly message: string;
+    readonly level: LOG_LEVELS;
+    readonly timestamp: Date;
+    readonly transaction_id: string;
+    readonly id: string;
+    readonly stack?: string;
 }
 
 export default class Output implements OutputProperties {
@@ -18,7 +18,7 @@ export default class Output implements OutputProperties {
 
     readonly level: LOG_LEVELS;
 
-    private levelColors: { [level: string]: string } = {
+    private levelColors: { readonly [level: string]: string } = {
         "ERROR": "#e53935",
         "WARN": "orange",
         "INFO": "yellow",

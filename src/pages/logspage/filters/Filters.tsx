@@ -1,8 +1,8 @@
 export const TYPE_COMPOSITE: string = "Composite";
 
 export interface Filter<T> {
-    type: string;
-    filter: (item: T) => boolean;
+    readonly type: string;
+    readonly filter: (item: T) => boolean;
 }
 
 /**

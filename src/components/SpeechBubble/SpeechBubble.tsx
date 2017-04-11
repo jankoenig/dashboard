@@ -3,11 +3,11 @@ import * as React from "react";
 import * as Bubbles from "./Bubbles";
 
 interface SpeechBubbleProps {
-    text: string;
-    style?: Bubbles.BubbleStyle;
-    cite?: string;
-    modifiers?: Bubbles.Modifiers;
-    textStyle?: React.CSSProperties;
+    readonly text: string;
+    readonly style?: Bubbles.BubbleStyle;
+    readonly cite?: string;
+    readonly modifiers?: Bubbles.Modifiers;
+    readonly textStyle?: React.CSSProperties;
 }
 
 interface SpeechBubbleState {

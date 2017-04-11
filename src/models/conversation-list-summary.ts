@@ -9,9 +9,9 @@ class ConversationListSummary implements SourceSummary {
 
     private conversationList: ConversationList;
 
-    private userMap: { [userId: string]: string } = {};
+    private userMap: { readonly [userId: string]: string } = {};
 
-    private requestMap: { [request: string]: number } = {};
+    private requestMap: { readonly [request: string]: number } = {};
 
     private exceptions: { timestamp: Date, stackTrace: StackTrace }[] = [];
 
@@ -67,21 +67,23 @@ class ConversationListSummary implements SourceSummary {
 
         this.conversationEvents = DataUtil.convertToTimeSeries("hours", this.startTime, this.endTime, this.conversationList);
 
+        const userMap: any = {...this.userMap };
+        const requestMap: any = {...this.requestMap };
         // The main data processing loop
         // Loop through the conversations and parse the data
         for (let conversation of this.conversationList) {
 
             // Add the userId to the user map.  It is a set essentially
-            this.userMap[conversation.userId] = conversation.userId;
+            userMap[conversation.userId] = conversation.userId;
 
             // Add the intent
             if (conversation.requestPayloadType) {
-                if (this.requestMap[conversation.requestPayloadType]) {
+                if (requestMap[conversation.requestPayloadType]) {
                     // it exists, increase the count
-                    ++this.requestMap[conversation.requestPayloadType];
+                    ++requestMap[conversation.requestPayloadType];
                 } else {
                     // it doesn't exist, add it
-                    this.requestMap[conversation.requestPayloadType] = 1;
+                    requestMap[conversation.requestPayloadType] = 1;
                 }
             }
 
@@ -96,6 +98,9 @@ class ConversationListSummary implements SourceSummary {
                 }
             }
         }
+
+        this.userMap = userMap;
+        this.requestMap = requestMap;
     }
 }
 

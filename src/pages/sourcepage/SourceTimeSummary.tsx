@@ -14,10 +14,10 @@ export interface LineProps extends LineProps {
 }
 
 interface SourceTimeSummaryProps extends LoadingComponent.LoadingComponentProps {
-    source: Source;
-    startDate: moment.Moment;
-    endDate: moment.Moment;
-    lines?: LineProps[];
+    readonly source: Source;
+    readonly startDate: moment.Moment;
+    readonly endDate: moment.Moment;
+    readonly lines?: LineProps[];
 }
 
 interface SourceTimeSummaryState extends LoadingComponent.LoadingComponentState<TimeData[]> {

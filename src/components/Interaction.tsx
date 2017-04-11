@@ -7,15 +7,15 @@ import Output from "../models/output";
 import StackTrace from "../models/stack-trace";
 
 interface InteractionProps {
-    request: Log;
-    response: Log;
-    outputs: Output[];
-    stackTraces: StackTrace[];
-    theme?: any;
+    readonly request: Log;
+    readonly response: Log;
+    readonly outputs: Output[];
+    readonly stackTraces: StackTrace[];
+    readonly theme?: any;
 }
 
 interface InteractionState {
-    openBranches: any;
+    readonly openBranches: any;
 }
 
 export class Interaction extends React.Component<InteractionProps, InteractionState> {

@@ -9,13 +9,13 @@ namespace spokes {
     const BASE_URL = "https://api.bespoken.link";
 
     export interface Lambda {
-        lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+        readonly lambdaARN: string;
+        readonly awsAccessKey: string;
+        readonly awsSecretKey: string;
     };
 
     export interface HTTP {
-        url: string;
+        readonly url: string;
     }
 
     /**
@@ -76,7 +76,7 @@ namespace spokes {
                 } else {
                     return Promise.reject("Could not save spoke.");
                 }
-            }).catch(function(err: Error) {
+            }).catch(function (err: Error) {
                 console.error(err);
                 throw err;
             });
@@ -111,92 +111,92 @@ interface FetchSpokeResponse {
     /**
      * Secret key of the skill.
      */
-    uuid: string;
+    readonly uuid: string;
     /**
      * A unique diagnostic key for the skill. Currently the same as the secret key.
      */
-    diagnosticKey: string;
+    readonly diagnosticKey: string;
     /**
      * The location that the skill would be retrieved from.
      */
-    endPoint: {
+    readonly endPoint: {
         /**
          * Skill ID.
          */
-        name: string;
+        readonly name: string;
     };
     /**
      * Spokes http endpoint
      */
-    http?: {
-        url: string;
+    readonly http?: {
+        readonly url: string;
     };
     /**
      * Spokes Lamda endpoint
      */
-    lambda?: {
-        lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+    readonly lambda?: {
+        readonly lambdaARN: string;
+        readonly awsAccessKey: string;
+        readonly awsSecretKey: string;
     };
     /**
      * Location to the pipe.
      */
-    path: string;
+    readonly path: string;
     /**
      * Type of pipe this is.
      */
-    pipeType: PIPE_TYPE;
+    readonly pipeType: PIPE_TYPE;
     /**
      * True or false based on whether live debugging is enabled.
      */
-    proxy: boolean;
+    readonly proxy: boolean;
 }
 
 interface SaveRequest {
     /**
      * Secret key of the skill.
      */
-    uuid: string;
+    readonly uuid: string;
     /**
      * A unique diagnostic key for the skill. Currently the same as the secret key.
      */
-    diagnosticKey: string;
+    readonly diagnosticKey: string;
     /**
      * The location that the skill would be retrieved from.
      */
-    endPoint: {
+    readonly endPoint: {
         /**
          * Skill ID.
          */
-        name: string;
+        readonly name: string;
     };
     /**
      * Spokes http endpoint
      */
-    http?: {
-        url: string;
+    readonly http?: {
+        readonly url: string;
     };
     /**
      * Spokes Lamda endpoint
      */
-    lambda?: {
-        lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+    readonly lambda?: {
+        readonly lambdaARN: string;
+        readonly awsAccessKey: string;
+        readonly awsSecretKey: string;
     };
     /**
      * Location to the pipe.
      */
-    path: string;
+    readonly path: string;
     /**
      * Type of pipe this is.
      */
-    pipeType: PIPE_TYPE;
+    readonly pipeType: PIPE_TYPE;
     /**
      * True or false based on whether live debugging is enabled.
      */
-    proxy: boolean;
+    readonly proxy: boolean;
 }
 
 /**
@@ -204,8 +204,9 @@ interface SaveRequest {
  * @param response Removes object
  */
 function scrub(response: FetchSpokeResponse | SaveRequest): void {
-    if (response.lambda) {
-        response.lambda.awsSecretKey = undefined;
+    const res = response as any; // Bypass the Typescribe read-only.  It's OK here.  We're friends.
+    if (res.lambda) {
+        res.lambda.awsSecretKey = undefined;
     }
 }
 

@@ -7,18 +7,18 @@ import Noop from "../../../utils/Noop";
 import ConvoListItem from "./ConvoListItem";
 
 export interface ConvoListProps {
-    conversations: ConversationList;
-    expandListItemWhenActive?: boolean;
-    iconStyle?: React.CSSProperties;
-    iconTooltip?: string;
-    onClick?: (conversation: Conversation) => void;
-    onIconClick?: (conversatino: Conversation) => void;
-    onEmpty?: () => JSX.Element;
-    onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
+    readonly conversations: ConversationList;
+    readonly expandListItemWhenActive?: boolean;
+    readonly iconStyle?: React.CSSProperties;
+    readonly iconTooltip?: string;
+    readonly onClick?: (conversation: Conversation) => void;
+    readonly onIconClick?: (conversatino: Conversation) => void;
+    readonly onEmpty?: () => JSX.Element;
+    readonly onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
 }
 
 export interface ConvoListState {
-    activeConversations: ConversationMap;
+    readonly activeConversations: ConversationMap;
 }
 
 export class ConversationListView extends React.Component<ConvoListProps, ConvoListState> {
@@ -47,7 +47,7 @@ export class ConversationListView extends React.Component<ConvoListProps, ConvoL
         // depending on if we in a mobile mode or not,
         // we either only let one active at a time
         // or multiple active at a time.
-        let activeConversations: ConversationMap;
+        let activeConversations: any;
 
         if (this.props.expandListItemWhenActive) {
             // mobile mode, clone the existing
@@ -66,8 +66,7 @@ export class ConversationListView extends React.Component<ConvoListProps, ConvoL
             activeConversations = { [conversation.id]: conversation };
         }
 
-        this.state.activeConversations = activeConversations;
-        this.setState(this.state);
+        this.setState({ activeConversations: activeConversations});
         this.props.onClick(conversation);
     }
 

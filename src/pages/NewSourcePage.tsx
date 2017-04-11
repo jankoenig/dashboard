@@ -22,14 +22,14 @@ export class SourceNameRule implements NameRule {
 }
 
 interface NewSourceProps {
-    newSource: (source: Source) => CreateSourceSuccess;
-    goToLogs: (source: Source) => RouterAction;
-    sources: Source[];
+    readonly newSource: (source: Source) => CreateSourceSuccess;
+    readonly goToLogs: (source: Source) => RouterAction;
+    readonly sources: Source[];
 }
 
 interface NewSourceState {
-    source: Source | undefined;
-    error: Error | undefined;
+    readonly source: Source | undefined;
+    readonly error: Error | undefined;
 };
 
 function mapStateToProps(state: State.All) {
@@ -122,8 +122,8 @@ export default connect(
 )(NewSourcePage);
 
 interface NewSkillProps {
-    onCreateSource: (source: Source) => void;
-    error?: Error;
+    readonly onCreateSource: (source: Source) => void;
+    readonly error?: Error;
 }
 
 class NewSkillForm extends React.Component<NewSkillProps, any> {
@@ -149,9 +149,9 @@ class NewSkillForm extends React.Component<NewSkillProps, any> {
 }
 
 interface CodeFormProps {
-    source: Source | undefined;
-    onGoToLogs: (source: Source) => void;
-    onGoBack: () => void;
+    readonly source: Source | undefined;
+    readonly onGoToLogs: (source: Source) => void;
+    readonly onGoBack: () => void;
 }
 
 interface CodeFormState {

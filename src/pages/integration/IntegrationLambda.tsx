@@ -3,12 +3,11 @@ import * as React from "react";
 import Input from "react-toolbox/lib/input";
 
 interface LambdaProps {
-    theme?: string;
-    lambdaARN?: string;
-    awsAccessKey?: string;
-    awsSecretKey?: string;
-    onChange?: (type: "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) => void;
-
+    readonly theme?: string;
+    readonly lambdaARN?: string;
+    readonly awsAccessKey?: string;
+    readonly awsSecretKey?: string;
+    readonly onChange?: (type: "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) => void;
 }
 
 interface LambdaState {

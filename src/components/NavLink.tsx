@@ -3,10 +3,10 @@ import * as React from "react";
 import { Link } from "react-router";
 
 export interface NavLinkProps {
-  path: string;
-  name: string;
-  icon?: string;
-  className?: string;
+  readonly path: string;
+  readonly name: string;
+  readonly icon?: string;
+  readonly className?: string;
 }
 
 export default class NavLink extends React.Component<NavLinkProps, any> {

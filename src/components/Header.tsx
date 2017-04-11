@@ -12,28 +12,28 @@ const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
 const IconButtonTheme = require("../themes/icon-button-primary-theme.scss");
 
 export interface Dropdownable {
-  value: string;
-  label: string;
+  readonly value: string;
+  readonly label: string;
 }
 
 export interface PageButton {
-  name: string;
-  icon: string | JSX.Element; // String or <svg/>
+  readonly name: string;
+  readonly icon: string | JSX.Element; // String or <svg/>
 }
 
 export interface HeaderProps {
-  currentSourceId?: string;
-  sources?: Dropdownable[];
-  onHomeClicked?: () => void;
-  onSourceSelected?: (source: Dropdownable) => void;
-  pageButtons?: PageButton[];
-  onPageSelected?: (button: PageButton) => void;
-  displayHomeButton?: boolean;
-  className?: string;
+  readonly currentSourceId?: string;
+  readonly sources?: Dropdownable[];
+  readonly onHomeClicked?: () => void;
+  readonly onSourceSelected?: (source: Dropdownable) => void;
+  readonly pageButtons?: PageButton[];
+  readonly onPageSelected?: (button: PageButton) => void;
+  readonly displayHomeButton?: boolean;
+  readonly className?: string;
 }
 
 export interface HeaderState {
-  selectedSourceId?: string;
+  readonly selectedSourceId?: string;
 }
 
 /**
@@ -50,8 +50,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   componentWillReceiveProps(nextProps: HeaderProps, context: any) {
-    this.state.selectedSourceId = nextProps.currentSourceId;
-    this.setState(this.state);
+    this.setState({ selectedSourceId: nextProps.currentSourceId } as HeaderState);
   }
 
   classes() {
@@ -59,7 +58,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   handleItemSelect = (value: string) => {
-    this.state.selectedSourceId = value;
+    this.setState({ selectedSourceId: value });
 
     // Now find the source and pass it back out
     for (let item of this.props.sources) {
@@ -126,8 +125,8 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 export default Header;
 
 interface HomeProps {
-  handleHomeClick: () => void;
-  showHome: boolean;
+  readonly handleHomeClick: () => void;
+  readonly showHome: boolean;
 }
 
 export class Home extends React.Component<HomeProps, any> {
@@ -148,9 +147,9 @@ export class Home extends React.Component<HomeProps, any> {
 }
 
 interface TitleProps {
-  handleItemSelect: (value: string) => void;
-  sources: Dropdownable[];
-  selectedSourceId: string;
+  readonly handleItemSelect: (value: string) => void;
+  readonly sources: Dropdownable[];
+  readonly selectedSourceId: string;
 }
 
 export class Title extends React.Component<TitleProps, any> {
@@ -192,12 +191,12 @@ export class Title extends React.Component<TitleProps, any> {
 }
 
 interface PageSwapProps {
-  pageButtons?: PageButton[];
-  onPageSelected?: (button: PageButton) => void | undefined;
+  readonly pageButtons?: PageButton[];
+  readonly onPageSelected?: (button: PageButton) => void | undefined;
 }
 
 interface PageSwapState {
-  buttons: JSX.Element[];
+  readonly buttons: JSX.Element[];
 }
 
 const TooltipButton = Tooltip(IconButton);
@@ -231,10 +230,10 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 
   buildButtons(props: PageSwapProps) {
     const buttons = props.pageButtons;
-    this.state.buttons = [];
+    const stateButtons: JSX.Element[] = [];
     let i = 0;
     for (let button of buttons) {
-      this.state.buttons.push(
+      stateButtons.push(
         (
           <HeaderButton
             key={++i}
@@ -243,6 +242,8 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
         )
       );
     };
+
+    this.setState({ buttons: stateButtons });
   }
 
   render() {
@@ -255,8 +256,8 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 }
 
 interface HeaderButtonProps {
-  button: PageButton;
-  onClick: (button: PageButton) => void;
+  readonly button: PageButton;
+  readonly onClick: (button: PageButton) => void;
 }
 
 export class HeaderButton extends React.Component<HeaderButtonProps, any> {

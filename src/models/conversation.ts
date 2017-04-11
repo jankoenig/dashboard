@@ -11,31 +11,31 @@ export enum Origin {
 }
 
 export interface ConvoColors {
-    fill: string;
-    background: string;
+    readonly fill: string;
+    readonly background: string;
 }
 
 export interface ConversationProperties {
-    request: Log;
-    response: Log;
-    outputs?: Output[];
-    stackTraces?: StackTrace[];
+    readonly request: Log;
+    readonly response: Log;
+    readonly outputs?: Output[];
+    readonly stackTraces?: StackTrace[];
 }
 
 export interface Conversation {
-    request: Log;
-    response: Log;
-    outputs: Output[];
-    stackTraces: StackTrace[];
-    origin: Origin;
-    id: string | undefined;
-    sessionId: string | undefined;
-    userId: string | undefined;
-    userColors: ConvoColors;
+    readonly request: Log;
+    readonly response: Log;
+    readonly outputs: Output[];
+    readonly stackTraces: StackTrace[];
+    readonly origin: Origin;
+    readonly id: string | undefined;
+    readonly sessionId: string | undefined;
+    readonly userId: string | undefined;
+    readonly userColors: ConvoColors;
     /**
      * The raw request type unmodified as it is in the conversation.
      */
-    rawRequestType: string | undefined;
+    readonly rawRequestType: string | undefined;
 
     /**
      * The type of the request.  This is the item that goes before the "." of a name;
@@ -46,18 +46,18 @@ export interface Conversation {
      *
      * This is the "request" part of the string.
      */
-    requestType: string | undefined;
+    readonly requestType: string | undefined;
 
     /**
      * The request type and if it is an "IntentRequest", will include the intent as well.
      */
-    requestPayloadType: string | undefined;
-    intent: string | undefined;
-    timestamp: Date | undefined;
-    hasError: boolean;
-    hasException: boolean;
-    isType(type: ConversationLevel | string): boolean;
-    hasOutputType(type: string): boolean;
+    readonly requestPayloadType: string | undefined;
+    readonly intent: string | undefined;
+    readonly timestamp: Date | undefined;
+    readonly hasError: boolean;
+    readonly hasException: boolean;
+    readonly isType: (type: ConversationLevel | string) => boolean;
+    readonly hasOutputType: (type: string) => boolean;
 }
 
 export function createConvo(props: ConversationProperties): Conversation {
@@ -140,8 +140,7 @@ class GenericConversation implements Conversation {
             let isHex = /(^[0-9a-fA-F]{6}$)/;
 
             if (isHex.test(lastSix)) {
-                colors.fill = "#" + lastSix;
-                colors.background = Color.complementaryColor(lastSix);
+                colors = { fill: "#" + lastSix, background: Color.complementaryColor(lastSix) };
             } else {
                 // not hex, try to convert it to hex
                 let decimalValue = parseInt(lastSix, 36);
@@ -149,8 +148,7 @@ class GenericConversation implements Conversation {
                 let fill = convertedHex.substr(convertedHex.length - 6);
 
                 if (isHex.test(fill)) {
-                    colors.fill = "#" + fill;
-                    colors.background = Color.complementaryColor(fill);
+                    colors = { fill: "#" + fill, background: Color.complementaryColor(fill) };
                 }
             }
         }

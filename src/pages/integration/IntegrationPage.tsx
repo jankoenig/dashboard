@@ -12,12 +12,12 @@ import Spokes from "./IntegrationSpokes";
 let TabsTheme = require("./themes/tabs.scss");
 
 interface IntegrationPageProps {
-    source: Source;
-    showSecret?: boolean;
+    readonly source: Source;
+    readonly showSecret?: boolean;
 }
 
 interface IntegrationPageState {
-    tabIndex: number;
+    readonly tabIndex: number;
 }
 
 export class IntegrationPage extends React.Component<IntegrationPageProps, IntegrationPageState> {
@@ -32,8 +32,7 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
     }
 
     handleTabChange(index: number) {
-        this.state.tabIndex = index;
-        this.setState(this.state);
+        this.setState({ tabIndex: index });
     }
 
     render() {

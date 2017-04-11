@@ -1,8 +1,8 @@
 import Source from "./source";
 
 export interface QueryParameter {
-    parameter: string;
-    value: any;
+    readonly parameter: string;
+    readonly value: any;
 }
 
 export class Query {

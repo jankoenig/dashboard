@@ -3,8 +3,8 @@ import * as React from "react";
 import MDLComponent from "../MDLComponent";
 
 interface RippleProps {
-    className?: string;
-    style?: React.CSSProperties;
+    readonly className?: string;
+    readonly style?: React.CSSProperties;
 }
 
 export class Ripple extends MDLComponent<RippleProps, any> {

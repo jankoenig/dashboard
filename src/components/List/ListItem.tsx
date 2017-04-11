@@ -11,27 +11,27 @@ export interface TwoLineItemProps {
     /**
      * Number that this item is in.
      */
-    index: number;
+    readonly index: number;
     /**
      * The primary text to appear on the item.
      */
-    primaryValue: string;
+    readonly primaryValue: string;
     /**
      * The secondary text to appear on the item.
      */
-    secondaryValue: string;
+    readonly secondaryValue: string;
     /**
      * A route to method that will use `react-router` to move to another part of the website.
      */
-    routeTo?: string;
+    readonly routeTo?: string;
     /**
      * A hard linke href that can be used to go to another website.
      */
-    linkTo?: string;
+    readonly linkTo?: string;
     /**
      * A callback to retrieve a selected item index.
      */
-    onSelected?: (index: number) => void;
+    readonly onSelected?: (index: number) => void;
 }
 
 export interface TwoLineItemState {

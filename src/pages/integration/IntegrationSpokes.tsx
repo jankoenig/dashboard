@@ -21,35 +21,35 @@ const CheckboxTheme = require("./themes/checkbox.scss");
 const ButtonTheme = require("./themes/button.scss");
 
 interface DropdownValue {
-    value: PAGE;
-    label: string;
+    readonly value: PAGE;
+    readonly label: string;
 }
 
 interface Message {
-    style?: React.CSSProperties;
-    message?: string;
+    readonly style?: React.CSSProperties;
+    readonly message?: string;
 }
 
 interface IntegrationSpokesGlobalStateProps {
-    user: User;
+    readonly user: User;
 }
 
 interface IntegrationSpokesStandardProps {
-    source: Source;
-    onSpokesSaved?(): void;
+    readonly source: Source;
+    readonly onSpokesSaved?: () => void;
 }
 
 interface IntegrationSpokesProps extends IntegrationSpokesGlobalStateProps, IntegrationSpokesStandardProps {
 }
 
 interface IntegrationSpokesState {
-    showPage: PAGE;
-    proxy: boolean;
-    message?: Message;
-    url?: string;
-    lambdaARN?: string;
-    awsAccessKey?: string;
-    awsSecretKey?: string;
+    readonly showPage: PAGE;
+    readonly proxy: boolean;
+    readonly message?: Message;
+    readonly url?: string;
+    readonly lambdaARN?: string;
+    readonly awsAccessKey?: string;
+    readonly awsSecretKey?: string;
 }
 
 function mapStateToProps(state: State.All): IntegrationSpokesGlobalStateProps {
@@ -125,7 +125,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.setState({ proxy: value } as IntegrationSpokesState);
     }
 
-    handleSwapperChange(key: "url"| "lambdaARN" | "awsAccessKey" | "awsSecretKey", value: string) {
+    handleSwapperChange(key: "url" | "lambdaARN" | "awsAccessKey" | "awsSecretKey", value: string) {
         let newObj = {} as any;
         newObj[key] = value;
         this.setState(newObj);
@@ -158,7 +158,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 const proxy = { proxy: spoke.proxy };
                 const httpObj = (http) ? http : { url: undefined };
                 const lambdaObj = (lambda) ? lambda : { lambdaARN: undefined, awsAccessKey: undefined, awsSecretKey: undefined };
-                this.setState({...proxy, ...httpObj, ...lambdaObj } as IntegrationSpokesState);
+                this.setState({ ...proxy, ...httpObj, ...lambdaObj } as IntegrationSpokesState);
             }));
     }
 

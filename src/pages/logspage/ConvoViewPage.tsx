@@ -4,7 +4,7 @@ import Interaction from "../../components/Interaction";
 import Conversation from "../../models/conversation";
 
 interface ConvoViewPageProps {
-    conversation?: Conversation;
+    readonly conversation?: Conversation;
 }
 
 interface ConvoViewPageState {
@@ -13,6 +13,7 @@ interface ConvoViewPageState {
 
 export class ConvoViewPage extends React.Component<ConvoViewPageProps, ConvoViewPageState> {
     render() {
+        console.log(this.props.conversation);
         if (this.props.conversation) {
             return (<Interaction
                 {...this.props.conversation}/>);

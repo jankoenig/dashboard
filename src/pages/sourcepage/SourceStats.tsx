@@ -15,16 +15,16 @@ const LOADING_VALUE: string = "Loading...";
 type ENTRY = "stats" | "Amazon.Alexa" | "Google.Home" | "Unknown";
 
 interface Labels {
-    eventsLabel: string;
-    usersLabel: string;
-    errorsLabel: string;
+    readonly eventsLabel: string;
+    readonly usersLabel: string;
+    readonly errorsLabel: string;
 }
 
 interface SourceStatsProps extends LoadingComponent.LoadingComponentProps {
-    source: Source;
-    startDate: moment.Moment;
-    endDate: moment.Moment;
-    selectedEntries?: ENTRY | ENTRY[];
+    readonly source: Source;
+    readonly startDate: moment.Moment;
+    readonly endDate: moment.Moment;
+    readonly selectedEntries?: ENTRY | ENTRY[];
 }
 
 interface SourceStatsState extends LoadingComponent.LoadingComponentState<LogService.SourceStats> {
@@ -40,12 +40,15 @@ function newStats(users: number = 0, exceptions: number = 0, events: number = 0)
 
 function addStats(stats: LogService.TotalStat[]): LogService.TotalStat {
     let addedStats = newStats();
+    let totalEvents = addedStats.totalEvents;
+    let totalExceptions = addedStats.totalExceptions;
+    let totalUsers = addedStats.totalUsers;
     for (let stat of stats) {
-        addedStats.totalEvents += stat.totalEvents;
-        addedStats.totalExceptions += stat.totalExceptions;
-        addedStats.totalUsers += stat.totalUsers;
+        totalEvents += stat.totalEvents;
+        totalExceptions += stat.totalExceptions;
+        totalUsers += stat.totalUsers;
     }
-    return addedStats;
+    return { totalEvents: totalEvents, totalExceptions: totalExceptions, totalUsers: totalUsers };
 }
 
 function getLabel(sourceStats: LogService.SourceStats, state: LoadingComponent.LoadingState, entries: ENTRY | ENTRY[]): Labels {

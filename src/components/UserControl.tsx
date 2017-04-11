@@ -5,9 +5,9 @@ import { Icon, ICON } from "./Icon";
 import { Menu, MenuItem } from "./Menu";
 
 interface UserProps {
-  user?: User;
-  login: () => void;
-  logout: () => void;
+  readonly user?: User;
+  readonly login: () => void;
+  readonly logout: () => void;
 }
 
 export default class UserControl extends React.Component<UserProps, any> {

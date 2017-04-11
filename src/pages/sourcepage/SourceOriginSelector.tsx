@@ -6,14 +6,14 @@ import { Cell, Grid } from "../../components/Grid";
 import Noop from "../../utils/Noop";
 
 export interface SourceOption {
-    label: string;
-    theme: string;
-    checked: boolean;
+    readonly label: string;
+    readonly theme: string;
+    readonly checked: boolean;
 }
 
 interface SourceOriginSelectorProps {
-    options: SourceOption[];
-    onCheck?: (index: number, label: string, checked: boolean) => void;
+    readonly options: SourceOption[];
+    readonly onCheck?: (index: number, label: string, checked: boolean) => void;
 }
 
 interface SourceOriginSelectorState {
@@ -58,9 +58,9 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
 export default SourceOriginSelector;
 
 interface BoxProps {
-    index: number;
-    option: SourceOption;
-    onChange: (index: number, label: string, checked: boolean) => void;
+    readonly index: number;
+    readonly option: SourceOption;
+    readonly onChange: (index: number, label: string, checked: boolean) => void;
 }
 
 export class Box extends React.Component<BoxProps, any> {

@@ -10,17 +10,17 @@ export interface NameRule extends ErrorHandler {
 }
 
 interface SourceFormProps {
-    name?: string;
-    error?: Error;
-    creatingSource?: boolean;
-    onChange?: (name: string) => any;
-    nameRule: NameRule;
-    createSource: (source: Source) => void;
+    readonly name?: string;
+    readonly error?: Error;
+    readonly creatingSource?: boolean;
+    readonly onChange?: (name: string) => any;
+    readonly nameRule: NameRule;
+    readonly createSource: (source: Source) => void;
 }
 
 interface SourceFormState {
-    name: string;
-    source?: Source;
+    readonly name: string;
+    readonly source?: Source;
 }
 
 export class SourceForm extends React.Component<SourceFormProps, SourceFormState> {

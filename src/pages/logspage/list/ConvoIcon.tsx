@@ -6,11 +6,11 @@ import GoogleHomeIcon from "../../../components/Icon/GoogleHome";
 import { Origin } from "../../../models/conversation";
 
 interface ConvoIconProps {
-    origin: Origin;
-    color: string;
-    style?: React.CSSProperties;
-    tooltip?: string;
-    onClick?: () => void;
+    readonly origin: Origin;
+    readonly color: string;
+    readonly style?: React.CSSProperties;
+    readonly tooltip?: string;
+    readonly onClick?: () => void;
 }
 
 interface ConvoIconState {
