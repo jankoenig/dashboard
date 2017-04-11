@@ -1,7 +1,6 @@
 /// <reference path="globals/chai-enzyme/index.d.ts" />
 /// <reference path="globals/chai/index.d.ts" />
 /// <reference path="globals/enzyme/index.d.ts" />
-/// <reference path="globals/node/index.d.ts" />
 /// <reference path="globals/object-assign/index.d.ts" />
 /// <reference path="globals/react-addons-create-fragment/index.d.ts" />
 /// <reference path="globals/react-addons-css-transition-group/index.d.ts" />
