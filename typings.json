@@ -32,7 +32,6 @@
     "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
   },
   "dependencies": {
-    "bluebird": "registry:dt/bluebird#3.5.0+20170316082528",
     "chai-datetime": "registry:dt/chai-datetime#0.0.0+20160510010627",
     "d3-scale": "registry:dt/d3-scale#1.0.0+20161207020330",
     "d3-time": "registry:dt/d3-time#1.0.0+20161207020330"

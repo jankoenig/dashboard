@@ -38,6 +38,7 @@
   ],
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
+    "@types/bluebird": "^3.5.2",
     "@types/isomorphic-fetch": "0.0.33",
     "@types/mocha": "^2.2.40",
     "browser-sync": "^2.18.8",

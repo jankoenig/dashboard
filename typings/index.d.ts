@@ -28,7 +28,6 @@
 /// <reference path="globals/redux/index.d.ts" />
 /// <reference path="globals/sinon-chai/index.d.ts" />
 /// <reference path="globals/sinon/index.d.ts" />
-/// <reference path="modules/bluebird/index.d.ts" />
 /// <reference path="modules/chai-datetime/index.d.ts" />
 /// <reference path="modules/d3-scale/index.d.ts" />
 /// <reference path="modules/d3-time/index.d.ts" />
