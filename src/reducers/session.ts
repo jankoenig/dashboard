@@ -1,8 +1,6 @@
-import * as objectAssign from "object-assign";
-
 import { SetUser } from "../actions/session";
 import { SET_USER } from "../constants";
-import User  from "../models/user";
+import User from "../models/user";
 
 export type SessionState = {
   readonly user?: User,
@@ -15,13 +13,13 @@ const INITIAL_STATE: SessionState = {
   isLoading: false
 };
 
-type SessionStateAction = SetUser | {type: ""};
+type SessionStateAction = SetUser | { type: "" };
 
 export function session(state: SessionState = INITIAL_STATE, action: SessionStateAction): SessionState {
 
   switch (action.type) {
     case SET_USER:
-      return objectAssign({}, state, {user: action.user});
+      return { ...state, ...{ user: action.user } };
     default:
       return state;
   }
