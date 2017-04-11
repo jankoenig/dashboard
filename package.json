@@ -39,6 +39,7 @@
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.33",
+    "@types/mocha": "^2.2.40",
     "browser-sync": "^2.18.8",
     "bs-fullscreen-message": "^1.1.0",
     "chai": "^3.5.0",
@@ -57,7 +58,7 @@
     "immutability-helper": "^2.0.0",
     "istanbul": "^0.4.5",
     "jsdom": "^9.8.3",
-    "mocha": "^3.1.2",
+    "mocha": "^3.2.0",
     "mocha-jsdom": "^1.1.0",
     "node-sass": "4.5.0",
     "postcss-loader": "0.13.0",
