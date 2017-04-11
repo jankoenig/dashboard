@@ -39,6 +39,8 @@
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "@types/bluebird": "^3.5.2",
+    "@types/chai": "^3.5.0",
+    "@types/chai-datetime": "0.0.30",
     "@types/classnames": "0.0.32",
     "@types/d3-scale": "^1.0.8",
     "@types/d3-time": "^1.0.5",

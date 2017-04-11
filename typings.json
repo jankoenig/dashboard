@@ -1,6 +1,5 @@
 {
   "globalDependencies": {
-    "chai": "registry:dt/chai#3.4.0+20160601211834",
     "chai-enzyme": "registry:dt/chai-enzyme#0.5.0+20161121205806",
     "enzyme": "registry:dt/enzyme#2.4.1+20161004164857",
     "object-assign": "registry:dt/object-assign#4.0.1+20161006140353",
@@ -25,8 +24,5 @@
     "redux-thunk": "registry:dt/redux-thunk#2.1.0+20160703120921",
     "sinon": "registry:dt/sinon#1.16.0+20160924120326",
     "sinon-chai": "registry:dt/sinon-chai#2.7.0+20160317120654"
-  },
-  "dependencies": {
-    "chai-datetime": "registry:dt/chai-datetime#0.0.0+20160510010627"
   }
 }
