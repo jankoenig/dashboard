@@ -26,7 +26,7 @@ describe("UserControl", function () {
 
             // It returns JSX for "Icon" which compiles to a "function" which returns the actual item.
             // It being a function means it's correct.
-            expect(iconProps.type).to.be.a("function");
+            expect((iconProps as any).type).to.be.a("function");
         });
     });
 
@@ -45,7 +45,7 @@ describe("UserControl", function () {
                 let iconProps = styledMenu.prop("icon");
 
                 // Enzyme doesn't see it as a "type" so comparing it as a "string".  It's correct if the type is "img".
-                expect(iconProps.type).to.be.equal("img");
+                expect((iconProps as any).type).to.be.equal("img");
             });
         });
         describe("without photo", function () {
@@ -61,7 +61,7 @@ describe("UserControl", function () {
 
                 let iconProps = styledMenu.prop("icon");
 
-                expect(iconProps.type).to.be.a("function");
+                expect((iconProps as any).type).to.be.a("function");
             });
         });
 

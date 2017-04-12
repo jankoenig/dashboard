@@ -2,7 +2,7 @@ import * as chai from "chai";
 import { shallow } from "enzyme";
 import * as React from "react";
 
-import { RippleContainer, RippleContainerProps } from "./RippleContainer";
+import { RippleContainer } from "./RippleContainer";
 
 let expect = chai.expect;
 
@@ -63,12 +63,10 @@ describe("RippleContainer", function() {
     it ("Tests the styles are updated after new props", function() {
         let wrapper = shallow(<RippleContainer className={"Class3 Class4"} style={{borderLeft: "5px", left: "6px", right: "7px", bottom: "8px"}}/>);
 
-        let newProps: RippleContainerProps = {
+        wrapper.setProps({
             className: "Class3 Class4",
             style: {top: "9px", borderBottom: "10px"}
-        };
-
-        wrapper.setProps(newProps);
+        });
 
         let div = wrapper.find("div");
 
