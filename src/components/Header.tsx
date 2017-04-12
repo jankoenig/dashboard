@@ -50,8 +50,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   componentWillReceiveProps(nextProps: HeaderProps, context: any) {
-    this.state.selectedSourceId = nextProps.currentSourceId;
-    this.setState(this.state);
+    this.setState({ selectedSourceId: nextProps.currentSourceId });
   }
 
   classes() {
@@ -59,8 +58,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   handleItemSelect = (value: string) => {
-    this.state.selectedSourceId = value;
-
+    this.setState({ selectedSourceId: value });
     // Now find the source and pass it back out
     for (let item of this.props.sources) {
       if (item.value === value && this.props.onSourceSelected) {
@@ -229,9 +227,9 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 
   buildButtons(props: PageSwapProps) {
     const buttons = props.pageButtons;
-    this.state.buttons = [];
+    const stateButtons = [];
     for (let button of buttons) {
-      this.state.buttons.push(
+      stateButtons.push(
         (
           <TooltipButton
             theme={IconButtonTheme}
@@ -243,6 +241,7 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
         )
       );
     };
+    this.setState({ buttons: stateButtons });
   }
 
   render() {

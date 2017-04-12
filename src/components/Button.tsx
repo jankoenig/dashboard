@@ -47,14 +47,14 @@ class Button extends React.Component<ButtonProps, any> {
 
     // Clean off properties that were used for setting classes
     // They are not real and should not be passed on
-    delete properties.fab;
-    delete properties.accent;
-    delete properties.raised;
-    delete properties.colored;
-    delete properties.ripple;
-    delete properties.primary;
+    const elementProps = {
+      ...properties, ...{
+        fab: undefined, accent: undefined, raised: undefined,
+        colored: undefined, ripple: undefined, primary: undefined
+      }
+    };
 
-    return React.createElement(component, properties);
+    return React.createElement(component, elementProps);
   }
 }
 

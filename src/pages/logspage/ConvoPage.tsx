@@ -78,41 +78,40 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
     }
 
     handleFilter(filter: Filter<Conversation>) {
-        this.state.filter = this.state.filter.copyAndAddOrReplace(filter);
-        this.setState(this.state);
+        const newFilter = this.state.filter.copyAndAddOrReplace(filter);
+        this.setState({ filter: newFilter });
     }
 
     handleDateFilter(filter: DateFilter) {
         const endIsToday = isToday(filter.endDate);
-        this.state.dateRange = { startTime: filter.startDate, endTime: filter.endDate };
-        this.state.refreshOn = endIsToday;
-        this.state.refreshDisabled = !endIsToday;
+        const dateRange = { startTime: filter.startDate, endTime: filter.endDate };
+        const refreshOn = endIsToday;
+        const refreshDisabled = !endIsToday;
+        this.setState({ dateRange: dateRange, refreshOn: refreshOn, refreshDisabled: refreshDisabled });
         this.handleFilter(filter);
     }
 
     handleIconClick(convo: Conversation) {
         const alreadyFilteringUser = this.state.iconStyle !== undefined;
         if (alreadyFilteringUser) {
-            this.state.iconStyle = undefined;
-            this.state.iconTooltip = TOOLTIP_DEACTIVE;
-            this.state.filter = this.state.filter.copyAndRemove(UserIDFilter.type);
-            this.setState(this.state);
+            const iconStyle = undefined as React.CSSProperties;
+            const iconTooltip = TOOLTIP_DEACTIVE;
+            const filter = this.state.filter.copyAndRemove(UserIDFilter.type);
+            this.setState({ iconStyle: iconStyle, iconTooltip: iconTooltip, filter: filter });
         } else {
-            this.state.iconStyle = ACTIVE_ICON_STYLE;
-            this.state.iconTooltip = TOOLTIP_ACTIVE;
-            this.handleFilter(new UserIDFilter(convo.userId, true)); // This method will take care of setting state.
+            const iconStyle = ACTIVE_ICON_STYLE;
+            const iconTooltip = TOOLTIP_ACTIVE;
+            this.setState({ iconStyle: iconStyle, iconTooltip: iconTooltip });
+            this.handleFilter(new UserIDFilter(convo.userId, true));
         }
     }
 
     handleLiveUpdate(enabled: boolean) {
-        this.state.refreshOn = enabled;
-        this.state.savedRefreshState = enabled;
-        this.setState(this.state);
+        this.setState({ refreshOn: enabled, savedRefreshState: enabled });
     }
 
     handleVisiblityChange(state: VISIBLITY_STATE) {
-        this.state.refreshOn = state === "visible" && this.state.savedRefreshState;
-        this.setState(this.state);
+        this.setState({ refreshOn: state === "visible" && this.state.savedRefreshState });
     }
 
     render() {

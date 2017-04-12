@@ -36,7 +36,7 @@ interface FormInputProps {
     value: string;
     autoFocus?: boolean;
     floatingLabel?: boolean;
-    onChange?: (event: React.FormEvent) => any;
+    onChange?: (event: React.FormEvent<any>) => any;
     style?: React.CSSProperties;
     readOnly?: boolean;
     autoComplete?: "off" | "on";
@@ -85,22 +85,21 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
         return style;
     }
 
-    onFormChange(event: React.FormEvent) {
+    onFormChange(event: React.FormEvent<any>) {
         let errorMsg: string = undefined;
         let target = event.target as HTMLSelectElement;
         if (this.props.error !== undefined) {
             errorMsg = this.props.error.errorMessage(target.value);
         }
 
-        this.state.errorMsg = errorMsg;
-        this.setState(this.state);
+        this.setState({ errorMsg: errorMsg });
 
         if (this.props.onChange) {
             this.props.onChange(event);
         }
     }
 
-    onShow(event: React.MouseEvent) {
+    onShow(event: React.MouseEvent<any>) {
         this.setState(function (previousState) {
             return {
                 errorMsg: previousState.errorMsg,

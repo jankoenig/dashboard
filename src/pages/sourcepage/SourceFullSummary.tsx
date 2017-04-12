@@ -113,17 +113,20 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     handleOriginChange(index: number, label: string, checked: boolean) {
         let totalChecked: boolean = false;
 
-        this.state.sourceOptions[index].checked = checked;
-        this.state.lines = [];
-        this.state.bars = [];
-        this.state.selectedStatEntry = [];
+        const sourceOptions = this.state.sourceOptions.splice(0);
+        const lines: LineProps[] = [];
+        const bars: BarProps[] = [];
+        const statEntries: SelectedStatEntry[] = [];
 
-        for (let o of this.state.sourceOptions) {
-            if (o.checked) {
-                this.state.selectedStatEntry.push(SourceFullSummary.statEntries[o.label]);
-                this.state.lines.push(SourceFullSummary.lines[o.label]);
-                if (o.label !== "Total") {
-                    this.state.bars.push(SourceFullSummary.bars[o.label]);
+        sourceOptions[index] = { ...sourceOptions[index], ...{ checked: checked } };
+
+        for (let o of sourceOptions) {
+            const { checked, label } = o;
+            if (checked) {
+                statEntries.push(SourceFullSummary.statEntries[label]);
+                lines.push(SourceFullSummary.lines[label]);
+                if (label !== "Total") {
+                    bars.push(SourceFullSummary.bars[label]);
                 } else {
                     totalChecked = o.checked;
                 }
@@ -131,11 +134,8 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         }
 
         // We don't care what's check for stat entry if "Total" is selected.
-        if (totalChecked) {
-            this.state.selectedStatEntry = [SourceFullSummary.statEntries["Total"]];
-        }
-
-        this.setState(this.state);
+        const selectedStatEntry = (totalChecked) ? [SourceFullSummary.statEntries["Total"]] : statEntries;
+        this.setState({ sourceOptions: sourceOptions, lines: lines, bars: bars, selectedStatEntry: selectedStatEntry });
     }
 
     render() {

@@ -67,8 +67,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
     }
 
     handleDeleteDialogToggle() {
-        this.state.deleteDialogActive = !this.state.deleteDialogActive;
-        this.setState(this.state);
+        this.setState({ deleteDialogActive: !this.state.deleteDialogActive });
     }
 
     handleDeleteSkill(): Promise<Source> {

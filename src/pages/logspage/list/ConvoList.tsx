@@ -66,8 +66,7 @@ export class ConversationListView extends React.Component<ConvoListProps, ConvoL
             activeConversations = { [conversation.id]: conversation };
         }
 
-        this.state.activeConversations = activeConversations;
-        this.setState(this.state);
+        this.setState({ activeConversations: activeConversations });
         this.props.onClick(conversation);
     }
 

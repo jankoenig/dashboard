@@ -25,19 +25,17 @@ export abstract class IntegrationSubPage<P extends IntegrationSubPageProps, S ex
 
     componentWillReceiveProps(props: P, context: any) {
         const message = (props.showSecret && props.showSecret) ? props.secretKey : HIDDEN_KEY_MESSAGE;
-        this.state.secretText = message;
-        this.setState(this.state);
+        this.setState({ secretText: message });
     }
 
     handleRevealClick() {
         if (this.props.secretKey) {
+            let secretText = HIDDEN_KEY_MESSAGE;
             if (this.state.secretText === HIDDEN_KEY_MESSAGE) {
-                this.state.secretText = this.props.secretKey;
-            } else {
-                this.state.secretText = HIDDEN_KEY_MESSAGE;
+                secretText = this.props.secretKey;
             }
 
-            this.setState(this.state);
+            this.setState({ secretText: secretText });
         }
     }
 }

@@ -52,7 +52,7 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
 
         let highest: moment.Moment = moment(data[0].time).startOf("day");
         let lowest: moment.Moment = moment(data[0].time).startOf("day");
-        let ticks: number[] = [ data[0].timeValue ];
+        let ticks: number[] = [data[0].timeValue];
         for (let i = 1; i < data.length; ++i) {
             const currentDate: moment.Moment = moment(data[i].time).startOf("day");
             if (currentDate.isAfter(highest)) {
@@ -95,9 +95,7 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     };
 
     componentWillReceiveProps(nextProps: TimeChartProps, context: any) {
-        this.state.ticks = TimeChart.createTicks(nextProps);
-        this.state.lines = TimeChart.createLines(nextProps);
-        this.setState(this.state);
+        this.setState({ ticks: TimeChart.createTicks(nextProps), lines: TimeChart.createLines(nextProps) });
     }
 
     tickFormat(time: Date): string {

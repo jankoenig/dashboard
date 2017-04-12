@@ -64,8 +64,7 @@ export default class ConvoListItem extends React.Component<ConvoListItemProps, C
     componentWillReceiveProps(props: ConvoListItemProps, context: any) {
         const active = props.showInteractionOnActive && props.active;
         if (this.state.dropDownActive !== active) {
-            this.state.dropDownActive = active;
-            this.setState(this.state);
+            this.setState({ dropDownActive: active });
         }
     }
 

@@ -31,8 +31,7 @@ export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, C
     }
 
     handleItemClick(convo: Conversation) {
-        this.state.selectedConvo = convo;
-        this.setState(this.state);
+        this.setState({ selectedConvo: convo });
     }
 
     render() {

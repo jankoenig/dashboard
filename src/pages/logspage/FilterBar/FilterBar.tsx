@@ -117,16 +117,16 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     setDateRange(startDate: Date | Moment, endDate: Date | Moment) {
-        this.state.startDate = convertDate(startDate);
-        if (this.state.startDate) {
-            this.state.startDate.setHours(0, 0, 0, 0);
+        const start = convertDate(startDate);
+        if (start) {
+            start.setHours(0, 0, 0, 0);
         }
 
-        this.state.endDate = convertDate(endDate);
-        if (this.state.endDate) {
-            this.state.endDate.setHours(23, 59, 59, 999);
+        const end = convertDate(endDate);
+        if (end) {
+            end.setHours(23, 59, 59, 999);
         }
-        this.setState(this.state);
+        this.setState({ startDate: start, endDate: end });
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
@@ -140,34 +140,29 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
     }
 
     handleLogTypeChange(value: string) {
-        this.state.selectedType = value;
-        this.setState(this.state);
+        this.setState({ selectedType: value });
         this.props.onFilterLogLevel(new LogLevelFilter(value));
     }
 
     handleRequestChange(value: string) {
-        this.state.requestValue = value;
-        this.setState(this.state);
+        this.setState({ requestValue: value });
         this.props.onFilterRequest(new RequestFilter(value));
     }
 
     handleIntentChange(value: string) {
-        this.state.intentValue = value;
-        this.setState(this.state);
+        this.setState({ intentValue: value });
         this.props.onFilterIntent(new IntentFilter(value));
     }
 
     handleExceptionOnlyChange(value: boolean) {
-        this.state.exceptionsOnly = value;
-        this.setState(this.state);
+        this.setState({ exceptionsOnly: value });
 
         let filter: ExceptionFilter = (value) ? new ExceptionFilter() : new FakeExceptionFilter();
         this.props.onFilterException(filter);
     }
 
     handleOriginChange(value: string) {
-        this.state.selectedOrigin = value;
-        this.setState(this.state);
+        this.setState({ selectedOrigin: value });
 
         let origin: Origin;
         switch (value) {

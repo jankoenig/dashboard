@@ -32,8 +32,7 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
     }
 
     handleTabChange(index: number) {
-        this.state.tabIndex = index;
-        this.setState(this.state);
+        this.setState({ tabIndex: index });
     }
 
     render() {

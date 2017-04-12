@@ -45,11 +45,10 @@ class StaticList extends React.Component<ListProps, ListState> {
     };
 
     updateDimensions(dimensions: Dimensions) {
-        this.state.dimens = dimensions;
-        this.setState(this.state);
+        this.setState({ dimens: dimensions });
     }
 
-    handleScroll(event: React.UIEvent) {
+    handleScroll(event: React.UIEvent<any>) {
         const visibleRange: number[] = this.list.getVisibleRange();
         if (this.props.onScroll) {
             this.props.onScroll(visibleRange[0], visibleRange[1], this.props.length);

@@ -216,7 +216,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     getNextPage() {
         this.isLoading = true;
-        const newState = { ...this.state };
+        const newState: ConvoListPageState = { ...this.state };
         const filterConvo = this.filterConvo;
         this.props
             .newPage({ query: this.state.query, logs: this.state.lastLogs }, 50)
@@ -243,7 +243,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
     getRefresh() {
         this.isLoading = true;
-        const newState = { ...this.state };
+        const newState: ConvoListPageState = { ...this.state };
         const filterConvo = this.filterConvo;
         this.props
             .refresh({ query: this.state.query, logs: this.state.lastLogs })
