@@ -1,6 +1,6 @@
 import * as classNames from "classnames";
 import * as React from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 export interface NavLinkProps {
   path: string;

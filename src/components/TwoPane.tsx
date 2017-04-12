@@ -27,17 +27,17 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
     }
 
     onMeasure(dimensions: Dimensions) {
-        this.state.myHeight = dimensions.height;
-        this.setState(this.state);
+        this.setState({ myHeight: dimensions.height });
     }
 
     render(): JSX.Element {
-        let leftStyleProp = (this.props.leftStyle) ? this.props.leftStyle : {};
-        let rightStyleProp = (this.props.rightStyle) ? this.props.rightStyle : {};
+        let leftStyleProp: React.CSSProperties = this.props.leftStyle || {};
+        let rightStyleProp: React.CSSProperties = this.props.rightStyle || {};
         let spacing = this.props.spacing !== undefined && this.props.spacing;
 
-        let leftStyle = {...{ height: this.state.myHeight, overflowY: "auto" }, ...leftStyleProp };
-        let rightStyle = {...{height: this.state.myHeight, overflowY: "auto" }, ...rightStyleProp };
+        const defaultStyle: React.CSSProperties = { height: this.state.myHeight, overflowY: "auto" };
+        let leftStyle: React.CSSProperties = { ...defaultStyle, ...leftStyleProp };
+        let rightStyle: React.CSSProperties = { ...defaultStyle, ...rightStyleProp };
 
         let leftObj = (this.props as any).children[0];
         let rightObj = (this.props as any).children[1];

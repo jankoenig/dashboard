@@ -29,8 +29,7 @@ export class ResizingComponent extends React.Component<ResizingComponentProps, R
     }
 
     onMeasure(dimensions: Dimensions) {
-        this.state.dimens = dimensions;
-        this.setState(this.state);
+        this.setState({ dimens: dimensions });
     }
 
     render() {

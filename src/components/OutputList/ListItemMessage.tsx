@@ -8,7 +8,7 @@ interface ListItemMessageProps {
     levelColor?: string;
     messageColor?: string;
     style?: React.CSSProperties;
-    onClick?: (event: React.MouseEvent) => void;
+    onClick?: (event: React.MouseEvent<any>) => void;
 }
 
 export const DEFAULT_TIME_FORMAT = "hh:mm:ss.SSSSS";

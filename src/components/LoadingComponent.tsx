@@ -110,7 +110,7 @@ export class Component<DATA, P extends LoadingComponentProps, S extends LoadingC
                 return this.mapState({ state: LoadingState.LOAD_ERROR });
             })
             .then((state: S) => {
-                this.setState(state);
+                this.setState(state as any); // Don't know why Typescript hates S but this was working before updating React to 4.0.
             });
     }
 

@@ -49,11 +49,11 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
         };
     }
 
-    onSecretChange(event: React.FormEvent) {
+    onSecretChange(event: React.FormEvent<any>) {
         // Doing nothing right now.
     }
 
-    onNameChange(event: React.FormEvent) {
+    onNameChange(event: React.FormEvent<any>) {
         let target = event.target as HTMLSelectElement;
         let valid = this.props.nameRule.regex.test(target.value);
         this.setState({
@@ -64,7 +64,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
         this.props.onChange(target.value);
     }
 
-    onClick(event: React.FormEvent) {
+    onClick(event: React.FormEvent<any>) {
         if (this.state.source) {
             this.props.createSource(this.state.source);
         }

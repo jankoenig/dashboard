@@ -1,4 +1,4 @@
-import { Component } from "react";
+import * as React from "react";
 
 import { MenuItem, MenuItemProps } from "react-toolbox/lib/menu";
 
@@ -12,7 +12,7 @@ interface StyledMenuItemState {
 
 }
 
-class StyledMenuItem extends Component<StyledMenuItemProps, StyledMenuItemState> {
+class StyledMenuItem extends React.Component<StyledMenuItemProps, StyledMenuItemState> {
     render() {
         const {theme, ...others} = this.props;
 

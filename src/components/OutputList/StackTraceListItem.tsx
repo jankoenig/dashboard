@@ -30,9 +30,8 @@ class StackTraceListItem extends React.Component<StackTraceListItemProps, StackT
         });
     }
 
-    onClick(event: React.MouseEvent) {
-        this.state.displayElements = !this.state.displayElements;
-        this.setState(this.state);
+    onClick(event: React.MouseEvent<any>) {
+        this.setState({ displayElements: !this.state.displayElements });
     }
 
     render() {

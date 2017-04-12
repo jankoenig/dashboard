@@ -5,7 +5,7 @@ import { COLORS } from "../constants";
 
 interface PillProps {
     style?: React.CSSProperties;
-    onClick?: (event: React.MouseEvent) => void;
+    onClick?: (event: React.MouseEvent<any>) => void;
 }
 
 export default class Pill extends React.Component<PillProps, any> {
