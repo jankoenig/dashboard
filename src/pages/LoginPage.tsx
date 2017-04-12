@@ -68,24 +68,21 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
     handleFormSubmit(email: string, pass: string) {
         this.props.login(email, pass)
             .catch((err: Error) => {
-                this.state.error = err.message;
-                this.setState(this.state);
+                this.setState({ error: err.message });
             });
     }
 
     handleFormLoginWithGithub() {
         this.props.loginWithGithub()
             .catch((err: Error) => {
-                this.state.error = err.message;
-                this.setState(this.state);
+                this.setState({ error: err.message });
             });
     }
 
     handleFormSignUpWithEmail(email: string, pass: string, confirmPass: string) {
         this.props.signUpWithEmail(email, pass, confirmPass)
             .catch((err: Error) => {
-                this.state.error = err.message;
-                this.setState(this.state);
+                this.setState({ error: err.message });
             });
     }
 
