@@ -2,6 +2,8 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
+import { Dispatch } from "redux";
+import { ThunkAction } from "redux-thunk";
 
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
@@ -37,11 +39,11 @@ interface DashboardProps {
   currentSource: Source;
   sources: Source[];
   location: Location;
-  login: () => (dispatch: Redux.Dispatch<any>) => void;
-  logout: () => (dispatch: Redux.Dispatch<any>) => void;
-  getSources: () => Redux.ThunkAction<any, any, any>;
-  setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
-  goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
+  login: () => (dispatch: Dispatch<any>) => void;
+  logout: () => (dispatch: Dispatch<any>) => void;
+  getSources: () => ThunkAction<any, any, any>;
+  setSource: (source: Source) => (dispatch: Dispatch<any>) => void;
+  goTo: (path: string) => (dispatch: Dispatch<any>) => void;
 }
 
 interface DashboardState {

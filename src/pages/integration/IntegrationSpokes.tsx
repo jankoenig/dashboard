@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 import { Button } from "react-toolbox/lib/button";
 import Checkbox from "react-toolbox/lib/checkbox";
@@ -58,7 +59,7 @@ function mapStateToProps(state: State.All): IntegrationSpokesGlobalStateProps {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
     return { /* nothing to match at the moment */ };
 }
 

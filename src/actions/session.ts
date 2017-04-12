@@ -1,3 +1,5 @@
+import { Dispatch } from "redux";
+
 import { authFormError } from "../actions/auth-form";
 import { displaySnackbar } from "../actions/notification";
 import { SENDING_REQUEST, SET_USER } from "../constants";
@@ -24,10 +26,10 @@ export function setUser(user: User | undefined): SetUser {
 }
 
 export interface SuccessCallback {
-  loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void;
+  loginSuccess(dispatch: Dispatch<any>, user: User): void;
 }
 
-function loginMethod(dispatch: Redux.Dispatch<any>, loginStrat: () => Promise<User>, redirectStrat?: SuccessCallback): Promise<User> {
+function loginMethod(dispatch: Dispatch<any>, loginStrat: () => Promise<User>, redirectStrat?: SuccessCallback): Promise<User> {
   dispatch(sendingRequest(true));
   return loginStrat()
     .then(function (user: User) {
@@ -45,32 +47,32 @@ function loginMethod(dispatch: Redux.Dispatch<any>, loginStrat: () => Promise<Us
     });
 }
 
-export function login(email: string, password: string, redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => Promise<User> {
-  return function (dispatch: Redux.Dispatch<any>): Promise<User> {
+export function login(email: string, password: string, redirectStrat?: SuccessCallback): (dispatch: Dispatch<any>) => Promise<User> {
+  return function (dispatch: Dispatch<any>): Promise<User> {
     return loginMethod(dispatch, function () {
       return auth.login(email, password);
     }, redirectStrat);
   };
 }
 
-export function loginWithGithub(redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => Promise<User> {
-  return function (dispatch: Redux.Dispatch<any>) {
+export function loginWithGithub(redirectStrat?: SuccessCallback): (dispatch: Dispatch<any>) => Promise<User> {
+  return function (dispatch: Dispatch<any>) {
     return loginMethod(dispatch, function () {
       return auth.loginWithGithub();
     }, redirectStrat);
   };
 }
 
-export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => Promise<User> {
-  return function (dispatch: Redux.Dispatch<any>) {
+export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback): (dispatch: Dispatch<any>) => Promise<User> {
+  return function (dispatch: Dispatch<any>) {
     return loginMethod(dispatch, function () {
       return auth.signUpWithEmail(email, password, confirmPassword);
     }, redirectStrat);
   };
 }
 
-export function logout(callback?: (success: boolean) => void): (dispatch: Redux.Dispatch<any>) => Promise<void> {
-  return function (dispatch: Redux.Dispatch<void>) {
+export function logout(callback?: (success: boolean) => void): (dispatch: Dispatch<any>) => Promise<void> {
+  return function (dispatch: Dispatch<void>) {
     return auth.logout().then(function () {
       if (callback) {
         callback(true);
@@ -83,8 +85,8 @@ export function logout(callback?: (success: boolean) => void): (dispatch: Redux.
   };
 }
 
-export function resetPassword(email: string, callback?: (success: boolean) => void): (dispatch: Redux.Dispatch<any>) => Promise<void> {
-  return function (dispatch: Redux.Dispatch<void>) {
+export function resetPassword(email: string, callback?: (success: boolean) => void): (dispatch: Dispatch<any>) => Promise<void> {
+  return function (dispatch: Dispatch<void>) {
     return auth.sendResetPasswordEmail(email).then(function () {
       dispatch(displaySnackbar("Check your inbox!"));
       if (callback) {

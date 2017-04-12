@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 import { findLatest, nextPage, PageResults, retrieveLogs } from "../../actions/log";
 import Conversation from "../../models/conversation";
@@ -62,7 +63,7 @@ function mapStateToProps(state: State.All): ConvoListPageStateProps {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageReduxProps {
+function mapDispatchToProps(dispatch: Dispatch<any>): ConvoListPageReduxProps {
     return {
         getLogs: function (query: LogQuery): Promise<Log[]> {
             const fetchLogs = retrieveLogs(query);

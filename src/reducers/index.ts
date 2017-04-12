@@ -1,5 +1,5 @@
 import { routerReducer } from "react-router-redux";
-import { combineReducers } from "redux";
+import { Action, combineReducers } from "redux";
 
 import { LOGOUT_USER } from "../constants";
 import { authForm, AuthFormState } from "./auth-form";
@@ -30,7 +30,7 @@ const appReducer = combineReducers<State.All>({
 
 // Intercept global actions, such as logout to reset the state.
 // From http://stackoverflow.com/a/35641992/1349766
-const rootReducer = function(state: State.All, action: Redux.Action) {
+const rootReducer = function(state: State.All, action: Action) {
 
   if (action.type === LOGOUT_USER) {
     state = undefined;

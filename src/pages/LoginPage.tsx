@@ -1,6 +1,6 @@
-﻿
-import * as React from "react";
+﻿import * as React from "react";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 
 import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback } from "../actions/session";
@@ -36,7 +36,7 @@ function mapStateToProps(state: State.All) {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
         login: function (email: string, password: string, redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(login(email, password, redirectStrat));

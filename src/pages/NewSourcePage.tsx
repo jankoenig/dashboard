@@ -1,6 +1,7 @@
 import * as React from "react";
 import { connect } from "react-redux";
 import { push, RouterAction } from "react-router-redux";
+import { Dispatch } from "redux";
 
 import { createSourceSuccess, CreateSourceSuccess } from "../actions/source";
 import Button from "../components/Button";
@@ -38,7 +39,7 @@ function mapStateToProps(state: State.All) {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
         newSource: function (source: Source): CreateSourceSuccess {
             return dispatch(createSourceSuccess(source));

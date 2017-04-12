@@ -1,3 +1,6 @@
+import { Dispatch } from "redux";
+import { ThunkAction } from "redux-thunk";
+
 import {
     CREATE_SOURCE_SUCCESS,
     REMOVE_SOURCE,
@@ -55,8 +58,8 @@ export function createSourceSuccess(source: Source): CreateSourceSuccess {
     };
 }
 
-export function deleteSource(source: Source): (dispatch: Redux.Dispatch<any>) => Promise<Source> {
-    return function(dispatch: Redux.Dispatch<any>): Promise<Source> {
+export function deleteSource(source: Source): (dispatch: Dispatch<any>) => Promise<Source> {
+    return function(dispatch: Dispatch<any>): Promise<Source> {
         return service.deleteSource(source)
             .then(function() {
                 dispatch(removeSource(source));
@@ -65,8 +68,8 @@ export function deleteSource(source: Source): (dispatch: Redux.Dispatch<any>) =>
     };
 }
 
-export function getSources(): Redux.ThunkAction<any, any, any> {
-    return function (dispatch: Redux.Dispatch<any>) {
+export function getSources(): ThunkAction<any, any, any> {
+    return function (dispatch: Dispatch<any>) {
         service.getSources().then(function (retVal) {
             if (!retVal.val()) {
                 dispatch(setSources([]));

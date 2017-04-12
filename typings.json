@@ -1,12 +1,5 @@
 {
   "globalDependencies": {
-    "object-assign": "registry:dt/object-assign#4.0.1+20161006140353",
-    "react-addons-perf": "registry:dt/react-addons-perf#15.1.0+20160619031933",
-    "react-addons-update": "registry:dt/react-addons-update#0.14.0+20160316155526",
-    "react-ga": "registry:dt/react-ga#1.4.1+20160930194758",
-    "react-router-redux": "registry:dt/react-router-redux#4.0.0+20160930121107",
-    "redux": "registry:dt/redux#3.5.2+20160703092728",
-    "redux-mock-store": "registry:dt/redux-mock-store#0.0.6+20160907111255",
-    "redux-thunk": "registry:dt/redux-thunk#2.1.0+20160703120921"
+    "object-assign": "registry:dt/object-assign#4.0.1+20161006140353"
   }
 }

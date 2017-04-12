@@ -1,5 +1,6 @@
 import * as chai from "chai";
 import { replace } from "react-router-redux";
+import { Dispatch } from "redux";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import * as sinon from "sinon";
@@ -34,7 +35,7 @@ class ToPathCallback implements session.SuccessCallback {
         this.toPath = toPath;
     }
 
-    loginSuccess(dispatch: Redux.Dispatch<any>, user: User): void {
+    loginSuccess(dispatch: Dispatch<any>, user: User): void {
         dispatch(replace(this.toPath));
     }
 }
@@ -329,7 +330,7 @@ describe("Session.ts", function () {
         });
     });
 
-    function verifySuccessLogin(redirectPath: string, loginAction: (dispatch: Redux.Dispatch<any>) => Promise<User>): Promise<User> {
+    function verifySuccessLogin(redirectPath: string, loginAction: (dispatch: Dispatch<any>) => Promise<User>): Promise<User> {
         let initialState = {};
         let store = mockStore(initialState);
 
@@ -350,7 +351,7 @@ describe("Session.ts", function () {
         });
     }
 
-    function verifyUnsuccessfullLogin(loginAction: (dispatch: Redux.Dispatch<any>) => Promise<User>): Promise<void> {
+    function verifyUnsuccessfullLogin(loginAction: (dispatch: Dispatch<any>) => Promise<User>): Promise<void> {
         let initialState = {};
         let store = mockStore(initialState);
 

@@ -1,3 +1,5 @@
+import { Dispatch } from "redux";
+
 import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
@@ -72,8 +74,8 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
  *
  * @param logQuery: The query to perform when retrievings logs.
  */
-export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
-    return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
+export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: Dispatch<Log[]>) => Promise<Log[]> {
+    return function (dispatch: Dispatch<Log[]>): Promise<Log[]> {
         dispatch(fetchLogsRequest(true));
         return service.getLogs(logQuery)
         .then(function (logs: Log[]) {
@@ -98,7 +100,7 @@ export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: R
  *
  * @returns A PageResults object that contains the new logs found with the old and total.
  */
-export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatch: Redux.Dispatch<Log[]>) => Promise<PageResults> {
+export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatch: Dispatch<Log[]>) => Promise<PageResults> {
     const oldLogs = logQueryEvent.logs || [];
     const lastLog = oldLogs[oldLogs.length - 1];
     const endTime = (lastLog) ? new Date(lastLog.timestamp) : logQueryEvent.query.endTime;
@@ -109,7 +111,7 @@ export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatc
         limit: limit
     });
 
-    return function (dispatch: Redux.Dispatch<Log[]>): Promise<PageResults> {
+    return function (dispatch: Dispatch<Log[]>): Promise<PageResults> {
         dispatch(fetchLogsRequest(true));
 
         return service.getLogs(query).
@@ -139,7 +141,7 @@ export function nextPage(logQueryEvent: LogQueryEvent, limit?: number): (dispatc
  * @returns A PageResults object that contains the new logs found with the old and total.
  *
  */
-export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Redux.Dispatch<Log[]>) => Promise<PageResults> {
+export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Dispatch<Log[]>) => Promise<PageResults> {
     const oldLogs = logQueryEvent.logs || [];
     const firstLog = oldLogs[0];
     const startTime = (firstLog) ? new Date(firstLog.timestamp) : logQueryEvent.query.startTime;
@@ -149,7 +151,7 @@ export function findLatest(logQueryEvent: LogQueryEvent): (dispatch: Redux.Dispa
         endTime: new Date()
     });
 
-    return function (dispatch: Redux.Dispatch<PageResults>): Promise<PageResults> {
+    return function (dispatch: Dispatch<PageResults>): Promise<PageResults> {
         dispatch(fetchLogsRequest(true));
 
         return service.getLogs(query).

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 
 import VisibilityWatcher, { VISIBLITY_STATE } from "../../components/VisibilityWatcher";
 import Conversation from "../../models/conversation";
@@ -43,7 +44,7 @@ function mapStateToProps(state: State.All): ConvoPageStateProps {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoPageDispatchProps {
+function mapDispatchToProps(dispatch: Dispatch<any>): ConvoPageDispatchProps {
     return {};
 }
 

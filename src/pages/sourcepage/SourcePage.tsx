@@ -2,6 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 import { connect } from "react-redux";
 import { replace, RouterAction } from "react-router-redux";
+import { Dispatch } from "redux";
 
 import { Button } from "react-toolbox/lib/button";
 import Dialog from "react-toolbox/lib/dialog";
@@ -33,7 +34,7 @@ function mapStateToProps(state: State.All) {
     };
 }
 
-function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>) {
     return {
         goHome: function (): RouterAction {
             return dispatch(replace("/"));

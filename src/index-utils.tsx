@@ -1,3 +1,5 @@
+import { Dispatch } from "redux";
+
 import { retrieveLogs } from "./actions/log";
 import { setCurrentSource } from "./actions/source";
 import LogQuery from "./models/log-query";
@@ -61,7 +63,7 @@ export namespace IndexUtils {
      * @param {string} The source ID to search for.
      * @param {Source} The sources to search through. Can be undefined in which case they will be pulled form the server.
      */
-    export function dispatchSelectedSourceSource(dispatch: Redux.Dispatch<any>, sourceId: string, sources?: Source[]): Promise<Source> {
+    export function dispatchSelectedSourceSource(dispatch: Dispatch<any>, sourceId: string, sources?: Source[]): Promise<Source> {
         return findSource(sources, sourceId)
             .then(function (source: Source) {
 
@@ -84,7 +86,7 @@ export namespace IndexUtils {
     /**
      * Dispatches the current selected source as "undefined".
      */
-    export function removeSelectedSource(dispatch: Redux.Dispatch<any>) {
+    export function removeSelectedSource(dispatch: Dispatch<any>) {
         return dispatch(setCurrentSource(undefined));
     };
 }

@@ -5,8 +5,9 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
-import { Route, Router } from "react-router-dom";
-import { replace, syncHistoryWithStore } from "react-router-redux";
+import { Route } from "react-router-dom";
+import { ConnectedRouter, replace } from "react-router-redux";
+import { StoreEnhancer } from "redux";
 import { autoRehydrate, persistStore } from "redux-persist";
 
 import { LOGOUT_USER } from "./constants";
@@ -47,11 +48,11 @@ const browserHistory = createBrowserHistory({
 });
 
 // Configure the store
-const store = configureStore(browserHistory, rootReducer, autoRehydrate() as Redux.StoreEnhancer<State.All>);
+const store = configureStore(browserHistory, rootReducer, autoRehydrate() as StoreEnhancer<State.All>);
 persistStore(store, { whitelist: ["session"] });
 
 // And our history
-const history = syncHistoryWithStore(browserHistory, store);
+// const history = syncHistoryWithStore(browserHistory, store);
 
 // Bootstrap Firebase
 let firebaseConfig = {
@@ -94,7 +95,7 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
 let render = function () {
     ReactDOM.render((
         <Provider store={store}>
-            <Router history={history}>
+            <ConnectedRouter history={browserHistory}>
                 <Route path="/login" component={LoginRoute} />
                 <Route path="/" component={AuthCheckRoute} >
                     <Route exact component={LinkRoute} />
@@ -108,7 +109,7 @@ let render = function () {
                     <Route path="notFound" component={NotFoundRoute} />
                     <Route path="*" component={NotFoundRoute} />
                 </Route>
-            </Router>
+            </ConnectedRouter>
         </Provider>
     ),
         document.getElementById("dashboard")
