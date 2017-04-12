@@ -1,32 +1,34 @@
 import * as Firebase from "firebase";
-import { createHistory } from "history";
+import { createBrowserHistory } from "history";
 import "isomorphic-fetch";
+import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
-import { EnterHook, IndexRoute, LeaveHook, RedirectFunction, Route, Router, RouterState, useRouterHistory } from "react-router";
+import { Route, Router } from "react-router-dom";
 import { replace, syncHistoryWithStore } from "react-router-redux";
 import { autoRehydrate, persistStore } from "redux-persist";
 
 import { LOGOUT_USER } from "./constants";
 
 import { setUser } from "./actions/session";
-import Dashboard from "./frames/Dashboard";
 
-import Login from "./frames/Login";
-import Source from "./models/source";
+import AuthCheckRoute from "./AuthCheckRoute";
+
+import ConvoRoute from "./ConvoRoute";
+import IntegrationRoute from "./IntegrationRoute";
+import LinkRoute from "./LinkRoute";
+import LoginRoute from "./LoginRoute";
+import NewSourceRoute from "./NewSourceRoute";
+import NotFoundRoute from "./NotFoundRoute";
+import SetSourceRoute from "./SetSourceRoute";
+import SourceListRoute from "./SourceListRoute";
+import SourceRoute from "./SourceRoute";
+
 import { FirebaseUser } from "./models/user";
-import CreateOrRoute from "./pages/createpage/Route";
-import IntegrationPage from "./pages/integration/StateIntegrationPage";
-import LoginPage from "./pages/LoginPage";
-import LogsPage from "./pages/logspage/ConvoPage";
-import NewSourcePage from "./pages/NewSourcePage";
-import NotFoundPage from "./pages/NotFoundPage";
-import SourceListPage from "./pages/SourceListPage";
-import SourcePage from "./pages/sourcepage/SourcePage";
+
 import rootReducer from "./reducers";
 
-import IndexUtils from "./index-utils";
 import configureStore from "./store";
 
 import { State } from "./reducers";
@@ -40,7 +42,7 @@ ReactGA.initialize(GOOGLE_ANALYTICS);
 // to do asynchronous things in the actions
 // Help with this from https://github.com/ReactTraining/react-router/issues/353#issuecomment-181786502
 // And http://stackoverflow.com/a/38123375/1349766
-const browserHistory = useRouterHistory(createHistory)({
+const browserHistory = createBrowserHistory({
     basename: BASENAME
 });
 
@@ -89,59 +91,22 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     render();
 });
 
-/**
- * Checks if the user exists before entering routes that require a user.
- *
- * See below on the onEnter method.
- */
-let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
-    const session: any = store.getState().session;
-    if (!session.user) {
-        replace({
-            pathname: "/login",
-            query: nextState.location.query,
-            state: { nextPathName: nextState.location.pathname, query: nextState.location.query }
-        });
-    }
-};
-
-let onUpdate = function () {
-    ReactGA.pageview(window.location.pathname);
-};
-
-let setSource: EnterHook = function (nextState: RouterState, redirect: RedirectFunction) {
-    let sources: Source[] = store.getState().source.sources;
-    let sourceId: string = nextState.params["sourceId"];
-    IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources)
-        .catch(function (a?: Error) {
-            console.error(a);
-            // Can't use the redirect because this is asynchronous.
-            store.dispatch(replace("/notFound"));
-        });
-};
-
-let removeSource: LeaveHook = function () {
-    IndexUtils.removeSelectedSource(store.dispatch);
-};
-
 let render = function () {
     ReactDOM.render((
         <Provider store={store}>
-            <Router history={history} onUpdate={onUpdate}>
-                <Route path="/login" component={Login}>
-                    <IndexRoute component={LoginPage} />
-                </Route>
-                <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                    <IndexRoute component={CreateOrRoute} />
-                    <Route path="/skills" component={SourceListPage} />
-                    <Route path="/skills/new" component={NewSourcePage} />
-                    <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
-                        <IndexRoute component={SourcePage} />
-                        <Route path="/skills/:sourceId/logs" component={LogsPage} />
-                        <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
+            <Router history={history}>
+                <Route path="/login" component={LoginRoute} />
+                <Route path="/" component={AuthCheckRoute} >
+                    <Route exact component={LinkRoute} />
+                    <Route path="skills" component={SourceListRoute} />
+                    <Route path="skills/new"  component={NewSourceRoute} />
+                    <Route path="skills/:sourceId" component={SetSourceRoute} >
+                        <Route exact component={SourceRoute} />
+                        <Route path=":sourceId/logs" component={ConvoRoute} />
+                        <Route path=":sourceId/integration" component={IntegrationRoute} />
                     </Route>
-                    <Route path="/notFound" component={NotFoundPage} />
-                    <Route path="*" component={NotFoundPage} />
+                    <Route path="notFound" component={NotFoundRoute} />
+                    <Route path="*" component={NotFoundRoute} />
                 </Route>
             </Router>
         </Provider>
@@ -149,5 +114,4 @@ let render = function () {
         document.getElementById("dashboard")
     );
 };
-
 

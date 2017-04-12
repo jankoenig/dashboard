@@ -98,3 +98,5 @@ export class CancelableComponent<P extends PromiseComponentProps, S extends Prom
         return (<div />);
     }
 }
+
+export default CancelableComponent;
