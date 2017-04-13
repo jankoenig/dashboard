@@ -1,9 +1,8 @@
 import * as chai from "chai";
-import { mount, ReactWrapper, shallow, ShallowWrapper } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import { Location } from "history";
 import * as React from "react";
-import { Provider } from "react-redux";
-import { MemoryRouter, Redirect, Route } from "react-router";
+import { Redirect, Route } from "react-router";
 import { createStore, Store } from "redux";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
@@ -11,7 +10,7 @@ import * as sinonChai from "sinon-chai";
 import User from "../models/user";
 import rootReducer, { State } from "../reducers";
 
-import ConnectedAuthCheckRoute, { AuthCheckRoute, ProtectedRoutes } from "./AuthCheckRoute";
+import { AuthCheckRoute, ProtectedRoutes } from "./AuthCheckRoute";
 
 import LinkRoute from "./LinkRoute";
 import NewSourceRoute from "./NewSourceRoute";
@@ -20,8 +19,6 @@ import SetSourceRoute from "./SetSourceRoute";
 import SourceListRoute from "./SourceListRoute";
 
 import Dashboard from "../frames/Dashboard";
-
-const jsdom = require("mocha-jsdom");
 
 chai.use(sinonChai);
 const expect = chai.expect;
