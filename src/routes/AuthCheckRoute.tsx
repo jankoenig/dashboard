@@ -63,7 +63,7 @@ export class AuthCheckRoute extends React.Component<AuthCheckProps, any> {
                 <Redirect
                     to={{
                         pathname: "/login",
-                        state: { from: location }
+                        state: { from: location.state }
                     }}
                     push={false} />)
             ;
