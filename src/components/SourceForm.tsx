@@ -40,6 +40,9 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
             // Setup an initial source
             source: undefined
         };
+
+        this.onNameChange = this.onNameChange.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     textFieldStyleOverrides() {
@@ -64,7 +67,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
         this.props.onChange(target.value);
     }
 
-    onClick(event: React.FormEvent<any>) {
+    onClick() {
         if (this.state.source) {
             this.props.createSource(this.state.source);
         }
@@ -78,7 +81,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                         style={this.textFieldStyleOverrides()}
                         type={"text"}
                         value={this.state.name}
-                        onChange={this.onNameChange.bind(this)}
+                        onChange={this.onNameChange}
                         label={"Name"}
                         floatingLabel={true}
                         autoComplete={"off"}
@@ -87,7 +90,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                 {!this.props.error ? (
                     <p> {this.props.error} </p>
                 ) : <div />}
-                <Button colored={true} ripple={true} raised={true} onClick={this.onClick.bind(this)}>Create Skill</Button>
+                <Button colored={true} ripple={true} raised={true} onClick={this.onClick}>Create Skill</Button>
             </div>
         );
     }

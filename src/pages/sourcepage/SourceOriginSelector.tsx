@@ -34,10 +34,11 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
         for (let option of options) {
             boxes.push(
                 <Cell key={i} col={1}>
-                    <Checkbox
-                        {...option}
-                        onChange={onCheck.bind(onCheck, i, option.label)}
-                    />
+                    <Box
+                        option={option}
+                        index={i}
+                        onChange={onCheck}
+                     />
                 </Cell>
             );
             ++i;
@@ -55,3 +56,32 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
 }
 
 export default SourceOriginSelector;
+
+interface BoxProps {
+    index: number;
+    option: SourceOption;
+    onChange: (index: number, label: string, checked: boolean) => void;
+}
+
+export class Box extends React.Component<BoxProps, any> {
+    constructor(props: BoxProps) {
+        super(props);
+
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(checked: boolean) {
+        const { index, option, onChange } = this.props;
+        onChange(index, option.label, checked);
+    }
+
+    render() {
+        const { option } = this.props;
+        return (
+            <Checkbox
+                {...option}
+                onChange={this.handleChange}
+            />
+        );
+    }
+}

@@ -5,7 +5,7 @@ import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import Checkbox from "react-toolbox/lib/checkbox";
-import SourceOriginSelector, { SourceOption } from "./SourceOriginSelector";
+import SourceOriginSelector, { Box, SourceOption } from "./SourceOriginSelector";
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -43,26 +43,45 @@ describe("SourceOriginSelector", function () {
         });
 
         it("Ensures the boxes are created.", function () {
-            expect(wrapper.find(Checkbox)).to.have.length(3);
+            expect(wrapper.find(Box)).to.have.length(3);
         });
 
         it("Ensures the boxes have their props", function () {
-            const boxes = wrapper.find(Checkbox);
+            const boxes = wrapper.find(Box);
             for (let i = 0; i < boxes.length; ++i) {
-                const box = wrapper.find(Checkbox).at(i);
+                const box = wrapper.find(Box).at(i);
                 const props = options[i];
-                expect(box).to.have.prop("label", props.label);
-                expect(box).to.have.prop("checked", props.checked);
-                expect(box).to.have.prop("theme", props.theme);
+                expect(box).to.have.prop("option", props);
             }
+        });
+
+        describe("Box", function () {
+            it("Tests that the box sends the appropriate parameters", function () {
+                const handleChange = sinon.stub();
+                const boxWrapper = shallow(<Box index={2} option={{ label: "Test box", theme: "testTheme", checked: false }} onChange={handleChange} />);
+
+                boxWrapper.find(Checkbox).at(0).simulate("change", true);
+
+                expect(handleChange).to.be.calledWith(2, "Test box", true);
+            });
+
+            it("Tests that the box send the appropriate props to the checkbox.", function () {
+                const handleChange = sinon.stub();
+                const boxWrapper = shallow(<Box index={2} option={{ label: "Test box", theme: "testTheme", checked: false }} onChange={handleChange} />);
+
+                const checkbox = boxWrapper.find(Checkbox).at(0);
+                expect(checkbox).to.have.prop("theme", "testTheme");
+                expect(checkbox).to.have.prop("checked", false);
+                expect(checkbox).to.have.prop("label", "Test box");
+            });
         });
 
         describe("events", function () {
             it("tests that clicking on a checkbox yields the proper result.", function () {
-                const boxes = wrapper.find(Checkbox);
-                boxes.at(0).simulate("change", false);
-                boxes.at(1).simulate("change", false);
-                boxes.at(2).simulate("change", false);
+                const boxes = wrapper.find(Box);
+                boxes.at(0).simulate("change", 0, options[0].label, false);
+                boxes.at(1).simulate("change", 1, options[1].label, false);
+                boxes.at(2).simulate("change", 2, options[2].label, false);
 
                 expect(onChecked).to.be.calledThrice;
                 expect(onChecked.args[0][0]).to.equal(0);

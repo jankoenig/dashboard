@@ -22,6 +22,8 @@ class StackTraceListItem extends React.Component<StackTraceListItemProps, StackT
         this.state = {
             displayElements: false
         };
+
+        this.onClick = this.onClick.bind(this);
     }
 
     elementsClassName() {
@@ -45,7 +47,7 @@ class StackTraceListItem extends React.Component<StackTraceListItemProps, StackT
             <li key={this.props.stackTrace.id}>
                 <ListItemMessage
                     style={{ cursor: "pointer" }}
-                    onClick={this.onClick.bind(this)}
+                    onClick={this.onClick}
                     timestamp={this.props.stackTrace.timestamp}
                     level={"EXCEPTION"}
                     levelColor={"red"}

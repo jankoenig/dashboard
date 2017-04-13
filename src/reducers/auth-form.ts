@@ -1,5 +1,3 @@
-import * as objectAssign from "object-assign";
-
 import { AuthFormChanged, AuthFormError } from "../actions/auth-form";
 import { AUTH_FORM_CHANGED, AUTH_FORM_ERROR } from "../constants";
 
@@ -23,9 +21,9 @@ export function authForm(state: AuthFormState = INITIAL_STATE, action: AuthFormA
 
     switch (action.type) {
         case AUTH_FORM_CHANGED:
-            return objectAssign({}, state, { [action.field]: action.value });
+            return { ...state, ...{ [action.field]: action.value } };
         case AUTH_FORM_ERROR:
-            return objectAssign({}, state, { error: action.error });
+            return { ...state, ...{ error: action.error } };
         default:
             return state;
     }

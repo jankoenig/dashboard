@@ -24,6 +24,8 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
         this.state = {
             myHeight: 0
         };
+
+        this.onMeasure = this.onMeasure.bind(this);
     }
 
     onMeasure(dimensions: Dimensions) {
@@ -44,7 +46,7 @@ export class TwoPane extends React.Component<TwoPaneProps, TwoPaneState> {
 
         return (
             <Measure
-                onMeasure={this.onMeasure.bind(this)} >
+                onMeasure={this.onMeasure} >
                 <Grid
                     noSpacing={spacing}>
                     <Cell col={6} phone={4} tablet={4} style={leftStyle}>
