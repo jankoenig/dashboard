@@ -1,4 +1,3 @@
-import * as objectAssign from "object-assign";
 import * as React from "react";
 
 import ICON from "./constants";
@@ -19,10 +18,7 @@ export interface IconProps {
 export default class Icon extends React.Component<IconProps, any> {
 
     styles() {
-        return objectAssign({
-            display: "inline-block",
-            verticalAlign: "middle",
-        }, this.props.style);
+        return { ...{ display: "inline-block", verticalAlign: "middle" }, ...this.props.style };
     }
 
     render() {
@@ -36,7 +32,7 @@ export default class Icon extends React.Component<IconProps, any> {
                 <path
                     d={this.props.icon.path}
                     style={{ fill: this.props.color }}
-                    />
+                />
             </svg>
         );
     }

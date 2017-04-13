@@ -213,6 +213,8 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
     super(props);
 
     this.state = { buttons: [] };
+
+    this.handleSelected = this.handleSelected.bind(this);
   }
 
   componentWillReceiveProps(props: PageSwapProps, context: any) {
@@ -230,16 +232,14 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
   buildButtons(props: PageSwapProps) {
     const buttons = props.pageButtons;
     this.state.buttons = [];
+    let i = 0;
     for (let button of buttons) {
       this.state.buttons.push(
         (
-          <TooltipButton
-            theme={IconButtonTheme}
-            accent
-            key={button.name}
-            tooltip={button.name}
-            icon={button.icon}
-            onClick={this.handleSelected.bind(this, button)} />
+          <HeaderButton
+            key={++i}
+            button={button}
+            onClick={this.handleSelected} />
         )
       );
     };
@@ -250,6 +250,36 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
       <div>
         {this.state.buttons}
       </div>
+    );
+  }
+}
+
+interface HeaderButtonProps {
+  button: PageButton;
+  onClick: (button: PageButton) => void;
+}
+
+export class HeaderButton extends React.Component<HeaderButtonProps, any> {
+
+  constructor(props: HeaderButtonProps) {
+    super(props);
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick() {
+    this.props.onClick(this.props.button);
+  }
+
+  render() {
+    const { button } = this.props;
+    return (
+      <TooltipButton
+        theme={IconButtonTheme}
+        accent
+        tooltip={button.name}
+        icon={button.icon}
+        onClick={this.handleClick} />
     );
   }
 }

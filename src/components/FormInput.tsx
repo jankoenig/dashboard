@@ -58,6 +58,9 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
             errorMsg: undefined,
             show: false
         };
+
+        this.onShow = this.onShow.bind(this);
+        this.onFormChange = this.onFormChange.bind(this);
     }
 
     classes() {
@@ -122,7 +125,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
             let pillColor = this.state.show ? COLORS.GREEN : COLORS.RED;
 
             pill = (
-                <Pill onClick={this.onShow.bind(this)}
+                <Pill onClick={this.onShow}
                     style={{
                         backgroundColor: pillColor,
                         position: "absolute",
@@ -151,7 +154,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     id={StringUtil.stringToCamelCase(this.props.label)}
                     value={this.props.value}
                     pattern={pattern}
-                    onChange={this.onFormChange.bind(this)}
+                    onChange={this.onFormChange}
                     readOnly={this.props.readOnly}
                     style={this.inputStyle()} />
                 {pill}
