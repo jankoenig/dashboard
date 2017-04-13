@@ -1,5 +1,4 @@
 import * as classNames from "classnames";
-import * as objectAssign from "object-assign";
 import * as React from "react";
 
 interface ButtonProps {
@@ -39,11 +38,7 @@ class Button extends React.Component<ButtonProps, any> {
   render() {
 
     let component = this.props.href !== undefined ? "a" : "button";
-    let properties = objectAssign({}, this.props, {
-      className: this.classes(),
-      href: this.props.href,
-      target: "_blank"
-    });
+    let properties = {...this.props, ...{className: this.classes(), href: this.props.href, target: "_blank" }};
 
     // Clean off properties that were used for setting classes
     // They are not real and should not be passed on
