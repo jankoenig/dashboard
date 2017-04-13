@@ -1,6 +1,6 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Redirect, Route, RouteComponentProps } from "react-router";
+import { Redirect, Route, RouteComponentProps, Switch } from "react-router";
 import { replace } from "react-router-redux";
 
 import { State } from "../reducers";
@@ -80,12 +80,13 @@ class Everything extends React.Component<any, any> {
     render() {
         return (
             <div>
-                <Route exact component={LinkRoute} />
-                <Route path="/skills" component={SourceListRoute} />
-                <Route path="/skills/new" component={NewSourceRoute} />
-                <Route path="/skills/:sourceId" component={SetSourceRoute} />
-                <Route path="/notFound" component={NotFoundRoute} />
-                <Route path="*" component={NotFoundRoute} />);
+                <Switch>
+                    <Route path="/" exact component={LinkRoute} />
+                    <Route path="/skills" exact component={SourceListRoute} />
+                    <Route path="/skills/new" component={NewSourceRoute} />
+                    <Route path="/skills/:sourceId" component={SetSourceRoute} />
+                    <Route component={NotFoundRoute} />);
+                </Switch>
             </div>);
     }
 }

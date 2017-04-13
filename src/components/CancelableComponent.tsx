@@ -50,6 +50,7 @@ export class CancelableComponent<P extends PromiseComponentProps, S extends Prom
      * Child classes much call super.
      */
     componentWillUnmount() {
+        console.log("Canceling " + this.cancelables.length + " " + this.cancelOnProps.length);
         for (let c of this.cancelables) {
             c.cancel();
         }

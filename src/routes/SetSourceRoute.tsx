@@ -58,16 +58,26 @@ function mergeProps(state: StateProps, dispatch: DispatchProps, standard: Standa
 
 export class SetSourceRoute extends CancelableComponent<SourceRouteProps, SourceRouteState> {
 
+    constructor(props: SourceRouteProps) {
+        super(props);
+        this.state = {
+            source: undefined
+        };
+    }
+
     componentWillReceiveProps(props: SourceRouteProps, context: any) {
         super.componentWillReceiveProps(props, context);
+        console.info("Props");
         this.getNewSource(props);
     }
 
     componentWillMount() {
+        console.info("Mounting");
         this.getNewSource(this.props);
     }
 
     componentWillUnmount() {
+        console.info("Unmounting.");
         super.componentWillUnmount();
         this.props.removeCurrentSource();
     }
@@ -77,6 +87,7 @@ export class SetSourceRoute extends CancelableComponent<SourceRouteProps, Source
         const { sourceId } = match.params;
         const promise = setCurrentSource(sourceId, currentSources)
             .then((source: Source) => {
+                console.log("Setting state " + source.id);
                 this.setState({ source: source });
             });
         return this.resolve(promise);
@@ -85,14 +96,16 @@ export class SetSourceRoute extends CancelableComponent<SourceRouteProps, Source
     render() {
         const { source } = this.state;
         if (source) {
+            console.info("Has source " + source.id + " " + this.props.location.pathname);
             return (
                 <div>
-                    <Route exact component={SourceRoute} />
-                    <Route path=":sourceId/logs" component={ConvoRoute} />
-                    <Route path=":sourceId/integration" component={IntegrationRoute} />
+                    <Route path="/skills/:sourceId/" exact component={SourceRoute} />
+                    <Route path="/skills/:sourceId/logs" component={ConvoRoute} />
+                    <Route path="/skills/:sourceId/integration" component={IntegrationRoute} />
                 </div>
             );
         } else {
+            console.info("Does not have state.");
             return (<div/>);
         }
     }
