@@ -16,7 +16,6 @@ import { setUser } from "./actions/session";
 
 import AuthCheckRoute from "./AuthCheckRoute";
 import LoginRoute from "./LoginRoute";
-import NotFoundRoute from "./NotFoundRoute";
 
 import { FirebaseUser } from "./models/user";
 
@@ -91,7 +90,6 @@ let render = function () {
                 <div>
                 <Route path="/login" component={LoginRoute} />
                 <Route path="/" component={AuthCheckRoute} />
-                <Route path="*" component={NotFoundRoute} />
                 </div>
             </ConnectedRouter>
         </Provider>

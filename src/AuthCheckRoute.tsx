@@ -52,19 +52,21 @@ export class AuthCheckRoute extends React.Component<AuthCheckProps, any> {
     render() {
         const { currentUser, location } = this.props;
         const loggedIn = currentUser !== undefined;
-        console.info("LOGGED IN");
-        return (
-            <Dashboard
-                location={location}>
-                {(loggedIn) ? (<Everything />) : (
-                    <Redirect to={{
+        return (loggedIn) ?
+            (
+                <Dashboard location={location}>
+                    <Everything />
+                </Dashboard>
+            )
+            :
+            (
+                <Redirect
+                    to={{
                         pathname: "/login",
                         state: { from: location }
                     }}
-                        push={false} />)
-                }
-            </Dashboard>
-        );
+                    push={false} />)
+            ;
     }
 }
 
