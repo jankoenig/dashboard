@@ -1,6 +1,7 @@
 import * as Bluebird from "bluebird";
 import * as chai from "chai";
 import { shallow } from "enzyme";
+import { Location } from "history";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
@@ -9,7 +10,7 @@ import Source from "../models/source";
 import User from "../models/user";
 import SourceService from "../services/source";
 import { dummySources } from "../utils/test";
-import { LinkRoute }from "./LinkRoute";
+import { LinkRoute } from "./LinkRoute";
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -44,12 +45,11 @@ describe("Route", function () {
         });
 
         it("Tests that the LinkSource method gets called with the appropriate parameters.", function () {
-            const params = { id: returnSources[3].id, key: returnSources[3].secretKey };
-            const match = {isExact: false, params: params, path: "/test", url: "https://dashboard/test?id=" + returnSources[3].id + "&key=" + returnSources[3].secretKey};
+            const location: Location = { pathname: "/test", search: "?id=" + returnSources[3].id + "&key=" + returnSources[3].secretKey, state: "", hash: undefined, key: undefined };
             const wrapper = shallow(<LinkRoute
                 history={undefined} // Not used
-                location={undefined} // not used
-                match={match}
+                match={undefined} // not used
+                location={location}
                 currentUser={user} goTo={goTo} />);
 
             const instance = wrapper.instance() as LinkRoute;
@@ -66,12 +66,11 @@ describe("Route", function () {
         });
 
         it("Tests that it goes to the link sourced upon success", function () {
-            const params = { id: returnSources[3].id, key: returnSources[3].secretKey };
-            const match = {isExact: false, params: params, path: "/test", url: "https://dashboard/test?id=" + returnSources[3].id + "&key=" + returnSources[3].secretKey};
+            const location: Location = { pathname: "/test", search: "?id=" + returnSources[3].id + "&key=" + returnSources[3].secretKey, state: "", hash: undefined, key: undefined };
             const wrapper = shallow(<LinkRoute
                 history={undefined} // Not used
-                location={undefined} // not used
-                match={match}
+                match={undefined} // not used
+                location={location}
                 currentUser={user} goTo={goTo} />);
 
             const instance = wrapper.instance() as LinkRoute;
@@ -109,25 +108,22 @@ describe("Route", function () {
         });
 
         it("Tests default route when no parameters in place.", function () {
-            const params = { };
-            const match = {isExact: false, params: params, path: "/test", url: "https://dashboard/test?key=" + returnSources[3].secretKey};
-            // It calls it on mount.
+            const location: Location = { pathname: "/test", search: undefined, state: "", hash: undefined, key: undefined };
             shallow(<LinkRoute
                 history={undefined} // Not used
-                location={undefined} // not used
-                match={match}
+                match={undefined} // not used
+                location={location}
                 currentUser={user} goTo={goTo} />);
 
             expect(goTo).to.have.been.calledWith("/skills");
         });
 
         it("Tests default route when when only ID exists.", function () {
-            const params = { id: returnSources[3].id };
-            const match = {isExact: false, params: params, path: "/test", url: "https://dashboard/test?id=" + returnSources[3].id};
+            const location: Location = { pathname: "/test", search: "?id=" + returnSources[3].id, state: "", hash: undefined, key: undefined };
             const wrapper = shallow(<LinkRoute
                 history={undefined} // Not used
-                location={undefined} // not used
-                match={match}
+                match={undefined} // not used
+                location={location}
                 currentUser={user} goTo={goTo} />);
 
             const instance = wrapper.instance() as LinkRoute;
@@ -138,12 +134,11 @@ describe("Route", function () {
         });
 
         it("Tests default route when when only key exists exists.", function () {
-            const params = { key: returnSources[3].secretKey };
-            const match = {isExact: false, params: params, path: "/test", url: "https://dashboard/test?key=" + returnSources[3].secretKey};
+            const location: Location = { pathname: "/test", search: "?key=" + returnSources[3].secretKey, state: "", hash: undefined, key: undefined };
             const wrapper = shallow(<LinkRoute
                 history={undefined} // Not used
-                location={undefined} // not used
-                match={match}
+                match={undefined} // not used
+                location={location}
                 currentUser={user} goTo={goTo} />);
 
             const instance = wrapper.instance() as LinkRoute;
@@ -154,12 +149,11 @@ describe("Route", function () {
         });
 
         it("Tests it routes to the skill when found.", function () {
-            const params = { id: returnSources[3].id, key: returnSources[3].secretKey };
-            const match = {isExact: false, params: params, path: "/test", url: "https://dashboard/test?id=" + returnSources[3].id + "&key=" + returnSources[3].secretKey};
+            const location: Location = { pathname: "/test", search: "?id=" + returnSources[3].id + "&key=" + returnSources[3].secretKey, state: "", hash: undefined, key: undefined };
             const wrapper = shallow(<LinkRoute
                 history={undefined} // Not used
-                location={undefined} // not used
-                match={match}
+                match={undefined} // not used
+                location={location}
                 currentUser={user} goTo={goTo} />);
 
             const instance = wrapper.instance() as LinkRoute;
@@ -170,13 +164,13 @@ describe("Route", function () {
         });
 
         it("Tests it routes to the default when both parameters exist and not found.", function () {
-            const params = { id: returnSources[3].id, key: "gibberish" };
-            const match = {isExact: false, params: params, path: "/test", url: "https://dashboard/test?id=" + returnSources[3].id + "&key=" + returnSources[3].secretKey};
+            const location: Location = { pathname: "/test", search: "?id=" + returnSources[3].id + "&key=gibberish", state: "", hash: undefined, key: undefined };
             const wrapper = shallow(<LinkRoute
                 history={undefined} // Not used
-                location={undefined} // not used
-                match={match}
+                match={undefined} // not used
+                location={location}
                 currentUser={user} goTo={goTo} />);
+
 
             const instance = wrapper.instance() as LinkRoute;
 
