@@ -18,12 +18,20 @@ export class Measure extends React.Component<MeasureProps, MeasureState> {
     private resizeEvent: browser.WrappedEvent;
     private observer: MutationObserver;
 
+    constructor(props: MeasureProps) {
+        super(props);
+
+        this.updateDimensions = this.updateDimensions.bind(this);
+        this.onMutation = this.onMutation.bind(this);
+        this.onRootElement = this.onRootElement.bind(this);
+    }
+
     componentDidMount() {
-        this.resizeEvent = browser.onResize(this.updateDimensions.bind(this));
+        this.resizeEvent = browser.onResize(this.updateDimensions);
         this.resizeEvent.register();
         this.updateDimensions();
 
-        this.observer = browser.onMutation(this.root, this.onMutation.bind(this));
+        this.observer = browser.onMutation(this.root, this.onMutation);
     }
 
     onMutation(mutations: MutationRecord[], observer: MutationObserver) {
@@ -72,7 +80,7 @@ export class Measure extends React.Component<MeasureProps, MeasureState> {
 
     render() {
         return (
-            <div ref={this.onRootElement.bind(this)}>
+            <div ref={this.onRootElement}>
                 {this.props.children}
             </div>
         );
