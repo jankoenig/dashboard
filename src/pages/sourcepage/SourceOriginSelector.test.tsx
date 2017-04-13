@@ -26,7 +26,7 @@ const options: SourceOption[] = [{
 
 describe("SourceOriginSelector", function () {
     describe("Render", function () {
-        let onChecked: Sinon.SinonStub;
+        let onChecked: sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {

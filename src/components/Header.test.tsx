@@ -37,7 +37,7 @@ describe("Header", function () {
     describe("Header Button", function() {
         let headerButton: ShallowWrapper<any, any>;
         let button: PageButton;
-        let onClick: Sinon.SinonStub;
+        let onClick: sinon.SinonStub;
 
         before(function() {
             button = { name: "TestButton", icon: "Test Icon" };
@@ -78,7 +78,7 @@ describe("Header", function () {
 
         describe("Home button", function () {
 
-            let handleHomeClick: Sinon.SinonStub;
+            let handleHomeClick: sinon.SinonStub;
 
             before(function () {
                 handleHomeClick = sinon.stub();
@@ -119,7 +119,7 @@ describe("Header", function () {
 
         describe("Title", function () {
 
-            let handleItemSelect: Sinon.SinonStub;
+            let handleItemSelect: sinon.SinonStub;
 
             before(function () {
                 handleItemSelect = sinon.stub();
@@ -186,7 +186,7 @@ describe("Header", function () {
 
         describe("Title", function () {
 
-            let handleItemSelect: Sinon.SinonStub;
+            let handleItemSelect: sinon.SinonStub;
             let wrapper: ShallowWrapper<any, any>;
 
             before(function () {
@@ -222,7 +222,7 @@ describe("Header", function () {
     describe("Page swapper", function () {
         const pages: PageButton[] = [{ icon: "home", name: "heeyyooo" }, { icon: "away", name: "fancy" }];
 
-        let onPageSelected: Sinon.SinonStub;
+        let onPageSelected: sinon.SinonStub;
 
         before(function () {
             onPageSelected = sinon.stub();

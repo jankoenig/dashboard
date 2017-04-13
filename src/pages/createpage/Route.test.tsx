@@ -18,9 +18,9 @@ describe("Route", function () {
 
     describe("With Link Routing", function () {
         let returnSources: Source[];
-        let getSources: Sinon.SinonStub;
-        let linkSource: Sinon.SinonStub;
-        let goTo: Sinon.SinonStub;
+        let getSources: sinon.SinonStub;
+        let linkSource: sinon.SinonStub;
+        let goTo: sinon.SinonStub;
         let user: User;
 
         before(function () {
@@ -71,9 +71,9 @@ describe("Route", function () {
 
     describe("No link Routing", function () {
         let returnSources: Source[];
-        let getSources: Sinon.SinonStub;
-        let linkSource: Sinon.SinonStub;
-        let goTo: Sinon.SinonStub;
+        let getSources: sinon.SinonStub;
+        let linkSource: sinon.SinonStub;
+        let goTo: sinon.SinonStub;
         let user: User;
 
         before(function () {

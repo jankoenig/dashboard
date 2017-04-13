@@ -14,7 +14,7 @@ const expect = chai.expect;
 describe("IntegrationHttp", function() {
     describe("Renders", function() {
         let wrapper: ShallowWrapper<any, any>;
-        let onChange: Sinon.SinonStub;
+        let onChange: sinon.SinonStub;
 
         before(function() {
             onChange = sinon.stub();

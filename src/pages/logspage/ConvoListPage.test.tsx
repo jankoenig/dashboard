@@ -1,5 +1,6 @@
 import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
+import { Moment } from "moment";
 import * as React from "react";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
@@ -36,12 +37,12 @@ describe("ConvoListPage", function () {
     let nextPage: Log[];
     let baseConversations: ConversationList;
     let fullNextPageConvoersations: ConversationList;
-    let getLogs: Sinon.SinonStub;
-    let newPage: Sinon.SinonStub;
-    let refresh: Sinon.SinonStub;
-    let onItemClick: Sinon.SinonStub;
-    let onIconClick: Sinon.SinonStub;
-    let isMobileWidth: Sinon.SinonStub;
+    let getLogs: sinon.SinonStub;
+    let newPage: sinon.SinonStub;
+    let refresh: sinon.SinonStub;
+    let onItemClick: sinon.SinonStub;
+    let onIconClick: sinon.SinonStub;
+    let isMobileWidth: sinon.SinonStub;
 
     before(function () {
         source = dummySources(1)[0];
@@ -143,8 +144,8 @@ describe("ConvoListPage", function () {
                     wrapper.setProps({ source: source });
                 }).then(function () {
                     const logQuery: LogQuery = getLogs.args[0][0];
-                    expect((logQuery.startTime as moment.Moment).toDate()).to.equalDate(dateFilter.startDate);
-                    expect((logQuery.endTime as moment.Moment).toDate()).to.equalDate(dateFilter.endDate);
+                    expect((logQuery.startTime as Moment).toDate()).to.equalDate(dateFilter.startDate);
+                    expect((logQuery.endTime as Moment).toDate()).to.equalDate(dateFilter.endDate);
                 });
             });
 
@@ -295,7 +296,7 @@ describe("ConvoListPage", function () {
 
         let wrapper: ShallowWrapper<any, any>;
         let stubExecutor: StubExecutor;
-        let intervalStub: Sinon.SinonStub;
+        let intervalStub: sinon.SinonStub;
 
         before(function () {
             intervalStub = sinon.stub(Interval, "newExecutor", (ms: number, callback: () => void): Interval.Executor => {
@@ -348,8 +349,8 @@ class StubExecutor implements Interval.Executor {
     callback: () => void;
     ms: number;
 
-    start: Sinon.SinonStub;
-    end: Sinon.SinonStub;
+    start: sinon.SinonStub;
+    end: sinon.SinonStub;
 
     constructor(ms: number, callback: () => void) {
         this.callback = callback;

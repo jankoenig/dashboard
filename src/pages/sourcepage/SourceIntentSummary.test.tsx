@@ -89,7 +89,7 @@ describe("SourceIntentSummary", function () {
     describe("Loading", function () {
         let start: moment.Moment;
         let end: moment.Moment;
-        let intentService: Sinon.SinonStub;
+        let intentService: sinon.SinonStub;
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {

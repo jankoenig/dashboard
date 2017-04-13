@@ -1,4 +1,5 @@
 import * as classNames from "classnames";
+import { Moment } from "moment";
 import * as React from "react";
 import Checkbox from "react-toolbox/lib/checkbox";
 import DatePicker from "react-toolbox/lib/date_picker";
@@ -16,8 +17,8 @@ const InputTheme = require("../../../themes/input-light.scss");
 const CheckboxTheme = require("../../../themes/checkbox-theme-light.scss");
 
 export interface DateRange {
-    startTime?: Date | moment.Moment;
-    endTime?: Date | moment.Moment;
+    startTime?: Date | Moment;
+    endTime?: Date | Moment;
 }
 
 export interface FilterProps {
@@ -54,7 +55,7 @@ interface LogType {
     label: string;
 }
 
-function convertDate(date: Date | moment.Moment): Date {
+function convertDate(date: Date | Moment): Date {
     if (date) {
         if (date instanceof Date) {
             return date;
@@ -115,7 +116,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.setDateRange(nextProps.dateRange.startTime, nextProps.dateRange.endTime);
     }
 
-    setDateRange(startDate: Date | moment.Moment, endDate: Date | moment.Moment) {
+    setDateRange(startDate: Date | Moment, endDate: Date | Moment) {
         this.state.startDate = convertDate(startDate);
         if (this.state.startDate) {
             this.state.startDate.setHours(0, 0, 0, 0);

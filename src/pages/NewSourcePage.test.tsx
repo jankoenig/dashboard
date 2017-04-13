@@ -97,7 +97,7 @@ describe("New Source Page", function () {
 
     describe("Successful source creation handling.", function () {
 
-        let createSourceMock: Sinon.SinonStub;
+        let createSourceMock: sinon.SinonStub;
         let completePromise: Promise<Source>;
 
         beforeEach(function () {
@@ -139,7 +139,7 @@ describe("New Source Page", function () {
     });
 
     describe("Unsuccessful create source handling.", function () {
-        let createSourceMock: Sinon.SinonStub;
+        let createSourceMock: sinon.SinonStub;
         let completePromise: Promise<Source>;
 
         beforeEach(function () {

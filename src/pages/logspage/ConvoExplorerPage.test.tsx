@@ -19,7 +19,7 @@ const iconStyle = {
 };
 
 describe("ConvoExplorerPage", function () {
-    let onIconClick: Sinon.SinonStub;
+    let onIconClick: sinon.SinonStub;
 
     before(function () {
         onIconClick = sinon.stub();

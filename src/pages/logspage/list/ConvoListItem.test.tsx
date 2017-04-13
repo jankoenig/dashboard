@@ -21,8 +21,8 @@ const iconStyle = {
 
 describe("ConvoListItem", function () {
 
-    let onClick: Sinon.SinonStub;
-    let onIconClick: Sinon.SinonStub;
+    let onClick: sinon.SinonStub;
+    let onIconClick: sinon.SinonStub;
     let conversation: Conversation;
 
     before(function () {

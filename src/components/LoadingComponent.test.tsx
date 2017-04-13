@@ -13,12 +13,12 @@ const expect = chai.expect;
 describe("LoadingComponent", function () {
 
     describe("No stubs", function () {
-        let setStateSpy: Sinon.SinonSpy;
-        let cancelSpy: Sinon.SinonSpy;
-        let startLoadingSpy: Sinon.SinonSpy;
-        let mapSpy: Sinon.SinonSpy;
-        let errorSpy: Sinon.SinonSpy;
-        let preloadSpy: Sinon.SinonSpy;
+        let setStateSpy: sinon.SinonSpy;
+        let cancelSpy: sinon.SinonSpy;
+        let startLoadingSpy: sinon.SinonSpy;
+        let mapSpy: sinon.SinonSpy;
+        let errorSpy: sinon.SinonSpy;
+        let preloadSpy: sinon.SinonSpy;
 
         before(function () {
             setStateSpy = sinon.spy(LoadingComponent.prototype, "setState");
@@ -128,7 +128,7 @@ describe("LoadingComponent", function () {
             });
 
             describe("Load Error", function () {
-                let startLoadingStub: Sinon.SinonStub;
+                let startLoadingStub: sinon.SinonStub;
 
                 before(function () {
                     startLoadingSpy.restore();
@@ -166,10 +166,10 @@ describe("LoadingComponent", function () {
 
     xdescribe("Stubbed", function () {
 
-        let setStateSpy: Sinon.SinonSpy;
-        let cancelSpy: Sinon.SinonSpy;
-        let startLoadingStub: Sinon.SinonStub;
-        let mapStub: Sinon.SinonStub;
+        let setStateSpy: sinon.SinonSpy;
+        let cancelSpy: sinon.SinonSpy;
+        let startLoadingStub: sinon.SinonStub;
+        let mapStub: sinon.SinonStub;
 
         let loadedData: any;
         let mappedData: any;

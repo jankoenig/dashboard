@@ -19,7 +19,7 @@ const STYLE = {
 describe("AmazonEcho", function () {
     describe("Renders", function () {
         let wrapper: ShallowWrapper<any, any>;
-        let onClick: Sinon.SinonStub;
+        let onClick: sinon.SinonStub;
 
         before(function () {
             onClick = sinon.stub();

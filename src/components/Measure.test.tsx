@@ -17,9 +17,9 @@ class TestingWrappedEvent implements browser.WrappedEvent {
         this.unregister = sinon.stub();
     }
 
-    register: Sinon.SinonStub;
+    register: sinon.SinonStub;
 
-    unregister: Sinon.SinonStub;
+    unregister: sinon.SinonStub;
 
     reset() {
         this.register.reset();
@@ -29,7 +29,7 @@ class TestingWrappedEvent implements browser.WrappedEvent {
 
 describe("Measure", function () {
 
-    let onMeasure: Sinon.SinonStub;
+    let onMeasure: sinon.SinonStub;
 
     before(function() {
         onMeasure = sinon.stub();
@@ -58,9 +58,9 @@ describe("Measure", function () {
         jsdom();
 
         let wrappedEvent: TestingWrappedEvent;
-        let sizeStub: Sinon.SinonStub;
-        let onResizeStub: Sinon.SinonStub;
-        let updateDimensions: Sinon.SinonSpy;
+        let sizeStub: sinon.SinonStub;
+        let onResizeStub: sinon.SinonStub;
+        let updateDimensions: sinon.SinonSpy;
 
         let wrapper: ReactWrapper<any, any>;
 

@@ -1,3 +1,5 @@
+import { Moment } from "moment";
+
 import Source from "./source";
 
 export interface QueryParameter {
@@ -63,7 +65,7 @@ export class SourceParameter implements QueryParameter {
 }
 
 export class TimeParameter implements QueryParameter {
-    constructor(time: Date | moment.Moment) {
+    constructor(time: Date | Moment) {
         this.value = time.toISOString();
     }
 

@@ -56,8 +56,8 @@ describe("Session.ts", function () {
 
     describe("Successful login With Github", function () {
 
-        let loginGithubStub: Sinon.SinonStub;
-        let setUserStub: Sinon.SinonStub;
+        let loginGithubStub: sinon.SinonStub;
+        let setUserStub: sinon.SinonStub;
 
         before("Stubbing auth namespace.", function () {
             loginGithubStub = sinon.stub(auth, "loginWithGithub").returns(new Promise<User>((resolve, reject) => {
@@ -85,8 +85,8 @@ describe("Session.ts", function () {
 
     describe("Successful login with username and password", function () {
 
-        let loginStub: Sinon.SinonStub;
-        let setUserStub: Sinon.SinonStub;
+        let loginStub: sinon.SinonStub;
+        let setUserStub: sinon.SinonStub;
 
         before("Stubbing auth namespace.", function () {
             loginStub = sinon.stub(auth, "login").returns(new Promise<User>((resolve, reject) => {
@@ -114,8 +114,8 @@ describe("Session.ts", function () {
 
     describe("Successful signUpWithEmail with username and password", function () {
 
-        let signUpWithEmail: Sinon.SinonStub;
-        let setUserStub: Sinon.SinonStub;
+        let signUpWithEmail: sinon.SinonStub;
+        let setUserStub: sinon.SinonStub;
 
         before("Stubbing auth namespace.", function () {
             signUpWithEmail = sinon.stub(auth, "signUpWithEmail").returns(new Promise<any>((resolve, reject) => {
@@ -142,8 +142,8 @@ describe("Session.ts", function () {
     });
 
     describe("Unsuccessful signUpWithEmail with username and password", function () {
-        let signUpWithEmail: Sinon.SinonStub;
-        let setUserStub: Sinon.SinonStub;
+        let signUpWithEmail: sinon.SinonStub;
+        let setUserStub: sinon.SinonStub;
 
         before("Stubbing auth namespace.", function () {
             signUpWithEmail = sinon.stub(auth, "signUpWithEmail").returns(new Promise<any>((resolve, reject) => {
@@ -166,8 +166,8 @@ describe("Session.ts", function () {
     });
 
     describe("Unsuccessful login with Github", function () {
-        let loginStub: Sinon.SinonStub;
-        let setUserStub: Sinon.SinonStub;
+        let loginStub: sinon.SinonStub;
+        let setUserStub: sinon.SinonStub;
 
         before("Stubbing auth namespace.", function () {
             loginStub = sinon.stub(auth, "loginWithGithub").returns(new Promise<any>((resolve, reject) => {
@@ -190,8 +190,8 @@ describe("Session.ts", function () {
     });
 
     describe("Unsuccessful login with username and password", function () {
-        let loginStub: Sinon.SinonStub;
-        let setUserStub: Sinon.SinonStub;
+        let loginStub: sinon.SinonStub;
+        let setUserStub: sinon.SinonStub;
 
         before("Stubbing auth namespace.", function () {
             loginStub = sinon.stub(auth, "login").returns(new Promise<any>((resolve, reject) => {
@@ -214,7 +214,7 @@ describe("Session.ts", function () {
     });
 
     describe("Logout", function () {
-        let logoutStub: Sinon.SinonStub;
+        let logoutStub: sinon.SinonStub;
 
         beforeEach("Stubbing auth logout.", function () {
             logoutStub = sinon.stub(auth, "logout").returns(new Promise<any>((resolve, reject) => {
@@ -280,7 +280,7 @@ describe("Session.ts", function () {
 
     describe("resetPassword", function () {
 
-        let sendResetPasswordEmailStub: Sinon.SinonStub;
+        let sendResetPasswordEmailStub: sinon.SinonStub;
 
         let successPromise = new Promise((resolve, reject) => {
             resolve("Success");
