@@ -140,8 +140,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
 
     render() {
         const { header, ...others } = this.props;
-        const { bars, lines, selectedStatEntry } = this.state;
-        const options = SourceFullSummary.options;
+        const { bars, lines, selectedStatEntry, sourceOptions } = this.state;
         const handleOriginChange = this.handleOriginChange;
 
         return (
@@ -152,7 +151,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
 
                 <span>
                     <SourceOriginSelector
-                        options={values(options)}
+                        options={sourceOptions}
                         onCheck={handleOriginChange} />
                     <SourceStats
                         selectedEntries={selectedStatEntry}
