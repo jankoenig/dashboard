@@ -116,7 +116,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.setDateRange(nextProps.dateRange.startTime, nextProps.dateRange.endTime);
     }
 
-    setDateRange(startDate: Date | Moment, endDate: Date | Moment) {
+    setDateRange(startDate: Date | Moment, endDate: Date | Moment): DateRange {
         const start = convertDate(startDate);
         if (start) {
             start.setHours(0, 0, 0, 0);
@@ -126,17 +126,20 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         if (end) {
             end.setHours(23, 59, 59, 999);
         }
+
         this.setState({ startDate: start, endDate: end });
+        return { startTime: start, endTime: end };
     }
 
     handleDateChange(item: "startDate" | "endDate", value: Date) {
+        let dateRange: DateRange;
         if (item === "startDate") {
-            this.setDateRange(value, this.state.endDate);
+            dateRange = this.setDateRange(value, this.state.endDate);
         } else if (item === "endDate") {
-            this.setDateRange(this.state.startDate, value);
+            dateRange = this.setDateRange(this.state.startDate, value);
         }
 
-        this.props.onFilterDate(new DateFilter(this.state.startDate, this.state.endDate));
+        this.props.onFilterDate(new DateFilter(dateRange.startTime, dateRange.endTime));
     }
 
     handleLogTypeChange(value: string) {

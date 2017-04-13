@@ -58,7 +58,7 @@ export class DateFilter implements Filter<Conversation> {
     endMoment: moment.Moment;
     type: string = DateFilter.type;
 
-    constructor(startDate?: Date, endDate?: Date) {
+    constructor(startDate?: Date | moment.Moment, endDate?: Date | moment.Moment) {
         this.startMoment = (startDate) ? moment(startDate) : undefined;
         this.endMoment = (endDate) ? moment(endDate) : undefined;
     }

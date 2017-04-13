@@ -11,7 +11,7 @@ import Input from "react-toolbox/lib/input";
 
 import { Origin } from "../../../models/conversation";
 import Dateutils from "../../../utils/date";
-import { OriginFilter } from "../filters/ConvoFilters";
+import { DateFilter, OriginFilter } from "../filters/ConvoFilters";
 import Filterbar, { DateRange, FilterProps, FilterState } from "./FilterBar";
 
 chai.use(sinonChai);
@@ -196,7 +196,7 @@ describe("Filter Bar", function () {
                 expect(filter.origin).to.equal(Origin.GoogleHome);
             });
 
-            it("Tests the returned origin filter for unknown", function() {
+            it("Tests the returned origin filter for unknown", function () {
                 dropdown.simulate("change", "Uknown");
 
                 expect(onFilter).to.have.been.calledOnce;
@@ -244,6 +244,32 @@ describe("Filter Bar", function () {
                 const pickers = wrapper.find(DatePicker);
                 startDatePicker = pickers.at(0);
                 endDatePicker = pickers.at(1);
+            });
+
+            it("Tests the on filter is called with a new Date filter with the start date change..", function () {
+                let date = new Date();
+                date.setDate(date.getDate() - 3);
+
+                startDatePicker.simulate("change", date);
+
+                expect(onFilter).to.be.calledOnce;
+
+                const dateArg: DateFilter = onFilter.args[0][0];
+                expect(dateArg.startDate).to.equalDate(date);
+                expect(dateArg.endDate).to.equalDate(wrapper.state("endDate"));
+            });
+
+            it("Tests the on filter is called with a new Date filter with the end date change..", function () {
+                let date = new Date();
+                date.setDate(date.getDate() - 3);
+
+                endDatePicker.simulate("change", date);
+
+                expect(onFilter).to.be.calledOnce;
+
+                const dateArg: DateFilter = onFilter.args[0][0];
+                expect(dateArg.endDate).to.equalDate(date);
+                expect(dateArg.startDate).to.equalDate(wrapper.state("startDate"));
             });
 
             it("Tests state changes when start date picker is chosen.", function () {
