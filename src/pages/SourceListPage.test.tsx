@@ -1,6 +1,8 @@
 import * as chai from "chai";
 import { mount } from "enzyme";
+import { createMemoryHistory, History } from "history";
 import * as React from "react";
+import { Route, Router } from "react-router-dom";
 
 let jsdom = require("mocha-jsdom");
 
@@ -18,9 +20,11 @@ let expect = chai.expect;
 describe("Source List Page", function () {
 
     let sources: Source[];
+    let history: History;
 
-    before(function() {
+    before(function () {
         sources = dummySources(4);
+        history = createMemoryHistory("/");
     });
 
     describe("Full render", function () {
@@ -28,7 +32,13 @@ describe("Source List Page", function () {
         jsdom();
 
         it("should render correctly", function () {
-            const wrapper = mount(<SourceListPage sources={sources} />);
+            // Need the router when using "mount" because this page has a "Link" item which requires a "History".
+            const wrapper = mount(
+                <Router history={history} >
+                    <Route path="/">
+                        <SourceListPage sources={sources} />
+                    </Route>
+                </Router>);
 
             let twoPaneWrapper = wrapper.find("TwoPane");
             let leftSide = twoPaneWrapper.find(".source_list_page_left");

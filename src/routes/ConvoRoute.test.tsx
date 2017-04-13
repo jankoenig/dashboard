@@ -13,6 +13,7 @@ describe("ConvoRoute", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
+            // The route doesn't use any of these
             wrapper = shallow(<ConvoRoute
                 history={undefined}
                 match={undefined}
