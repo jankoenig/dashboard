@@ -5,8 +5,8 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Route } from "react-router";
 import { createStore } from "redux";
 
-import ConvoPage from "../pages/logspage/ConvoPage";
-import ConvoRoute from "./ConvoRoute";
+import NotFoundPage from "../pages/NotFoundPage";
+import NotFoundRoute from "./NotFoundRoute";
 
 import rootReducer from "../reducers";
 
@@ -14,7 +14,7 @@ let jsdom = require("mocha-jsdom");
 
 const expect = chai.expect;
 
-describe("LoginRoute", function () {
+describe("NotFoundRoute", function () {
     describe("Render", function () {
 
         jsdom();
@@ -27,14 +27,14 @@ describe("LoginRoute", function () {
             wrapper = mount(
                 <Provider store={store}>
                     <MemoryRouter>
-                        <Route path="/" component={ConvoRoute} />
+                        <Route path="/" component={NotFoundRoute} />
                     </MemoryRouter>
                 </Provider>
             );
         });
 
-        it("Tests that the Convo page is shown.", function () {
-            expect(wrapper.find(ConvoPage)).to.have.length(1);
+        it("Tests that the Not Found Page is shown.", function () {
+            expect(wrapper.find(NotFoundPage)).to.have.length(1);
         });
     });
 });

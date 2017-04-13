@@ -5,8 +5,9 @@ import { Provider } from "react-redux";
 import { MemoryRouter, Route } from "react-router";
 import { createStore } from "redux";
 
-import ConvoPage from "../pages/logspage/ConvoPage";
-import ConvoRoute from "./ConvoRoute";
+import LoginFrame from "../frames/Login";
+import LoginPage from "../pages/LoginPage";
+import LoginRoute from "./LoginRoute";
 
 import rootReducer from "../reducers";
 
@@ -27,14 +28,15 @@ describe("LoginRoute", function () {
             wrapper = mount(
                 <Provider store={store}>
                     <MemoryRouter>
-                        <Route path="/" component={ConvoRoute} />
+                        <Route path="/" component={LoginRoute} />
                     </MemoryRouter>
                 </Provider>
             );
         });
 
-        it("Tests that the Convo page is shown.", function () {
-            expect(wrapper.find(ConvoPage)).to.have.length(1);
+        it("Tests that the Login Frame and Page are shown.", function () {
+            expect(wrapper.find(LoginFrame)).to.have.length(1);
+            expect(wrapper.find(LoginPage)).to.have.length(1);
         });
     });
 });

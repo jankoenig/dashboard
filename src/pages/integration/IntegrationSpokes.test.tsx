@@ -22,7 +22,38 @@ const source: Source = dummySources(1)[0];
 const user = new User({ email: "test@testMctest.com" });
 
 describe("IntegrationSpokes", function () {
-    describe("Renders", function () {
+
+    describe("Renders without source.", function () {
+        let wrapper: ShallowWrapper<any, any>;
+        let onSaved: sinon.SinonStub;
+
+        before(function () {
+            onSaved = sinon.stub();
+            wrapper = shallow(<IntegrationSpokes user={user} source={undefined} />);
+        });
+
+        it("Tests that nothing is being fetched.", function() {
+            const prefetchPromise = (wrapper.instance() as IntegrationSpokes).cancelables;
+            const prefetchPropsPromise = (wrapper.instance() as IntegrationSpokes).cancelOnProps;
+
+            expect(prefetchPromise).to.be.empty;
+            expect(prefetchPropsPromise).to.be.empty;
+        });
+
+        it("Tests the swapper is disabled.", function() {
+            expect(wrapper.find(Dropdown).at(0)).to.have.prop("disabled", true);
+        });
+
+        it("Tests that the save button is diabled.", function() {
+            expect(wrapper.find(Button)).to.have.prop("disabled", true);
+        });
+
+        it("Tests that the live debugging checkbox is disabled", function() {
+            expect(wrapper.find(Checkbox)).to.have.prop("disabled", true);
+        });
+    });
+
+    describe("Renders With Source", function () {
         let wrapper: ShallowWrapper<any, any>;
         // let onChange: sinon.SinonStub;
         let onSaved: sinon.SinonStub;
@@ -37,7 +68,7 @@ describe("IntegrationSpokes", function () {
             wrapper = shallow(<IntegrationSpokes user={user} source={source} onSpokesSaved={onSaved} />);
 
             const prefetchPromise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
-            return prefetchPromise.catch(function() { /* don't care */}); // Lets this run through without worry.
+            return prefetchPromise.catch(function () { /* don't care */ }); // Lets this run through without worry.
         });
 
         beforeEach(function () {
@@ -49,7 +80,7 @@ describe("IntegrationSpokes", function () {
             onSaved.reset();
         });
 
-        after(function() {
+        after(function () {
             prefetch.restore();
         });
 
@@ -217,7 +248,7 @@ describe("IntegrationSpokes", function () {
         beforeEach(function () {
             wrapper = shallow(<IntegrationSpokes user={user} source={source} onSpokesSaved={onSaved} />);
             const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
-            return promise.catch(function() { /* don't care */ });
+            return promise.catch(function () { /* don't care */ });
         });
 
         afterEach(function () {

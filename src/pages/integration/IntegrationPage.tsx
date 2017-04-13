@@ -12,7 +12,7 @@ import Spokes from "./IntegrationSpokes";
 let TabsTheme = require("./themes/tabs.scss");
 
 interface IntegrationPageProps {
-    source: Source;
+    source?: Source;
     showSecret?: boolean;
 }
 

@@ -36,7 +36,7 @@ interface IntegrationSpokesGlobalStateProps {
 }
 
 interface IntegrationSpokesStandardProps {
-    source: Source;
+    source?: Source;
     onSpokesSaved?(): void;
 }
 
@@ -126,7 +126,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.setState({ proxy: value } as IntegrationSpokesState);
     }
 
-    handleSwapperChange(key: "url"| "lambdaARN" | "awsAccessKey" | "awsSecretKey", value: string) {
+    handleSwapperChange(key: "url" | "lambdaARN" | "awsAccessKey" | "awsSecretKey", value: string) {
         let newObj = {} as any;
         newObj[key] = value;
         this.setState(newObj);
@@ -153,25 +153,29 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
     downloadSpoke() {
         const { user, source } = this.props;
 
-        this.resolve(SpokesService.fetchPipe(user, source)
-            .then((spoke: Spoke) => {
-                const { http, lambda } = spoke;
-                const proxy = { proxy: spoke.proxy };
-                const httpObj = (http) ? http : { url: undefined };
-                const lambdaObj = (lambda) ? lambda : { lambdaARN: undefined, awsAccessKey: undefined, awsSecretKey: undefined };
-                this.setState({...proxy, ...httpObj, ...lambdaObj } as IntegrationSpokesState);
-            }));
+        if (source) {
+            this.resolve(SpokesService.fetchPipe(user, source)
+                .then((spoke: Spoke) => {
+                    const { http, lambda } = spoke;
+                    const proxy = { proxy: spoke.proxy };
+                    const httpObj = (http) ? http : { url: undefined };
+                    const lambdaObj = (lambda) ? lambda : { lambdaARN: undefined, awsAccessKey: undefined, awsSecretKey: undefined };
+                    this.setState({ ...proxy, ...httpObj, ...lambdaObj } as IntegrationSpokesState);
+                }));
+        }
     }
 
     render() {
+        const { source } = this.props;
         const { showPage, proxy, message, ...others } = this.state;
+        const disableAll = source === undefined;
         let saveDisabled: boolean;
         switch (showPage) {
             case "http":
-                saveDisabled = !validateUrl(others.url);
+                saveDisabled = disableAll || !validateUrl(others.url);
                 break;
             case "lambda":
-                saveDisabled = !(others.lambdaARN && others.awsAccessKey && others.awsSecretKey);
+                saveDisabled = disableAll || !(others.lambdaARN && others.awsAccessKey && others.awsSecretKey);
                 break;
             default:
                 // We're apparently on something we don't know exists so don't let them go further.
@@ -187,6 +191,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 </Cell>
                 <Cell col={3}>
                     <Dropdown
+                        disabled={disableAll}
                         theme={DropdownTheme}
                         source={IntegrationSpokes.PAGES}
                         value={showPage}
@@ -204,6 +209,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 <Cell col={6} />
                 <Cell col={3}>
                     <Checkbox
+                        disabled={disableAll}
                         theme={CheckboxTheme}
                         label={"Enable Live Debugging"}
                         checked={proxy}
