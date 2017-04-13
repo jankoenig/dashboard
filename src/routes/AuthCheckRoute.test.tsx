@@ -80,7 +80,6 @@ describe("AuthCheckRoute", function () {
                 expect(toProp.state).to.deep.equal({ from : location });
             });
         });
-
     });
 
     xdescribe("Full render", function () {
