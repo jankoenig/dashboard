@@ -6,7 +6,7 @@ import Dropdown from "react-toolbox/lib/dropdown";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
-import { Header, HeaderProps, HeaderState, Home, PageButton, PageSwap, Title } from "./Header";
+import { Header, HeaderButton, HeaderProps, HeaderState, Home, PageButton, PageSwap, Title } from "./Header";
 
 // Setup chai with sinon-chai
 chai.use(sinonChai);
@@ -31,6 +31,39 @@ describe("Header", function () {
 
         it("renders the menu", function () {
             expect(wrapper.find("StyledMenu")).to.have.length(1);
+        });
+    });
+
+    describe("Header Button", function() {
+        let headerButton: ShallowWrapper<any, any>;
+        let button: PageButton;
+        let onClick: Sinon.SinonStub;
+
+        before(function() {
+            button = { name: "TestButton", icon: "Test Icon" };
+            onClick = sinon.stub();
+            headerButton = shallow(<HeaderButton
+                button={button}
+                onClick={onClick}
+                 />);
+        });
+
+        afterEach(function() {
+            onClick.reset();
+        });
+
+        it("Tests that the props are passed to the underlying button.", function() {
+            const themedButton = headerButton.find("Themed");
+            expect(themedButton).to.have.length(1);
+            expect(themedButton).to.have.prop("tooltip", button.name);
+            expect(themedButton).to.have.prop("icon", button.icon);
+        });
+
+        it("Tests that the click works.", function() {
+            const themedButton = headerButton.find("Themed");
+            themedButton.simulate("click");
+
+            expect(onClick).to.be.calledWith(button);
         });
     });
 
@@ -214,14 +247,20 @@ describe("Header", function () {
             });
 
             it("Tests the buttons are rendered properly.", function() {
-                expect(wrapper.find("Themed")).to.have.length(pages.length);
+                expect(wrapper.find(HeaderButton)).to.have.length(pages.length);
             });
 
             it ("Tests the callback", function() {
-                const buttons = wrapper.find("Themed").at(0);
+                const buttons = wrapper.find(HeaderButton).at(0);
                 buttons.simulate("click", pages[0]);
                 expect(onPageSelected).to.have.been.calledOnce;
                 expect(onPageSelected).to.have.been.calledWith(pages[0]);
+            });
+
+            it("Tests that it will build new buttons on props change.", function() {
+                const newPages: PageButton[] = [{ icon: "newHome", name: "newName" }, { icon: "newHome2", name: "newName2" }, { icon: "newHome3", name: "newName3" }];
+                wrapper.setProps({ pageButtons: newPages });
+                expect(wrapper.find(HeaderButton)).to.have.length(newPages.length);
             });
         });
     });

@@ -57,6 +57,12 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 
     constructor(props: LoginPageProps) {
         super(props);
+
+        this.handleFormLoginWithGithub = this.handleFormLoginWithGithub.bind(this);
+        this.handleFormSignUpWithEmail = this.handleFormSignUpWithEmail.bind(this);
+        this.handleFormSubmit = this.handleFormSubmit.bind(this);
+        this.handleResetPassword = this.handleResetPassword.bind(this);
+
         this.state = {};
     }
 
@@ -97,10 +103,10 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                     <Card>
                         <AuthForm
                             error={this.state.error}
-                            onSubmit={this.handleFormSubmit.bind(this)}
-                            onLoginWithGithub={this.handleFormLoginWithGithub.bind(this)}
-                            onSignUpWithEmail={this.handleFormSignUpWithEmail.bind(this)}
-                            onResetPassword={this.handleResetPassword.bind(this)}
+                            onSubmit={this.handleFormSubmit}
+                            onLoginWithGithub={this.handleFormLoginWithGithub}
+                            onSignUpWithEmail={this.handleFormSignUpWithEmail}
+                            onResetPassword={this.handleResetPassword}
                             />
                     </Card>
                 </Cell>

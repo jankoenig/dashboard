@@ -18,6 +18,8 @@ export default class Snackbar extends React.Component<SnackbarProps, SnackbarSta
         this.state = {
             show: this.shouldShowSnackbar(props)
         };
+
+        this.hideSnackBar = this.hideSnackBar.bind(this);
     }
 
     componentWillReceiveProps(nextProps: SnackbarProps) {
@@ -52,7 +54,7 @@ export default class Snackbar extends React.Component<SnackbarProps, SnackbarSta
         return (
             <div className={this.classes()}>
                 <div className="mdl-snackbar__text">{this.props.text}</div>
-                <button className="mdl-snackbar__action" type="button" onClick={this.hideSnackBar.bind(this)}>Close</button>
+                <button className="mdl-snackbar__action" type="button" onClick={this.hideSnackBar}>Close</button>
             </div>
         );
     }

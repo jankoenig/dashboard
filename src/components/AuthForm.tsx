@@ -28,6 +28,9 @@ export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
             email: "",
             isConfirmPasswordVisible: false
         };
+
+        this.onEmailChange = this.onEmailChange.bind(this);
+        this.onResetPassword = this.onResetPassword.bind(this);
     }
 
     onRegister() {
@@ -52,8 +55,8 @@ export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
                     error={this.props.error}
                     onLogin={this.props.onSubmit}
                     onSignUpWithEmail={this.props.onSignUpWithEmail}
-                    onEmailChange={this.onEmailChange.bind(this)}
-                    onResetPassword={this.onResetPassword.bind(this)}
+                    onEmailChange={this.onEmailChange}
+                    onResetPassword={this.onResetPassword}
                     />
                 <div className="mdl-card__actions mdl-card--border clearfix">
                     <LoginGithub onLoginWithGithub={this.props.onLoginWithGithub} />
@@ -87,6 +90,7 @@ interface LoginGithubProps {
 }
 
 export class LoginGithub extends React.Component<LoginGithubProps, any> {
+
     render() {
         return (
             this.props.onLoginWithGithub ? (
@@ -95,7 +99,7 @@ export class LoginGithub extends React.Component<LoginGithubProps, any> {
                         theme={theme}
                         label="Login with Github"
                         icon={(<Icon style={{ marginRight: "13px" }} width={20} height={20} icon={ICON.GITHUB} />)}
-                        onClick={this.props.onLoginWithGithub.bind(this)} />
+                        onClick={this.props.onLoginWithGithub} />
                 </div>
             ) : ( <div/> )
         );
@@ -125,6 +129,15 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
         this.state = {
             error: props.error
         };
+
+        this.onEmailChange = this.onEmailChange.bind(this);
+        this.onPasswordChange = this.onPasswordChange.bind(this);
+        this.onConfirmPassChange = this.onConfirmPassChange.bind(this);
+        this.onLogin = this.onLogin.bind(this);
+        this.onSignUpClick = this.onSignUpClick.bind(this);
+        this.onSubmitClicked = this.onSubmitClicked.bind(this);
+        this.onPasswordReset = this.onPasswordReset.bind(this);
+        this.onFormSubmit = this.onFormSubmit.bind(this);
     }
 
     componentWillReceiveProps(nextProps: NormalLoginFormProps, ctx: any) {
@@ -203,14 +216,14 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
                 <Button
                     theme={theme}
                     label="Submit"
-                    onClick={this.onSubmitClicked.bind(this)}
+                    onClick={this.onSubmitClicked}
                     />
             ) :
             (
                 <Button
                     theme={theme}
                     label="Sign Up"
-                    onClick={this.onSignUpClick.bind(this)} />
+                    onClick={this.onSignUpClick} />
             );
 
         return (
@@ -221,19 +234,19 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
                     confirmPassword={this.state.confirmPassword}
                     showConfirmPassword={this.state.isConfirmPassword}
                     error={this.state.error}
-                    onEmailChange={this.onEmailChange.bind(this)}
-                    onPasswordChange={this.onPasswordChange.bind(this)}
-                    onConfirmPasswordChange={this.onConfirmPassChange.bind(this)}
-                    onPasswordSubmit={this.onFormSubmit.bind(this)}
-                    onConfirmPasswordSubmit={this.onFormSubmit.bind(this)} />
+                    onEmailChange={this.onEmailChange}
+                    onPasswordChange={this.onPasswordChange}
+                    onConfirmPasswordChange={this.onConfirmPassChange}
+                    onPasswordSubmit={this.onFormSubmit}
+                    onConfirmPasswordSubmit={this.onFormSubmit} />
                 <div className="mdl-card__actions mdl-card--border clearfix">
                     <Button
                         theme={theme}
                         label="Login"
-                        onClick={this.onLogin.bind(this)} />
+                        onClick={this.onLogin} />
                     {signupBtn}
                     <PasswordReset
-                        onPasswordReset={this.onPasswordReset.bind(this)} />
+                        onPasswordReset={this.onPasswordReset} />
                 </div>
             </div>
         );
@@ -258,25 +271,22 @@ interface LoginFormsState {
 
 export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState> {
 
-    onEmailChange(value: string) {
-        if (this.props.onEmailChange) {
-            this.props.onEmailChange(value);
-        }
+    constructor(props: LoginFormsProps) {
+        super(props);
+
+        this.onPasswordKeyPress = this.onPasswordKeyPress.bind(this);
+        this.onConfirmPasswordKeyPress = this.onPasswordKeyPress.bind(this);
     }
 
-    onPasswordChange(value: string) {
-        if (this.props.onEmailChange) {
-            this.props.onPasswordChange(value);
-        }
+    onConfirmPasswordKeyPress(event: any) {
+        this.onKeyPress("confirmPassword", event);
     }
 
-    onConfirmPasswordChange(value: string) {
-        if (this.props.onEmailChange) {
-            this.props.onConfirmPasswordChange(value);
-        }
+    onPasswordKeyPress(event: any) {
+        this.onKeyPress("password", event);
     }
 
-    onPasswordKeyPress(name: string, event: any) {
+    onKeyPress(name: string, event: any) {
         if (event.charCode === 13) {
             if (name === "password") {
                 this.props.onPasswordSubmit();
@@ -294,15 +304,15 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
                     label="Email"
                     type="text"
                     value={this.props.email}
-                    onChange={this.onEmailChange.bind(this)}
+                    onChange={this.props.onEmailChange}
                     />
                 <Input
                     theme={theme}
                     label="Password"
                     type="password"
                     value={this.props.password}
-                    onChange={this.onPasswordChange.bind(this)}
-                    onKeyPress={this.onPasswordKeyPress.bind(this, "password")}
+                    onChange={this.props.onPasswordChange}
+                    onKeyPress={this.onPasswordKeyPress}
                     />
                 {
                     this.props.showConfirmPassword ?
@@ -312,8 +322,8 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
                                 label="Confirm Password"
                                 type="password"
                                 value={this.props.confirmPassword}
-                                onChange={this.onConfirmPasswordChange.bind(this)}
-                                onKeyPress={this.onPasswordKeyPress.bind(this, "confirmPassword")}
+                                onChange={this.props.onConfirmPasswordChange}
+                                onKeyPress={this.onPasswordKeyPress}
                                 />
                         ) :
                         undefined
