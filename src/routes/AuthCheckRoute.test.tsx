@@ -72,13 +72,15 @@ describe("AuthCheckRoute", function () {
 
             it("Tests the redirect props.", function() {
                 const redirect = wrapper.find(Redirect).at(0);
-                expect(redirect).to.have.prop("to", "/login");
-                expect(redirect).to.have.prop("state");
+                // Checking the "to" prop
+                expect(redirect).to.have.prop("to");
 
-                const stateProps = redirect.prop("state") as any;
-                expect(stateProps.from).to.deep.equal(stateProps.state);
+                const toProp = redirect.prop("to") as any;
+                expect(toProp.pathname).to.equal("/login");
+                expect(toProp.state).to.deep.equal({ from : location });
             });
         });
+
     });
 
     xdescribe("Full render", function () {
