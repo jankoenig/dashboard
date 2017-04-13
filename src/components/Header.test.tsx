@@ -37,7 +37,7 @@ describe("Header", function () {
     describe("Header Button", function() {
         let headerButton: ShallowWrapper<any, any>;
         let button: PageButton;
-        let onClick: Sinon.SinonStub;
+        let onClick: sinon.SinonStub;
 
         before(function() {
             button = { name: "TestButton", icon: "Test Icon" };
