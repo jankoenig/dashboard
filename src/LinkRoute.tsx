@@ -103,6 +103,7 @@ export class LinkRoute extends CancelableComponent.CancelableComponent<LinkRoute
         const { id, key } = match.params;
         if (!id && !key) {
             // Params were not passed to us.  Just move on.
+            console.info("GOING TO SKILLS");
             goTo("/skills");
         } else {
             this.reroute(this.props);

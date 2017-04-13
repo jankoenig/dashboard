@@ -15,16 +15,8 @@ import { LOGOUT_USER } from "./constants";
 import { setUser } from "./actions/session";
 
 import AuthCheckRoute from "./AuthCheckRoute";
-
-import ConvoRoute from "./ConvoRoute";
-import IntegrationRoute from "./IntegrationRoute";
-import LinkRoute from "./LinkRoute";
 import LoginRoute from "./LoginRoute";
-import NewSourceRoute from "./NewSourceRoute";
 import NotFoundRoute from "./NotFoundRoute";
-import SetSourceRoute from "./SetSourceRoute";
-import SourceListRoute from "./SourceListRoute";
-import SourceRoute from "./SourceRoute";
 
 import { FirebaseUser } from "./models/user";
 
@@ -96,23 +88,14 @@ let render = function () {
     ReactDOM.render((
         <Provider store={store}>
             <ConnectedRouter history={browserHistory}>
+                <div>
                 <Route path="/login" component={LoginRoute} />
-                <Route path="/" component={AuthCheckRoute} >
-                    <Route exact component={LinkRoute} />
-                    <Route path="skills" component={SourceListRoute} />
-                    <Route path="skills/new"  component={NewSourceRoute} />
-                    <Route path="skills/:sourceId" component={SetSourceRoute} >
-                        <Route exact component={SourceRoute} />
-                        <Route path=":sourceId/logs" component={ConvoRoute} />
-                        <Route path=":sourceId/integration" component={IntegrationRoute} />
-                    </Route>
-                    <Route path="notFound" component={NotFoundRoute} />
-                    <Route path="*" component={NotFoundRoute} />
-                </Route>
+                <Route path="/" component={AuthCheckRoute} />
+                <Route path="*" component={NotFoundRoute} />
+                </div>
             </ConnectedRouter>
         </Provider>
     ),
         document.getElementById("dashboard")
     );
 };
-

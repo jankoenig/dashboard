@@ -1,4 +1,5 @@
 import * as classNames from "classnames";
+import { Location } from "history";
 import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
@@ -31,14 +32,15 @@ class SourceDropdownableAdapter implements Dropdownable {
   get label() {
     return this.source.name;
   }
-
 }
 
-interface DashboardProps {
+interface StateProps {
   user: User;
   currentSource: Source;
   sources: Source[];
-  location: Location;
+}
+
+interface DispatchProps {
   login: () => (dispatch: Dispatch<any>) => void;
   logout: () => (dispatch: Dispatch<any>) => void;
   getSources: () => ThunkAction<any, any, any>;
@@ -46,10 +48,17 @@ interface DashboardProps {
   goTo: (path: string) => (dispatch: Dispatch<any>) => void;
 }
 
+interface StandardProps {
+  location: Location;
+}
+
+interface DashboardProps extends StateProps, DispatchProps, StandardProps {
+}
+
 interface DashboardState {
 }
 
-function mapStateToProps(state: State.All) {
+function mapStateToProps(state: State.All): StateProps {
   return {
     user: state.session.user,
     currentSource: state.source.currentSource,
@@ -57,7 +66,7 @@ function mapStateToProps(state: State.All) {
   };
 }
 
-function mapDispatchToProps(dispatch: any) {
+function mapDispatchToProps(dispatch: any): DispatchProps {
   return {
     login: function () {
       return dispatch(push("/login"));
@@ -75,6 +84,10 @@ function mapDispatchToProps(dispatch: any) {
       return dispatch(replace(path));
     }
   };
+}
+
+function mergeProps(state: StateProps, dispatch: DispatchProps, standard: StandardProps): DashboardProps {
+  return { ...state, ...dispatch, ...standard };
 }
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
@@ -193,5 +206,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeProps
 )(Dashboard);

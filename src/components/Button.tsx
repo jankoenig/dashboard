@@ -37,8 +37,6 @@ class Button extends React.Component<ButtonProps, any> {
   }
 
   render() {
-
-    let component = this.props.href !== undefined ? "a" : "button";
     let properties = objectAssign({}, this.props, {
       className: this.classes(),
       href: this.props.href,
@@ -54,7 +52,15 @@ class Button extends React.Component<ButtonProps, any> {
       }
     };
 
-    return React.createElement(component, elementProps);
+    if (this.props.href) {
+      return (
+        <a {...elementProps} />
+      );
+    } else {
+      return (
+        <button {...elementProps} />
+      );
+    }
   }
 }
 

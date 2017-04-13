@@ -1,29 +1,18 @@
 import * as React from "react";
 import { connect } from "react-redux";
-import { Redirect, RouteComponentProps } from "react-router";
+import { Redirect, Route, RouteComponentProps } from "react-router";
 import { replace } from "react-router-redux";
-
 
 import { State } from "./reducers";
 
+import LinkRoute from "./LinkRoute";
+import NewSourceRoute from "./NewSourceRoute";
+import NotFoundRoute from "./NotFoundRoute";
+import SetSourceRoute from "./SetSourceRoute";
+import SourceListRoute from "./SourceListRoute";
+
 import Dashboard from "./frames/Dashboard";
 import User from "./models/user";
-
-/**
- * Checks if the user exists before entering routes that require a user.
- *
- * See below on the onEnter method.
- */
-// let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
-//     const session: any = store.getState().session;
-//     if (!session.user) {
-//         replace({
-//             pathname: "/login",
-//             query: nextState.location.query,
-//             state: { nextPathName: nextState.location.pathname, query: nextState.location.query }
-//         });
-//     }
-// };
 
 interface StateProps {
     currentUser: User;
@@ -61,11 +50,13 @@ function mergeProps(state: StateProps, dispatch: DispatchProps, standard: Standa
 export class AuthCheckRoute extends React.Component<AuthCheckProps, any> {
 
     render() {
-        const { currentUser, children, location } = this.props;
+        const { currentUser, location } = this.props;
         const loggedIn = currentUser !== undefined;
+        console.info("LOGGED IN");
         return (
-            <Dashboard>
-                {(loggedIn) ? (children) : (
+            <Dashboard
+                location={location}>
+                {(loggedIn) ? (<Everything />) : (
                     <Redirect to={{
                         pathname: "/login",
                         state: { from: location }
@@ -81,4 +72,18 @@ export default connect(
     mapStateToProps,
     mapStateToDispatch,
     mergeProps)
-(AuthCheckRoute);
+    (AuthCheckRoute);
+
+class Everything extends React.Component<any, any> {
+    render() {
+        return (
+            <div>
+                <Route exact component={LinkRoute} />
+                <Route path="/skills" component={SourceListRoute} />
+                <Route path="/skills/new" component={NewSourceRoute} />
+                <Route path="/skills/:sourceId" component={SetSourceRoute} />
+                <Route path="/notFound" component={NotFoundRoute} />
+                <Route path="*" component={NotFoundRoute} />);
+            </div>);
+    }
+}

@@ -1,5 +1,10 @@
+import * as React from "react";
 import { connect } from "react-redux";
-import { RouteComponentProps } from "react-router";
+import { Route, RouteComponentProps } from "react-router";
+
+import ConvoRoute from "./ConvoRoute";
+import IntegrationRoute from "./IntegrationRoute";
+import SourceRoute from "./SourceRoute";
 
 import CancelableComponent from "./components/CancelableComponent";
 import IndexUtils from "./index-utils";
@@ -26,6 +31,10 @@ interface StandardProps extends RouteComponentProps<Query> {
 interface SourceRouteProps extends DispatchProps, StateProps, StandardProps {
 }
 
+interface SourceRouteState {
+    source: Source;
+}
+
 function mapStateToProps(state: State.All): StateProps {
     return {
         currentSources: state.source.sources
@@ -47,7 +56,7 @@ function mergeProps(state: StateProps, dispatch: DispatchProps, standard: Standa
     return { ...state, ...dispatch, ...standard };
 }
 
-export class SetSourceRoute extends CancelableComponent<SourceRouteProps, any> {
+export class SetSourceRoute extends CancelableComponent<SourceRouteProps, SourceRouteState> {
 
     componentWillReceiveProps(props: SourceRouteProps, context: any) {
         super.componentWillReceiveProps(props, context);
@@ -66,8 +75,26 @@ export class SetSourceRoute extends CancelableComponent<SourceRouteProps, any> {
     getNewSource(props: SourceRouteProps) {
         const { currentSources, match, setCurrentSource } = props;
         const { sourceId } = match.params;
-        const promise = setCurrentSource(sourceId, currentSources);
+        const promise = setCurrentSource(sourceId, currentSources)
+            .then((source: Source) => {
+                this.setState({ source: source });
+            });
         return this.resolve(promise);
+    }
+
+    render() {
+        const { source } = this.state;
+        if (source) {
+            return (
+                <div>
+                    <Route exact component={SourceRoute} />
+                    <Route path=":sourceId/logs" component={ConvoRoute} />
+                    <Route path=":sourceId/integration" component={IntegrationRoute} />
+                </div>
+            );
+        } else {
+            return (<div/>);
+        }
     }
 }
 
