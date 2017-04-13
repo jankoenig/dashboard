@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
-import NewSourcePage from "./pages/NewSourcePage";
+import NewSourcePage from "../pages/NewSourcePage";
 
 interface NewSourceRouteProps extends RouteComponentProps<void> {
 

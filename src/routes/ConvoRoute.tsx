@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
-import ConvoPage from "./pages/logspage/ConvoPage";
+import ConvoPage from "../pages/logspage/ConvoPage";
 
 interface ConvoRouteProps extends RouteComponentProps<void> {
 

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Redirect, Route, RouteComponentProps } from "react-router";
 import { replace } from "react-router-redux";
 
-import { State } from "./reducers";
+import { State } from "../reducers";
 
 import LinkRoute from "./LinkRoute";
 import NewSourceRoute from "./NewSourceRoute";
@@ -11,8 +11,8 @@ import NotFoundRoute from "./NotFoundRoute";
 import SetSourceRoute from "./SetSourceRoute";
 import SourceListRoute from "./SourceListRoute";
 
-import Dashboard from "./frames/Dashboard";
-import User from "./models/user";
+import Dashboard from "../frames/Dashboard";
+import User from "../models/user";
 
 interface StateProps {
     currentUser: User;

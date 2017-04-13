@@ -1,8 +1,8 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
-import Login from "./frames/Login";
-import LoginPage from "./pages/LoginPage";
+import Login from "../frames/Login";
+import LoginPage from "../pages/LoginPage";
 
 interface LoginProps extends RouteComponentProps<any> {
 

@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { replace } from "react-router-redux";
 
-import * as CancelableComponent from "./components/CancelableComponent";
-import IndexUtils from "./index-utils";
-import Source from "./models/source";
-import User from "./models/user";
-import { State } from "./reducers";
-import SourceService from "./services/source";
+import * as CancelableComponent from "../components/CancelableComponent";
+import IndexUtils from "../index-utils";
+import Source from "../models/source";
+import User from "../models/user";
+import { State } from "../reducers";
+import SourceService from "../services/source";
 
 interface Query {
     id?: string;

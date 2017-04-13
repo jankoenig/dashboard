@@ -14,8 +14,8 @@ import { LOGOUT_USER } from "./constants";
 
 import { setUser } from "./actions/session";
 
-import AuthCheckRoute from "./AuthCheckRoute";
-import LoginRoute from "./LoginRoute";
+import AuthCheckRoute from "./routes/AuthCheckRoute";
+import LoginRoute from "./routes/LoginRoute";
 
 import { FirebaseUser } from "./models/user";
 

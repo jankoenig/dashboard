@@ -6,10 +6,10 @@ import ConvoRoute from "./ConvoRoute";
 import IntegrationRoute from "./IntegrationRoute";
 import SourceRoute from "./SourceRoute";
 
-import CancelableComponent from "./components/CancelableComponent";
-import IndexUtils from "./index-utils";
-import Source from "./models/source";
-import { State } from "./reducers";
+import CancelableComponent from "../components/CancelableComponent";
+import IndexUtils from "../index-utils";
+import Source from "../models/source";
+import { State } from "../reducers";
 
 interface Query {
     sourceId: string;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
-import NotFoundPage from "./pages/NotFoundPage";
+import NotFoundPage from "../pages/NotFoundPage";
 
 interface NotFoundProps extends RouteComponentProps<any> {
 
