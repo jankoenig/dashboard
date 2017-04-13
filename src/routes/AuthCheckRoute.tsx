@@ -55,7 +55,7 @@ export class AuthCheckRoute extends React.Component<AuthCheckProps, any> {
         return (loggedIn) ?
             (
                 <Dashboard location={location}>
-                    <Everything />
+                    <ProtectedRoutes />
                 </Dashboard>
             )
             :
@@ -76,7 +76,7 @@ export default connect(
     mergeProps)
     (AuthCheckRoute);
 
-class Everything extends React.Component<any, any> {
+export class ProtectedRoutes extends React.Component<any, any> {
     render() {
         return (
             <div>
