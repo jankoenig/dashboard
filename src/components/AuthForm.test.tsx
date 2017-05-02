@@ -168,7 +168,7 @@ describe("AuthForm", function () {
             expect(loginBtn.prop("label")).to.equal("Login");
 
             let signUpBtn = wrapper.find("Themed").at(1);
-            expect(signUpBtn.prop("label")).to.equal("Sign Up");
+            expect(signUpBtn.prop("label")).to.equal("Register");
         });
 
         describe("With filled state.", function () {
@@ -200,7 +200,7 @@ describe("AuthForm", function () {
 
                 let loginBtn = wrapper.find("Themed").first();
 
-                expect(loginBtn.prop("label")).to.equal("Login");
+                expect(loginBtn.prop("label")).to.equal("Cancel");
 
                 let signUpBtn = wrapper.find("Themed").at(1);
                 expect(signUpBtn.prop("label")).to.equal("Submit");
@@ -295,8 +295,12 @@ describe("AuthForm", function () {
         });
 
         it("Renders properly.", function () {
+            expect(wrapper.find("h3")).to.have.length(1);
             expect(wrapper.find("Themed")).to.have.length(3);
             expect(wrapper.find("label")).to.have.length(1);
+
+            let title = wrapper.find("h3").at(0);
+            expect(title.text()).to.equal("Register");
 
             let emailInput = wrapper.find("Themed").at(0);
             expect(emailInput.prop("label")).to.equal("Email");
@@ -320,8 +324,11 @@ describe("AuthForm", function () {
         it("Renders properly without confirm password field.", function () {
             wrapper.setProps({ showConfirmPassword: false });
 
-            expect(wrapper.find("Themed")).to.have.length(2);
+            expect(wrapper.find("h3")).to.have.length(1);
+            expect(wrapper.find("Themed")).to.have.length(3);
 
+            let title = wrapper.find("h3").at(0);
+            expect(title.text()).to.equal("Login");
 
             let emailInput = wrapper.find("Themed").at(0);
             expect(emailInput.prop("label")).to.equal("Email");

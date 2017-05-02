@@ -136,6 +136,7 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
         this.onLogin = this.onLogin.bind(this);
         this.onSignUpClick = this.onSignUpClick.bind(this);
         this.onSubmitClicked = this.onSubmitClicked.bind(this);
+        this.onCancelClick = this.onCancelClick.bind(this);
         this.onPasswordReset = this.onPasswordReset.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
     }
@@ -177,6 +178,12 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
     onSignUpClick() {
         this.state.confirmPassword = "";
         this.state.isConfirmPassword = true;
+        this.setState(this.state);
+    }
+
+    onCancelClick() {
+        this.state.confirmPassword = "";
+        this.state.isConfirmPassword = false;
         this.setState(this.state);
     }
 
@@ -222,8 +229,22 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
             (
                 <Button
                     theme={theme}
-                    label="Sign Up"
+                    label="Register"
                     onClick={this.onSignUpClick} />
+            );
+
+        let loginBtn = this.state.isConfirmPassword ?
+            (
+                <Button
+                    theme={theme}
+                    label="Cancel"
+                    onClick={this.onCancelClick} />
+            ) :
+            (
+                <Button
+                    theme={theme}
+                    label="Login"
+                    onClick={this.onLogin} />
             );
 
         return (
@@ -239,11 +260,8 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
                     onConfirmPasswordChange={this.onConfirmPassChange}
                     onPasswordSubmit={this.onFormSubmit}
                     onConfirmPasswordSubmit={this.onFormSubmit} />
-                <div className="mdl-card__actions mdl-card--border clearfix">
-                    <Button
-                        theme={theme}
-                        label="Login"
-                        onClick={this.onLogin} />
+                <div className={`${theme.actions} mdl-card__actions mdl-card--border clearfix`}>
+                    {loginBtn}
                     {signupBtn}
                     <PasswordReset
                         onPasswordReset={this.onPasswordReset} />
@@ -299,6 +317,11 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
     render() {
         return (
             <div>
+                {
+                    this.props.showConfirmPassword ?
+                    <h3 className={theme.h3}>Register</h3> :
+                    <h3 className={theme.h3}>Login</h3>
+                }
                 <Input
                     theme={theme}
                     label="Email"
@@ -314,21 +337,15 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
                     onChange={this.props.onPasswordChange}
                     onKeyPress={this.onPasswordKeyPress}
                     />
-                {
-                    this.props.showConfirmPassword ?
-                        (
-                            <Input
-                                theme={theme}
-                                label="Confirm Password"
-                                type="password"
-                                value={this.props.confirmPassword}
-                                onChange={this.props.onConfirmPasswordChange}
-                                onKeyPress={this.onPasswordKeyPress}
-                                />
-                        ) :
-                        undefined
-
-                }
+                <Input
+                    theme={theme}
+                    className={this.props.showConfirmPassword ? `${theme.showConfirm} ${theme.active}` : theme.showConfirm}
+                    label="Confirm Password"
+                    type="password"
+                    value={this.props.confirmPassword}
+                    onChange={this.props.onConfirmPasswordChange}
+                    onKeyPress={this.onPasswordKeyPress}
+                    />
                 <div style={{ color: "#d50000", marginTop: "5px", marginBottom: "10px" }}>
                     <label>{this.props.error}</label>
                 </div>

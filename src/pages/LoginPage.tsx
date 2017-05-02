@@ -99,7 +99,7 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         return (
             <Grid>
                 <Cell col={4} tablet={2} hidePhone={true} />
-                <Cell col={4} tablet={4} phone={4} align={"middle"}>
+                <Cell col={4} tablet={4} phone={4} align={"middle"} style={{display: "flex", justifyContent: "center"}}>
                     <Card>
                         <AuthForm
                             error={this.state.error}
