@@ -28,8 +28,12 @@ describe("OutputList", function () {
         elements: []
     });
 
+    const noLogsWrapper = shallow(<OutputList outputs={[]} stackTraces={[]} />);
+    it("renders the no output message when no logs are found", function(){
+        expect(noLogsWrapper.find("span")).to.have.length(1);
+        expect(noLogsWrapper.find("span").text()).to.equal("");
+    });
     const wrapper = shallow(<OutputList outputs={[output]} stackTraces={[stackTrace]} />);
-
     it("renders the unordered list", function () {
         expect(wrapper.find("ul")).to.have.length(1);
     });

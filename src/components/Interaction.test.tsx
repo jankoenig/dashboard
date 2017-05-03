@@ -27,6 +27,11 @@ describe("Interaction", function () {
         ));
 
         expect(wrapper.find(JSONTree)).to.have.length(2);
+        const titlesWrapper = wrapper.find("h6");
+        expect(titlesWrapper).to.have.length(3);
+        expect(titlesWrapper.at(0).text()).to.equal("REQUEST");
+        expect(titlesWrapper.at(1).text()).to.equal("RESPONSE");
+        expect(titlesWrapper.at(2).text()).to.equal("LOGS");
     });
 
     describe("Keeping state.", function () {

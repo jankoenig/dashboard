@@ -27,6 +27,12 @@ export default class OutputList extends React.Component<OutputListProps, any> {
         };
     }
 
+    textStyle() {
+        return {
+            paddingLeft: 20
+        };
+    }
+
     render() {
 
         // First combine all the outputs and stacktraces
@@ -53,7 +59,7 @@ export default class OutputList extends React.Component<OutputListProps, any> {
             }
         }
 
-        let output: JSX.Element = (<span> No outputs </span>);
+        let output: JSX.Element = (<div style={this.style()}><span style={this.textStyle()} /></div>);
 
         if (outputs.length > 0) {
             output = (

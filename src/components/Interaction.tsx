@@ -45,6 +45,18 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         base0F: "#cc6633"
     };
 
+    static titleContainerStyle: React.CSSProperties = {
+        position: "relative"
+    };
+
+    static titleStyle: React.CSSProperties = {
+        position: "absolute",
+        margin: "0 15px",
+        color: "#fff",
+        top: 8,
+        right: 0
+    };
+
     static getKey(keyName: string[]): string {
         return keyName.join(",");
     }
@@ -114,12 +126,18 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
     render() {
         return (
             <div>
-                <h6>REQUEST</h6>
+                <div style={Interaction.titleContainerStyle}>
+                    <h6 style={Interaction.titleStyle}>REQUEST</h6>
+                </div>
                 {this.getTree(this.props.request)}
-                <h6>LOGS</h6>
-                <OutputList outputs={this.props.outputs} stackTraces={this.props.stackTraces} />
-                <h6>RESPONSE</h6>
+                <div style={Interaction.titleContainerStyle}>
+                    <h6 style={Interaction.titleStyle}>RESPONSE</h6>
+                </div>
                 {this.getTree(this.props.response)}
+                <div style={Interaction.titleContainerStyle}>
+                    <h6 style={Interaction.titleStyle}>LOGS</h6>
+                </div>
+                <OutputList outputs={this.props.outputs} stackTraces={this.props.stackTraces} />
             </div>
         );
     }
