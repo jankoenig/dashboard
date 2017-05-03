@@ -10,6 +10,8 @@ const noobj = {};
 interface MainContentProps {
     conversation: Conversation;
     primaryContentStyle?: React.CSSProperties;
+    rightContentStyle?: React.CSSProperties;
+    textContentStyle?: React.CSSProperties;
     subtitleStyle?: React.CSSProperties;
     iconStyle?: React.CSSProperties;
     onIconClick?: () => void;
@@ -21,14 +23,30 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
     static defaultProperties: MainContentProps = {
         conversation: DefaultConvo,
         primaryContentStyle: noobj,
+        rightContentStyle: noobj,
+        textContentStyle: noobj,
         subtitleStyle: noobj,
         iconStyle: noobj
     };
 
     static primaryContentStyle: React.CSSProperties = {
-        display: "block",
+        display: "flex",
+        width: "100%",
         order: 0,
         flexGrow: 2
+    };
+
+    static rightContentStyle: React.CSSProperties = {
+        width: "calc(100% - 55px)",
+        marginLeft: 15
+    };
+
+    static textContentStyle: React.CSSProperties = {
+        display: "block",
+        opacity: .7,
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis"
     };
 
     static iconStyle: React.CSSProperties = {
@@ -37,7 +55,8 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
         height: "40px",
         textAlign: "center",
         float: "left",
-        marginRight: "16px"
+        alignSelf: "center",
+        flexShrink: 0
     };
 
     static subtitleStyle: React.CSSProperties = {
@@ -47,6 +66,8 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
 
     render() {
         const primaryContentStyle = { ...MainContentComponent.primaryContentStyle, ...this.props.primaryContentStyle };
+        const rightContentStyle = { ...MainContentComponent.rightContentStyle, ...this.props.rightContentStyle };
+        const textContentStyle = {...MainContentComponent.textContentStyle, ...this.props.textContentStyle};
         const iconContentStyle = { ...MainContentComponent.iconStyle, ...this.props.iconStyle };
         const subtitleStyle = { ...MainContentComponent.subtitleStyle, ...this.props.subtitleStyle };
 
@@ -59,10 +80,14 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
                     onClick={this.props.onIconClick}
                     color={this.props.conversation.userColors.fill}
                     origin={this.props.conversation.origin} />
-                <div>
+                <div style={rightContentStyle}>
                     <span>
                         {this.props.conversation.requestPayloadType}
                     </span>
+                   { this.props.conversation.outputSpeechText &&
+                    <span style={textContentStyle}>
+                        {`"${this.props.conversation.outputSpeechText}"`}
+                    </span>}
                     <TimeTextComponent
                         style={subtitleStyle}
                         timestamp={this.props.conversation.timestamp} />

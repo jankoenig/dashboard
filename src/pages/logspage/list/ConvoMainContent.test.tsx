@@ -21,6 +21,12 @@ const subtitleStyle = {
 
 };
 
+const textStyle = {
+    width: "200px",
+    height: "300px"
+
+};
+
 const iconStyle = {
     width: "300px",
     height: "400px"
@@ -47,12 +53,20 @@ describe("ConvoMainContent", function () {
                 expect(wrapper.find("span").at(0).prop("style")).to.deep.equal(ConvoMainContent.primaryContentStyle);
             });
 
+            it("Tests the default style for right part of primary component", function () {
+                expect(wrapper.find("div").at(0).prop("style")).to.deep.equal(ConvoMainContent.rightContentStyle);
+            });
+
             it("Tests the default style for icon", function () {
                 expect(wrapper.find(ConvoIcon).at(0).prop("style")).to.deep.equal(ConvoMainContent.iconStyle);
             });
 
             it("Tests the default style for subtitle", function () {
                 expect(wrapper.find(TimeTextComponent).at(0).prop("style")).to.deep.equal(ConvoMainContent.subtitleStyle);
+            });
+
+            it("Tests the default style for text on right part of primary component", function () {
+                expect(wrapper.find("span").at(2).prop("style")).to.deep.equal(ConvoMainContent.textContentStyle);
             });
 
             describe("Icon", function () {
@@ -69,10 +83,26 @@ describe("ConvoMainContent", function () {
             });
 
             describe("Intent text", function () {
-                it("Tests that the conversation text is displayed.", function () {
+                it("Tests that the conversation subtitle text is displayed.", function () {
                     const intentWrapper = wrapper.find("span").at(1);
 
                     expect(intentWrapper).to.have.text(conversation.requestPayloadType);
+                });
+            });
+
+            describe("outputSpeech text", function(){
+                it("Tests that the conversation response text doesn't get rendered when no text is available", function(){
+                    conversation.response.payload.response.outputSpeech.text = "";
+                    const outputSpeechTextWrapper = wrapper.find("span").at(2);
+
+                    expect(outputSpeechTextWrapper.text()).to.not.equal(`&quot;${conversation.outputSpeechText}&quot;`);
+                });
+
+                it("Tests that the conversation response text is displayed when available.", function () {
+                    conversation.response.payload.response.outputSpeech.text = "this is a test text to render on the conversation bubble";
+                    const outputSpeechTextWrapper = wrapper.find("span").at(2);
+
+                    expect(outputSpeechTextWrapper.text()).to.equal(`"${conversation.outputSpeechText}"`);
                 });
             });
 
@@ -96,7 +126,8 @@ describe("ConvoMainContent", function () {
                         conversation={conversation}
                         iconStyle={iconStyle}
                         subtitleStyle={subtitleStyle}
-                        primaryContentStyle={primaryStyle} />
+                        primaryContentStyle={primaryStyle}
+                        textContentStyle={textStyle} />
                 );
             });
 
@@ -110,6 +141,12 @@ describe("ConvoMainContent", function () {
                 const combindStyle = { ...ConvoMainContent.subtitleStyle, ...subtitleStyle };
                 let subtitleWrapper = wrapper.find(TimeTextComponent).at(0);
                 expect(subtitleWrapper.prop("style")).to.deep.equal(combindStyle);
+            });
+
+            it("Tests the outputSpeech text style was applied.", function () {
+                const combindStyle = { ...ConvoMainContent.textContentStyle, ...textStyle };
+                let outputSpeechTextWrapper = wrapper.find("span").at(2);
+                expect(outputSpeechTextWrapper.prop("style")).to.deep.equal(combindStyle);
             });
 
             it("Tests the icon style was applied.", function () {

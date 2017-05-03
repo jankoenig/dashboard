@@ -214,7 +214,8 @@ export function alexaResponseLog(): Log {
             "response": {
                 "outputSpeech": {
                     "type": "SSML",
-                    "ssml": "<speak> Oh boy, what a demo </speak>"
+                    "ssml": "<speak> Oh boy, what a demo </speak>",
+                    "text": "this is a test text to render on the conversation bubble"
                 },
                 "shouldEndSession": true
             }

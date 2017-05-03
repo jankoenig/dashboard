@@ -52,6 +52,10 @@ export interface Conversation {
      * The request type and if it is an "IntentRequest", will include the intent as well.
      */
     requestPayloadType: string | undefined;
+    /**
+     * The outpuSpeech response text unmodified as it is in the conversation.
+     */
+    outputSpeechText: string | undefined;
     intent: string | undefined;
     timestamp: Date | undefined;
     hasError: boolean;
@@ -106,6 +110,7 @@ class GenericConversation implements Conversation {
     rawRequestType: string | undefined;
     requestType: string | undefined;
     requestPayloadType: string | undefined;
+    outputSpeechText: string | undefined;
     intent: string | undefined;
 
     constructor(props: ConversationProperties) {
@@ -259,6 +264,12 @@ class AlexaConversation extends GenericConversation {
         }
 
         return requestType;
+    }
+
+    get outputSpeechText(): string | undefined {
+        const {outputSpeech} = this.response.payload.response || {outputSpeech: {}};
+        const text = outputSpeech && outputSpeech.text || undefined;
+        return text;
     }
 
     get intent(): string | undefined {
