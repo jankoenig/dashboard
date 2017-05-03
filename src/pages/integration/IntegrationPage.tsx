@@ -6,7 +6,8 @@ import ResizingComponent from "../../components/ResizingComponent";
 import Source from "../../models/source";
 import ExpressJS from "./IntegrationExpressJS";
 import Java from "./IntegrationJava";
-import NodeJS from "./IntegrationNodeJSLambda";
+// TODO: reactivate once nodejs lamba is working
+// import NodeJS from "./IntegrationNodeJSLambda";
 import Spokes from "./IntegrationSpokes";
 
 let TabsTheme = require("./themes/tabs.scss");
@@ -44,16 +45,11 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
             <ResizingComponent overflowY="hidden" >
                 <section>
                     <Tabs theme={TabsTheme} fixed inverse index={tabIndex} onChange={this.handleTabChange} >
-                        <Tab label="Spokes">
-                            <ResizingComponent>
-                                <Spokes source={source} />
-                            </ResizingComponent>
-                        </Tab>
-                        <Tab label="Node.JS Lambda">
+                        {/*<Tab label="Node.JS Lambda">
                             <ResizingComponent>
                                 <NodeJS secretKey={secretKey} showSecret={showSecret} />
                             </ResizingComponent>
-                        </Tab>
+                        </Tab>*/}
                         <Tab label="Express.JS">
                             <ResizingComponent>
                                 <ExpressJS secretKey={secretKey} showSecret={showSecret} />
@@ -63,6 +59,11 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
                             <ResizingComponent>
                                 <Java secretKey={secretKey} showSecret={showSecret} />
                             </ResizingComponent>
+                        </Tab>
+                        <Tab label="Code-Free">
+                          <ResizingComponent>
+                            <Spokes source={source} />
+                          </ResizingComponent>
                         </Tab>
                     </Tabs>
                 </section>
