@@ -5,9 +5,9 @@ import { Tab, Tabs } from "react-toolbox";
 import ResizingComponent from "../../components/ResizingComponent";
 import Source from "../../models/source";
 import ExpressJS from "./IntegrationExpressJS";
+import GoogleFunction from "./IntegrationGoogleFunction";
 import Java from "./IntegrationJava";
-// TODO: reactivate once nodejs lamba is working
-// import NodeJS from "./IntegrationNodeJSLambda";
+import NodeJS from "./IntegrationNodeJSLambda";
 import Spokes from "./IntegrationSpokes";
 
 let TabsTheme = require("./themes/tabs.scss");
@@ -45,11 +45,16 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
             <ResizingComponent overflowY="hidden" >
                 <section>
                     <Tabs theme={TabsTheme} fixed inverse index={tabIndex} onChange={this.handleTabChange} >
-                        {/*<Tab label="Node.JS Lambda">
+                        <Tab label="Node.JS Lambda">
                             <ResizingComponent>
                                 <NodeJS secretKey={secretKey} showSecret={showSecret} />
                             </ResizingComponent>
-                        </Tab>*/}
+                        </Tab>
+                        <Tab label="Google Cloud Function">
+                            <ResizingComponent>
+                                <GoogleFunction secretKey={secretKey} showSecret={showSecret} />
+                            </ResizingComponent>
+                        </Tab>
                         <Tab label="Express.JS">
                             <ResizingComponent>
                                 <ExpressJS secretKey={secretKey} showSecret={showSecret} />

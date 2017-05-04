@@ -20,7 +20,7 @@ export default class WelcomePage extends React.Component<any, any> {
                 <Cell col={12}>
                     <h5>Docs</h5>
                     <ul>
-                        <li><a target="_blank" href="http://docs.bespoken.tools/en/latest/api/classes/logless.html">Setup your Lambda for Logless</a></li>
+                        <li><a target="_blank" href="http://docs.bespoken.tools/en/latest/api/classes/logless.html">Setup your Lambda or Cloud Function for Logless</a></li>
                         <li><a target="_blank" href="http://docs.bespoken.tools/en/latest/tutorials/tutorial_lambda_local/">[Tutorial] Running Lambdas Locally</a></li>
                     </ul>
                 </Cell>

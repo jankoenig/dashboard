@@ -96,7 +96,7 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
 
     render() {
         let element = (this.props.sources.length === 0) ?
-            (<p>You don't have any skills yet, create one <Link to={"/skills/new"}>here.</Link></p>)
+            (<p>You don't have any data sources yet, create one <Link to={"/skills/new"}>here.</Link></p>)
             :
             (
                 <List

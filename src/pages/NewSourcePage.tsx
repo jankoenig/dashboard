@@ -97,8 +97,8 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
         let header = (this.props.sources.length === 0) ? (
             <Grid>
                 <Cell col={12}>
-                    <h5>Enter the name of your skill and then click Create Skill.</h5>
-                    <h5>Then, to start sending logs, follow the instructions on how to integrate the SDK into your skill.</h5>
+                    <h5>Enter the name of your data source and then click Create Source.</h5>
+                    <h5>Then, to start sending logs, follow the instructions on how to integrate the SDK into your skill, action or app.</h5>
                 </Cell>
             </Grid>
         ) : (<div />);
@@ -132,10 +132,10 @@ class NewSkillForm extends React.Component<NewSkillProps, any> {
         return (
             <Grid>
                 <Cell col={12}>
-                    <h4>New Skill Setup</h4>
+                    <h4>New Source Setup</h4>
                 </Cell>
                 <Cell col={12}>
-                    <p>Currently all skills must be at least three characters in length and not contain any special characters.</p>
+                    <p>Currently all data sources must be at least three characters in length and not contain any special characters.</p>
                 </Cell>
                 <Cell col={12}>
                     <SourceForm

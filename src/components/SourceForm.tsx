@@ -90,7 +90,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                 {!this.props.error ? (
                     <p> {this.props.error} </p>
                 ) : <div />}
-                <Button colored={true} ripple={true} raised={true} onClick={this.onClick}>Create Skill</Button>
+                <Button colored={true} ripple={true} raised={true} onClick={this.onClick}>Create Source</Button>
             </div>
         );
     }

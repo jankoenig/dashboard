@@ -16,6 +16,7 @@ describe("HomePage", function () {
         );
 
         expect(wrapper.find("h3")).to.have.length(1);
+        expect(wrapper.find("li").at(3).text()).to.equal("Setup your Lambda or Cloud Function for Logless");
         // Hurray! It rendered.
     });
 });
