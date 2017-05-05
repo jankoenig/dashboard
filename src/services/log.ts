@@ -50,10 +50,25 @@ namespace LogService {
     const BASE_URL = "https://logless.bespoken.tools/v1";
     // const BASE_URL = "https://logless-dev.bespoken.tools/v1";
 
-    export function getLogs(query: LogQuery): Promise<Log[]> {
+    export const DEFAULT_TRANSACTIONS_BEFORE = 25;
 
-        let url = BASE_URL + "/query?" + query.queryString;
+    export const DEFAULT_TRANSACTIONS_AFTER = 25;
 
+    export function getTransactionUrl(convoId: string, transactionsBefore: number, transactionsAfter: number): string {
+        let transactionUrl = BASE_URL + "/transaction?id=" + convoId;
+        if (transactionsBefore) {
+            transactionUrl = transactionUrl + "&transactions_before=" + transactionsBefore;
+        }
+        if (transactionsAfter) {
+            transactionUrl = transactionUrl + "&transactions_after=" + transactionsAfter;
+        }
+        return transactionUrl;
+    }
+
+    export function getLogs(query: LogQuery, url?: string): Promise<Log[]> {
+        if (!url) {
+            url = BASE_URL + "/query?" + query.queryString;
+        }
         return fetchJson(url).then(function (json) {
             let data: any[] = json.data;
             let logs: Log[] = [];

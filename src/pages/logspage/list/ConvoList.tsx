@@ -3,6 +3,7 @@ import * as React from "react";
 import List from "../../../components/List/List";
 import Conversation from "../../../models/conversation";
 import ConversationList, { ConversationMap } from "../../../models/conversation-list";
+import { Location } from "../../../pages/createpage/Route";
 import Noop from "../../../utils/Noop";
 import ConvoListItem from "./ConvoListItem";
 
@@ -11,7 +12,7 @@ export interface ConvoListProps {
     expandListItemWhenActive?: boolean;
     iconStyle?: React.CSSProperties;
     iconTooltip?: string;
-    onClick?: (conversation: Conversation) => void;
+    onClick?: (conversation: Conversation, setQueryParams: boolean) => void;
     onIconClick?: (conversatino: Conversation) => void;
     onEmpty?: () => JSX.Element;
     onScroll?: (firstVisibleItem: number, nextVisibleItem: number, total: number) => void;
@@ -21,7 +22,17 @@ export interface ConvoListState {
     activeConversations: ConversationMap;
 }
 
+interface ConvoListContext {
+    location?: Location;
+}
+
 export class ConversationListView extends React.Component<ConvoListProps, ConvoListState> {
+
+    context: ConvoListContext;
+
+    static contextTypes = {
+        location: React.PropTypes.object
+    };
 
     static defaultProps: ConvoListProps = {
         conversations: [],
@@ -41,6 +52,21 @@ export class ConversationListView extends React.Component<ConvoListProps, ConvoL
         this.renderItem = this.renderItem.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps: ConvoListProps) {
+        if (nextProps &&
+            nextProps.conversations &&
+            nextProps.conversations.length > 0 &&
+            this.context.location &&
+            this.context.location.query &&
+            this.context.location.query.id) {
+            let activeConversations: ConversationMap = {};
+            let activeConversation = nextProps.conversations[0];
+            activeConversations[activeConversation.id] = activeConversation;
+            this.setState({...this.state, activeConversations: { ...activeConversations }});
+            this.props.onClick(activeConversation, false);
+        }
     }
 
     handleClick(conversation: Conversation) {
@@ -68,7 +94,7 @@ export class ConversationListView extends React.Component<ConvoListProps, ConvoL
 
         this.state.activeConversations = activeConversations;
         this.setState(this.state);
-        this.props.onClick(conversation);
+        this.props.onClick(conversation, true);
     }
 
     isConversationActive(conversation: Conversation): boolean {

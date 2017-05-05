@@ -16,12 +16,14 @@ import SourceService from "../../services/source";
  * or
  * "?id=<value>&key=<value>"
  */
-interface Query {
+export interface Query {
     id?: string | undefined;
     key?: string | undefined;
+    transactions_before?: number;
+    transactions_after?: number;
 }
 
-interface Location {
+export interface Location {
     query: Query;
 }
 

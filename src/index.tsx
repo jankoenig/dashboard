@@ -27,6 +27,7 @@ import SourcePage from "./pages/sourcepage/SourcePage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
+import { Location } from "./pages/createpage/Route";
 import configureStore from "./store";
 
 import { State } from "./reducers";
@@ -112,7 +113,8 @@ let onUpdate = function () {
 let setSource: EnterHook = function (nextState: RouterState, redirect: RedirectFunction) {
     let sources: Source[] = store.getState().source.sources;
     let sourceId: string = nextState.params["sourceId"];
-    IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources)
+    let loc: Location = nextState.location as Location;
+    IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources, loc)
         .catch(function (a?: Error) {
             console.error(a);
             // Can't use the redirect because this is asynchronous.

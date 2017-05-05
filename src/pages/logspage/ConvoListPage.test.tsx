@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { shallow, ShallowWrapper } from "enzyme";
+import { shallow, ShallowRendererProps, ShallowWrapper } from "enzyme";
 import { Moment } from "moment";
 import * as React from "react";
 import * as sinon from "sinon";
@@ -88,6 +88,9 @@ describe("ConvoListPage", function () {
         });
 
         beforeEach(function () {
+            let shallowProps: ShallowRendererProps = {
+                context: { location: { query: { id: undefined } } }
+            };
             wrapper = shallow(
                 <ConvoListPage
                     source={undefined}
@@ -99,7 +102,7 @@ describe("ConvoListPage", function () {
                     filter={filter}
                     iconTooltip={tooltip}
                     iconStyle={iconStyle}
-                />);
+                />, shallowProps);
         });
 
         it("Tests the FilterableConvoList exists.", function () {
@@ -128,6 +131,9 @@ describe("ConvoListPage", function () {
             });
 
             beforeEach(function () {
+                let shallowProps: ShallowRendererProps = {
+                    context: { location: { query: { id: undefined } } }
+                };
                 wrapper = shallow(
                     <ConvoListPage
                         source={undefined}
@@ -135,7 +141,7 @@ describe("ConvoListPage", function () {
                         refresh={refresh}
                         getLogs={getLogs}
                         filter={filter}
-                    />);
+                    />, shallowProps);
             });
 
             it("Tests that the LogQuery is correct when a DateFilter is applied.", function () {
@@ -206,6 +212,9 @@ describe("ConvoListPage", function () {
         });
 
         beforeEach(function () {
+            let shallowProps: ShallowRendererProps = {
+                context: { location: { query: { id: undefined } } }
+            };
             wrapper = shallow(
                 <ConvoListPage
                     source={undefined}
@@ -215,7 +224,7 @@ describe("ConvoListPage", function () {
                     onIconClick={onIconClick}
                     onItemClick={onItemClick}
                     filter={filter}
-                />);
+                />, shallowProps);
 
             return Promise.resolve(true).then(function () {
                 wrapper.setProps({ source: source });
@@ -249,6 +258,9 @@ describe("ConvoListPage", function () {
         });
 
         beforeEach(function () {
+            let shallowProps: ShallowRendererProps = {
+                context: { location: { query: { id: undefined } } }
+            };
             wrapper = shallow(
                 <ConvoListPage
                     source={undefined}
@@ -258,7 +270,7 @@ describe("ConvoListPage", function () {
                     onIconClick={onIconClick}
                     onItemClick={onItemClick}
                     filter={filter}
-                />);
+                />, shallowProps);
 
             wrapper.setState({
                 lastLogs: logs,
@@ -305,6 +317,9 @@ describe("ConvoListPage", function () {
         });
 
         beforeEach(function () {
+            let shallowProps: ShallowRendererProps = {
+                context: { location: { query: { id: undefined } } }
+            };
             wrapper = shallow(
                 <ConvoListPage
                     source={source}
@@ -314,7 +329,7 @@ describe("ConvoListPage", function () {
                     onIconClick={onIconClick}
                     onItemClick={onItemClick}
                     refreshOn={true}
-                />);
+                />, shallowProps);
         });
 
         afterEach(function () {

@@ -4,6 +4,7 @@ import * as React from "react";
 
 import Convo, { Origin } from "../../models/conversation";
 import Source from "../../models/source";
+import { Location } from "../../pages/createpage/Route";
 import DateUtil from "../../utils/date";
 import { dummyConversationList, dummySources } from "../../utils/test";
 import ConvoExplorerPage from "./ConvoExplorerPage";
@@ -26,8 +27,11 @@ describe("ConvoPage", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         beforeEach(function () {
+            let location: Location = {
+                query: { id: undefined }
+            };
             wrapper = shallow(<ConvoPage
-                source={source} />);
+                source={source} location={location} />);
         });
 
         it("Checks the filterbar exists.", function () {
@@ -62,8 +66,11 @@ describe("ConvoPage", function () {
         let explorer: ShallowWrapper<any, any>;
 
         beforeEach(function () {
+            let location: Location = {
+                query: { id: undefined }
+            };
             wrapper = shallow(<ConvoPage
-                source={source} />);
+                source={source} location={location} />);
         });
 
         describe("Explorer", function () {

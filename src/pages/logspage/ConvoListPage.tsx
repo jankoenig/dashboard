@@ -8,6 +8,7 @@ import ConversationList from "../../models/conversation-list";
 import Log from "../../models/log";
 import LogQuery from "../../models/log-query";
 import Source from "../../models/source";
+import { Location } from "../../pages/createpage/Route";
 import { State } from "../../reducers";
 import { LogQueryEvent } from "../../reducers/log";
 import BrowserUtils from "../../utils/browser";
@@ -31,7 +32,7 @@ interface ConvoListPageStateProps {
 }
 
 interface ConvoListPageReduxProps {
-    getLogs: (query: LogQuery) => Promise<Log[]>;
+    getLogs: (query: LogQuery, location?: Location) => Promise<Log[]>;
     newPage: (logQueryEvent: LogQueryEvent, limit: number) => Promise<PageResults>;
     refresh: (logQueryEvent: LogQueryEvent) => Promise<PageResults>;
 }
@@ -41,7 +42,7 @@ interface ConvoListPageStandardProps {
     filter?: CompositeFilter<Conversation>;
     iconStyle?: React.CSSProperties;
     iconTooltip?: string;
-    onItemClick?: (conversation: Conversation) => void;
+    onItemClick?: (conversation: Conversation, setQueryParams: boolean) => void;
     onIconClick?: (conversation: Conversation) => void;
 }
 
@@ -56,6 +57,10 @@ interface ConvoListPageState {
     endReached: boolean;
 }
 
+interface ConvoListChildContext {
+    location: Location;
+}
+
 function mapStateToProps(state: State.All): ConvoListPageStateProps {
     return {
         source: state.source.currentSource
@@ -64,8 +69,8 @@ function mapStateToProps(state: State.All): ConvoListPageStateProps {
 
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoListPageReduxProps {
     return {
-        getLogs: function (query: LogQuery): Promise<Log[]> {
-            const fetchLogs = retrieveLogs(query);
+        getLogs: function (query: LogQuery, location?: Location): Promise<Log[]> {
+            const fetchLogs = retrieveLogs(query, undefined, location);
             return fetchLogs(dispatch);
         },
         newPage: function (query: LogQueryEvent, limit: number): Promise<PageResults> {
@@ -110,10 +115,23 @@ function differentRanges(range1: DateRange | LogQuery, range2: DateRange | LogQu
     return false;
 }
 
+interface ConvoListContext {
+    location?: Location;
+}
+
 export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoListPageState> {
 
     refresher: Interval.Executor;
     isLoading: boolean;
+    context: ConvoListContext;
+
+    static contextTypes = {
+        location: React.PropTypes.object
+    };
+
+    static childContextTypes = {
+        location: React.PropTypes.object
+    };
 
     constructor(props: ConvoListPageProps) {
         super(props);
@@ -132,6 +150,10 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
             endReached: false,
             query: undefined
         };
+    }
+
+    getChildContext(): ConvoListChildContext {
+      return { location: this.context.location };
     }
 
     componentWillReceiveProps(nextProps: ConvoListPageProps, context: any) {
@@ -175,6 +197,9 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     }
 
     checkIfMoreNeeded() {
+        if (this.context.location && this.context.location.query && this.context.location.query.id) {
+            return false;
+        }
         if (!this.state.endReached && this.state.shownConversations.length < LIMIT) {
             this.getNextPage();
         }
@@ -197,7 +222,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
 
         let newState = { ...this.state };
 
-        props.getLogs(query)
+        props.getLogs(query, this.context.location)
             .then((logs: Log[]) => {
                 const conversations = ConversationList.fromLogs(logs);
                 newState = {
@@ -264,6 +289,11 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     }
 
     filterConvo(state: ConvoListPageState, props?: ConvoListPageProps) {
+        if (this.context.location && this.context.location.query && this.context.location.query.id) {
+            return new Promise<ConvoListPageState>((resolve, reject) => {
+                resolve(state);
+            });
+        }
         const useProps = props || this.props;
         return filter(state.conversations, useProps.filter.filter)
             .then((result: FilterResult<Conversation>) => {

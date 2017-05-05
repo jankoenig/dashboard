@@ -20,10 +20,9 @@ class ConversationList extends Array<Conversation> {
 
         if (logs) {
             for (let log of logs) {
-
                 // First make sure the map has an object there
                 if (!conversationMap[log.transaction_id]) {
-                    conversationMap[log.transaction_id] = { request: undefined, response: undefined, outputs: [], stackTraces: [] };
+                    conversationMap[log.transaction_id] = { transactionId: log.transaction_id, request: undefined, response: undefined, outputs: [], stackTraces: [] };
                 }
 
                 if (log.tags) {

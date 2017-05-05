@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import VisibilityWatcher, { VISIBLITY_STATE } from "../../components/VisibilityWatcher";
 import Conversation from "../../models/conversation";
 import Source from "../../models/source";
+import { Location } from "../../pages/createpage/Route";
 import { State } from "../../reducers";
 import DateUtils from "../../utils/date";
 import ConvoExplorerPage from "./ConvoExplorerPage";
@@ -17,6 +18,10 @@ const ACTIVE_ICON_STYLE: React.CSSProperties = {
     background: "#AAAAAA"
 };
 
+interface ConvoListChildContext {
+    location: Location;
+}
+
 interface ConvoPageStateProps {
     source: Source;
 }
@@ -25,6 +30,7 @@ interface ConvoPageDispatchProps {
 }
 
 interface ConvoPageProps extends ConvoPageStateProps, ConvoPageDispatchProps {
+    location?: Location;
 }
 
 interface ConvoPageState {
@@ -49,6 +55,10 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>): ConvoPageDispatchPro
 
 export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
 
+    static childContextTypes = {
+        location: React.PropTypes.object
+    };
+
     constructor(props: ConvoPageProps) {
         super(props);
 
@@ -70,11 +80,15 @@ export class ConvoPage extends React.Component<ConvoPageProps, ConvoPageState> {
             dateRange: { startTime: initialFilter.startDate, endTime: initialFilter.endDate },
             filter: new CompositeFilter([initialFilter]),
             refreshDisabled: false,
-            refreshOn: true,
+            refreshOn: this.props.location.query.id ? false : true,
             savedRefreshState: true,
             iconStyle: undefined,
             iconTooltip: TOOLTIP_DEACTIVE
         };
+    }
+
+    getChildContext(): ConvoListChildContext {
+      return { location: this.props.location };
     }
 
     handleFilter(filter: Filter<Conversation>) {

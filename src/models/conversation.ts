@@ -16,6 +16,7 @@ export interface ConvoColors {
 }
 
 export interface ConversationProperties {
+    transactionId?: string | undefined;
     request: Log;
     response: Log;
     outputs?: Output[];
@@ -29,6 +30,7 @@ export interface Conversation {
     stackTraces: StackTrace[];
     origin: Origin;
     id: string | undefined;
+    transactionId: string | undefined;
     sessionId: string | undefined;
     userId: string | undefined;
     userColors: ConvoColors;
@@ -105,6 +107,7 @@ class GenericConversation implements Conversation {
 
     origin: Origin = Origin.Unknown;
 
+    transactionId: string | undefined;
     sessionId: string | undefined;
     userId: string | undefined;
     rawRequestType: string | undefined;
@@ -114,6 +117,7 @@ class GenericConversation implements Conversation {
     intent: string | undefined;
 
     constructor(props: ConversationProperties) {
+        this.transactionId = props.transactionId;
         this.request = props.request;
         this.response = props.response;
         this.outputs = props.outputs ? props.outputs.slice() : [];

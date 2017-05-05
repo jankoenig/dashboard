@@ -2,6 +2,7 @@ import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
 import Source from "../models/source";
+import { Location } from "../pages/createpage/Route";
 import { LogQueryEvent } from "../reducers/log";
 import service from "../services/log";
 
@@ -72,10 +73,17 @@ export function getLogs(source: Source, startTime?: Date, endTime?: Date) {
  *
  * @param logQuery: The query to perform when retrievings logs.
  */
-export function retrieveLogs(logQuery: LogQuery, append?: boolean): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
+export function retrieveLogs(logQuery: LogQuery, append?: boolean, location?: Location): (dispatch: Redux.Dispatch<Log[]>) => Promise<Log[]> {
     return function (dispatch: Redux.Dispatch<Log[]>): Promise<Log[]> {
         dispatch(fetchLogsRequest(true));
-        return service.getLogs(logQuery)
+        let endpoint;
+        if (location && location.query && location.query.id) {
+            endpoint = service.getTransactionUrl(
+                location.query.id,
+                location.query.transactions_before,
+                location.query.transactions_after);
+        }
+        return service.getLogs(logQuery, endpoint)
         .then(function (logs: Log[]) {
             dispatch(setLogs(logQuery, logs, append));
             return logs;
