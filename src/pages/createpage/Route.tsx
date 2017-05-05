@@ -126,12 +126,7 @@ export class Route extends CancelableComponent.CancelableComponent<CreateOrRoute
 
         const promise = checkParams(query)
             .then(function (query: Query) {
-                return linkSource(query, currentUser)
-                    .then(function(queryResult: QueryResult) {
-                        // Re-query latest
-                        console.info("REQUERYING");
-                        return getSource([], query);
-                    });
+                return linkSource(query, currentUser);
             }).catch(function (err: Error) {
                 // Fallback.  Maybe we already own it.
                 return getSource([], query);
