@@ -71,7 +71,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         },
         "Google": {
             dataKey: "Google.Home",
-            name: "Home",
+            name: "Action",
             stroke: GOOGLE_GREEN
         }
     };
@@ -85,7 +85,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
         },
         "Google": {
             dataKey: "Google.Home",
-            name: "Home",
+            name: "Action",
             fill: GOOGLE_GREEN,
             stackId: "a"
         }
