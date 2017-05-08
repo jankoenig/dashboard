@@ -78,10 +78,7 @@ export function retrieveLogs(logQuery: LogQuery, append?: boolean, location?: Lo
         dispatch(fetchLogsRequest(true));
         let endpoint;
         if (location && location.query && location.query.id) {
-            endpoint = service.getTransactionUrl(
-                location.query.id,
-                location.query.transactions_before,
-                location.query.transactions_after);
+            endpoint = service.getTransactionUrl(location.query.id);
         }
         return service.getLogs(logQuery, endpoint)
         .then(function (logs: Log[]) {

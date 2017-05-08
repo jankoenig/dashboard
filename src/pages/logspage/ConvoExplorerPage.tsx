@@ -3,7 +3,6 @@ import * as React from "react";
 import { browserHistory } from "react-router";
 import TwoPane from "../../components/TwoPane";
 import Conversation from "../../models/conversation";
-import service from "../../services/log";
 import { Query } from "../createpage/Route";
 import ConvoListPage from "./ConvoListPage";
 import ConvoViewPage from "./ConvoViewPage";
@@ -39,9 +38,7 @@ export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, C
         if (browserHistory && setQueryParams) {
             let location = {...browserHistory.getCurrentLocation()};
             const query: Query = {
-                id: convo.transactionId,
-                transactions_before: service.DEFAULT_TRANSACTIONS_BEFORE,
-                transactions_after: service.DEFAULT_TRANSACTIONS_AFTER
+                id: convo.transactionId
             };
             location.query = {...location.query, ...query};
             browserHistory.push(location);
