@@ -322,6 +322,66 @@ describe("Alexa Conversation", function () {
         });
     });
 
+    describe("getOutputSpeech", function(){
+      it("returns undefined when there is no response or payload at all", function(){
+        let request = new Log({
+          payload: {},
+          log_type: "DEBUG",
+          source: "source",
+          transaction_id: "transaction_id",
+          timestamp: new Date(),
+          tags: [],
+          id: ""
+        });
+        let response = new Log({
+          payload: {},
+          log_type: "DEBUG",
+          source: "source",
+          transaction_id: "transaction_id",
+          timestamp: new Date(),
+          tags: [],
+          id: ""
+        });
+        let output = new Output({
+          message: "message",
+          level: "DEBUG",
+          timestamp: new Date(),
+          transaction_id: "transaction_id",
+          id: "id"
+        });
+        let outputs = [output];
+
+        let conversation = createConvo({ response: response, request: request, outputs: outputs });
+
+        expect(conversation.outputSpeechText).to.be.undefined;
+      });
+
+      it("returns the text when there is response and outputSpeech text on the payload", function(){
+        let request = new Log({
+          payload: {},
+          log_type: "DEBUG",
+          source: "source",
+          transaction_id: "transaction_id",
+          timestamp: new Date(),
+          tags: [],
+          id: ""
+        });
+        let response = alexaResponseLog();
+        let output = new Output({
+          message: "message",
+          level: "DEBUG",
+          timestamp: new Date(),
+          transaction_id: "transaction_id",
+          id: "id"
+        });
+        let outputs = [output];
+
+        let conversation = createConvo({ response: response, request: request, outputs: outputs });
+
+        expect(conversation.outputSpeechText).to.equals("this is a test text to render on the conversation bubble");
+      });
+    });
+
     describe("without a request", function () {
 
         let response = alexaResponseLog();

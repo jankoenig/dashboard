@@ -271,9 +271,11 @@ class AlexaConversation extends GenericConversation {
     }
 
     get outputSpeechText(): string | undefined {
-        const {outputSpeech} = this.response.payload.response || {outputSpeech: {}};
-        const text = outputSpeech && outputSpeech.text || undefined;
-        return text;
+        return this.response &&
+          this.response.payload &&
+            this.response.payload.response &&
+              this.response.payload.response.outputSpeech &&
+                this.response.payload.response.outputSpeech.text;
     }
 
     get intent(): string | undefined {
