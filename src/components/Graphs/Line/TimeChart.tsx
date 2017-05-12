@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export interface LineProps {
     dataKey: string;
@@ -111,11 +111,13 @@ class TimeChart extends React.Component<TimeChartProps, TimeChartState> {
     render() {
         return (
             <ResponsiveContainer>
-                <LineChart data={this.props.data} >
+                <LineChart margin={{ left: -20 }} data={this.props.data} >
                     <XAxis dataKey="timeValue" tickFormatter={this.tickFormat} ticks={this.state.ticks} />
                     <YAxis />
+                    <CartesianGrid fill="#fff" strokeDasharray="3 3" />
                     <Tooltip labelFormatter={this.labelFormat} />
                     {TimeChart.createLines(this.props)}
+                    <Legend verticalAlign="top" align="center" height={36} payload={[{ value: "Daily Events", type: "line", id: "ID01" }]} />
                 </LineChart>
             </ResponsiveContainer>
         );

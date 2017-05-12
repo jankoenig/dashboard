@@ -33,7 +33,7 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
         let i = 0;
         for (let option of options) {
             boxes.push(
-                <Cell key={i} col={1}>
+                <Cell key={i} offsetTablet={i === 0 && 1} col={4} phone={1} tablet={2}>
                     <Box
                         option={option}
                         index={i}
@@ -48,7 +48,7 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
 
     render() {
         return (
-            <Grid>
+            <Grid noSpacing>
                 {SourceOriginSelector.createBoxes(this.props)}
             </Grid>
         );

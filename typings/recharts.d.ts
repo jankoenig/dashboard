@@ -56,7 +56,7 @@ declare module "recharts" {
         width?: number;
         height?: number;
         data: Data;
-        margin?: Margin
+        margin?: Margin;
     }
 
     export class LineChart extends React.Component<LineChartProps, any> { }
@@ -72,6 +72,16 @@ declare module "recharts" {
     }
 
     export class Line extends React.Component<LineProps, any> { }
+
+    export interface LegendProps {
+      align?: string;
+      verticalAlign?: string;
+      payload?: any[];
+      margin?: object;
+      height?: number;
+    }
+
+    export class Legend extends React.Component<LegendProps, any> { }
 
     export interface BarChartProps {
         margin?: Margin;
@@ -105,6 +115,7 @@ declare module "recharts" {
         minTickGap?: number;
         tickCount?: number;
         ticks?: any[];
+        tick?: any;
         type?: "number" | "category";
         // Not 100% on this one, could just be a number
         tickFormatter?: (tick: any) => string;
@@ -119,11 +130,16 @@ declare module "recharts" {
 
     export interface YAxisProps extends AxisProps {
         yAxisId?: string | number;
+        margin?: object;
     }
 
     export class YAxis extends React.Component<YAxisProps, any> { }
 
-    export interface CartesianGridProps { }
+    export interface CartesianGridProps {
+      strokeDasharray?: string;
+      fill?: string;
+      stroke?: string;
+    }
 
     export class CartesianGrid extends React.Component<CartesianGridProps, any> { }
 

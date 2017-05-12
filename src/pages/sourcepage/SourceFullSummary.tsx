@@ -8,6 +8,7 @@ import SourceIntentSummary, { BarProps } from "./SourceIntentSummary";
 import SourceOriginSelector, { SourceOption } from "./SourceOriginSelector";
 import SourceStats from "./SourceStats";
 import SourceTimeSummary, { LineProps } from "./SourceTimeSummary";
+import "./themes/base-time-chart-theme";
 
 const AllCheckboxTheme = require("./themes/checkbox-all-theme.scss");
 const AmazonCheckboxTheme = require("./themes/checkbox-amazon-theme.scss");
@@ -151,24 +152,28 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                 </Grid>
 
                 <span>
-                    <SourceOriginSelector
-                        options={values(options)}
-                        onCheck={handleOriginChange} />
-                    <SourceStats
-                        selectedEntries={selectedStatEntry}
-                        {...others} />
+                    <Grid style={{ paddingLeft: 8 }} noSpacing>
+                      <Cell className="origin-selector" tablet={8} col={6}>
+                        <SourceOriginSelector
+                          options={values(options)}
+                          onCheck={handleOriginChange} />
+                      </Cell>
+                      <Cell className="stats" tablet={8} col={6}>
+                        <SourceStats
+                          selectedEntries={selectedStatEntry}
+                          {...others} />
+                      </Cell>
+                    </Grid>
                     <Grid>
-                        <Cell col={12} style={{ height: 300 }}>
+                        <Cell className="line-chart" col={6} phone={12} tablet={8} style={{ height: 300 }}>
                             <SourceTimeSummary
                                 {...others}
                                 lines={lines} />
                         </Cell>
-                    </Grid>
-                    <Grid>
-                        <Cell col={12} >
-                            <SourceIntentSummary
-                                {...others}
-                                bars={bars} />
+                        <Cell className="bar-chart" col={6} phone={12} tablet={8} >
+                          <SourceIntentSummary
+                            {...others}
+                            bars={bars} />
                         </Cell>
                     </Grid>
                 </span>

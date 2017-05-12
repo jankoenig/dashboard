@@ -129,18 +129,18 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
         const { eventsLabel, usersLabel, errorsLabel } = getLabel(data, state, selectedEntries);
 
         return (
-            <Grid>
-                <Cell col={4}>
+            <Grid noSpacing>
+                <Cell phone={1} offsetTablet={1} tablet={2} col={4}>
                     <DataTile
                         value={eventsLabel}
                         label={"Total Events"} />
                 </Cell>
-                <Cell col={4}>
+                <Cell phone={1} tablet={2} col={4}>
                     <DataTile
                         value={usersLabel}
                         label={"Unique Users"} />
                 </Cell>
-                <Cell col={4}>
+                <Cell phone={1} tablet={2} col={4}>
                     <DataTile
                         value={errorsLabel}
                         label={"Total Errors"} />

@@ -1,0 +1,84 @@
+:global {
+  .origin-selector {
+    .mdl-grid.mdl-grid--no-spacing {
+      height: 100%;
+      align-items: flex-start;
+      padding-top: 15px;
+      div {
+        label {
+          margin-bottom: 0;
+          span {
+            padding-left: .2rem;
+            padding-top: .2rem;
+          }
+        }
+      }
+    }
+  }
+  .stats {
+    .mdl-grid.mdl-grid--no-spacing {
+      height: 100%;
+      align-items: flex-end;
+    }
+  }
+  .recharts-cartesian-axis-tick-line {
+    stroke: transparent;
+  }
+  .line-chart {
+    .recharts-layer.recharts-line-chart {
+      path {
+        stroke-width: 1.5;
+      }
+    }
+    .recharts-cartesian-axis-line {
+      stroke: transparent;
+    }
+    rect {
+      fill-opacity: 1.5;
+    }
+    .recharts-y-axis {
+      .recharts-text.recharts-cartesian-axis-tick-value {
+        // fill: transparent;
+      }
+    }
+  }
+  .bar-chart {
+    .recharts-y-axis {
+      .recharts-text.recharts-cartesian-axis-tick-value {
+        // fill: transparent;
+      }
+    }
+    .recharts-layer.recharts-bar-rectangle {
+      path {
+        fill-opacity: .4;
+        fill: darken(#FF9900, 5);
+      }
+    }
+    .recharts-legend-wrapper {
+      .recharts-default-legend {
+        margin-left: 130px!important;
+      }
+    }
+  }
+}
+
+@media (max-width: 479px) {
+  :global {
+    .origin-selector {
+      .mdl-grid.mdl-grid--no-spacing {
+        padding-top: 0;
+        > div {
+          width: 33.3333333333333333%;
+        }
+      }
+    }
+    .stats {
+      order: -1;
+      .mdl-grid.mdl-grid--no-spacing {
+        > div {
+          width: 33.3333333333333333%;
+        }
+      }
+    }
+  }
+}
