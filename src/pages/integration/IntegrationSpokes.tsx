@@ -11,6 +11,7 @@ import Source from "../../models/source";
 import Spoke from "../../models/spoke";
 import User from "../../models/user";
 import { State } from "../../reducers";
+import SourceService from "../../services/source";
 import SpokesService from "../../services/spokes";
 import Noop from "../../utils/Noop";
 import IntegrationSpokesSwapper, { PAGE } from "./IntegrationSpokesSwapper";
@@ -62,6 +63,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return { /* nothing to match at the moment */ };
 }
 
+/*
 function getResource(state: IntegrationSpokesState): SpokesService.HTTP | SpokesService.Lambda {
     if (state.showPage === "http") {
         return { url: state.url };
@@ -69,6 +71,7 @@ function getResource(state: IntegrationSpokesState): SpokesService.HTTP | Spokes
         return { awsAccessKey: state.awsAccessKey, awsSecretKey: state.awsSecretKey, lambdaARN: state.lambdaARN };
     }
 }
+*/
 
 function mergeProps(stateProps: IntegrationSpokesGlobalStateProps, dispatchProps: any, parentProps: IntegrationSpokesStandardProps): IntegrationSpokesProps {
     return { ...parentProps, ...dispatchProps, ...stateProps };
@@ -132,21 +135,26 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
     }
 
     handleSave() {
-        const { user, source, onSpokesSaved } = this.props;
-        const { proxy } = this.state;
-        const resource = getResource(this.state);
-
+        // TODO: Uncomment the following lines when
+        // calling `SpokesService.savePipe(user, source, resource, proxy)`.
+        // const { user, source, onSpokesSaved } = this.props;
+        // const { proxy } = this.state;
+        // const resource = getResource(this.state);
+        const { source } = this.props;
+        source.url = this.state.url;
         this.setState({ message: { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Saving..." } } as IntegrationSpokesState);
-        this.resolve(SpokesService.savePipe(user, source, resource, proxy)
-            .then(function (spoke: Spoke) {
-                onSpokesSaved();
-                return { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Spoke has been saved." };
-            }).catch(function (err: Error) {
-                console.error(err);
-                return { style: IntegrationSpokes.ERROR_MESSAGE_STYLE, message: "An error ocurred while trying to save the spoke." };
-            }).then((message?: Message) => {
-                this.setState({ message: message } as IntegrationSpokesState);
-            }));
+        // TODO:
+        // We should be running `SpokesService.savePipe(user, source, resource, proxy)`
+        // within the following `resolve` function, then on success we should be calling  `onSpokesSaved()`.
+        this.resolve(SourceService.updateSourceObj(source)
+          .then(() => {
+              return { style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Code-free information has been saved." };
+          }).catch(function (err: Error) {
+              console.error(err);
+              return { style: IntegrationSpokes.ERROR_MESSAGE_STYLE, message: "An error ocurred while trying to save the spoke." };
+          }).then((message?: Message) => {
+              this.setState({ message: message } as IntegrationSpokesState);
+          }));
     }
 
     downloadSpoke() {
@@ -198,6 +206,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                         theme={InputTheme}
                         showPage={showPage}
                         onChange={this.handleSwapperChange}
+                        url={this.props.source.url}
                         {...others} />
                 </Cell>
                 <Cell col={6} />

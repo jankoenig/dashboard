@@ -112,6 +112,7 @@ export namespace source {
     export function getSources(auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<any> {
         let user = auth.currentUser;
         let ref = db.ref();
+
         return ref.child("/users/" + user.uid + "/sources").once("value");
     }
 
@@ -142,6 +143,19 @@ export namespace source {
                 let source: Source = new Source(data.val());
                 return source;
             });
+    }
+
+    export function updateSourceObj(source: Source, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
+      return new Promise((resolve, reject) => {
+        db.ref().child("/sources/" + source.id).update({url: source.url}, (err: Error): firebase.Promise<any> => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+          return;
+        });
+      });
     }
 }
 

@@ -135,7 +135,8 @@ describe("Source Service", function () {
 
         before(function () {
             sourceName = { id: "ABC123", secretKey: "SuperSecretKey" };
-            fullSource = new SourceModel.Source({ id: sourceName.id, secretKey: sourceName.secretKey, name: "Test Source" });
+            fullSource = new SourceModel.Source({ id: sourceName.id, secretKey: sourceName.secretKey,
+              name: "Test Source", url: "https://romantic-shelley-8zIRae.bespoken.link"});
             user = new User({ userId: "TestUserID", email: "test@test.com" });
             mockResponse = { user: { userId: user.userId }, source: fullSource };
             fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, mockResponse);

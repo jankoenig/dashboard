@@ -68,6 +68,8 @@ export namespace remoteservice.database {
     export interface Reference extends Query {
         child(path: string): Reference;
         set(value: any): firebase.Promise<any>;
+        update(values: Object, onComplete?: (a: Error|null) => any):
+          firebase.Promise<any>;
     }
 
     export interface Query {
