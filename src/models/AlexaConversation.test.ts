@@ -366,7 +366,15 @@ describe("Alexa Conversation", function () {
           tags: [],
           id: ""
         });
-        let response = alexaResponseLog();
+        let response = new Log({
+          payload: {response: {outputSpeech: {text: "this is a test text to render on the conversation bubble"}}},
+          log_type: "DEBUG",
+          source: "source",
+          transaction_id: "transaction_id",
+          timestamp: new Date(),
+          tags: [],
+          id: ""
+        });
         let output = new Output({
           message: "message",
           level: "DEBUG",

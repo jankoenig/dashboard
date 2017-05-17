@@ -18,7 +18,7 @@ export class Source implements SourceProperties {
     readonly members: Members;
     readonly id: string | undefined;
     readonly created: string | undefined; // Firebase requires a "string" so this must be kept as a string.
-    public url: string | undefined;
+    public url?: string | undefined;
 
     constructor(props: SourceProperties) {
 

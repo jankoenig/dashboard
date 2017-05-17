@@ -4,6 +4,8 @@ import Log from "./log";
 import Output from "./output";
 import StackTrace from "./stack-trace";
 
+import {propertyExist} from "../utils/validation";
+
 export type ConversationLevel = LOG_LEVELS;
 
 export enum Origin {
@@ -58,6 +60,8 @@ export interface Conversation {
      * The outpuSpeech response text unmodified as it is in the conversation.
      */
     outputSpeechText: string | undefined;
+    ssmlText: string | undefined;
+    ssmlAudioUrl: string | undefined;
     intent: string | undefined;
     timestamp: Date | undefined;
     hasError: boolean;
@@ -114,6 +118,8 @@ class GenericConversation implements Conversation {
     requestType: string | undefined;
     requestPayloadType: string | undefined;
     outputSpeechText: string | undefined;
+    ssmlText: string | undefined;
+    ssmlAudioUrl: string | undefined;
     intent: string | undefined;
 
     constructor(props: ConversationProperties) {
@@ -271,11 +277,23 @@ class AlexaConversation extends GenericConversation {
     }
 
     get outputSpeechText(): string | undefined {
-        return this.response &&
-          this.response.payload &&
-            this.response.payload.response &&
-              this.response.payload.response.outputSpeech &&
-                this.response.payload.response.outputSpeech.text;
+        return propertyExist(this.response, "payload", "response", "outputSpeech", "text") ? this.response.payload.response.outputSpeech.text : undefined;
+    }
+
+    get ssmlText(): string | undefined {
+      const ssmlString = propertyExist(this.response, "payload", "response", "outputSpeech", "ssml") ? this.response.payload.response.outputSpeech.ssml : undefined;
+      const removedSpeak = ssmlString ? ssmlString.replace("<speak>", "").replace("</speak>", "") : undefined;
+      return removedSpeak ? removedSpeak.replace(/src=".*?"|src='.*?'/g, '"..."') : undefined;
+    }
+
+    get ssmlAudioUrl(): string | undefined {
+      const ssmlString = propertyExist(this.response, "payload", "response", "outputSpeech", "ssml") ? this.response.payload.response.outputSpeech.ssml : undefined;
+      if (ssmlString) {
+        const audioUrls = ssmlString ? ssmlString.match(/src=".*?"|src='.*?'/) : undefined;
+        return audioUrls ? audioUrls[0].replace("src=", "").replace(/"/g, "").replace(/'/g, "") : undefined;
+      }
+      const directives = propertyExist(this.response, "payload", "response", "directives") ? this.response.payload.response.directives[0] : undefined;
+      return propertyExist(directives, "audioItem", "stream", "url") ? directives.audioItem.stream.url : undefined;
     }
 
     get intent(): string | undefined {

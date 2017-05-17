@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import AudioComponent from "../../../components/Audio/AudioComponent";
 import Conversation from "../../../models/conversation";
 import DefaultConvo from "../../../utils/DefaultConvo";
 import ConvoIcon from "./ConvoIcon";
@@ -41,6 +42,11 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
         marginLeft: 15
     };
 
+    static rightContentWithSoundStyle: React.CSSProperties = {
+      width: "calc(100% - 90px)",
+      marginLeft: 15
+    };
+
     static textContentStyle: React.CSSProperties = {
         display: "block",
         opacity: .7,
@@ -66,7 +72,7 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
 
     render() {
         const primaryContentStyle = { ...MainContentComponent.primaryContentStyle, ...this.props.primaryContentStyle };
-        const rightContentStyle = { ...MainContentComponent.rightContentStyle, ...this.props.rightContentStyle };
+        const rightContentStyle = this.props.conversation.ssmlAudioUrl ? { ...MainContentComponent.rightContentWithSoundStyle, ...this.props.rightContentStyle } : { ...MainContentComponent.rightContentStyle, ...this.props.rightContentStyle };
         const textContentStyle = {...MainContentComponent.textContentStyle, ...this.props.textContentStyle};
         const iconContentStyle = { ...MainContentComponent.iconStyle, ...this.props.iconStyle };
         const subtitleStyle = { ...MainContentComponent.subtitleStyle, ...this.props.subtitleStyle };
@@ -88,10 +94,16 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
                     <span style={textContentStyle}>
                         {`"${this.props.conversation.outputSpeechText}"`}
                     </span>}
+                  { this.props.conversation.ssmlText &&
+                  <span style={textContentStyle}>
+                        {`"${this.props.conversation.ssmlText}"`}
+                    </span>}
                     <TimeTextComponent
                         style={subtitleStyle}
                         timestamp={this.props.conversation.timestamp} />
                 </div>
+              {this.props.conversation.ssmlAudioUrl &&
+                <AudioComponent src={this.props.conversation.ssmlAudioUrl} />}
             </span>
         );
     }

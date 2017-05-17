@@ -1,0 +1,17 @@
+:global {
+  .container {
+    position: relative;
+    align-self: center;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    z-index: 1;
+    font-size: 25px;
+    text-align: center;
+    audio {
+      position: absolute;
+      z-index: 2;
+      left: 0;
+    }
+  }
+}

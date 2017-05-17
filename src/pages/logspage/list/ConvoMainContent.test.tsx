@@ -2,8 +2,9 @@ import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 
+import AudioComponent from "../../../components/Audio/AudioComponent";
 import Conversation, { createConvo } from "../../../models/conversation";
-import { alexaRequestIntentLog, alexaResponseLog } from "../../../utils/test";
+import { alexaJustTextResponseLog, alexaRequestIntentLog, alexaResponseLog, alexaSsmlWithAudioResponseLog, alexaWithAudioPlyIntentResponseLog, audioTestUrl } from "../../../utils/test";
 import ConvoIcon from "./ConvoIcon";
 import ConvoMainContent from "./ConvoMainContent";
 import TimeTextComponent from "./ConvoTimeTextComponent";
@@ -34,9 +35,15 @@ const iconStyle = {
 
 describe("ConvoMainContent", function () {
     let conversation: Conversation;
+    let conversationJustText: Conversation;
+    let conversationSsmlWithAudio: Conversation;
+    let conversationWithAudioPlayIntent: Conversation;
 
     before(function () {
         conversation = createConvo({ request: alexaRequestIntentLog(), response: alexaResponseLog() });
+        conversationJustText = createConvo({request: alexaRequestIntentLog(), response: alexaJustTextResponseLog()});
+        conversationSsmlWithAudio = createConvo({request: alexaRequestIntentLog(), response: alexaSsmlWithAudioResponseLog()});
+        conversationWithAudioPlayIntent = createConvo({request: alexaRequestIntentLog(), response: alexaWithAudioPlyIntentResponseLog()});
     });
 
     describe("Render", function () {
@@ -91,19 +98,31 @@ describe("ConvoMainContent", function () {
             });
 
             describe("outputSpeech text", function(){
-                it("Tests that the conversation response text doesn't get rendered when no text is available", function(){
-                    conversation.response.payload.response.outputSpeech.text = "";
-                    const outputSpeechTextWrapper = wrapper.find("span").at(2);
+              it("Tests that the conversation response text doesn't get rendered when no text is available", function(){
+                const outputSpeechTextWrapper = wrapper.find("span").at(2);
 
-                    expect(outputSpeechTextWrapper.text()).to.not.equal(`&quot;${conversation.outputSpeechText}&quot;`);
-                });
+                expect(outputSpeechTextWrapper.text()).to.not.equal(`"${conversation.outputSpeechText}"`);
+              });
+            });
 
-                it("Tests that the conversation response text is displayed when available.", function () {
-                    conversation.response.payload.response.outputSpeech.text = "this is a test text to render on the conversation bubble";
-                    const outputSpeechTextWrapper = wrapper.find("span").at(2);
+            describe("outputSpeech ssml", function(){
+              it("Tests that the conversation response ssml is displayed when available", function(){
+                const outputSpeechSsmlWrapper = wrapper.find("span").at(2);
 
-                    expect(outputSpeechTextWrapper.text()).to.equal(`"${conversation.outputSpeechText}"`);
-                });
+                expect(outputSpeechSsmlWrapper).not.to.be.undefined;
+                expect(outputSpeechSsmlWrapper.text()).to.equal(`"${conversation.ssmlText}"`);
+              });
+            });
+
+            describe("outputSpeech audio", function(){
+              it("Tests that the conversation response ssml audio is not displayed when not available", function(){
+                expect(wrapper.find(AudioComponent)).to.have.length(0);
+              });
+
+              it("Tests that the conversation response ssml audio is displayed when available for play intent", function(){
+                conversation.response.payload.response.directives = [{audioItem: {stream: {url: audioTestUrl}}}];
+                expect(wrapper.find("div")).to.have.length(1);
+              });
             });
 
             describe("TimeTextComponent", function () {
@@ -117,6 +136,47 @@ describe("ConvoMainContent", function () {
                     expect(timeWrapper).has.prop("timestamp", conversation.timestamp);
                 });
             });
+        });
+
+        describe("without ssml, just text on the response", function() {
+          before(function () {
+            wrapper = shallow(<ConvoMainContent
+              conversation={conversationJustText}
+            />);
+          });
+          it("Tests that the conversation response text is displayed when available.", function () {
+            const outputSpeechTextWrapper = wrapper.find("span").at(2);
+
+            expect(outputSpeechTextWrapper.text()).to.equal(`"${conversationJustText.outputSpeechText}"`);
+          });
+
+          it("Tests that the conversation response ssml is not displayed when not available", function(){
+            const outputSpeechSsmlWrapper = wrapper.find("span").at(2);
+
+            expect(outputSpeechSsmlWrapper.text()).to.not.equal(`"${conversationJustText.ssmlText}"`);
+          });
+        });
+
+        describe("with audio file on ssml", function() {
+          before(function () {
+            wrapper = shallow(<ConvoMainContent
+              conversation={conversationSsmlWithAudio}
+            />);
+          });
+          it("Tests that the conversation response ssml audio is displayed when available", function(){
+            expect(wrapper.find(AudioComponent)).to.have.length(1);
+          });
+        });
+
+        describe("with audio file on play intent", function() {
+          before(function () {
+            wrapper = shallow(<ConvoMainContent
+              conversation={conversationWithAudioPlayIntent}
+            />);
+          });
+          it("Tests that the conversation response ssml audio is displayed when available", function(){
+            expect(wrapper.find(AudioComponent)).to.have.length(1);
+          });
         });
 
         describe("Styles", function () {

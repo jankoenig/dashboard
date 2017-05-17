@@ -10,6 +10,8 @@ export enum LogType {
     Alexa, Home
 }
 
+export const audioTestUrl = "https://s3.amazonaws.com/sounds226/boom.mp3";
+
 /**
  * Returns a ConversationList of a specified amount.
  *
@@ -214,8 +216,7 @@ export function alexaResponseLog(): Log {
             "response": {
                 "outputSpeech": {
                     "type": "SSML",
-                    "ssml": "<speak> Oh boy, what a demo </speak>",
-                    "text": "this is a test text to render on the conversation bubble"
+                    "ssml": "<speak> Oh boy, what a demo </speak>"
                 },
                 "shouldEndSession": true
             }
@@ -229,6 +230,82 @@ export function alexaResponseLog(): Log {
         ],
         id: "581cd1047a0db10022c081e8"
     });
+}
+
+export function alexaSsmlWithAudioResponseLog(): Log {
+  return new Log({
+    payload: {
+      "version": "1.0",
+      "type": "INFO",
+      "response": {
+        "outputSpeech": {
+          "type": "SSML",
+          "ssml": `<speak> Oh boy, what a demo <audio src="${audioTestUrl}" /></speak>`
+        },
+        "shouldEndSession": true
+      }
+    },
+    log_type: "INFO",
+    source: "source",
+    transaction_id: "N/A",
+    timestamp: new Date("2016-11-04T18:18:44.511Z"),
+    tags: [
+      "response"
+    ],
+    id: "581cd1047a0db10022c081e8"
+  });
+}
+
+export function alexaWithAudioPlyIntentResponseLog(): Log {
+  return new Log({
+    payload: {
+      "version": "1.0",
+      "type": "INFO",
+      "response": {
+        "directives": [
+          {
+            audioItem: {
+              stream: {
+                url: audioTestUrl
+              }
+            }
+          }
+        ],
+        "shouldEndSession": true
+      }
+    },
+    log_type: "INFO",
+    source: "source",
+    transaction_id: "N/A",
+    timestamp: new Date("2016-11-04T18:18:44.511Z"),
+    tags: [
+      "response"
+    ],
+    id: "581cd1047a0db10022c081e8"
+  });
+}
+
+export function alexaJustTextResponseLog(): Log {
+  return new Log({
+    payload: {
+      "version": "1.0",
+      "type": "INFO",
+      "response": {
+        "outputSpeech": {
+          "text": "this is a test text to render on the conversation bubble"
+        },
+        "shouldEndSession": true
+      }
+    },
+    log_type: "INFO",
+    source: "source",
+    transaction_id: "N/A",
+    timestamp: new Date("2016-11-04T18:18:44.511Z"),
+    tags: [
+      "response"
+    ],
+    id: "581cd1047a0db10022c081e8"
+  });
 }
 
 export function alexaRequestPlayerLog(): Log {
