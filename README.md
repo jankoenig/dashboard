@@ -41,6 +41,7 @@ Most importantly, place the dashbaord container tag somewhere within your `<body
 ## Resources
 
 - Working on the project? Go [here](./docs/developer.md)
+- [Deployment](./docs/deployment.md)
 - [Roadmap](https://github.com/bespoken/dashboard/milestones)
 - [Releases](https://github.com/bespoken/dashboard/releases)
 - [Issues](https://github.com/bespoken/dashboard/issues)
