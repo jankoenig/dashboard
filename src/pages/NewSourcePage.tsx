@@ -104,7 +104,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
         ) : (<div />);
 
         let bottomHalf = (createSource) ?
-            (<NewSkillForm onCreateSource={this.createSource} />) :
+            (<NewSkillForm onCreateSource={this.createSource} error={this.state.error} />) :
             (<CodeForm source={this.state.source} onGoToLogs={this.goToLogs} onGoBack={this.goBack} />);
 
         return (

@@ -22,7 +22,8 @@ function generateSourceProps(sourceId: string = undefined, members: SourceModel.
         name: "Test Source",
         members: members,
         id: sourceId,
-        created: new Date()
+        created: new Date(),
+        url: "https://romantic-shelley-8zIRae.bespoken.link"
     };
     return props;
 };
@@ -258,7 +259,7 @@ describe("Source Service", function () {
             let mockResponse: any;
 
             before(function () {
-                mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456" };
+                mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456", url: "https://romantic-shelley-8zIRae.bespoken.link" };
                 fetchMock.get(/https:\/\/source-api\.bespoken\.tools\/v1\/sourceId\?.*/, mockResponse);
             });
 
@@ -289,7 +290,7 @@ describe("Source Service", function () {
                         // Check the first setting.
                         expect(childArgs[0][0]).to.equal("sources");
                         expect(childArgs[1][0]).to.equal("test-source-bhjas3");
-                        expect(setargs[0][0]).to.deep.equal(source);
+                        expect(setargs[0][0]).to.equal(JSON.stringify(source));
 
                         // Check the second setting.
                         expect(childArgs[2][0]).to.equal("users");
@@ -300,6 +301,24 @@ describe("Source Service", function () {
                     });
             });
         });
+
+        describe("Tests unsuccessful create response.", function () {
+            let createSourceError = new Error("First argument contains undefined in property 'sources.naughty-orwell-s5mdjF.url'");
+
+            before(function () {
+                fetchMock.get(/https:\/\/source-api\.bespoken\.tools\/v1\/sourceId\?.*/, new Promise((resolve, reject) => {
+                    reject(createSourceError);
+                }));
+            });
+
+            it("Throws error", function () {
+                return SourceService.createSource(new SourceModel.Source(generateSourceProps()), mockAuth, db)
+                    .catch((err: Error) => {
+                        expect(err).to.not.be.undefined;
+                    });
+            });
+        });
+
     });
 
     describe("Tests the \"deleteSource\" function.", function () {

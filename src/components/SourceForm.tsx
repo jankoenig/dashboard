@@ -87,8 +87,8 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
                         autoComplete={"off"}
                         error={this.props.nameRule} />
                 </form>
-                {!this.props.error ? (
-                    <p> {this.props.error} </p>
+                {this.props.error ? (
+                    <p> {this.props.error.message} </p>
                 ) : <div />}
                 <Button colored={true} ripple={true} raised={true} onClick={this.onClick}>Create Source</Button>
             </div>

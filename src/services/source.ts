@@ -86,7 +86,7 @@ export namespace source {
                 mutableSource.members[user.uid] = "owner";
                 return mutableSource;
             }).then(function (source: Source) {
-                return sourcesPath.child(source.id).set(source)
+                return sourcesPath.child(source.id).set(JSON.stringify(source))
                     .then(function () {
                         // Save the source to the user's list of sources
                         return ref.child("users").child(user.uid).child("sources").child(source.id).set("owner");
@@ -94,6 +94,9 @@ export namespace source {
             }).then(function () {
                 // And finally provide it back to the callback
                 return mutableSource;
+            }).catch((err: Error) => {
+                console.log(err);
+                throw err;
             });
     }
 
