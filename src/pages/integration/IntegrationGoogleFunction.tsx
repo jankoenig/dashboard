@@ -28,7 +28,7 @@ export class IntegrationGoogleFunction extends IntegrationSubPage<IntegrationGoo
                         <p> Wrap your <code>exports</code> definition:</p>
                         <CodeSheet>{
                             `// The secret key is provided when you create a new source in the Logless dashboard
-exports.function = bst.Logless.capture("<SECRET_KEY>", function (request, response) {
+exports.function = bst.Logless.capture("${this.state.secretText}", function (request, response) {
   // Cloud Function code goes here
   response.json({ foo: "bar" });
 });`
