@@ -8,7 +8,7 @@ export interface Spoke {
     /**
      * A unique diagnostic key for the skill. Currently the same as the secret key.
      */
-    diagnosticKey: string;
+    diagnosticsKey: string;
     /**
      * The location that the skill would be retrieved from.
      */

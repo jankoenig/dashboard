@@ -110,7 +110,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                             raised
                             primary
                             onClick={this.handleDeleteDialogToggle}
-                            label="Delete Skill" />
+                            label="Delete Source" />
                     </Cell>
                 </Grid>
                 <Dialog
@@ -119,7 +119,7 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
                     active={this.state.deleteDialogActive}
                     onEscKeyDown={this.handleDeleteDialogToggle}
                     onOverlayClick={this.handleDeleteDialogToggle}
-                    title="Delete Skill" >
+                    title="Delete Source" >
                     <p>Are you sure you want to delete {sourceName}? This action can not be undone.</p>
                 </Dialog>
             </span>

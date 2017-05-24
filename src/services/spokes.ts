@@ -28,7 +28,7 @@ namespace spokes {
                 return fetch(URL, {
                     headers: {
                         "x-access-userid": user.userId,
-                        "x-access-token": "",
+                        "x-access-token": "4772616365-46696f72656c6c61",
                     }
                 });
             }).then(function (result: Response) {
@@ -41,6 +41,7 @@ namespace spokes {
     }
 
     function parse<T>(result: Response, errMsg: string = "Could not parse result."): T | Thenable<T> {
+      console.log(result);
         if (result.status === 200) {
             return result.json();
         } else {
@@ -64,7 +65,7 @@ namespace spokes {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "x-access-token": "",
+                        "x-access-token": "4772616365-46696f72656c6c61",
                         "x-access-userid": user.userId
                     },
                     body: JSON.stringify(postObj)
@@ -115,7 +116,7 @@ interface FetchSpokeResponse {
     /**
      * A unique diagnostic key for the skill. Currently the same as the secret key.
      */
-    diagnosticKey: string;
+    diagnosticsKey: string;
     /**
      * The location that the skill would be retrieved from.
      */
@@ -161,7 +162,7 @@ interface SaveRequest {
     /**
      * A unique diagnostic key for the skill. Currently the same as the secret key.
      */
-    diagnosticKey: string;
+    diagnosticsKey: string;
     /**
      * The location that the skill would be retrieved from.
      */
@@ -215,7 +216,7 @@ function scrub(response: FetchSpokeResponse | SaveRequest): void {
  */
 class FetchSpokeResponseObj implements Spoke.Spoke {
     uuid: string;
-    diagnosticKey: string;
+    diagnosticsKey: string;
     endPoint: {
         name: string;
     };
@@ -233,7 +234,7 @@ class FetchSpokeResponseObj implements Spoke.Spoke {
 
     constructor(response: FetchSpokeResponse | SaveSpokeRequestObj) {
         this.uuid = response.uuid;
-        this.diagnosticKey = response.diagnosticKey;
+        this.diagnosticsKey = response.diagnosticsKey;
         this.endPoint = response.endPoint;
         this.path = response.path;
         this.pipeType = response.pipeType;
@@ -245,7 +246,7 @@ class FetchSpokeResponseObj implements Spoke.Spoke {
 
 class SaveSpokeRequestObj implements SaveRequest {
     uuid: string;
-    diagnosticKey: string;
+    diagnosticsKey: string;
     endPoint: {
         name: string;
     };
@@ -263,7 +264,7 @@ class SaveSpokeRequestObj implements SaveRequest {
 
     constructor(source: Source, resource: spokes.HTTP | spokes.Lambda, proxy: boolean = false) {
         this.uuid = source.secretKey;
-        this.diagnosticKey = source.secretKey;
+        this.diagnosticsKey = source.secretKey;
         this.endPoint = { name: source.id };
         this.path = "/"; // always this for now.
         this.proxy = proxy;

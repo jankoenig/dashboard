@@ -18,7 +18,7 @@ const source: Source = dummySources(1)[0];
 
 const fetchResponse = {
     uuid: source.secretKey,
-    diagnosticKey: source.secretKey,
+    diagnosticsKey: source.secretKey,
     endPoint: {
         name: source.id
     },
@@ -89,7 +89,7 @@ describe("Spokes Service", function () {
                 return SpokesService.fetchPipe(user, source)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
-                        expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
+                        expect(payload.diagnosticsKey).to.equal(fetchResponse.diagnosticsKey);
                         expect(payload.uuid).to.equal(fetchResponse.uuid);
                         expect(payload.endPoint).to.deep.equal(fetchResponse.endPoint);
                         expect(payload.pipeType).to.equal(fetchResponse.pipeType);
@@ -156,7 +156,7 @@ describe("Spokes Service", function () {
                         const args = fetchMock.lastCall()[1] as RequestInit;
                         const reqObj = JSON.parse(args.body);
                         expect(reqObj).to.exist;
-                        expect(reqObj.diagnosticKey).to.equal(source.secretKey);
+                        expect(reqObj.diagnosticsKey).to.equal(source.secretKey);
                         expect(reqObj.uuid).to.equal(source.secretKey);
                         expect(reqObj.endPoint).to.deep.equal({ name: source.id });
                         expect(reqObj.pipeType).to.equal("HTTP");
@@ -173,7 +173,7 @@ describe("Spokes Service", function () {
                         const args = fetchMock.lastCall()[1] as RequestInit;
                         const reqObj = JSON.parse(args.body);
                         expect(reqObj).to.exist;
-                        expect(reqObj.diagnosticKey).to.equal(source.secretKey);
+                        expect(reqObj.diagnosticsKey).to.equal(source.secretKey);
                         expect(reqObj.uuid).to.equal(source.secretKey);
                         expect(reqObj.endPoint).to.deep.equal({ name: source.id });
                         expect(reqObj.pipeType).to.equal("LAMBDA");
@@ -188,7 +188,7 @@ describe("Spokes Service", function () {
                 return SpokesService.savePipe(user, source, { url: "http://spoke.url/" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
-                        expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
+                        expect(payload.diagnosticsKey).to.equal(fetchResponse.diagnosticsKey);
                         expect(payload.uuid).to.equal(fetchResponse.uuid);
                         expect(payload.endPoint).to.deep.equal(fetchResponse.endPoint);
                         expect(payload.pipeType).to.equal(fetchResponse.pipeType);
@@ -203,7 +203,7 @@ describe("Spokes Service", function () {
                 return SpokesService.savePipe(user, source, { lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" }, true)
                     .then(function (payload: Spoke) {
                         expect(payload).to.exist;
-                        expect(payload.diagnosticKey).to.equal(fetchResponse.diagnosticKey);
+                        expect(payload.diagnosticsKey).to.equal(fetchResponse.diagnosticsKey);
                         expect(payload.uuid).to.equal(fetchResponse.uuid);
                         expect(payload.endPoint).to.deep.equal(fetchResponse.endPoint);
                         expect(payload.proxy).to.equal(fetchResponse.proxy);

@@ -282,7 +282,7 @@ class AlexaConversation extends GenericConversation {
 
     get ssmlText(): string | undefined {
       const ssmlString = propertyExist(this.response, "payload", "response", "outputSpeech", "ssml") ? this.response.payload.response.outputSpeech.ssml : undefined;
-      const removedSpeak = ssmlString ? ssmlString.replace("<speak>", "").replace("</speak>", "") : undefined;
+      const removedSpeak = ssmlString ? ssmlString.replace("<speak>", "").replace("</speak>", "").trim() : undefined;
       return removedSpeak ? removedSpeak.replace(/src=".*?"|src='.*?'/g, '"..."') : undefined;
     }
 
