@@ -148,6 +148,10 @@ export namespace source {
                   let source: Source = new Source(data.val());
                   return source;
                 }
+            })
+            .catch((err: Error) => {
+                console.log(err);
+                return undefined;
             });
     }
 
