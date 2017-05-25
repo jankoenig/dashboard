@@ -42,7 +42,7 @@ export namespace IndexUtils {
             .then(function (foundSources: Source[]) {
                 let returnSource: Source;
                 for (let source of foundSources) {
-                    if (source.id === sourceId) {
+                    if (source && source.id === sourceId) {
                         returnSource = source;
                         break;
                     }

@@ -144,8 +144,10 @@ export namespace source {
     export function getSourceObj(key: string, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         return getSource(key, db)
             .then(function (data) {
-                let source: Source = new Source(data.val());
-                return source;
+                if (data.val()) {
+                  let source: Source = new Source(data.val());
+                  return source;
+                }
             });
     }
 

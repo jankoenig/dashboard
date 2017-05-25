@@ -76,13 +76,16 @@ export function getSources(): Redux.ThunkAction<any, any, any> {
 
                 for (let key of keys) {
                     service.getSource(key).then(function (data) {
-                        let newSource = new Source(data.val());
-                        sources.push(newSource);
-                        // Dispatch the array of sources, note the .slice() is to make
-                        // a copy of the sources array.  This is needed otherwise redux
-                        // will not recognize it is a new array coming and not update
-                        // the components
-                        dispatch(setSources(sources.slice()));
+                        if (data.val()) {
+                          let newSource = new Source(data.val());
+                          sources.push(newSource);
+                          // Dispatch the array of sources, note the .slice() is to make
+                          // a copy of the sources array.  This is needed otherwise redux
+                          // will not recognize it is a new array coming and not update
+                          // the components
+                          dispatch(setSources(sources.slice()));
+                        }
+
                     });
                 }
             }
