@@ -18,3 +18,5 @@ typings/modules/
 
 npm-debug.log
 yarn.lock
+
+*.swp
