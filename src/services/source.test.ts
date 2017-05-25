@@ -290,7 +290,7 @@ describe("Source Service", function () {
                         // Check the first setting.
                         expect(childArgs[0][0]).to.equal("sources");
                         expect(childArgs[1][0]).to.equal("test-source-bhjas3");
-                        expect(setargs[0][0]).to.equal(JSON.stringify(source));
+                        expect(setargs[0][0]).to.deep.equal(source);
 
                         // Check the second setting.
                         expect(childArgs[2][0]).to.equal("users");
