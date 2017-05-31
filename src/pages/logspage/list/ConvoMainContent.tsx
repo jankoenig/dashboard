@@ -96,7 +96,7 @@ class MainContentComponent extends React.Component<MainContentProps, any> {
                     </span>}
                   { this.props.conversation.ssmlText &&
                   <span style={textContentStyle}>
-                        {`"${this.props.conversation.ssmlText}"`}
+                        {`${this.props.conversation.ssmlText}`}
                     </span>}
                     <TimeTextComponent
                         style={subtitleStyle}

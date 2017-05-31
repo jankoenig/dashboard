@@ -110,7 +110,7 @@ describe("ConvoMainContent", function () {
                 const outputSpeechSsmlWrapper = wrapper.find("span").at(2);
 
                 expect(outputSpeechSsmlWrapper).not.to.be.undefined;
-                expect(outputSpeechSsmlWrapper.text()).to.equal(`"${conversation.ssmlText}"`);
+                expect(outputSpeechSsmlWrapper.text()).to.equal(`${conversation.ssmlText}`);
               });
             });
 

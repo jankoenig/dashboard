@@ -100,7 +100,7 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
             <Grid>
                 <Cell col={4} tablet={2} hidePhone={true} />
                 <Cell col={4} tablet={4} phone={4} align={"middle"} style={{display: "flex", justifyContent: "center"}}>
-                    <Card>
+                    <Card style={{ overflow: "visible" }}>
                         <AuthForm
                             error={this.state.error}
                             onSubmit={this.handleFormSubmit}

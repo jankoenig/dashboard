@@ -7,7 +7,7 @@ export default class Card extends React.Component<any, any> {
 
     render() {
         return (
-            <div className="mdl-card">
+            <div style={this.props.style} className="mdl-card">
                 {this.props.children}
             </div>
         );

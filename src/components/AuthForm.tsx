@@ -58,7 +58,7 @@ export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
                     onEmailChange={this.onEmailChange}
                     onResetPassword={this.onResetPassword}
                     />
-                <div className="mdl-card__actions mdl-card--border clearfix">
+                <div className="mdl-card__actions clearfix">
                     <LoginGithub onLoginWithGithub={this.props.onLoginWithGithub} />
                 </div>
             </div>
@@ -75,7 +75,7 @@ interface PasswordResetProps {
 export class PasswordReset extends React.Component<PasswordResetProps, any> {
     render() {
         return (
-            <div>
+            <div style={{ position: "absolute", top: "103%" }}>
                 <Button
                     label="Reset Password"
                     onClick={this.props.onPasswordReset}
@@ -96,6 +96,7 @@ export class LoginGithub extends React.Component<LoginGithubProps, any> {
             this.props.onLoginWithGithub ? (
                 <div style={{ width: "100%", textAlign: "Center" }}>
                     <Button
+                        style={{width: "92%"}}
                         theme={theme}
                         label="Login with Github"
                         icon={(<Icon style={{ marginRight: "13px" }} width={20} height={20} icon={ICON.GITHUB} />)}
@@ -260,7 +261,7 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
                     onConfirmPasswordChange={this.onConfirmPassChange}
                     onPasswordSubmit={this.onFormSubmit}
                     onConfirmPasswordSubmit={this.onFormSubmit} />
-                <div className={`${theme.actions} mdl-card__actions mdl-card--border clearfix`}>
+                <div className={`${theme.actions} mdl-card__actions clearfix`}>
                     {loginBtn}
                     {signupBtn}
                     <PasswordReset

@@ -282,15 +282,17 @@ class AlexaConversation extends GenericConversation {
 
     get ssmlText(): string | undefined {
       const ssmlString = propertyExist(this.response, "payload", "response", "outputSpeech", "ssml") ? this.response.payload.response.outputSpeech.ssml : undefined;
-      const removedSpeak = ssmlString ? ssmlString.replace("<speak>", "").replace("</speak>", "").trim() : undefined;
-      return removedSpeak ? removedSpeak.replace(/src=".*?"|src='.*?'/g, '"..."') : undefined;
+      const audioUrls = ssmlString && ssmlString.match(/src=".*?"|src='.*?'/);
+      const url = audioUrls && audioUrls[0].replace("src=", "").replace(/"/g, "").replace(/'/g, "");
+      const urlToReplace = url && url.substr(url.lastIndexOf("/") + 1);
+      return ssmlString && ssmlString.replace(/src=".*?"|src='.*?'/g, urlToReplace ? `"//${urlToReplace}"` : '"..."');
     }
 
     get ssmlAudioUrl(): string | undefined {
       const ssmlString = propertyExist(this.response, "payload", "response", "outputSpeech", "ssml") ? this.response.payload.response.outputSpeech.ssml : undefined;
       if (ssmlString) {
-        const audioUrls = ssmlString ? ssmlString.match(/src=".*?"|src='.*?'/) : undefined;
-        return audioUrls ? audioUrls[0].replace("src=", "").replace(/"/g, "").replace(/'/g, "") : undefined;
+        const audioUrls = ssmlString && ssmlString.match(/src=".*?"|src='.*?'/);
+        return audioUrls && audioUrls[0].replace("src=", "").replace(/"/g, "").replace(/'/g, "");
       }
       const directives = propertyExist(this.response, "payload", "response", "directives") ? this.response.payload.response.directives[0] : undefined;
       return propertyExist(directives, "audioItem", "stream", "url") ? directives.audioItem.stream.url : undefined;
