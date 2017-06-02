@@ -79,7 +79,17 @@ export class StartTimeParameter extends TimeParameter {
 }
 
 export class EndTimeParameter extends TimeParameter {
-    parameter = "end_time";
+  parameter = "end_time";
+}
+
+export class IntervalParameter implements QueryParameter {
+    constructor(interval: number) {
+      this.value = interval;
+    }
+
+    readonly value: number;
+
+    parameter = "interval";
 }
 
 export class LimitParameter implements QueryParameter {

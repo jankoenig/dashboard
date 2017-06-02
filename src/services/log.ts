@@ -32,6 +32,11 @@ namespace LogService {
         count: IntentBucket[];
     }
 
+    export interface ResponseTimeSummary {
+      interval: string;
+      avgResponseTime: number;
+    }
+
     export interface TotalStat {
         totalUsers: number;
         totalExceptions: number;
@@ -79,6 +84,11 @@ namespace LogService {
     export function getIntentSummary(query: Query): Promise<IntentSummary> {
         let url = BASE_URL + "/intentCount?" + query.query();
         return fetchJson(url);
+    }
+
+    export function getResponseTimeSummary(query: Query): Promise<ResponseTimeSummary> {
+      let url = BASE_URL + "/response-time?" + query.query();
+      return fetchJson(url);
     }
 
     export function getSourceSummary(query: Query): Promise<SourceStats> {
