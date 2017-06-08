@@ -25,6 +25,13 @@
     stroke: transparent;
   }
   .line-chart {
+    &.thin-stroke {
+      .recharts-layer.recharts-line-chart {
+        path {
+          stroke-width: 1.5;
+        }
+      }
+    }
     .recharts-layer.recharts-line-chart {
       path {
         stroke-width: 1.5;

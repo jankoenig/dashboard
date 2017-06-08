@@ -9,6 +9,7 @@ import SourceOriginSelector, {SourceOption} from "./SourceOriginSelector";
 import SourceResponseTimeAverage from "./SourceResponseTimeAverage";
 import SourceStats from "./SourceStats";
 import SourceTimeSummary, {LineProps} from "./SourceTimeSummary";
+import SourceUpTimeSummary from "./SourceUptime";
 import "./themes/base-time-chart-theme";
 
 const AllCheckboxTheme = require("./themes/checkbox-all-theme.scss");
@@ -35,6 +36,7 @@ interface SourceFullSummaryState {
   sourceOptions: SourceOption[];
   lines: LineProps[];
   bars: BarProps[];
+  showUpTime?: boolean;
 }
 
 function values<T>(obj: LabelMap<T>): T[] {
@@ -105,12 +107,14 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     super(props);
 
     this.handleOriginChange = this.handleOriginChange.bind(this);
+    this.handleShowUpTime = this.handleShowUpTime.bind(this);
 
     this.state = {
       sourceOptions: values(SourceFullSummary.options),
       lines: values(SourceFullSummary.lines),
       bars: values(SourceFullSummary.bars),
-      selectedStatEntry: [SourceFullSummary.statEntries["Total"]]
+      selectedStatEntry: [SourceFullSummary.statEntries["Total"]],
+      showUpTime: true
     };
   }
 
@@ -142,11 +146,17 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     this.setState(this.state);
   }
 
+  handleShowUpTime(showUpTime: boolean) {
+    this.state.showUpTime = showUpTime;
+    this.setState(this.state);
+  }
+
   render() {
     const {header, ...others} = this.props;
-    const {bars, lines, selectedStatEntry} = this.state;
+    const {bars, lines, selectedStatEntry, showUpTime} = this.state;
     const options = SourceFullSummary.options;
     const handleOriginChange = this.handleOriginChange;
+    const handleShowUpTime = this.handleShowUpTime;
 
     return (
       <div>
@@ -183,6 +193,10 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
               </Cell>
               <Cell col={6} phone={6}>
                   <Grid>
+                      <Cell className="line-chart thin-stroke" col={12} tablet={8} phone={6} style={{height: showUpTime ? 300 : 0}}>
+                        <SourceUpTimeSummary handleShowUpTime={handleShowUpTime}
+                          {...others}/>
+                      </Cell>
                       <Cell className="bar-chart" col={12}>
                         <SourceIntentSummary
                           {...others}

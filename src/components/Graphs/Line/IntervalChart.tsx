@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import ChartUtils from "../../../utils/chart";
 
 export interface LineProps {
     dataKey: string;
@@ -14,14 +15,13 @@ export class IntervalData {
     interval?: number;
     avgResponseTime?: number;
     intervalDate: moment.Moment;
-    baseline?: moment.Moment;
 }
 
 interface IntervalChartProps {
     data: IntervalData[];
     tickFormat?: string;
-    startDate: moment.Moment;
-    endDate: moment.Moment;
+    startDate?: moment.Moment;
+    endDate?: moment.Moment;
 }
 
 interface IntervalChartState {
@@ -41,20 +41,7 @@ class IntervalChart extends React.Component<IntervalChartProps, IntervalChartSta
       if (data.length === 0) {
         return [];
       }
-      let highest: moment.Moment = moment(data[0].intervalDate).startOf("day");
-      let lowest: moment.Moment = moment(data[0].intervalDate).startOf("day");
-      let ticks: number[] = [ data[0].intervalDate.valueOf() ];
-      for (let i = 1; i < data.length; ++i) {
-        const currentDate: moment.Moment = moment(data[i].intervalDate).startOf("day");
-        if (currentDate.isAfter(highest)) {
-          ticks.push(data[i].intervalDate.valueOf());
-          highest = currentDate;
-        } else if (currentDate.isBefore(lowest)) {
-          ticks.unshift(data[i].intervalDate.valueOf());
-          lowest = currentDate;
-        }
-      }
-      return ticks;
+      return ChartUtils.createTicks(data, "intervalDate");
     }
 
     constructor(props: IntervalChartProps) {
@@ -89,7 +76,6 @@ class IntervalChart extends React.Component<IntervalChartProps, IntervalChartSta
                     <XAxis dataKey="interval" tickFormatter={this.tickFormat} ticks={this.state.ticks} />
                     <YAxis />
                     <CartesianGrid fill="#fff" strokeDasharray="3 3" />
-                    <Line dataKey="baseline"/>
                     <Line dataKey="avgResponseTime" dot={false} />
                     <Legend verticalAlign="top" align="center" height={36} payload={[{ value: "Average Response Time (milliseconds)", type: "line", id: "ID01" }]} />
                 </LineChart>

@@ -132,6 +132,7 @@ declare module "recharts" {
     export interface YAxisProps extends AxisProps {
         yAxisId?: string | number;
         margin?: object;
+        domain?: any[];
     }
 
     export class YAxis extends React.Component<YAxisProps, any> { }
@@ -140,6 +141,7 @@ declare module "recharts" {
       strokeDasharray?: string;
       fill?: string;
       stroke?: string;
+      width?: number;
     }
 
     export class CartesianGrid extends React.Component<CartesianGridProps, any> { }

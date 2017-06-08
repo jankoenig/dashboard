@@ -8,8 +8,10 @@ import { dummySources } from "../../utils/test";
 import SourceFullSummary from "./SourceFullSummary";
 import SourceIntentSummary from "./SourceIntentSummary";
 import SourceOriginSelector from "./SourceOriginSelector";
+import SourceResponseTimeSummary from "./SourceResponseTimeAverage";
 import SourceStats from "./SourceStats";
 import SourceTimeSummary from "./SourceTimeSummary";
+import SourceUpTime from "./SourceUptime";
 
 const expect = chai.expect;
 
@@ -68,6 +70,29 @@ describe("SourceFullSummary", function () {
 
         it("Tests the time summary has the appropriate props.", function () {
             const wrap = wrapper.find(SourceTimeSummary).at(0);
+            expect(wrap).to.have.prop("source", source);
+            expect(wrap).to.have.prop("startDate", start);
+            expect(wrap).to.have.prop("endDate", end);
+        });
+
+        it("Tests the response time average summary exists.", function () {
+            expect(wrapper.find(SourceResponseTimeSummary)).to.have.length(1);
+        });
+
+        it("Tests the response time average summary has the appropriate props.", function () {
+            const wrap = wrapper.find(SourceResponseTimeSummary).at(0);
+            expect(wrap).to.have.prop("source", source);
+            expect(wrap).to.have.prop("interval", 5);
+            expect(wrap).to.have.prop("startDate", start);
+            expect(wrap).to.have.prop("endDate", end);
+        });
+
+        it("Tests the up time summary exists when there is data", function () {
+            expect(wrapper.find(SourceUpTime)).to.have.length(1);
+        });
+
+        it("Tests the up time summary has the appropriate props.", function () {
+            const wrap = wrapper.find(SourceUpTime).at(0);
             expect(wrap).to.have.prop("source", source);
             expect(wrap).to.have.prop("startDate", start);
             expect(wrap).to.have.prop("endDate", end);

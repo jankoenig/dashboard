@@ -82,6 +82,26 @@ export class EndTimeParameter extends TimeParameter {
   parameter = "end_time";
 }
 
+export class StartTimeValueParameter implements QueryParameter {
+  constructor(startTimeValue: number) {
+    this.value = startTimeValue;
+  }
+
+  readonly value: number;
+
+  parameter = "start_time";
+}
+
+export class EndTimeValueParameter implements QueryParameter {
+  constructor(endTimeValue: number) {
+    this.value = endTimeValue;
+  }
+
+  readonly value: number;
+
+  parameter = "end_time";
+}
+
 export class IntervalParameter implements QueryParameter {
     constructor(interval: number) {
       this.value = interval;
