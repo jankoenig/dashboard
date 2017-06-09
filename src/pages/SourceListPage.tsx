@@ -12,6 +12,7 @@ import TwoPane from "../components/TwoPane";
 import Source from "../models/source";
 
 import { State } from "../reducers";
+import ArrayUtils from "../utils/array";
 
 import WelcomePage from "./WelcomePage";
 
@@ -34,15 +35,10 @@ function mapStateToProps(state: State.All) {
 export class SourceListPage extends React.Component<SourceListPageProps, SourceListPageState> {
 
     render() {
-        const sortedList = this.props.sources.sort((a, b) => {
-          if (a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase()) return -1;
-          if (a.name.toLocaleLowerCase() > b.name.toLocaleLowerCase()) return 1;
-          return 0;
-        });
         let leftSide = (
             <div className="source_list_page_left" style={{ position: "relative", height: "100%" }}>
                 <SourceList
-                    sources={sortedList} />
+                    sources={ArrayUtils.sortArrayByProperty(this.props.sources, "name")} />
                 <Link to="/skills/new" style={{ position: "absolute", bottom: "5%", right: "5%" }} >
                     <Button theme={ButtonTheme} icon="add" accent mini floating />
                 </Link>

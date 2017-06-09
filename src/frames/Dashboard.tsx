@@ -13,6 +13,7 @@ import { CLASSES } from "../constants";
 import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
+import ArrayUtils from "../utils/array";
 
 /**
  * Simple Adapter so a Source can conform to Dropdownable
@@ -112,8 +113,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     for (let source of this.props.sources) {
       dropdownableSources.push(new SourceDropdownableAdapter(source));
     }
-
-    return dropdownableSources;
+    return ArrayUtils.sortArrayByProperty(dropdownableSources, "label");
   }
 
   indexOf(source: Source): number {
