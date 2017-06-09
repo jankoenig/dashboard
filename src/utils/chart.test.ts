@@ -12,7 +12,6 @@ describe("chart utils", function () {
         const item: any = {};
         item.prop = i;
         item.dateProp = moment().subtract(i, "days");
-        console.log(item.dateProp);
         data.push(item);
       }
     });

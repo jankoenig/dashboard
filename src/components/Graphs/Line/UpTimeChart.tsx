@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import ChartUtils from "../../../utils/chart";
 
 export interface LineProps {
@@ -22,6 +22,7 @@ interface UpTimeChartProps {
     tickFormat?: string;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
+    labelFormat?: string;
 }
 
 interface UpTimeChartState {
@@ -47,6 +48,7 @@ class UpTimeChart extends React.Component<UpTimeChartProps, UpTimeChartState> {
     constructor(props: UpTimeChartProps) {
         super(props);
         this.tickFormat = this.tickFormat.bind(this);
+        this.labelFormat = this.labelFormat.bind(this);
 
         this.state = {
           ticks: UpTimeChart.createTicks(props)
@@ -64,6 +66,7 @@ class UpTimeChart extends React.Component<UpTimeChartProps, UpTimeChartState> {
     static defaultProps: UpTimeChartProps = {
         data: [],
         tickFormat: "MM/DD",
+        labelFormat: "MM/DD hh:mm a",
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
         status: 1,
@@ -74,6 +77,10 @@ class UpTimeChart extends React.Component<UpTimeChartProps, UpTimeChartState> {
         this.setState(this.state);
     }
 
+    labelFormat(time: string): string {
+        return moment(time).format(this.props.labelFormat);
+    }
+
     render() {
         return (
             <ResponsiveContainer>
@@ -81,6 +88,7 @@ class UpTimeChart extends React.Component<UpTimeChartProps, UpTimeChartState> {
                     <XAxis dataKey="timestamp" tickFormatter={this.tickFormat} ticks={this.state.ticks} />
                     <YAxis dataKey="statusValue" tickCount={4} tickFormatter={this.YTickFormat} domain={[0, 1.5]} />} />
                     <CartesianGrid fill={this.props.status ? "#33a532" : "#c44b4b"} stroke={this.props.status ? "#33a532" : "#c44b4b"} width={0} />
+                    <Tooltip labelFormatter={this.labelFormat} />
                     <Line dataKey="statusValue" dot={false} stroke="#fff" />
                     <Legend verticalAlign="top" align="center" height={36} payload={[{ value: "Source Up Time", type: "line", id: "ID01" }]} />
                 </LineChart>
