@@ -2,9 +2,9 @@ import { FETCH_LOGS_REQUEST, SET_LOGS } from "../constants";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
 import Source from "../models/source";
-import { Location } from "../pages/createpage/Route";
 import { LogQueryEvent } from "../reducers/log";
 import service from "../services/log";
+import { Location } from "../utils/Location";
 
 export interface PageResults {
     newLogs: Log[];

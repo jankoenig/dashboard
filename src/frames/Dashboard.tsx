@@ -13,7 +13,10 @@ import { CLASSES } from "../constants";
 import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
+import SourceService from "../services/source";
+import SpokeService from "../services/spokes";
 import ArrayUtils from "../utils/array";
+import { Location } from "../utils/Location";
 
 /**
  * Simple Adapter so a Source can conform to Dropdownable
@@ -94,7 +97,25 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     return classNames(CLASSES.COLOR.GREY_100, CLASSES.TEXT.GREY_600);
   }
 
-  componentWillMount() {
+  async componentDidMount() {
+    const { id, key} = this.props.location.query;
+    const redirect = () => this.props.goTo("/skills/" + id);
+    if (id && key) {
+      const self = this;
+      try {
+        await SourceService.linkSource({ id: id, secretKey: key }, this.props.user);
+        const source: Source = await SourceService.getSourceObj(id);
+        const pipe: any = await SpokeService.fetchPipe(self.props.user, source);
+        if (!pipe.diagnosticsKey) {
+          await SpokeService.savePipe(self.props.user, source, pipe.http, true);
+        }
+        redirect();
+      } catch (err) {
+        redirect();
+      }
+    } else {
+      this.props.goTo("/skills");
+    }
     this.props.getSources();
   }
 

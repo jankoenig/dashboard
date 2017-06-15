@@ -4,8 +4,8 @@ import * as React from "react";
 
 import Convo, { Origin } from "../../models/conversation";
 import Source from "../../models/source";
-import { Location } from "../../pages/createpage/Route";
 import DateUtil from "../../utils/date";
+import { Location } from "../../utils/Location";
 import { dummyConversationList, dummySources } from "../../utils/test";
 import ConvoExplorerPage from "./ConvoExplorerPage";
 import { ConvoPage } from "./ConvoPage";

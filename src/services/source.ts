@@ -67,9 +67,6 @@ export namespace source {
             } else {
                 return Promise.reject(new Error(result.statusText));
             }
-        }).catch(function (err: Error) {
-            console.error(err);
-            throw err;
         });
     }
 

@@ -3,7 +3,7 @@ import * as React from "react";
 import List from "../../../components/List/List";
 import Conversation from "../../../models/conversation";
 import ConversationList, { ConversationMap } from "../../../models/conversation-list";
-import { Location } from "../../../pages/createpage/Route";
+import { Location } from "../../../utils/Location";
 import Noop from "../../../utils/Noop";
 import ConvoListItem from "./ConvoListItem";
 

@@ -16,7 +16,6 @@ import Dashboard from "./frames/Dashboard";
 import Login from "./frames/Login";
 import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
-import CreateOrRoute from "./pages/createpage/Route";
 import IntegrationPage from "./pages/integration/StateIntegrationPage";
 import LoginPage from "./pages/LoginPage";
 import LogsPage from "./pages/logspage/ConvoPage";
@@ -27,8 +26,8 @@ import SourcePage from "./pages/sourcepage/SourcePage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
-import { Location } from "./pages/createpage/Route";
 import configureStore from "./store";
+import { Location } from "./utils/Location";
 
 import { State } from "./reducers";
 
@@ -134,7 +133,6 @@ let render = function () {
                     <IndexRoute component={LoginPage} />
                 </Route>
                 <Route path="/" component={Dashboard} onEnter={checkAuth}>
-                    <IndexRoute component={CreateOrRoute} />
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >

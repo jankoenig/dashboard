@@ -3,7 +3,7 @@ import * as React from "react";
 import { browserHistory } from "react-router";
 import TwoPane from "../../components/TwoPane";
 import Conversation from "../../models/conversation";
-import { Query } from "../createpage/Route";
+import { Query } from "../../utils/Location";
 import ConvoListPage from "./ConvoListPage";
 import ConvoViewPage from "./ConvoViewPage";
 import { CompositeFilter } from "./filters/Filters";

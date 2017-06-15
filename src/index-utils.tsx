@@ -2,8 +2,8 @@ import { retrieveLogs } from "./actions/log";
 import { setCurrentSource } from "./actions/source";
 import LogQuery from "./models/log-query";
 import Source from "./models/source";
-import { Location } from "./pages/createpage/Route";
 import source from "./services/source";
+import { Location } from "./utils/Location";
 
 /**
  * There is a lot of imports and scripts in the top-level `index` file that makes is frustratingly hard
