@@ -12,7 +12,6 @@ import IntegrationGoogleFunction from "./IntegrationGoogleFunction";
 import IntegrationJava from "./IntegrationJava";
 import IntegrationNodeJS from "./IntegrationNodeJSLambda";
 import IntegrationPage from "./IntegrationPage";
-import IntegrationSpokes from "./IntegrationSpokes";
 
 const expect = chai.expect;
 
@@ -34,12 +33,6 @@ describe("IntegrationPage", function () {
 
         it("Tests the Tabs property has the default index.", function () {
             expect(wrapper.find(Tabs).at(0).prop("index")).to.equal(0);
-        });
-
-        it("Tests the Spoke Page exists", function () {
-            const tab = wrapper.find(Tab).at(4);
-            const tabPage = tab.find(IntegrationSpokes);
-            expect(tabPage).to.have.length(1);
         });
 
         it("Tests the first tab is IntegrationNodeJS and gets the secret key.", function () {
@@ -77,13 +70,6 @@ describe("IntegrationPage", function () {
 
         before(function () {
             wrapper = shallow(<IntegrationPage source={undefined} />);
-        });
-
-        it("Tests the Spoke Page exists", function () {
-            const tab = wrapper.find(Tab).at(4);
-            const tabPage = tab.find(IntegrationSpokes);
-            expect(tabPage).to.have.length(1);
-            expect(tabPage.prop("source")).to.be.undefined;
         });
 
         it("Tests the first tab is IntegrationNodeJS and gets the secret key.", function () {

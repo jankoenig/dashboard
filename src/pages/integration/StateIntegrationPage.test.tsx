@@ -19,7 +19,7 @@ describe("StateIntegrationPage", function () {
                 name: "Test Source",
                 secretKey: "ABC123"
             });
-            wrapper = shallow(<StateIntegrationPage source={source} />);
+            wrapper = shallow(<StateIntegrationPage source={source} goTo={undefined} />);
         });
 
         it("Tests the IntegrationPage is included..", function () {
@@ -54,7 +54,7 @@ describe("StateIntegrationPage", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         before(function () {
-            wrapper = shallow(<StateIntegrationPage source={undefined} />);
+            wrapper = shallow(<StateIntegrationPage source={undefined} goTo={undefined} />);
         });
 
         it("Tests the IntegrationPage contains the appropriate props.", function () {

@@ -1,4 +1,4 @@
-@import "./input-config.scss"
+@import "./input-config.scss";
 
 .inputElement {
     &:focus:not([disabled]):not([readonly]), &.filled {

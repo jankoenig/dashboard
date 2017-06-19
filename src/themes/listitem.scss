@@ -32,3 +32,21 @@ $transition-time: 0.3s;
         text-decoration: none;
     }
 }
+
+:global{
+  .collapse {
+    height: 300px;
+    opacity:1;
+    -webkit-transition: all .5s ease-in-out;
+    -moz-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+  }
+
+  .collapsed {
+    height: 0;
+    opacity: 0;
+    -webkit-transition: all .5s ease-in-out;
+    -moz-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+  }
+}

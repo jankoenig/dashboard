@@ -25,7 +25,6 @@ const user = new User({ email: "test@testMctest.com" });
 describe("IntegrationSpokes", function () {
     describe("Renders", function () {
         let wrapper: ShallowWrapper<any, any>;
-        // let onChange: sinon.SinonStub;
         let onSaved: sinon.SinonStub;
         let savedState: any;
         let prefetch: sinon.SinonStub;
@@ -33,7 +32,7 @@ describe("IntegrationSpokes", function () {
         before(function () {
             onSaved = sinon.stub();
             // All of these tests were written *before* the prefetch was added so we're going to skip it and assume the spokes are fresh.
-            prefetch = sinon.stub(SpokesService, "fetchPipe").returns(Promise.reject(new Error("Error per requirements of the test.")));
+            prefetch = sinon.stub(SourceService, "getSourceObj").returns(Promise.reject(new Error("Error per requirements of the test.")));
 
             wrapper = shallow(<IntegrationSpokes user={user} source={source} onSpokesSaved={onSaved} />);
 
@@ -58,20 +57,25 @@ describe("IntegrationSpokes", function () {
             expect(wrapper.find(IntegrationSpokesSwapper)).to.have.length(1);
         });
 
-        it("Tests the enable live debugging checkbox exists.", function () {
-            expect(wrapper.find(Checkbox)).to.have.length(1);
-            expect(wrapper.find(Checkbox).at(0)).to.have.prop("label", "Enable Live Debugging");
+        it("Tests the enable live debugging, enable monitoring and enable proying checkbox exists.", function () {
+            expect(wrapper.find(Checkbox)).to.have.length(3);
+            expect(wrapper.find(Checkbox).at(0)).to.have.prop("label", "Enable Monitoring");
             expect(wrapper.find(Checkbox).at(0)).to.have.prop("checked", false);
+            expect(wrapper.find(Checkbox).at(1)).to.have.prop("label", "Enable Proxying");
+            expect(wrapper.find(Checkbox).at(1)).to.have.prop("checked", false);
+            expect(wrapper.find(Checkbox).at(2)).to.have.prop("label", "Enable Live Debugging");
+            expect(wrapper.find(Checkbox).at(2)).to.have.prop("checked", false);
         });
 
-        it("Tests the save button exists.", function () {
-            expect(wrapper.find(Button)).to.have.length(1);
-            expect(wrapper.find(Button).at(0)).to.have.prop("label", "Save");
+        it("Tests the save and advance buttons exists.", function () {
+            expect(wrapper.find(Button)).to.have.length(2);
+            expect(wrapper.find(Button).at(0)).to.have.prop("label", "Advanced");
+            expect(wrapper.find(Button).at(1)).to.have.prop("label", "Save");
         });
 
         it("Tests the error message exists.", function () {
-            expect(wrapper.find("p")).to.have.length(3); // There's two banner messages as well.
-            expect(wrapper.find("p").at(2)).to.have.style("visibility", "hidden");
+            expect(wrapper.find("p")).to.have.length(4); // There's two banner messages and 2 description messages as well.
+            expect(wrapper.find("p").at(3)).to.have.style("visibility", "hidden");
         });
 
         it("Tests the dropdown for page selector exists.", function () {
@@ -83,11 +87,25 @@ describe("IntegrationSpokes", function () {
             expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("showPage", "http");
         });
 
-        it("Tests the enable live debugging checkbox works.", function () {
+        it("Tests the enable monitoring checkbox works.", function () {
             let checkbox = wrapper.find(Checkbox).at(0);
             checkbox.simulate("change", true);
 
             expect(wrapper.find(Checkbox).at(0)).to.have.prop("checked", true);
+        });
+
+        it("Tests the enable proxying checkbox works.", function () {
+          let checkbox = wrapper.find(Checkbox).at(1);
+          checkbox.simulate("change", true);
+
+          expect(wrapper.find(Checkbox).at(1)).to.have.prop("checked", true);
+        });
+
+        it("Tests the enable live debugging checkbox works.", function () {
+          let checkbox = wrapper.find(Checkbox).at(2);
+          checkbox.simulate("change", true);
+
+          expect(wrapper.find(Checkbox).at(2)).to.have.prop("checked", true);
         });
 
         describe("IntegrationSpokesSwapper State", function () {
@@ -131,19 +149,19 @@ describe("IntegrationSpokes", function () {
 
                 it("Tests that the save button is disabled when url is undefined.", function () {
                     wrapper.setState({ url: undefined });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", true);
                 });
 
                 it("Tests that the save button is enabled when url is defined.", function () {
                     wrapper.setState({ url: "https://www.test.url/" });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", false);
                 });
 
                 it("Tests that the save button is disabled when url is not actually a url.", function () {
                     wrapper.setState({ url: "Hahaha You think this is real?" });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", true);
                 });
             });
@@ -155,31 +173,31 @@ describe("IntegrationSpokes", function () {
 
                 it("Tests that the save button is disabled when lambdaARN, awsAccessKey, and awsSecretKey are undefined.", function () {
                     wrapper.setState({ lambdaARN: undefined, awsAccessKey: undefined, awsSecretKey: undefined });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", true);
                 });
 
                 it("Tests that the save button is enabled when lambdaARN, awsAccessKey, and awsSecretKey are defined.", function () {
                     wrapper.setState({ lambdaARN: "123ABC", awsAccessKey: "ABC123", awsSecretKey: "AABBCC112233" });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", false);
                 });
 
                 it("Tests that the save button is disabled only when lambdaARN is undefined.", function () {
                     wrapper.setState({ awsAccessKey: "ABC123", awsSecretKey: "AABBCC112233" });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", false);
                 });
 
                 it("Tests that the save button is disabled only when awsAccessKey is undefined.", function () {
                     wrapper.setState({ lambdaARN: "123ABC", awsSecretKey: "AABBCC112233" });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", false);
                 });
 
                 it("Tests that the save button is disabled only when awsSecretKey is undefined.", function () {
                     wrapper.setState({ lambdaARN: "123ABC", awsAccessKey: "ABC123" });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", false);
                 });
             });
@@ -197,7 +215,7 @@ describe("IntegrationSpokes", function () {
 
                 it("Tests that the save button is disabled when the page is unknown to the component.", function () {
                     wrapper.setState({ lambdaARN: "123ABC", awsAccessKey: "ABC123", awsSecretKey: "AABBCC112233" });
-                    const button = wrapper.find(Button).at(0);
+                    const button = wrapper.find(Button).at(1);
                     expect(button).to.have.prop("disabled", true);
                 });
             });
@@ -213,7 +231,7 @@ describe("IntegrationSpokes", function () {
 
         before(function () {
             onSaved = sinon.stub();
-            prefetch = sinon.stub(SpokesService, "fetchPipe").returns(Promise.reject(new Error("Error per requirements of the test.")));
+            prefetch = sinon.stub(SourceService, "getSourceObj").returns(Promise.reject(new Error("Error per requirements of the test.")));
         });
 
         beforeEach(function () {
@@ -243,11 +261,10 @@ describe("IntegrationSpokes", function () {
                 updateSourceObj.restore();
             });
 
-            // TODO: unskip once `IntegrationSpokes.handleSave` is fixed to call `SpokesService.savePipe(user, source, resource, proxy)`.
-            it.skip("Tests the appropriate parameters are passed in on HTTP.", function () {
+            it("Tests the appropriate parameters are passed in on HTTP.", function () {
                 wrapper.setState({ showPage: "http", proxy: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
-                const button = wrapper.find(Button).at(0);
+                const button = wrapper.find(Button).at(1);
                 button.simulate("click");
 
                 expect(saveSpoke).to.be.calledOnce;
@@ -258,11 +275,10 @@ describe("IntegrationSpokes", function () {
                 expect(args[3]).to.deep.equal(true);
             });
 
-            // TODO: unskip once `IntegrationSpokes.handleSave` is fixed to call `SpokesService.savePipe(user, source, resource, proxy)`.
-            it.skip("Tests the appropriate parameters are passed in on lambda.", function () {
+            it("Tests the appropriate parameters are passed in on lambda.", function () {
                 wrapper.setState({ showPage: "lambda", proxy: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
-                const button = wrapper.find(Button).at(0);
+                const button = wrapper.find(Button).at(1);
                 button.simulate("click");
 
                 expect(saveSpoke).to.be.calledOnce;
@@ -277,7 +293,7 @@ describe("IntegrationSpokes", function () {
             it.skip("Tests that the callback is called.", function () {
                 wrapper.setState({ showPage: "http", proxy: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
 
-                const button = wrapper.find(Button).at(0);
+                const button = wrapper.find(Button).at(1);
                 button.simulate("click");
 
                 const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
@@ -287,13 +303,13 @@ describe("IntegrationSpokes", function () {
                     });
             });
 
-            it("Tests that the success message is displayed", function () {
-                const button = wrapper.find(Button).at(0);
+            it.skip("Tests that the success message is displayed", function () {
+                const button = wrapper.find(Button).at(1);
                 button.simulate("click");
 
                 const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
                 return promise.then(function () {
-                    const message = wrapper.find("p").at(2);
+                    const message = wrapper.find("p").at(4);
                     expect(message.text()).to.exist;
                     expect(message).to.have.style("color", "#000000"); // it's black.
                 });
@@ -301,22 +317,25 @@ describe("IntegrationSpokes", function () {
         });
 
         // TODO: unskip once `IntegrationSpokes.handleSave` is fixed to call `SpokesService.savePipe(user, source, resource, proxy)`.
-        describe.skip("Unsuccessful saves", function () {
+        describe("Unsuccessful saves", function () {
             before(function () {
-                saveSpoke = sinon.stub(SpokesService, "savePipe").returns(Promise.reject(new Error("Error per requirements of the test.")));
+                saveSpoke = sinon.stub(SpokesService, "savePipe").returns(Promise.resolve());
+                updateSourceObj = sinon.stub(SourceService, "updateSourceObj").returns(Promise.reject(new Error("Error per requirements of the test.")));
             });
 
             after(function () {
                 saveSpoke.restore();
+                updateSourceObj.restore();
             });
 
-            it("Tests that the error message was displayed on error.", function () {
-                const button = wrapper.find(Button).at(0);
+            it.skip("Tests that the error message was displayed on error.", function () {
+                const button = wrapper.find(Button).at(1);
                 button.simulate("click");
 
-                const promise = (wrapper.instance() as IntegrationSpokes).cancelables[0] as any;
-                return promise.then(function () {
-                    const message = wrapper.find("p").at(2);
+                const promise = (wrapper.instance() as IntegrationSpokes);
+                const cancelables = promise.cancelables[0] as any;
+                return cancelables.then(function () {
+                    const message = wrapper.find("p").at(4);
                     expect(message.text()).to.exist;
                     expect(message).to.have.style("color", "#FF0000"); // it's red.
                 });

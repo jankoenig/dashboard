@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Tab, Tabs } from "react-toolbox";
+import {Tab, Tabs} from "react-toolbox";
 
 import ResizingComponent from "../../components/ResizingComponent";
 import Source from "../../models/source";
@@ -8,13 +8,13 @@ import ExpressJS from "./IntegrationExpressJS";
 import GoogleFunction from "./IntegrationGoogleFunction";
 import Java from "./IntegrationJava";
 import NodeJS from "./IntegrationNodeJSLambda";
-import Spokes from "./IntegrationSpokes";
 
 let TabsTheme = require("./themes/tabs.scss");
 
 interface IntegrationPageProps {
     source: Source;
     showSecret?: boolean;
+    goTo?: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
 }
 
 interface IntegrationPageState {
@@ -26,6 +26,7 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
     constructor(props: IntegrationPageProps) {
         super(props);
         this.handleTabChange = this.handleTabChange.bind(this);
+        this.handleSettingsClick = this.handleSettingsClick.bind(this);
 
         this.state = {
             tabIndex: 0
@@ -37,38 +38,51 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
         this.setState(this.state);
     }
 
+    handleSettingsClick(e: any): any {
+        e.preventDefault();
+        this.props.goTo(`/skills/${this.props.source && this.props.source.id}/settings`);
+    }
+
     render() {
-        const { tabIndex } = this.state;
-        const { showSecret, source } = this.props;
+        const {tabIndex} = this.state;
+        const {showSecret, source} = this.props;
         const secretKey = (source) ? source.secretKey : undefined;
         return (
-            <ResizingComponent overflowY="hidden" >
+            <ResizingComponent overflowY="hidden">
                 <section>
-                    <Tabs theme={TabsTheme} fixed inverse index={tabIndex} onChange={this.handleTabChange} >
+                    <Tabs theme={TabsTheme} fixed inverse index={tabIndex} onChange={this.handleTabChange}>
                         <Tab label="Node.JS Lambda">
                             <ResizingComponent>
-                                <NodeJS secretKey={secretKey} showSecret={showSecret} />
+                                <NodeJS secretKey={secretKey} showSecret={showSecret}/>
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Google Cloud Function">
                             <ResizingComponent>
-                                <GoogleFunction secretKey={secretKey} showSecret={showSecret} />
+                                <GoogleFunction secretKey={secretKey} showSecret={showSecret}/>
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Express.JS">
                             <ResizingComponent>
-                                <ExpressJS secretKey={secretKey} showSecret={showSecret} />
+                                <ExpressJS secretKey={secretKey} showSecret={showSecret}/>
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Java">
                             <ResizingComponent>
-                                <Java secretKey={secretKey} showSecret={showSecret} />
+                                <Java secretKey={secretKey} showSecret={showSecret}/>
                             </ResizingComponent>
                         </Tab>
                         <Tab label="Code-Free">
-                          <ResizingComponent>
-                            <Spokes source={source} />
-                          </ResizingComponent>
+                            <ResizingComponent>
+                                <div>
+                                    The Code-Free SDK works with your service (either HTTP or Lambda) via our Bespoken
+                                    Proxy. It
+                                    automatically captures key information about how your service is operating, and it
+                                    can pro-actively
+                                    alert you about any issues with how it is working. To use it, simply configure the
+                                    settings for your
+                                    service on the <a href="#" onClick={this.handleSettingsClick}>"Settings"</a> page.
+                                </div>
+                            </ResizingComponent>
                         </Tab>
                     </Tabs>
                 </section>

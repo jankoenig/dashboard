@@ -154,13 +154,21 @@ export namespace source {
 
     export function updateSourceObj(source: Source, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
       return new Promise((resolve, reject) => {
-        db.ref().child("/sources/" + source.id).update({url: source.url}, (err: Error): firebase.Promise<any> => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve();
-          }
-          return;
+        db.ref().child("/sources/" + source.id)
+          .update({
+              name: source.name,
+              url: source.url,
+              proxy_enabled: source.proxy_enabled,
+              monitoring_enabled: source.monitoring_enabled,
+              debug_enabled: source.debug_enabled,
+          },
+          (err: Error): firebase.Promise<any> => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
+            return;
         });
       });
     }

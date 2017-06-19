@@ -41,7 +41,6 @@ namespace spokes {
     }
 
     function parse<T>(result: Response, errMsg: string = "Could not parse result."): T | Thenable<T> {
-      console.log(result);
         if (result.status === 200) {
             return result.json();
         } else {

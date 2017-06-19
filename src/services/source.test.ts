@@ -23,7 +23,13 @@ function generateSourceProps(sourceId: string = undefined, members: SourceModel.
         members: members,
         id: sourceId,
         created: new Date(),
-        url: "https://romantic-shelley-8zIRae.bespoken.link"
+        url: "https://romantic-shelley-8zIRae.bespoken.link",
+        aws_secret_access_key: "",
+        aws_access_key_id: "",
+        lambda_arn: "",
+        monitoring_enabled: false,
+        proxy_enabled: true,
+        debug_enabled: true,
     };
     return props;
 };
@@ -136,8 +142,18 @@ describe("Source Service", function () {
 
         before(function () {
             sourceName = { id: "ABC123", secretKey: "SuperSecretKey" };
-            fullSource = new SourceModel.Source({ id: sourceName.id, secretKey: sourceName.secretKey,
-              name: "Test Source", url: "https://romantic-shelley-8zIRae.bespoken.link"});
+            fullSource = new SourceModel.Source({
+              id: sourceName.id,
+              secretKey: sourceName.secretKey,
+              name: "Test Source",
+              url: "https://romantic-shelley-8zIRae.bespoken.link",
+              aws_secret_access_key: "",
+              aws_access_key_id: "",
+              lambda_arn: "",
+              monitoring_enabled: false,
+              proxy_enabled: true,
+              debug_enabled: true,
+            });
             user = new User({ userId: "TestUserID", email: "test@test.com" });
             mockResponse = { user: { userId: user.userId }, source: fullSource };
             fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, mockResponse);
@@ -259,7 +275,17 @@ describe("Source Service", function () {
             let mockResponse: any;
 
             before(function () {
-                mockResponse = { id: "test-source-bhjas3", secretKey: "ABC123456", url: "https://romantic-shelley-8zIRae.bespoken.link" };
+                mockResponse = {
+                  id: "test-source-bhjas3",
+                  secretKey: "ABC123456",
+                  url: "https://romantic-shelley-8zIRae.bespoken.link",
+                  aws_secret_access_key: "",
+                  aws_access_key_id: "",
+                  lambda_arn: "",
+                  monitoring_enabled: false,
+                  proxy_enabled: true,
+                  debug_enabled: true,
+                };
                 fetchMock.get(/https:\/\/source-api\.bespoken\.tools\/v1\/sourceId\?.*/, mockResponse);
             });
 
