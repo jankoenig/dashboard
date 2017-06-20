@@ -1,3 +1,4 @@
+import * as Bluebird from "bluebird";
 import {
     CREATE_SOURCE_SUCCESS,
     REMOVE_SOURCE,
@@ -65,30 +66,33 @@ export function deleteSource(source: Source): (dispatch: Redux.Dispatch<any>) =>
     };
 }
 
-export function getSources(): Redux.ThunkAction<any, any, any> {
-    return function (dispatch: Redux.Dispatch<any>) {
-        service.getSources().then(function (retVal) {
-            if (!retVal.val()) {
-                dispatch(setSources([]));
-            } else {
-                let keys = Object.keys(retVal.val());
+export function getSources(): (dispatch: Redux.Dispatch<any>) => Promise<Source[]> {
+    return function(dispatch: Redux.Dispatch<any>): Promise<Source[]> {
+        return new Promise((resolve, reject) => {
+            service.getSources().then(function (retVal) {
+                let promises: Bluebird<any>[] = [];
                 let sources: Source[] = [];
-
-                for (let key of keys) {
-                    service.getSource(key).then(function (data) {
-                        if (data.val()) {
-                          let newSource = new Source(data.val());
-                          sources.push(newSource);
-                          // Dispatch the array of sources, note the .slice() is to make
-                          // a copy of the sources array.  This is needed otherwise redux
-                          // will not recognize it is a new array coming and not update
-                          // the components
-                          dispatch(setSources(sources.slice()));
-                        }
-
-                    });
+                if (!retVal.val()) {
+                    resolve(sources);
+                } else {
+                    let keys = Object.keys(retVal.val());
+                    for (const k of keys) {
+                        promises.push(Bluebird.resolve(service.getSource(k)));
+                    }
                 }
-            }
+                Bluebird.all(promises.map((p) => p.reflect()))
+                    .each((inspection: Bluebird.Inspection<any>) => {
+                        if (inspection.isFulfilled()) {
+                            sources.push(new Source(inspection.value().val()));
+                        } else {
+                            console.log(inspection.reason());
+                        }
+                    })
+                    .then(() => {
+                        dispatch(setSources(sources));
+                        resolve(sources);
+                    });
+            }).catch(err => reject(err));
         });
     };
 }

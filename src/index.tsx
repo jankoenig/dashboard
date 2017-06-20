@@ -24,6 +24,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import SettingsPage from "./pages/settingspage/StateSettingsPage";
 import SourceListPage from "./pages/SourceListPage";
 import SourcePage from "./pages/sourcepage/SourcePage";
+import SourcesLinkPage from "./pages/SourcesLinkPage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
@@ -95,11 +96,26 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
  *
  * See below on the onEnter method.
  */
-let checkAuth: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
+let checkAuth = function (nextState: RouterState, replace: RedirectFunction): boolean {
     const session: any = store.getState().session;
     if (!session.user) {
         replace({
             pathname: "/login",
+            query: nextState.location.query,
+            state: { nextPathName: nextState.location.pathname, query: nextState.location.query }
+        });
+        return false;
+    }
+    return true;
+};
+
+let onEnterDashboard: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
+    if (!checkAuth(nextState, replace)) return;
+    if (nextState.location.query.id &&
+      nextState.location.query.key &&
+      !nextState.location.pathname.match("sources/link")) {
+        replace({
+            pathname: "/sources/link",
             query: nextState.location.query,
             state: { nextPathName: nextState.location.pathname, query: nextState.location.query }
         });
@@ -133,7 +149,7 @@ let render = function () {
                 <Route path="/login" component={Login}>
                     <IndexRoute component={LoginPage} />
                 </Route>
-                <Route path="/" component={Dashboard} onEnter={checkAuth}>
+                <Route path="/" component={Dashboard} onEnter={onEnterDashboard}>
                     <Route path="/skills" component={SourceListPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
@@ -142,6 +158,7 @@ let render = function () {
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
                         <Route path="/skills/:sourceId/settings" component={SettingsPage} />
                     </Route>
+                    <Route path="/sources/link" component={SourcesLinkPage} />
                     <Route path="/notFound" component={NotFoundPage} />
                     <Route path="*" component={NotFoundPage} />
                 </Route>

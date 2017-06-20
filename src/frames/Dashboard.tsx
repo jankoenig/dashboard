@@ -43,7 +43,7 @@ interface DashboardProps {
   location: Location;
   login: () => (dispatch: Redux.Dispatch<any>) => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
-  getSources: () => Redux.ThunkAction<any, any, any>;
+  getSources: () => Promise<Source[]>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
 }
@@ -67,7 +67,7 @@ function mapDispatchToProps(dispatch: any) {
     logout: function () {
       return dispatch(logout());
     },
-    getSources: function () {
+    getSources: function (): Promise<Source[]> {
       return dispatch(getSources());
     },
     setSource: function (source: Source) {
@@ -99,9 +99,12 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   async componentDidMount() {
     const { id, key} = this.props.location.query;
-    const redirect = () => this.props.goTo("/skills/" + id);
+    const goToCurrentSkill = () => this.props.goTo("/skills/" + id);
+    const goToSkills = () => this.props.goTo("/skills");
+    let redirectTo: () => void = goToSkills;
     if (id && key) {
       const self = this;
+      redirectTo = goToCurrentSkill;
       try {
         await SourceService.linkSource({ id: id, secretKey: key }, this.props.user);
         const source: Source = await SourceService.getSourceObj(id);
@@ -109,14 +112,9 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         if (!pipe.diagnosticsKey) {
           await SpokeService.savePipe(self.props.user, source, pipe.http, true);
         }
-        redirect();
-      } catch (err) {
-        redirect();
-      }
-    } else {
-      this.props.goTo("/skills");
+      } catch (err) {}
     }
-    this.props.getSources();
+    this.props.getSources().then(() => redirectTo()).catch((err) => console.log(err));
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -188,7 +186,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   handleHomeClick() {
-    this.props.goTo("/");
+    this.props.goTo("/skills");
   }
 
   render() {
