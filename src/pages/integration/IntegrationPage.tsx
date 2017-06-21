@@ -1,6 +1,7 @@
 import * as React from "react";
 
 import {Tab, Tabs} from "react-toolbox";
+import {Cell, Grid} from "../../components/Grid";
 
 import ResizingComponent from "../../components/ResizingComponent";
 import Source from "../../models/source";
@@ -73,15 +74,16 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
                         </Tab>
                         <Tab label="Code-Free">
                             <ResizingComponent>
-                                <div>
-                                    The Code-Free SDK works with your service (either HTTP or Lambda) via our Bespoken
-                                    Proxy. It
-                                    automatically captures key information about how your service is operating, and it
-                                    can pro-actively
-                                    alert you about any issues with how it is working. To use it, simply configure the
-                                    settings for your
-                                    service on the <a href="#" onClick={this.handleSettingsClick}>"Settings"</a> page.
-                                </div>
+                                <Grid>
+                                    <Cell col={12}>
+                                        <div>
+                                            <h4>Code-Free Integration</h4>
+                                            <p>The Code-Free SDK works with your service (either HTTP or Lambda) via our Bespoken Proxy.</p>
+                                            <p>It automatically captures key information about how your service is operating, and it can pro-actively alert you about any issues with how it is working.</p>
+                                            <p>To use it, simply configure the settings for your service on the <a href="#" onClick={this.handleSettingsClick}>Settings</a> page.</p>
+                                        </div>
+                                    </Cell>
+                                </Grid>
                             </ResizingComponent>
                         </Tab>
                     </Tabs>
