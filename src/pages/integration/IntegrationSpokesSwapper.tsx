@@ -10,9 +10,10 @@ interface IntegrationSpokesSwapperProps {
     theme?: string;
     lambdaARN?: string;
     url?: string;
-    awsAccessKey?: string;
-    awsSecretKey?: string;
-    onChange?: (type: "url" | "lambdaARN" | "awsAccessKey" | "awsSecretKey", newValue: string) => void;
+    awsAccessKeyInput?: string;
+    awsSecretKeyInput?: string;
+    onChange?: (type: "url" | "lambdaARN" | "awsAccessKeyInput" | "awsSecretKeyInput", newValue: string) => void;
+    onFocus?: (type: any) => void;
 }
 
 interface IntegrationSpokesSwapperState {
@@ -35,12 +36,12 @@ export class IntegrationSpokesSwapper extends React.Component<IntegrationSpokesS
     }
 
     render() {
-        const { showPage, url, awsAccessKey, awsSecretKey, lambdaARN, ...others } = this.props;
+        const { showPage, url, awsAccessKeyInput, awsSecretKeyInput, lambdaARN, ...others } = this.props;
         switch (showPage) {
             case "http":
                 return (<IntegrationHttp {...others} url={url} onUrlChange={this.handleHttpChange} />);
             case "lambda":
-                return (<IntegrationLambda {...others} awsAccessKey={awsAccessKey} awsSecretKey={awsSecretKey} lambdaARN={lambdaARN} />);
+                return (<IntegrationLambda {...others} awsAccessKeyInput={awsAccessKeyInput} awsSecretKeyInput={awsSecretKeyInput} lambdaARN={lambdaARN} />);
             default:
                 return (<div />);
         }

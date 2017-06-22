@@ -21,8 +21,8 @@ describe("IntegrationLambda", function() {
             wrapper = shallow(<IntegrationLambda
                 theme={"TestTheme"}
                 lambdaARN={"TestArn"}
-                awsAccessKey={"TestAccessKey"}
-                awsSecretKey={"TestSecretKey"}
+                awsAccessKeyInput={"TestAccessKey"}
+                awsSecretKeyInput={"TestSecretKey"}
                 onChange={onChange} />);
         });
 
@@ -54,7 +54,7 @@ describe("IntegrationLambda", function() {
         });
 
         it("Tests the onUrlChange method is called with the new value.", function() {
-            testInputChange(1, "New Value", "awsAccessKey", "New Value");
+            testInputChange(1, "New Value", "awsAccessKeyInput", "New Value");
         });
 
         it("Tests the value of the Secret Key is passed to the Access Key input.", function() {
@@ -62,7 +62,7 @@ describe("IntegrationLambda", function() {
         });
 
         it("Tests the onUrlChange method is called with the new value.", function() {
-            testInputChange(2, "New Value", "awsSecretKey", "New Value");
+            testInputChange(2, "New Value", "awsSecretKeyInput", "New Value");
         });
 
         function testInputValue(index: number, expectedValue: string) {

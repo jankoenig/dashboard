@@ -119,7 +119,10 @@ export function dummySources(length: number): Source[] {
             secretKey: baseSecret + i,
             id: baseId + i,
             members: baseMembers,
-            created: baseCreated
+            created: baseCreated,
+            debug_enabled: false,
+            proxy_enabled: false,
+            monitoring_enabled: false,
         });
 
         sources.push(source);

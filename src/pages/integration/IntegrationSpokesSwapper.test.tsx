@@ -31,8 +31,8 @@ describe("Spokes Swapper", function () {
                     theme={"TestTheme"}
                     showPage="http"
                     lambdaARN="TestArn"
-                    awsAccessKey="TestAccessKey"
-                    awsSecretKey="TestSecretKey"
+                    awsAccessKeyInput="TestAccessKeyInput"
+                    awsSecretKeyInput="TestSecretKeyInput"
                     url="TestUrl"
                     onChange={onChange}
                 />);
@@ -67,8 +67,8 @@ describe("Spokes Swapper", function () {
                     theme="TestTheme"
                     showPage="lambda"
                     lambdaARN="TestArn"
-                    awsAccessKey="TestAccessKey"
-                    awsSecretKey="TestSecretKey"
+                    awsAccessKeyInput="TestAccessKey"
+                    awsSecretKeyInput="TestSecretKey"
                     url="TestUrl"
                     onChange={onChange}
                 />);
@@ -86,8 +86,8 @@ describe("Spokes Swapper", function () {
                 const lambdaWrapper = wrapper.find(IntegrationLambda).at(0);
                 expect(lambdaWrapper).to.have.prop("theme", "TestTheme");
                 expect(lambdaWrapper).to.have.prop("lambdaARN", "TestArn");
-                expect(lambdaWrapper).to.have.prop("awsAccessKey", "TestAccessKey");
-                expect(lambdaWrapper).to.have.prop("awsSecretKey", "TestSecretKey");
+                expect(lambdaWrapper).to.have.prop("awsAccessKeyInput", "TestAccessKey");
+                expect(lambdaWrapper).to.have.prop("awsSecretKeyInput", "TestSecretKey");
             });
 
             it("Tests the http page will pass up the arn change.", function () {
@@ -104,8 +104,8 @@ describe("Spokes Swapper", function () {
                     theme="TestTheme"
                     showPage={"Page that does not exist." as PAGE}
                     lambdaARN="TestArn"
-                    awsAccessKey="TestAccessKey"
-                    awsSecretKey="TestSecretKey"
+                    awsAccessKeyInput="TestAccessKey"
+                    awsSecretKeyInput="TestSecretKey"
                     url="TestUrl"
                     onChange={onChange}
                 />);

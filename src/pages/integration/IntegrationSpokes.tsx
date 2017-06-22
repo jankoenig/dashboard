@@ -51,12 +51,15 @@ interface IntegrationSpokesState {
     url?: string;
     lambdaARN?: string;
     awsAccessKey?: string;
+    awsAccessKeyInput?: string;
     awsSecretKey?: string;
+    awsSecretKeyInput?: string;
     sourceName: string;
     hideAdvanced: boolean;
     proxying: boolean;
     monitor: boolean;
     proxyUrl: string;
+    credentialsChanged: boolean;
 }
 
 function mapStateToProps(state: State.All): IntegrationSpokesGlobalStateProps {
@@ -114,6 +117,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.handleMonitorCheckChange = this.handleMonitorCheckChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleSwapperChange = this.handleSwapperChange.bind(this);
+        this.handleSwapperFocus = this.handleSwapperFocus.bind(this);
         this.handleSourceNameChange = this.handleSourceNameChange.bind(this);
         this.handleShowAdvanced = this.handleShowAdvanced.bind(this);
 
@@ -126,6 +130,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
             proxying: false,
             monitor: false,
             proxyUrl: "https://proxy.bespoken.tools",
+            credentialsChanged: false,
         };
     }
 
@@ -157,9 +162,18 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.setState({hideAdvanced: !this.state.hideAdvanced} as IntegrationSpokesState);
     }
 
-    handleSwapperChange(key: "url" | "lambdaARN" | "awsAccessKey" | "awsSecretKey", value: string) {
+    handleSwapperChange(key: "url" | "lambdaARN" | "awsAccessKeyInput" | "awsSecretKeyInput", value: string) {
         let newObj = {} as any;
         newObj[key] = value;
+        if (key === "awsAccessKeyInput" || key === "awsSecretKeyInput") {
+            this.setState({credentialsChanged: true} as IntegrationSpokesState);
+        }
+        this.setState(newObj);
+    }
+
+    handleSwapperFocus(key: any) {
+        let newObj = {} as any;
+        newObj[key] = "";
         this.setState(newObj);
     }
 
@@ -170,13 +184,24 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 message: "Saving..."
             }
         } as IntegrationSpokesState);
-        const {source, user, onSpokesSaved} = this.props;
-        const {proxy} = this.state;
-        const resource = getResource(this.state);
-        source.url = this.state.url;
+        const {source: {name, secretKey, id, created, members}, user, onSpokesSaved} = this.props;
+        const {proxy, showPage, credentialsChanged, url} = this.state;
+        const source: Source = {id, name, secretKey, created, members};
         source.debug_enabled = !!this.state.proxy && !!this.state.proxying;
         source.monitoring_enabled = !!this.state.monitor;
         source.proxy_enabled = !!this.state.proxying;
+        if (showPage === "http") {
+            source.url = url;
+            source.aws_secret_access_key = undefined;
+            source.aws_access_key_id = undefined;
+            source.lambda_arn = undefined;
+        } else if (showPage === "lambda") {
+            source.url = undefined;
+            source.aws_secret_access_key = credentialsChanged ? this.state.awsSecretKeyInput : this.state.awsSecretKey;
+            source.aws_access_key_id = credentialsChanged ? this.state.awsAccessKeyInput : this.state.awsAccessKey;
+            source.lambda_arn = this.state.lambdaARN;
+        }
+        const resource = getResource(this.state);
         const spokeSaved = await SpokesService.savePipe(user, source, resource, proxy);
         if (spokeSaved && onSpokesSaved) onSpokesSaved();
         this.resolve(SourceService.updateSourceObj(source)
@@ -206,23 +231,29 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                     awsAccessKey: spoke.aws_access_key_id,
                     awsSecretKey: spoke.aws_secret_access_key
                 };
+                const awsAccessKeyInput = obscureInput(lambdaObj.awsAccessKey);
+                const awsSecretKeyInput = obscureInput(lambdaObj.awsSecretKey);
+                const showPage = url ? "http" : "lambda";
                 this.setState({
                     ...proxy, ...httpObj, ...lambdaObj,
                     monitor: monitoring_enabled,
-                    proxying: proxy_enabled
+                    proxying: proxy_enabled,
+                    awsAccessKeyInput,
+                    awsSecretKeyInput,
+                    showPage,
                 } as IntegrationSpokesState);
             }));
     }
 
     render() {
-        const {showPage, proxy, proxying, monitor, message, sourceName, hideAdvanced, ...others} = this.state;
+        const {showPage, proxy, proxying, monitor, message, sourceName, hideAdvanced, awsSecretKey, awsAccessKey, credentialsChanged, proxyUrl, ...others} = this.state;
         let saveDisabled: boolean;
         switch (showPage) {
             case "http":
                 saveDisabled = !validateUrl(others.url);
                 break;
             case "lambda":
-                saveDisabled = !(others.lambdaARN && others.awsAccessKey && others.awsSecretKey);
+                saveDisabled = !(others.lambdaARN && awsAccessKey && awsSecretKey);
                 break;
             default:
                 // We're apparently on something we don't know exists so don't let them go further.
@@ -253,6 +284,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                         theme={InputTheme}
                         showPage={showPage}
                         onChange={this.handleSwapperChange}
+                        onFocus={this.handleSwapperFocus}
                         url={this.props.source && this.props.source.url}
                         {...others} />
                 </Cell>
@@ -335,4 +367,9 @@ function validateUrl(check?: string): boolean {
     // We're not going to go crazy here.
     const regex = /^(https?:\/\/).+/;
     return regex.test(check);
+}
+
+function obscureInput(value: string): string {
+    const base: any = "*";
+    return base.repeat(value.length - 4) + value.slice(-4);
 }

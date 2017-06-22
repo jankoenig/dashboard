@@ -128,15 +128,15 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests the IAM Access key change will give the value to swapper.", function () {
-                swapper.simulate("change", "awsAccessKey", "New Access Key");
+                swapper.simulate("change", "awsAccessKeyInput", "New Access Key");
 
-                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("awsAccessKey", "New Access Key");
+                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("awsAccessKeyInput", "New Access Key");
             });
 
             it("Tests the IAM Secret key change will give the value to swapper.", function () {
-                swapper.simulate("change", "awsSecretKey", "New Secret Key");
+                swapper.simulate("change", "awsSecretKeyInput", "New Secret Key");
 
-                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("awsSecretKey", "New Secret Key");
+                expect(wrapper.find(IntegrationSpokesSwapper).at(0)).to.have.prop("awsSecretKeyInput", "New Secret Key");
             });
         });
 
@@ -262,11 +262,18 @@ describe("IntegrationSpokes", function () {
             });
 
             it("Tests the appropriate parameters are passed in on HTTP.", function () {
-                wrapper.setState({ showPage: "http", proxy: true, url: "http://test.url.fake/", lambdaARN: "fakeARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
+                wrapper.setState({
+                    showPage: "http",
+                    proxy: true,
+                    url: "http://test.url.fake/",
+                    lambdaARN: "fakeARN",
+                    awsAccessKey: "ABC123",
+                    awsSecretKey: "123ABC",
+                });
 
                 const button = wrapper.find(Button).at(1);
                 button.simulate("click");
-
+                source.url = "http://test.url.fake/";
                 expect(saveSpoke).to.be.calledOnce;
                 const args = saveSpoke.args[0];
                 expect(args[0]).to.deep.equal(user);
@@ -280,7 +287,10 @@ describe("IntegrationSpokes", function () {
 
                 const button = wrapper.find(Button).at(1);
                 button.simulate("click");
-
+                source.url = undefined;
+                source.lambda_arn = "fakeARN";
+                source.aws_access_key_id = "ABC123";
+                source.aws_secret_access_key = "123ABC";
                 expect(saveSpoke).to.be.calledOnce;
                 const args = saveSpoke.args[0];
                 expect(args[0]).to.deep.equal(user);

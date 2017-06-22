@@ -1,9 +1,9 @@
 import "isomorphic-fetch";
 
-import { Query } from "../models/query";
-import { Source } from "../models/source";
-import { User } from "../models/user";
-import { remoteservice } from "./remote-service";
+import {Query} from "../models/query";
+import {Source} from "../models/source";
+import {User} from "../models/user";
+import {remoteservice} from "./remote-service";
 
 export namespace source {
 
@@ -31,7 +31,7 @@ export namespace source {
     export function generateSourceId(id?: string): Promise<SourceName> {
         const query: Query = new Query();
         if (id) {
-            query.add({ parameter: "id", value: id });
+            query.add({parameter: "id", value: id});
         }
 
         const finalURL = NAME_GENERATING_URL + "?" + query.query();
@@ -52,8 +52,8 @@ export namespace source {
      */
     export function linkSource(sourceName: SourceName, user: User): Promise<LinkResult> {
         const query: Query = new Query();
-        query.add({ parameter: "source", value: sourceName });
-        query.add({ parameter: "user", value: { userId: user.userId } });
+        query.add({parameter: "source", value: sourceName});
+        query.add({parameter: "user", value: {userId: user.userId}});
 
         return fetch(LINK_URL, {
             method: "POST",
@@ -75,7 +75,7 @@ export namespace source {
         let ref = db.ref();
         let sourcesPath = ref.child("sources");
         // Create a new mutable source from the source passed in
-        const mutableSource: any = { ...{}, ...source };
+        const mutableSource: any = {...{}, ...source};
         return generateSourceId(source.id)
             .then(function (idResult: SourceName) {
                 mutableSource.id = idResult.id;
@@ -142,8 +142,8 @@ export namespace source {
         return getSource(key, db)
             .then(function (data) {
                 if (data.val()) {
-                  let source: Source = new Source(data.val());
-                  return source;
+                    let source: Source = new Source(data.val());
+                    return source;
                 }
             })
             .catch((err: Error) => {
@@ -153,24 +153,35 @@ export namespace source {
     }
 
     export function updateSourceObj(source: Source, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
-      return new Promise((resolve, reject) => {
-        db.ref().child("/sources/" + source.id)
-          .update({
-              name: source.name,
-              url: source.url,
-              proxy_enabled: source.proxy_enabled,
-              monitoring_enabled: source.monitoring_enabled,
-              debug_enabled: source.debug_enabled,
-          },
-          (err: Error): firebase.Promise<any> => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
+        return new Promise((resolve, reject) => {
+            const sourceToSend: any = {
+                name: source.name,
+                proxy_enabled: source.proxy_enabled,
+                monitoring_enabled: source.monitoring_enabled,
+                debug_enabled: source.debug_enabled,
+            };
+            if (source.url) {
+                sourceToSend.url = source.url;
+                sourceToSend.lambda_arn = "";
+                sourceToSend.aws_access_key_id = "";
+                sourceToSend.aws_secret_access_key = "";
+            } else if (source.lambda_arn) {
+                sourceToSend.url = "";
+                sourceToSend.lambda_arn = source.lambda_arn;
+                sourceToSend.aws_access_key_id = source.aws_access_key_id;
+                sourceToSend.aws_secret_access_key = source.aws_secret_access_key;
             }
-            return;
+            db.ref().child("/sources/" + source.id)
+                .update(sourceToSend,
+                    (err: Error): firebase.Promise<any> => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                        return;
+                    });
         });
-      });
     }
 }
 
@@ -178,7 +189,7 @@ export default source;
 
 function removeMembers(memeberId: string, source: Source): Promise<Source> {
     return new Promise(function (resolve, reject) {
-        const mutableSource: any = { ...{}, ...source };
+        const mutableSource: any = {...{}, ...source};
         mutableSource.members[memeberId] = undefined;
         resolve(mutableSource);
     });
