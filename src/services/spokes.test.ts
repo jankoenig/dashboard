@@ -96,7 +96,7 @@ describe("Spokes Service", function () {
                         expect(payload.path).to.equal(fetchResponse.path);
                         expect(payload.proxy).to.equal(fetchResponse.proxy);
                         expect(payload.http).to.deep.equal(fetchResponse.http);
-                        expect((payload as Spoke).lambda.awsSecretKey).to.not.exist;
+                        expect((payload as Spoke).lambda.awsSecretAccessKey).to.not.exist;
                     });
             });
         });
@@ -179,7 +179,7 @@ describe("Spokes Service", function () {
                         expect(reqObj.pipeType).to.equal("LAMBDA");
                         expect(reqObj.path).to.equal("/");
                         expect(reqObj.proxy).to.equal(true);
-                        expect(reqObj.lambda).to.deep.equal({ lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: "123ABC" });
+                        expect(reqObj.lambda).to.deep.equal({ lambdaARN: "testARN", awsAccessKeyId: "ABC123", awsSecretAccessKey: "123ABC" });
                         expect(reqObj.http).to.not.exist;
                     });
             });
@@ -209,7 +209,7 @@ describe("Spokes Service", function () {
                         expect(payload.proxy).to.equal(fetchResponse.proxy);
                         expect(payload.path).to.equal("/"); // This is always "/" currently in the API.
                         expect(payload.pipeType).to.equal("LAMBDA");
-                        expect(payload.lambda).to.deep.equal({ lambdaARN: "testARN", awsAccessKey: "ABC123", awsSecretKey: undefined});
+                        expect(payload.lambda).to.deep.equal({ lambdaARN: "testARN", awsAccessKeyId: "ABC123", awsSecretAccessKey: undefined});
                         expect((payload as any).http).to.not.exist;
                     });
             });

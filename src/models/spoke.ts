@@ -23,8 +23,8 @@ export interface Spoke {
     };
     lambda?: {
         lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+        awsAccessKeyId: string;
+        awsSecretAccessKey: string;
     };
     /**
      * Location to the pipe.

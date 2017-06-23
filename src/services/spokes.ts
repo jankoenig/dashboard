@@ -136,8 +136,8 @@ interface FetchSpokeResponse {
      */
     lambda?: {
         lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+        awsAccessKeyId: string;
+        awsSecretAccessKey: string;
     };
     /**
      * Location to the pipe.
@@ -182,8 +182,8 @@ interface SaveRequest {
      */
     lambda?: {
         lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+        awsAccessKeyId: string;
+        awsSecretAccessKey: string;
     };
     /**
      * Location to the pipe.
@@ -205,7 +205,7 @@ interface SaveRequest {
  */
 function scrub(response: FetchSpokeResponse | SaveRequest): void {
     if (response.lambda) {
-        response.lambda.awsSecretKey = undefined;
+        response.lambda.awsSecretAccessKey = undefined;
     }
 }
 
@@ -224,8 +224,8 @@ class FetchSpokeResponseObj implements Spoke.Spoke {
     };
     lambda: {
         lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+        awsAccessKeyId: string;
+        awsSecretAccessKey: string;
     };
     path: string;
     pipeType: PIPE_TYPE;
@@ -254,8 +254,8 @@ class SaveSpokeRequestObj implements SaveRequest {
     };
     lambda?: {
         lambdaARN: string;
-        awsAccessKey: string;
-        awsSecretKey: string;
+        awsAccessKeyId: string;
+        awsSecretAccessKey: string;
     };
     path: string;
     pipeType: PIPE_TYPE;
@@ -278,8 +278,8 @@ class SaveSpokeRequestObj implements SaveRequest {
             const res = resource as spokes.Lambda;
             this.lambda = {
                 lambdaARN: res.lambdaARN,
-                awsAccessKey: res.awsAccessKey,
-                awsSecretKey: res.awsSecretKey
+                awsAccessKeyId: res.awsAccessKey,
+                awsSecretAccessKey: res.awsSecretKey
             };
         }
     }
