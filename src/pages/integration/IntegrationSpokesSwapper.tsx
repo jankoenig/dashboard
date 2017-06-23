@@ -36,12 +36,12 @@ export class IntegrationSpokesSwapper extends React.Component<IntegrationSpokesS
     }
 
     render() {
-        const { showPage, url, awsAccessKeyInput, awsSecretKeyInput, lambdaARN, ...others } = this.props;
+        const { showPage, url, awsAccessKeyInput, awsSecretKeyInput, lambdaARN, onFocus, ...others } = this.props;
         switch (showPage) {
             case "http":
                 return (<IntegrationHttp {...others} url={url} onUrlChange={this.handleHttpChange} />);
             case "lambda":
-                return (<IntegrationLambda {...others} awsAccessKeyInput={awsAccessKeyInput} awsSecretKeyInput={awsSecretKeyInput} lambdaARN={lambdaARN} />);
+                return (<IntegrationLambda {...others} onFocus={onFocus} awsAccessKeyInput={awsAccessKeyInput} awsSecretKeyInput={awsSecretKeyInput} lambdaARN={lambdaARN} />);
             default:
                 return (<div />);
         }

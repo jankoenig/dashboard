@@ -174,7 +174,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
     handleSwapperFocus(key: any) {
         let newObj = {} as any;
         newObj[key] = "";
-        this.setState(newObj);
+        key && this.setState(newObj);
     }
 
     async handleSave() {
@@ -233,7 +233,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 };
                 const awsAccessKeyInput = obscureInput(lambdaObj.awsAccessKey);
                 const awsSecretKeyInput = obscureInput(lambdaObj.awsSecretKey);
-                const showPage = url ? "http" : "lambda";
+                const showPage = url ? "http" : lambdaObj.lambdaARN ? "lambda" : "http";
                 this.setState({
                     ...proxy, ...httpObj, ...lambdaObj,
                     monitor: monitoring_enabled,
@@ -371,5 +371,5 @@ function validateUrl(check?: string): boolean {
 
 function obscureInput(value: string): string {
     const base: any = "*";
-    return base.repeat(value.length - 4) + value.slice(-4);
+    return value ? base.repeat(value.length - 4) + value.slice(-4) : "";
 }
