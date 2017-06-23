@@ -1,6 +1,7 @@
 import * as React from "react";
 import JSONTree from "react-json-tree";
 
+import { IconButton } from "react-toolbox/lib/button";
 import { OutputList } from "../components/OutputList";
 import Log from "../models/log";
 import Output from "../models/output";
@@ -54,7 +55,23 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         margin: "0 15px",
         color: "#fff",
         top: 8,
-        right: 0
+        right: 0,
+    };
+
+    static requestIconStyle: React.CSSProperties = {
+        position: "absolute",
+        color: "#fff",
+        top: -5,
+        right: 80,
+        cursor: "copy",
+    };
+
+    static responseIconStyle: React.CSSProperties = {
+        position: "absolute",
+        color: "#fff",
+        top: -5,
+        right: 92,
+        cursor: "copy",
     };
 
     static getKey(keyName: string[]): string {
@@ -65,7 +82,7 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         return {
             padding: "15px",
             borderRadius: "10px",
-            borderStyle: "solid"
+            borderStyle: "solid",
         };
     }
 
@@ -81,6 +98,9 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
 
         this.shouldExpandNode = this.shouldExpandNode.bind(this);
         this.handleToggle = this.handleToggle.bind(this);
+        this.handleCopyRequestPayload = this.handleCopyPayload.bind(this);
+        this.handleCopyResponsePayload = this.handleCopyPayload.bind(this);
+        this.handleCopyPayload = this.handleCopyPayload.bind(this);
 
         this.state = {
             openBranches: { "request": true, "response": true }
@@ -96,6 +116,40 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         const key = Interaction.getKey(keyName);
         this.setOpenBranch(isExpanded, key);
         return key;
+    }
+
+    handleCopyRequestPayload: (e: any) => void;
+    handleCopyResponsePayload: (e: any) => void;
+    handleCopyPayload(e: any) {
+        const payload = e.target.getAttribute("data-type") === "request" ? this.props.request : this.props.response;
+        const textArea = document.createElement("textarea");
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        // Ensure it has a small width and height. Setting to 1px / 1em
+        // doesn't work as this gives a negative w/h on some browsers.
+        textArea.style.width = "2em";
+        textArea.style.height = "2em";
+        // We don't need padding, reducing the size if it does flash render.
+        textArea.style.padding = "0";
+        // Clean up any borders.
+        textArea.style.border = "none";
+        textArea.style.outline = "none";
+        textArea.style.boxShadow = "none";
+        // Avoid flash of white box if rendered for any reason.
+        textArea.style.background = "transparent";
+        // get value as pretty json string
+        textArea.value = JSON.stringify(payload, undefined, 2);
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand("copy");
+        } catch (err) {
+            console.log(err);
+        }
+        document.body.removeChild(textArea);
+        e.preventDefault();
+        e.stopPropagation();
     }
 
     shouldExpandNode(keyName: string[], data: any, level: number) {
@@ -128,10 +182,12 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
             <div>
                 <div style={Interaction.titleContainerStyle}>
                     <h6 style={Interaction.titleStyle}>REQUEST</h6>
+                    <IconButton data-type="request" onClick={this.handleCopyRequestPayload} icon="library_add" style={Interaction.requestIconStyle} />
                 </div>
                 {this.getTree(this.props.request)}
                 <div style={Interaction.titleContainerStyle}>
                     <h6 style={Interaction.titleStyle}>RESPONSE</h6>
+                    <IconButton data-type="response" onClick={this.handleCopyResponsePayload} icon="library_add" style={Interaction.responseIconStyle} />
                 </div>
                 {this.getTree(this.props.response)}
                 <div style={Interaction.titleContainerStyle}>
