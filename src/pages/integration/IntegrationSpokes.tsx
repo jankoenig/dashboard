@@ -253,7 +253,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 saveDisabled = !validateUrl(others.url);
                 break;
             case "lambda":
-                saveDisabled = !(others.lambdaARN && awsAccessKey && awsSecretKey);
+                saveDisabled = !(others.lambdaARN && others.awsAccessKeyInput && others.awsSecretKeyInput);
                 break;
             default:
                 // We're apparently on something we don't know exists so don't let them go further.

@@ -54,7 +54,7 @@ export class IntegrationLambda extends React.Component<LambdaProps, LambdaState>
     }
 
     render() {
-        const { lambdaARN, awsAccessKeyInput, awsSecretKeyInput, ...others } = this.props;
+        const { lambdaARN, awsAccessKeyInput, awsSecretKeyInput, onFocus, ...others } = this.props;
         return (
             <div>
                 <Input
