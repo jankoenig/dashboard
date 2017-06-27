@@ -193,10 +193,11 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
               </Cell>
               <Cell col={6} phone={6}>
                   <Grid>
+                      {this.props.source && this.props.source.monitoring_enabled &&
                       <Cell className="line-chart thin-stroke" col={12} tablet={8} phone={6} style={{height: showUpTime ? 300 : 0}}>
-                        <SourceUpTimeSummary handleShowUpTime={handleShowUpTime}
-                          {...others}/>
-                      </Cell>
+                          <SourceUpTimeSummary handleShowUpTime={handleShowUpTime}
+                            {...others}/>
+                      </Cell>}
                       <Cell className="bar-chart" col={12}>
                         <SourceIntentSummary
                           {...others}

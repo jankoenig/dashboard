@@ -23,6 +23,7 @@ describe("SourceFullSummary", function () {
 
     before(function () {
         source = dummySources(1)[0];
+        source.monitoring_enabled = true;
         start = moment().subtract(10, "days");
         end = moment().subtract(2, "days");
     });

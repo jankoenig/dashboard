@@ -199,6 +199,8 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         if (spokeSaved && onSpokesSaved) onSpokesSaved();
         this.resolve(SourceService.updateSourceObj(source)
             .then(() => {
+                // this is to update parent route status so the graph wont need a page refresh to show/hide correctly
+                this.props.source.monitoring_enabled = !!this.state.monitor;
                 return {style: IntegrationSpokes.STANDARD_MESSAGE_STYLE, message: "Settings have been saved."};
             }).catch(function (err: Error) {
                 console.error(err);
