@@ -147,7 +147,8 @@ export namespace source {
                 }
             })
             .catch((err: Error) => {
-                console.log(err);
+                // commenting for now until db is cleaned up
+                // console.log(err);
                 return undefined;
             });
     }

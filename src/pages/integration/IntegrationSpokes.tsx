@@ -117,7 +117,6 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.handleMonitorCheckChange = this.handleMonitorCheckChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
         this.handleSwapperChange = this.handleSwapperChange.bind(this);
-        this.handleSwapperFocus = this.handleSwapperFocus.bind(this);
         this.handleSourceNameChange = this.handleSourceNameChange.bind(this);
         this.handleShowAdvanced = this.handleShowAdvanced.bind(this);
 
@@ -169,12 +168,6 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
             this.setState({credentialsChanged: true} as IntegrationSpokesState);
         }
         this.setState(newObj);
-    }
-
-    handleSwapperFocus(key: any) {
-        let newObj = {} as any;
-        newObj[key] = "";
-        key && this.setState(newObj);
     }
 
     async handleSave() {
@@ -284,7 +277,6 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                         theme={InputTheme}
                         showPage={showPage}
                         onChange={this.handleSwapperChange}
-                        onFocus={this.handleSwapperFocus}
                         url={this.props.source && this.props.source.url}
                         {...others} />
                 </Cell>

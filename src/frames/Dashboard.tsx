@@ -100,21 +100,24 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   async componentDidMount() {
     const { id, key} = this.props.location.query;
     const goToCurrentSkill = () => this.props.goTo("/skills/" + id);
-    const goToSkills = () => this.props.goTo("/skills");
+    const goToSkills = () => this.props.goTo("/skills/");
     let redirectTo: () => void = goToSkills;
     if (id && key) {
       const self = this;
       redirectTo = goToCurrentSkill;
       try {
-        await SourceService.linkSource({ id: id, secretKey: key }, this.props.user);
-        const source: Source = await SourceService.getSourceObj(id);
-        const pipe: any = await SpokeService.fetchPipe(self.props.user, source);
-        if (!pipe.diagnosticsKey) {
-          await SpokeService.savePipe(self.props.user, source, pipe.http, true);
-        }
-      } catch (err) {}
+          await SourceService.linkSource({ id: id, secretKey: key }, this.props.user);
+          const source: Source = await SourceService.getSourceObj(id);
+          const pipe: any = await SpokeService.fetchPipe(self.props.user, source);
+          if (!pipe.diagnosticsKey) {
+              await SpokeService.savePipe(self.props.user, source, pipe.http, true);
+          }
+          redirectTo();
+      } catch (err) {
+          redirectTo();
+      }
     }
-    this.props.getSources().then(() => redirectTo()).catch((err) => console.log(err));
+    this.props.getSources();
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {

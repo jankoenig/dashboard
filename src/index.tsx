@@ -111,6 +111,7 @@ let checkAuth = function (nextState: RouterState, replace: RedirectFunction): bo
 
 let onEnterDashboard: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
     if (!checkAuth(nextState, replace)) return;
+    if (nextState.location.pathname === "/") return replace({pathname: "/skills"}); // in order to redirect from dashboard base location to skills page without adding a redirect on the componentDidMount
     if (nextState.location.query.id &&
       nextState.location.query.key &&
       !nextState.location.pathname.match("sources/link")) {

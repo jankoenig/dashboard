@@ -85,7 +85,8 @@ export function getSources(): (dispatch: Redux.Dispatch<any>) => Promise<Source[
                         if (inspection.isFulfilled()) {
                             sources.push(new Source(inspection.value().val()));
                         } else {
-                            console.log(inspection.reason());
+                            // comment for now until we cleanup the database
+                            // console.log(inspection.reason());
                         }
                     })
                     .then(() => {
