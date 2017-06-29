@@ -11,32 +11,38 @@ import { remoteservice } from "./remote-service";
  */
 namespace auth {
 
-    export function loginWithGithub(auth?: remoteservice.auth.Auth, storage?: LocalStorage): Promise<User> {
+    export function loginWithGithub(auth?: remoteservice.auth.Auth, storage?: LocalStorage, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<User> {
         let provider = new remoteservice.auth.GithubAuthProvider();
-        return loginWithProvider(provider, auth, storage);
+        return loginWithProvider(provider, auth, storage, db);
     }
 
-    function loginWithProvider(provider: remoteservice.auth.AuthProvider, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage): Promise<User> {
-        let firstPromise: Promise<User>;
-        if (browser.isMobileOrTablet()) {
-            firstPromise = auth.signInWithRedirect(provider);
-        } else {
-            firstPromise = auth.signInWithPopup(provider);
+    async function loginWithProvider(provider: remoteservice.auth.AuthProvider, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<User> {
+        let result: any;
+        let ref = db.ref();
+        try {
+            if (browser.isMobileOrTablet()) {
+                result = await auth.signInWithRedirect(provider);
+            } else {
+                result = await auth.signInWithPopup(provider);
+            }
+            const data = await ref.child("/users/" + result.user.uid).once("value");
+            const validation = data.val() && !data.val().registered;
+            if (validation) {
+                ref.child("/users/" + result.user.uid).update({registered: true});
+            }
+            return authProviderSuccessHandler(result, storage, !validation);
+        } catch (err) {
+            return authProviderSuccessHandler(err, storage, false);
         }
-
-        firstPromise.then(function (result: any) {
-            return authProviderSuccessHandler(result, storage);
-        });
-        return firstPromise;
     }
 
-    function authProviderSuccessHandler(result: any, localStorage: LocalStorage = new BrowserStorage()): Promise<User> {
+    function authProviderSuccessHandler(result: any, localStorage: LocalStorage = new BrowserStorage(), isSignUp: boolean): Promise<User> {
         return new Promise<User>((resolve, reject) => {
             let user: User = undefined;
             if (result.user) {
                 ReactGA.event({
                     category: "Authorization",
-                    action: "Login With Github"
+                    action: isSignUp ? "Signup With Github" : "Login With Github"
                 });
                 user = new FirebaseUser(result.user);
                 localStorage.setItem("user", JSON.stringify(user));

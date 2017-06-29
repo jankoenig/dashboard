@@ -40,6 +40,8 @@ describe("Auth ts not mocked", function () {
 
     let localStorage: MemoryCacheStorage;
     let authService: remoteservice.auth.Auth = <remoteservice.auth.Auth>{};
+    let db: remoteservice.database.Database;
+    let ref: remoteservice.database.Reference;
 
     describe("Log in with github.", function () {
 
@@ -52,6 +54,12 @@ describe("Auth ts not mocked", function () {
         });
 
         beforeEach(function () {
+            db = <remoteservice.database.Database>{};
+            ref = <remoteservice.database.Reference>{};
+
+            db.ref = sinon.stub().returns(ref);
+            ref.child = sinon.stub().returns(ref);
+            ref.once = sinon.stub().returns({val: () => {}});
             authService = <remoteservice.auth.Auth>{}; // reseting all stubs.
         });
 
@@ -70,7 +78,7 @@ describe("Auth ts not mocked", function () {
 
             authService.signInWithRedirect = sinon.stub().returns(successRedirect);
 
-            return auth.loginWithGithub(authService, localStorage)
+            return auth.loginWithGithub(authService, localStorage, db)
                 .then(function (user: User) {
                     expect(user).to.not.be.undefined;
                     expect(authService.signInWithRedirect).to.be.calledOnce;
@@ -84,7 +92,7 @@ describe("Auth ts not mocked", function () {
 
             authService.signInWithPopup = sinon.stub().returns(successResult);
 
-            return auth.loginWithGithub(authService, localStorage).then(function (user: User) {
+            return auth.loginWithGithub(authService, localStorage, db).then(function (user: User) {
                 expect(user).to.not.be.undefined;
                 expect(localStorage.length).to.equal(1);
                 expect(authService.signInWithPopup).to.be.calledOnce;
@@ -97,7 +105,7 @@ describe("Auth ts not mocked", function () {
 
             authService.signInWithRedirect = sinon.stub().returns(unsuccessfulResult);
 
-            return auth.loginWithGithub(authService, localStorage).catch(function (err: Error) {
+            return auth.loginWithGithub(authService, localStorage, db).catch(function (err: Error) {
                 expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithRedirect).to.be.calledOnce;
@@ -110,7 +118,7 @@ describe("Auth ts not mocked", function () {
 
             authService.signInWithPopup = sinon.stub().returns(unsuccessfulResult);
 
-            return auth.loginWithGithub(authService, localStorage).catch(function (err: Error) {
+            return auth.loginWithGithub(authService, localStorage, db).catch(function (err: Error) {
                 expect(err).to.not.be.undefined;
                 expect(localStorage.length).to.equal(0);
                 expect(authService.signInWithPopup).to.be.calledOnce;
