@@ -74,7 +74,7 @@ var config = {
     filename: "scripts/" + projectName + ".js",
   },
   // Enable sourcemaps for debugging webpack's output.
-  devtool: "source-map",
+  // devtool: "source-map",
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
@@ -92,6 +92,7 @@ var config = {
       data: '@import "' + path.resolve(__dirname, 'theme/_theme.scss') + '";'
     },
 
+    /*
     preLoaders: [
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
       {
@@ -99,6 +100,7 @@ var config = {
         loader: "source-map-loader"
       }
     ]
+    */
   },
 
   plugins: plugins,
