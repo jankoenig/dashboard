@@ -137,7 +137,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.downloadSpoke(this.props);
     }
 
-    componentWillReceiveProps (nextProps:any) {
+    componentWillReceiveProps (nextProps: any) {
         this.downloadSpoke(nextProps);
     }
 
