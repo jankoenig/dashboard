@@ -134,7 +134,11 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
     }
 
     componentWillMount() {
-        this.downloadSpoke();
+        this.downloadSpoke(this.props);
+    }
+
+    componentWillReceiveProps (nextProps:any) {
+        this.downloadSpoke(nextProps);
     }
 
     handleSourceSwap(value: PAGE) {
@@ -213,9 +217,8 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
             }));
     }
 
-    downloadSpoke() {
-        const {source} = this.props;
-
+    downloadSpoke(props: any) {
+        const {source} = props;
         source && this.resolve(SourceService.getSourceObj(source.id)
             .then((spoke: Source) => {
                 const {monitoring_enabled, proxy_enabled, url} = spoke;
@@ -229,6 +232,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 const awsAccessKeyInput = obscureInput(lambdaObj.awsAccessKey);
                 const awsSecretKeyInput = obscureInput(lambdaObj.awsSecretKey);
                 const showPage = url ? "http" : lambdaObj.lambdaARN ? "lambda" : "http";
+                const sourceName = spoke.name;
                 this.setState({
                     ...proxy, ...httpObj, ...lambdaObj,
                     monitor: monitoring_enabled,
@@ -236,6 +240,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                     awsAccessKeyInput,
                     awsSecretKeyInput,
                     showPage,
+                    sourceName,
                 } as IntegrationSpokesState);
             }));
     }
