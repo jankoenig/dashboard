@@ -132,16 +132,19 @@ export class SourceStats extends LoadingComponent.Component<LogService.SourceSta
             <Grid noSpacing>
                 <Cell phone={1} offsetTablet={1} tablet={2} col={4}>
                     <DataTile
+                        smallWidth={true}
                         value={eventsLabel}
                         label={"Total Events"} />
                 </Cell>
                 <Cell phone={1} tablet={2} col={4}>
                     <DataTile
+                        smallWidth={true}
                         value={usersLabel}
                         label={"Unique Users"} />
                 </Cell>
                 <Cell phone={1} tablet={2} col={4}>
                     <DataTile
+                        smallWidth={true}
                         value={errorsLabel}
                         label={"Total Errors"} />
                 </Cell>

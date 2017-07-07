@@ -77,7 +77,7 @@ class IntervalChart extends React.Component<IntervalChartProps, IntervalChartSta
                     <YAxis />
                     <CartesianGrid fill="#fff" strokeDasharray="3 3" />
                     <Line dataKey="avgResponseTime" dot={false} />
-                    <Legend verticalAlign="top" align="center" height={36} payload={[{ value: "Average Response Time (milliseconds)", type: "line", id: "ID01" }]} />
+                    <Legend verticalAlign="top" align="center" height={36} payload={[{ value: "Average Response Time (Milliseconds)", type: "line", id: "ID01" }]} />
                 </LineChart>
             </ResponsiveContainer>
         );

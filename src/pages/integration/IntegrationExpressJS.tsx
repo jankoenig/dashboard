@@ -13,9 +13,9 @@ export class IntegrationNodeJs extends IntegrationSubPage<IntegrationNodeJsProps
     render() {
         return (
             <Grid>
-                <Cell col={12}>
+                <Cell style={{marginTop: 0}} col={12}>
                     <div>
-                        <h4>Integrating Logless in to an ExpressJS project</h4>
+                        <h4 style={{marginTop: 0}}>Integrating Logless in to an ExpressJS project</h4>
                         <p>Install the dependency</p>
                         <CodeSheet>{
                             `$npm install bespoken-tools --save`

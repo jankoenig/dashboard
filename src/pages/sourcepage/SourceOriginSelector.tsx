@@ -33,7 +33,7 @@ export class SourceOriginSelector extends React.Component<SourceOriginSelectorPr
         let i = 0;
         for (let option of options) {
             boxes.push(
-                <Cell key={i} offsetTablet={i === 0 && 1} col={4} phone={1} tablet={2}>
+                <Cell key={i} offsetTablet={i === 0 && 1} col={3} phone={1} tablet={2}>
                     <Box
                         option={option}
                         index={i}

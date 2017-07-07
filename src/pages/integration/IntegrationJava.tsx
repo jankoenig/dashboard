@@ -14,8 +14,8 @@ export class IntegrationJava extends IntegrationSubPage<IntegrationJavaProps, In
     render() {
         return (
             <Grid>
-                <Cell col={12}>
-                    <h4>Integrating the SDK in to a Java project</h4>
+                <Cell style={{marginTop: 0}} col={12}>
+                    <h4 style={{marginTop: 0}}>Integrating the SDK in to a Java project</h4>
                     <p>To use with Speechlet: </p>
                     <CodeSheet>{
                         `Logless.capture("` + this.state.secretText + `", new HelloWorldSpeechlet());`

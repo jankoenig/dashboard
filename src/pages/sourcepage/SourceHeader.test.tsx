@@ -69,7 +69,7 @@ describe("SourceHeader", function () {
             for (let i = 0; i < tiles.length; ++i) {
                 const theme = tiles.at(0).prop("theme");
                 expect(theme).to.have.property("inputTextColor", "#FF0000");
-                expect(theme).to.have.property("bottomBorderColor", "#FF0000");
+                expect(theme).to.have.property("bottomBorderColor", "rgb(36, 48, 54)");
             }
         });
     });

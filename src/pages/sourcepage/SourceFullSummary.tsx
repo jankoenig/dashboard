@@ -161,10 +161,10 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     return (
       <div>
         <Grid>
-          <h4>{header}</h4>
+          <h4 style={{paddingLeft: 45, margin: "8px 0 0"}}>{header}</h4>
         </Grid>
         <span>
-          <Grid style={{paddingLeft: 8}} noSpacing>
+          <Grid className="custom-spacing" noSpacing={true}>
             <Cell className="origin-selector" tablet={8} col={6}>
               <SourceOriginSelector
                 options={values(options)}
@@ -176,8 +176,8 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                 {...others} />
             </Cell>
           </Grid>
-          <Grid>
-              <Cell col={6} tablet={8} phone={6}>
+          <Grid style={{paddingTop: 0}}>
+              <Cell style={{marginTop: 0}} col={6} tablet={8} phone={6}>
                   <Grid>
                       <Cell className="line-chart" col={12} tablet={8} phone={6} style={{height: 300}}>
                           <SourceTimeSummary
@@ -191,7 +191,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                       </Cell>
                   </Grid>
               </Cell>
-              <Cell col={6} phone={6}>
+              <Cell style={{marginTop: 0}} col={6} tablet={8} phone={6}>
                   <Grid>
                       {this.props.source && this.props.source.monitoring_enabled &&
                       <Cell className="line-chart thin-stroke" col={12} tablet={8} phone={6} style={{height: showUpTime ? 300 : 0}}>

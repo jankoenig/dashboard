@@ -309,7 +309,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
     render() {
         let { ...others } = this.props;
         const errMsg = (this.state.conversations.length === 0) ?
-            (<p style={{ width: "100%", textAlign: "center" }}> No logs have been sent yet!</p>) :
+            (<p style={{ width: "100%", textAlign: "center", marginTop: "20px", fontSize: "1.5em"}}> No logs have been sent yet!</p>) :
             (<div />);
         return (
             <div>

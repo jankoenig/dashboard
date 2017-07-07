@@ -14,9 +14,9 @@ export class IntegrationGoogleFunction extends IntegrationSubPage<IntegrationGoo
     render() {
         return (
             <Grid>
-                <Cell col={12}>
+                <Cell style={{marginTop: 0}} col={12}>
                     <div>
-                        <h4>Integrating Logless into a Google Cloud Function project</h4>
+                        <h4 style={{marginTop: 0}}>Integrating Logless into a Google Cloud Function project</h4>
                         <p>Install the dependency</p>
                         <CodeSheet>{
                             `$npm install bespoken-tools --save `

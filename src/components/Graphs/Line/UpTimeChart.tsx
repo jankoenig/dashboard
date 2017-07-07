@@ -60,7 +60,7 @@ class UpTimeChart extends React.Component<UpTimeChartProps, UpTimeChartState> {
     }
 
     YTickFormat(statusValue: number): string {
-      return statusValue === 1 ? "up" : statusValue === 0 ? "down" : " ";
+      return statusValue === 1 ? "Up" : " ";
     }
 
     static defaultProps: UpTimeChartProps = {

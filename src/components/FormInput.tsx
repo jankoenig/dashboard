@@ -2,6 +2,7 @@ import * as classNames from "classnames";
 import * as React from "react";
 
 import { COLORS } from "../constants";
+import "../themes/custom-input";
 import StringUtil from "../utils/string";
 import MDLComponent from "./MDLComponent";
 import Pill from "./Pill";
@@ -159,7 +160,7 @@ export class FormInput extends MDLComponent<FormInputProps, FormState> {
                     style={this.inputStyle()} />
                 {pill}
                 <label
-                    className="mdl-textfield__label"
+                    className="mdl-textfield__label custom"
                     htmlFor={StringUtil.stringToCamelCase(this.props.label)}>
                     {this.props.label}
                 </label>

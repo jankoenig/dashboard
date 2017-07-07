@@ -35,7 +35,7 @@ export class SourceHeader extends React.Component<SourceHeaderProps, SourceHeade
 
     render() {
         const { source, rootStyle, tileColor } = this.props;
-        const dataTileStyle = { inputTextColor: tileColor, bottomBorderColor: tileColor };
+        const dataTileStyle = { inputTextColor: tileColor, bottomBorderColor: "rgb(36, 48, 54)" };
         const createdDate = (source.created) ? moment(source.created).format(DEFAULT_TEXT_FORMAT) : "N/A";
         return (
             <Grid style={rootStyle}>

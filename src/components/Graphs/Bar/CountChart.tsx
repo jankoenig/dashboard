@@ -87,7 +87,7 @@ class IntentCountChart extends React.Component<IntentCountChartProps, IntentCoun
                     <Tooltip />
                     {IntentCountChart.createBars(this.props)}
                     <YAxis margin={{ left: 150 }} width={150} tick={<CustomizedAxisTick newX={25} newY={5} />} type="category" dataKey="title" />
-                    <Legend verticalAlign="top" align="center" height={12} payload={[{ value: "Number of events per Intent", type: "line", id: "ID01" }]} />
+                    <Legend verticalAlign="top" align="center" height={12} payload={[{ value: "Number Of Events Per Intent", type: "line", id: "ID01" }]} />
                 </BarChart>
             </ResponsiveContainer>
         );

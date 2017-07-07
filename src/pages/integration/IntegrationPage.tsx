@@ -68,9 +68,9 @@ export class IntegrationPage extends React.Component<IntegrationPageProps, Integ
                         <Tab label="Code-Free">
                             <ResizingComponent>
                                 <Grid>
-                                    <Cell col={12}>
+                                    <Cell style={{marginTop: 0}} col={12}>
                                         <div>
-                                            <h4>Code-Free Integration</h4>
+                                            <h4 style={{marginTop: 0}}>Code-Free Integration</h4>
                                             <p>The Code-Free SDK works with your service (either HTTP or Lambda) via our Bespoken Proxy.</p>
                                             <p>It automatically captures key information about how your service is operating, and it can pro-actively alert you about any issues with how it is working.</p>
                                             <p>To use it, simply configure the settings for your service on the <a href={`/skills/${this.props.source && this.props.source.id}/settings`}>Settings</a> page.</p>
