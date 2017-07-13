@@ -4028,6 +4028,8 @@
     left: 0.3rem;
     width: 0.3rem;
     height: 0.9rem; } }
+.custom::after {
+  background-color: transparent; }
 .button_theme__button___1kGWN {
   position: relative; }
   .button_theme__button___1kGWN > input {
@@ -4685,6 +4687,10 @@
 
 .button__accent___26qen:not([disabled]).button__flat___o27aT:hover {
   background: rgba(255, 69, 69, 0.2); }
+.recharts-legend-item-text {
+  font-size: 1.2em;
+  font-weight: bold; }
+
 .origin-selector .mdl-grid.mdl-grid--no-spacing {
   height: 100%;
   align-items: flex-start;
@@ -4694,6 +4700,9 @@
     .origin-selector .mdl-grid.mdl-grid--no-spacing div label span {
       padding-left: .2rem;
       padding-top: .2rem; }
+
+.custom-spacing {
+  padding-left: 53px !important; }
 
 .stats .mdl-grid.mdl-grid--no-spacing {
   height: 100%;
@@ -4721,7 +4730,13 @@
 .bar-chart .recharts-legend-wrapper .recharts-default-legend {
   margin-left: 130px !important; }
 
+@media (max-width: 839px) {
+  .custom-spacing {
+    padding-left: 0px !important; } }
+
 @media (max-width: 479px) {
+  .custom-spacing {
+    padding-left: 20px !important; }
   .origin-selector .mdl-grid.mdl-grid--no-spacing {
     padding-top: 0; }
     .origin-selector .mdl-grid.mdl-grid--no-spacing > div {
