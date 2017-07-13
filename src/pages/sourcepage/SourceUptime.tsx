@@ -57,10 +57,10 @@ export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeDa
         try {
           const [sourceStatus, sourcePings] = await Promise.all([MonitoringService.getSourceStatus(source.id), MonitoringService.getUpTimeSummary(query, source.id)]);
           this.props.handleShowUpTime && this.props.handleShowUpTime(sourceStatus && sourcePings.length > 0);
-          return formatUpTimeSummary({ summary: sourcePings, status: sourceStatus.status === "up" ? 1 : 0});
+          return sortUpTimeSummary(formatUpTimeSummary({ summary: sourcePings, status: sourceStatus.status === "up" ? 1 : 0}));
         } catch (err) {
           this.props.handleShowUpTime && this.props.handleShowUpTime(false);
-          return formatUpTimeSummary({ summary: [], status: 0});
+          return sortUpTimeSummary(formatUpTimeSummary({ summary: [], status: 0}));
         }
     }
 
@@ -90,5 +90,10 @@ function formatUpTimeSummary(result: { summary: MonitoringService.UpTimeSummary[
   const data = result.summary.map((item, i) => {
     return { source: item.source, status: item.status, timestamp: item.timestamp, statusValue: item.status === "up" ? 1 : 0 };
   });
+  return { summary: data, status: result.status };
+}
+
+function sortUpTimeSummary(result: { summary: MonitoringService.UpTimeSummary[], status: number}): { summary: any, status: number}  {
+  const data = result.summary.sort((a, b) => {return a.timestamp - b.timestamp; });
   return { summary: data, status: result.status };
 }
