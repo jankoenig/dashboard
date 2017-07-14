@@ -1,6 +1,7 @@
 import * as Firebase from "firebase";
 import { createHistory } from "history";
 import "isomorphic-fetch";
+import * as Raven from "raven-js";
 import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
 import { Provider } from "react-redux";
@@ -37,6 +38,7 @@ console.log("v" + VERSION + "-" + BUILD_NUMBER);
 
 // Initialize Google Analytics
 ReactGA.initialize(GOOGLE_ANALYTICS);
+Raven.config("https://9c9082b20111469b9e177d7eb30a7cb2@sentry.io/191735").install();
 
 // Creates the Redux reducer with the redux-thunk middleware, which allows us
 // to do asynchronous things in the actions
