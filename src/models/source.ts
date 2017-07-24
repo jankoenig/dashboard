@@ -15,6 +15,7 @@ export interface SourceProperties {
     monitoring_enabled?: boolean;
     proxy_enabled?: boolean;
     debug_enabled?: boolean;
+    customJson?: string;
 }
 
 export class Source implements SourceProperties {
@@ -31,6 +32,7 @@ export class Source implements SourceProperties {
     public monitoring_enabled?: boolean | undefined;
     public proxy_enabled?: boolean | undefined;
     public debug_enabled?: boolean | undefined;
+    public customJson?: string | undefined;
 
     constructor(props: SourceProperties) {
 
@@ -45,6 +47,7 @@ export class Source implements SourceProperties {
         this.monitoring_enabled = props.monitoring_enabled;
         this.proxy_enabled = props.proxy_enabled;
         this.debug_enabled = props.debug_enabled;
+        if (props.customJson) this.customJson = props.customJson;
         if (props.created) {
             if (props.created instanceof Date) {
                 this.created = props.created.toISOString();

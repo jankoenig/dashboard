@@ -58,13 +58,15 @@ describe("IntegrationSpokes", function () {
         });
 
         it("Tests the enable live debugging, enable monitoring and enable proying checkbox exists.", function () {
-            expect(wrapper.find(Checkbox)).to.have.length(3);
+            expect(wrapper.find(Checkbox)).to.have.length(4);
             expect(wrapper.find(Checkbox).at(0)).to.have.prop("label", "Enable Monitoring");
             expect(wrapper.find(Checkbox).at(0)).to.have.prop("checked", false);
             expect(wrapper.find(Checkbox).at(1)).to.have.prop("label", "Enable Proxying");
             expect(wrapper.find(Checkbox).at(1)).to.have.prop("checked", false);
             expect(wrapper.find(Checkbox).at(2)).to.have.prop("label", "Enable Live Debugging");
             expect(wrapper.find(Checkbox).at(2)).to.have.prop("checked", false);
+            expect(wrapper.find(Checkbox).at(3)).to.have.prop("label", "Enable Custom Json");
+            expect(wrapper.find(Checkbox).at(3)).to.have.prop("checked", false);
         });
 
         it("Tests the save and advance buttons exists.", function () {
@@ -74,8 +76,8 @@ describe("IntegrationSpokes", function () {
         });
 
         it("Tests the error message exists.", function () {
-            expect(wrapper.find("p")).to.have.length(4); // There's two banner messages and 2 description messages as well.
-            expect(wrapper.find("p").at(3)).to.have.style("visibility", "hidden");
+            expect(wrapper.find("p")).to.have.length(5); // There's two banner messages and 2 description messages as well.
+            expect(wrapper.find("p").at(4)).to.have.style("visibility", "hidden");
         });
 
         it("Tests the dropdown for page selector exists.", function () {
@@ -274,6 +276,7 @@ describe("IntegrationSpokes", function () {
                 const button = wrapper.find(Button).at(1);
                 button.simulate("click");
                 source.url = "http://test.url.fake/";
+                source.customJson = "";
                 expect(saveSpoke).to.be.calledOnce;
                 const args = saveSpoke.args[0];
                 expect(args[0]).to.deep.equal(user);

@@ -47,3 +47,21 @@ $label-filled-padding-left: 0;
     top: $label-top;
     transition-property: top, font-size, color, padding;
 }
+
+:global {
+    .custom-json {
+        padding: 0;
+        & textarea {
+            border: 1px solid rgba(0, 0, 0, 0.12) !important;
+            width: 50% !important;
+            height: 220px!important;
+            resize: none;
+            overflow: auto;
+            fontSize: "1em";
+        }
+        & span {
+            width: 50% !important;
+            top: 1rem !important;
+        }
+    }
+}

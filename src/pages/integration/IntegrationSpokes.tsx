@@ -5,6 +5,7 @@ import {Button} from "react-toolbox/lib/button";
 import Checkbox from "react-toolbox/lib/checkbox";
 import Dropdown from "react-toolbox/lib/dropdown";
 import Input from "react-toolbox/lib/input";
+import "../../themes/input.scss";
 import "../../themes/listitem.scss";
 
 import {CancelableComponent} from "../../components/CancelableComponent";
@@ -60,6 +61,8 @@ interface IntegrationSpokesState {
     monitor: boolean;
     proxyUrl: string;
     credentialsChanged: boolean;
+    allowCustomJson: boolean;
+    customJson?: string;
 }
 
 function mapStateToProps(state: State.All): IntegrationSpokesGlobalStateProps {
@@ -119,6 +122,8 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         this.handleSwapperChange = this.handleSwapperChange.bind(this);
         this.handleSourceNameChange = this.handleSourceNameChange.bind(this);
         this.handleShowAdvanced = this.handleShowAdvanced.bind(this);
+        this.handleCustomJsonCheckChange = this.handleCustomJsonCheckChange.bind(this);
+        this.handleCustomJsonChange = this.handleCustomJsonChange.bind(this);
 
         this.state = {
             showPage: IntegrationSpokes.PAGES[0].value,
@@ -130,6 +135,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
             monitor: false,
             proxyUrl: "https://proxy.bespoken.tools",
             credentialsChanged: false,
+            allowCustomJson: false,
         };
     }
 
@@ -155,6 +161,14 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
 
     handleMonitorCheckChange(value: boolean) {
         this.setState({monitor: value} as IntegrationSpokesState);
+    }
+
+    handleCustomJsonCheckChange(value: boolean) {
+        this.setState({allowCustomJson: value} as IntegrationSpokesState);
+    }
+
+    handleCustomJsonChange(value: string) {
+        this.setState({customJson: value} as IntegrationSpokesState);
     }
 
     handleSourceNameChange(value: string) {
@@ -187,6 +201,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         source.debug_enabled = !!this.state.proxy && !!this.state.proxying;
         source.monitoring_enabled = !!this.state.monitor;
         source.proxy_enabled = !!this.state.proxying;
+        source.customJson = (this.state.allowCustomJson && this.state.customJson) || "";
         if (showPage === "http") {
             source.url = url;
             source.aws_secret_access_key = undefined;
@@ -221,7 +236,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         const {source} = props;
         source && this.resolve(SourceService.getSourceObj(source.id)
             .then((spoke: Source) => {
-                const {monitoring_enabled, proxy_enabled, url} = spoke;
+                const {monitoring_enabled, proxy_enabled, url, customJson} = spoke;
                 const proxy = {proxy: spoke.debug_enabled};
                 const httpObj = (url) ? {url} : {url: undefined};
                 const lambdaObj = {
@@ -241,12 +256,14 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                     awsSecretKeyInput,
                     showPage,
                     sourceName,
+                    customJson,
+                    allowCustomJson: !!customJson,
                 } as IntegrationSpokesState);
             }));
     }
 
     render() {
-        const {showPage, proxy, proxying, monitor, message, sourceName, hideAdvanced, awsSecretKey, awsAccessKey, credentialsChanged, proxyUrl, ...others} = this.state;
+        const {showPage, proxy, proxying, allowCustomJson, customJson, monitor, message, sourceName, hideAdvanced, awsSecretKey, awsAccessKey, credentialsChanged, proxyUrl, ...others} = this.state;
         let saveDisabled: boolean;
         switch (showPage) {
             case "http":
@@ -304,7 +321,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                     </ol>
                 </Cell>
                 <Cell col={12}><Button style={{fontSize: 12}} label="Advanced" onClick={this.handleShowAdvanced}/></Cell>
-                <Cell col={12} className={`collapse ${hideAdvanced ? "collapsed" : ""}`}>
+                <Cell col={12} className={`collapse ${hideAdvanced ? "collapsed" : ""} ${!hideAdvanced && allowCustomJson ? "extraHeight" : ""}`}>
                     <Grid>
                         <Cell col={3}>
                             <Checkbox
@@ -337,6 +354,19 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                                 <li>{`Direct the external endpoint (https://${this.props && this.props.source && this.props.source.id}.bespoken.link) to your local bst proxy`}</li>
                                 <li>Requires that you start up bst with the `bst proxy` command</li>
                             </ol>
+                        </Cell>
+                        <Cell col={3}>
+                            <Checkbox
+                                theme={CheckboxTheme}
+                                label={"Enable Custom Json"}
+                                checked={allowCustomJson}
+                                onChange={this.handleCustomJsonCheckChange}/>
+                        </Cell>
+                        <Cell col={9}/>
+                        <Cell style={{display: allowCustomJson ? "inline-block" : "none"}} col={12}>
+                            <p>Insert custom Json object:</p>
+                            <Input multiline={true} className="custom-json" hint={'{"custom": "json"}'}
+                                   value={customJson} onChange={this.handleCustomJsonChange} />
                         </Cell>
                     </Grid>
                 </Cell>

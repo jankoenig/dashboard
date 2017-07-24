@@ -160,6 +160,7 @@ export namespace source {
                 proxy_enabled: source.proxy_enabled,
                 monitoring_enabled: source.monitoring_enabled,
                 debug_enabled: source.debug_enabled,
+                customJson: source.customJson,
             };
             if (source.url) {
                 sourceToSend.url = source.url;
