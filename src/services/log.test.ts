@@ -26,7 +26,7 @@ describe("log service", function () {
     describe("getLogs", function () {
         // Mock fetch
         beforeEach(function () {
-            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/query\?*/, {
+            fetchMock.get(/https:\/\/logless-dev.bespoken.tools\/v1\/query\?*/, {
                 "data": dummyLogs(2)
             });
         });
@@ -59,7 +59,7 @@ describe("log service", function () {
 
         before(function () {
             mockSummary = dummyTimeSummary();
-            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/timeSummary\?*/, mockSummary);
+            fetchMock.get(/https:\/\/logless-dev.bespoken.tools\/v1\/timeSummary\?*/, mockSummary);
         });
 
         after(function () {
@@ -81,7 +81,7 @@ describe("log service", function () {
 
         before(function () {
             mockSummary = dummyIntentSummary();
-            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/intentCount\?*/, mockSummary);
+            fetchMock.get(/https:\/\/logless-dev.bespoken.tools\/v1\/intentCount\?*/, mockSummary);
         });
 
         after(function () {
@@ -103,7 +103,7 @@ describe("log service", function () {
 
         before(function () {
             mockSummary = dummySourceStat();
-            fetchMock.get(/https:\/\/logless.bespoken.tools\/v1\/sourceStats\?*/, mockSummary);
+            fetchMock.get(/https:\/\/logless-dev.bespoken.tools\/v1\/sourceStats\?*/, mockSummary);
         });
 
         after(function () {
