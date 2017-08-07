@@ -75,7 +75,7 @@ export function createConvo(props: ConversationProperties): Conversation {
         const requestPayload = props.request.payload || {};
         if (requestPayload.request) { // amazon
             return new AlexaConversation(props);
-        } else if (requestPayload.result) { // google
+        } else if (requestPayload.result || requestPayload.inputs) { // google
             return new GoogleHomeConversation(props);
         }
     }
@@ -355,17 +355,10 @@ class GoogleHomeConversation extends GenericConversation {
         if (this.request) {
             if (this.request.payload) {
                 const payload = this.request.payload;
-
-                if (payload.originalRequest) {
-
-                    const originalRequest = payload.originalRequest;
-                    if (originalRequest.data) {
-                        const data = originalRequest.data;
-                        if (data.inputs && data.inputs.length > 0) {
-                            const firstInput = data.inputs[0];
-                            intent = firstInput.intent;
-                        }
-                    }
+                const data = payload.originalRequest ? payload.originalRequest.data : payload.inputs ? payload : undefined;
+                if (data && data.inputs && data.inputs.length > 0) {
+                    const firstInput = data.inputs[0];
+                    intent = firstInput.intent;
                 }
             }
         }
@@ -380,6 +373,48 @@ class GoogleHomeConversation extends GenericConversation {
         return this.intent;
     }
 
+    get outputSpeechText(): string | undefined {
+        let responseText: string | undefined;
+        if (propertyExist(this.response, "payload", "expect_user_response")) {
+            if (this.response.payload.expect_user_response) {
+                const expected_inputs = this.response.payload.expected_inputs && this.response.payload.expected_inputs.length > 0 && this.response.payload.expected_inputs[0];
+                const initialPrompts = propertyExist(expected_inputs, "input_prompt", "initial_prompts") && expected_inputs.input_prompt.initial_prompts;
+                responseText = initialPrompts.length > 0 ? initialPrompts[0].text_to_speech : undefined;
+            } else {
+                responseText = propertyExist(this.response, "payload", "final_response", "speech_response", "text_to_speech") ?
+                    this.response.payload.final_response.speech_response.text_to_speech : undefined;
+            }
+
+        }
+        return responseText;
+    }
+
+    get ssmlText(): string | undefined {
+        const input = propertyExist(this.response, "payload", "expected_inputs") ? this.response.payload.expected_inputs[0] :
+            propertyExist(this.response, "payload", "expectedInputs") ? this.response.payload.expectedInputs[0] : undefined;
+        const initialPrompt = propertyExist(input, "input_prompt", "initial_prompts") ? input.input_prompt.initial_prompts[0] :
+            propertyExist(input, "inputPrompt", "initialPrompts") ? input.inputPrompt.initialPrompts[0] : undefined;
+        const ssmlString = propertyExist(initialPrompt, "ssml") ? initialPrompt.ssml : undefined;
+        const audioUrls = ssmlString && ssmlString.match(/src=".*?"|src='.*?'/);
+        const url = audioUrls && audioUrls[0].replace("src=", "").replace(/"/g, "").replace(/'/g, "");
+        const urlToReplace = url && url.substr(url.lastIndexOf("/") + 1);
+        return ssmlString && ssmlString.replace(/src=".*?"|src='.*?'/g, urlToReplace ? `"//${urlToReplace}"` : '"..."');
+    }
+
+    get ssmlAudioUrl(): string | undefined {
+        const input = propertyExist(this.response, "payload", "expected_inputs") ? this.response.payload.expected_inputs[0] :
+            propertyExist(this.response, "payload", "expectedInputs") ? this.response.payload.expectedInputs[0] : undefined;
+        const initialPrompt = propertyExist(input, "input_prompt", "initial_prompts") ? input.input_prompt.initial_prompts[0] :
+            propertyExist(input, "inputPrompt", "initialPrompts") ? input.inputPrompt.initialPrompts[0] : undefined;
+        const ssmlString = propertyExist(initialPrompt, "ssml") ? initialPrompt.ssml : undefined;
+        if (ssmlString) {
+            const audioUrls = ssmlString && ssmlString.match(/src=".*?"|src='.*?'/);
+            return audioUrls && audioUrls[0].replace("src=", "").replace(/"/g, "").replace(/'/g, "");
+        }
+        const directives = propertyExist(this.response, "payload", "response", "directives") ? this.response.payload.response.directives[0] : undefined;
+        return propertyExist(directives, "audioItem", "stream", "url") ? directives.audioItem.stream.url : undefined;
+    }
+
     get intent(): string | undefined {
 
         let intent: string;
@@ -388,16 +423,10 @@ class GoogleHomeConversation extends GenericConversation {
             if (this.request.payload) {
                 const payload = this.request.payload;
 
-                if (payload.originalRequest) {
-
-                    const originalRequest = payload.originalRequest;
-                    if (originalRequest.data) {
-                        const data = originalRequest.data;
-                        if (data.inputs && data.inputs.length > 0) {
-                            const firstInput = data.inputs[0];
-                            intent = firstInput.intent;
-                        }
-                    }
+                const data = payload.originalRequest ? payload.originalRequest.data : payload.inputs ? payload : undefined;
+                if (data && data.inputs && data.inputs.length > 0) {
+                    const firstInput = data.inputs[0];
+                    intent = firstInput.intent;
                 }
 
                 if (payload.result) {
