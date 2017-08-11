@@ -96,7 +96,7 @@ export default class ConvoListItem extends React.Component<ConvoListItemProps, C
                         show={this.props.conversation.hasError}
                         text={"error"}
                     />
-                    <ConvoPill
+                    <ConvoPill style={{position: "absolute", right: 0, top: 0, padding: 2, borderRadius: 4}}
                         show={this.props.conversation.hasException}
                         text={"exception"}
                     />

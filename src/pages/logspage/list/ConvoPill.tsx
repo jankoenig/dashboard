@@ -5,6 +5,7 @@ import Pill from "../../../components/Pill";
 interface PillProps {
     show: boolean;
     text: string;
+    style?: React.CSSProperties;
 }
 
 class ConvoPill extends React.Component<PillProps, any> {
@@ -12,7 +13,7 @@ class ConvoPill extends React.Component<PillProps, any> {
         let { show, text } = this.props;
         if (show) {
             return (
-                <Pill>
+                <Pill style={this.props.style}>
                     {text}
                 </Pill>
             );

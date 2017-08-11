@@ -62,7 +62,7 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         position: "absolute",
         color: "#fff",
         top: -5,
-        right: 80,
+        right: 88,
         cursor: "copy",
     };
 
@@ -70,7 +70,7 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
         position: "absolute",
         color: "#fff",
         top: -5,
-        right: 92,
+        right: 100,
         cursor: "copy",
     };
 
@@ -80,7 +80,7 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
 
     static getJSONTreeStyle() {
         return {
-            padding: "15px",
+            padding: "30px 15px",
             borderRadius: "10px",
             borderStyle: "solid",
         };

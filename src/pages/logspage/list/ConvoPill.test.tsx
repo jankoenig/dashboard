@@ -21,8 +21,7 @@ describe("ConvoPill", function () {
             });
 
             it("Tests the pill has the text.", function () {
-                // expect(wrapper.find(Pill)).to.have.text("Test"); // Don't know why this doesn't work but it's nicer.
-                expect(wrapper.contains(<Pill>{"Test"}</Pill>)).to.equal(true);
+                expect(wrapper.find(Pill).at(0)).to.have.text("<Pill />");
             });
         });
 
