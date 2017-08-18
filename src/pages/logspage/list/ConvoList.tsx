@@ -73,28 +73,18 @@ export class ConversationListView extends React.Component<ConvoListProps, ConvoL
         // depending on if we in a mobile mode or not,
         // we either only let one active at a time
         // or multiple active at a time.
-        let activeConversations: ConversationMap;
-
-        if (this.props.expandListItemWhenActive) {
-            // mobile mode, clone the existing
-            activeConversations = { ...{}, ...this.state.activeConversations };
-
-            if (activeConversations[conversation.id]) {
-                // if it exists remove it
-                delete activeConversations[conversation.id];
-            } else {
-                // otherwise add it
-                activeConversations[conversation.id] = conversation;
-            }
+        let activeConversations: ConversationMap = this.state.activeConversations;
+        if (activeConversations && activeConversations[conversation.id]) {
+            // if it exists remove it
+            delete activeConversations[conversation.id];
         } else {
-            // we don't care about the previous ones active
-            // just add it to a new map
+            // otherwise add it
             activeConversations = { [conversation.id]: conversation };
         }
 
         this.state.activeConversations = activeConversations;
         this.setState(this.state);
-        this.props.onClick(conversation, true);
+        this.props.onClick(conversation, activeConversations && this.isConversationActive(conversation));
     }
 
     isConversationActive(conversation: Conversation): boolean {

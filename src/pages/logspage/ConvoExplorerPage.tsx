@@ -34,8 +34,7 @@ export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, C
     }
 
     handleItemClick(convo: Conversation, setQueryParams: boolean) {
-        this.state.selectedConvo = convo;
-        this.setState(this.state);
+        this.setState({selectedConvo: convo});
         if (browserHistory && setQueryParams) {
             let location = {...browserHistory.getCurrentLocation()};
             const query: Query = {
@@ -44,6 +43,11 @@ export class ConvoExplorerPage extends React.Component<ConvoExplorerPageProps, C
                 transactions_after: service.DEFAULT_TRANSACTIONS_AFTER
             };
             location.query = {...location.query, ...query};
+            browserHistory.push(location);
+        } else if (browserHistory) {
+            this.setState({selectedConvo: undefined});
+            let location = {...browserHistory.getCurrentLocation()};
+            location.query = {};
             browserHistory.push(location);
         }
     }
