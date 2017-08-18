@@ -97,7 +97,7 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
 
     render() {
         return (
-            <Grid>
+            <Grid style={{marginTop: "10%"}}>
                 <Cell col={4} tablet={2} hidePhone={true} />
                 <Cell col={4} tablet={4} phone={4} align={"middle"} style={{display: "flex", justifyContent: "center"}}>
                     <Card style={{ overflow: "visible" }}>

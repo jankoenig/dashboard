@@ -7,6 +7,7 @@ import Layout from "../components/Layout";
 import Snackbar from "../components/Snackbar";
 import { CLASSES } from "../constants";
 import { State } from "../reducers";
+import "../themes/main-baseline";
 
 interface LoginProps {
     snackBarMessage: string;
@@ -26,7 +27,7 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 export class Login extends React.Component<LoginProps, any> {
 
     classes() {
-        return classNames(this.props.classNames, CLASSES.COLOR.GREY_100);
+        return classNames(this.props.classNames, CLASSES.COLOR.GREEN_BESPOKEN);
     }
 
     render() {

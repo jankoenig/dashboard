@@ -14,5 +14,6 @@ else
   firebase use default
 fi
 
+echo "Hi"
 # And deploy the harness directory
-firebase deploy --token "$FIREBASE_TOKEN"
+firebase deploy --token "$FIREBASE_TOKEN" --debug

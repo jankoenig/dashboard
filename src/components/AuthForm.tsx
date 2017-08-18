@@ -318,6 +318,7 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
     render() {
         return (
             <div>
+                <img style={{position: "absolute", width: "23%", top: "5%", left: "12%"}} src="https://bespoken.io/wp-content/uploads/Bespoken-Alpaca-Web-720x720-2-e1501010481243.png" alt="bespoken logo" />
                 {
                     this.props.showConfirmPassword ?
                     <h3 className={theme.h3}>Register</h3> :

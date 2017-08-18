@@ -210,11 +210,9 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                                   <div className="empty-graph">
                                       <div className="empty-graph-content">Monitoring data coming soon</div>
                                   </div> : "" }
-                              (
                               <SourceUpTimeSummary handleShowEmptyGraph={handleShowEmptyGraph}
                                                    handleShowUpTime={handleShowUpTime}
                                                    {...others}/>
-                              )
                           </Cell>
                       )}
                       <Cell className="bar-chart" col={12}>
