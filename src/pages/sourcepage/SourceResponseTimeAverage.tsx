@@ -13,10 +13,12 @@ interface SourceResponseTimeAverageProps extends LoadingComponent.LoadingCompone
     startDate: moment.Moment;
     endDate: moment.Moment;
     interval: number;
+    refreshInterval?: number;
 }
 
 interface SourceResponseTimeAverageState extends LoadingComponent.LoadingComponentState<IntervalData[]> {
   intervalArray: IntervalData[];
+  refreshId?: any;
 }
 
 export class SourceResponseTimeAverage extends LoadingComponent.Component<IntervalData[], SourceResponseTimeAverageProps, SourceResponseTimeAverageState> {
@@ -26,10 +28,33 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
         interval: 5,
+        refreshInterval: 60000,
     };
 
     constructor(props: SourceResponseTimeAverageProps) {
       super(props, { data: [] } as SourceResponseTimeAverageState);
+    }
+
+    componentDidMount () {
+        this.props.refreshInterval && this.setState({...this.state, refreshId: setInterval(() => this.refresh(), this.props.refreshInterval)});
+    }
+
+    componentWillUnmount () {
+        clearInterval(this.state.refreshId);
+    }
+
+    async refresh () {
+        const { source, startDate, endDate } = this.props;
+
+        if (!source) return;
+        this.mapState({ data: [] });
+        const query: Query = new Query();
+        query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(startDate));
+        query.add(new EndTimeParameter(endDate));
+        const serviceData: any = await LogService.getResponseTimeSummary(query);
+        const formattedData = formatResponseTimeSummary(serviceData, this.props.startDate, this.props.endDate, this.props.interval);
+        this.mapState({data: formattedData});
     }
 
     shouldUpdate(oldProps: SourceResponseTimeAverageProps, newProps: SourceResponseTimeAverageProps) {

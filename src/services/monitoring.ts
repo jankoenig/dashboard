@@ -39,6 +39,8 @@ namespace MonitoringService {
         };
         return fetch(url, myInit).then(function (response) {
             return response.json();
+        }).catch(function (err) {
+            throw err;
         });
     }
 }

@@ -14,9 +14,11 @@ interface SourceUpTimeProps extends LoadingComponent.LoadingComponentProps {
     endDate: moment.Moment;
     handleShowUpTime?: any;
     handleShowEmptyGraph?: any;
+    refreshInterval?: number;
 }
 
 interface SourceUpTimeState extends LoadingComponent.LoadingComponentState<{ summary: UpTimeData[], status: number }> {
+    refreshId?: any;
 }
 
 export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeData[], status: number }, SourceUpTimeProps, SourceUpTimeState> {
@@ -25,10 +27,39 @@ export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeDa
         source: undefined,
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
+        refreshInterval: 60000,
     };
 
     constructor(props: SourceUpTimeProps) {
         super(props, {data: {summary: [], status: 1}} as SourceUpTimeState);
+    }
+
+    componentDidMount () {
+        this.props.refreshInterval && this.setState({...this.state, refreshId: setInterval(() => this.refresh(), this.props.refreshInterval)});
+    }
+
+    componentWillUnmount () {
+        clearInterval(this.state.refreshId);
+    }
+
+    async refresh () {
+        const { source } = this.props;
+        if (!source) return;
+        this.mapState({ data: [], sourceState: 1});
+        const query: Query = new Query();
+        query.add(new StartTimeValueParameter(moment().subtract(7, "days").valueOf()));
+        query.add(new EndTimeValueParameter(moment().valueOf()));
+
+        let formatedData;
+        try {
+            const [sourceStatus, sourcePings] = await Promise.all([MonitoringService.getSourceStatus(source.id), MonitoringService.getUpTimeSummary(query, source.id)]);
+            this.props.handleShowUpTime && this.props.handleShowUpTime(sourceStatus && sourcePings.length > 0);
+            formatedData = await formatUpTimeSummary({ summary: sourcePings, status: sourceStatus.status === "up" ? 1 : 0});
+        } catch (err) {
+            this.props.handleShowUpTime && this.props.handleShowUpTime(false);
+            formatedData = await formatUpTimeSummary({ summary: [], status: 0});
+        }
+        this.mapState({data: formatedData});
     }
 
     shouldUpdate(oldProps: SourceUpTimeProps, newProps: SourceUpTimeProps) {

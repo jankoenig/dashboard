@@ -102,6 +102,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const goToCurrentSkill = () => this.props.goTo("/skills/" + id);
     const goToSkills = () => this.props.goTo("/skills/");
     let redirectTo: () => void = goToSkills;
+    console.log(id, key);
     if (id && key) {
       const self = this;
       redirectTo = goToCurrentSkill;

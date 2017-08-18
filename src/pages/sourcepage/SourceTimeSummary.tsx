@@ -18,9 +18,11 @@ interface SourceTimeSummaryProps extends LoadingComponent.LoadingComponentProps 
     startDate: moment.Moment;
     endDate: moment.Moment;
     lines?: LineProps[];
+    refreshInterval?: number;
 }
 
 interface SourceTimeSummaryState extends LoadingComponent.LoadingComponentState<TimeData[]> {
+    refreshId?: any;
 }
 
 class TimeSortParameter extends SortParameter {
@@ -46,11 +48,39 @@ export class SourceTimeSummary extends LoadingComponent.Component<TimeData[], So
         source: undefined,
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
-        lines: SourceTimeSummary.lines
+        lines: SourceTimeSummary.lines,
+        refreshInterval: 60000,
     };
 
     constructor(props: SourceTimeSummaryProps) {
         super(props, { data: defaultPageTimeData(props.startDate, props.endDate) } as SourceTimeSummaryState);
+        this.refresh = this.refresh.bind(this);
+    }
+
+    componentDidMount () {
+        this.props.refreshInterval && this.setState({...this.state, refreshId: setInterval(() => this.refresh(), this.props.refreshInterval)});
+    }
+
+    componentWillUnmount () {
+        clearInterval(this.state.refreshId);
+    }
+
+    async refresh () {
+        const { source, startDate, endDate } = this.props;
+
+
+        if (!source) return;
+        this.mapState({ data: defaultPageTimeData(this.props.startDate, this.props.endDate) });
+        const query: Query = new Query();
+        query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(startDate));
+        query.add(new EndTimeParameter(endDate));
+        query.add(new GranularityParameter("hour"));
+        query.add(new TimeSortParameter("asc"));
+        query.add(new FillGapsParameter(true));
+        const serviceData: any = await LogService.getTimeSummary(query);
+        const mergedData = mergeTimeSummary(serviceData);
+        this.mapState({data: mergedData});
     }
 
     shouldUpdate(oldProps: SourceTimeSummaryProps, newProps: SourceTimeSummaryProps) {

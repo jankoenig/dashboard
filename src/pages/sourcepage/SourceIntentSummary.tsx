@@ -18,9 +18,11 @@ interface SourceIntentSummaryProps extends LoadingComponent.LoadingComponentProp
     startDate: moment.Moment;
     endDate: moment.Moment;
     bars?: BarProps[];
+    refreshInterval?: number;
 }
 
 interface SourceIntentSummaryState extends LoadingComponent.LoadingComponentState<CountData[]> {
+    refreshId?: any;
 }
 
 class IntentSortParameter extends SortParameter {
@@ -44,11 +46,34 @@ export class SourceIntentSummary extends LoadingComponent.Component<CountData[],
         source: undefined,
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
-        bars: SourceIntentSummary.bars
+        bars: SourceIntentSummary.bars,
+        refreshInterval: 60000,
     };
 
     constructor(props: SourceIntentSummaryProps) {
         super(props, { data: [] } as SourceIntentSummaryState);
+    }
+
+    componentDidMount () {
+        this.props.refreshInterval && this.setState({...this.state, refreshId: setInterval(() => this.refresh(), this.props.refreshInterval)});
+    }
+
+    componentWillUnmount () {
+        clearInterval(this.state.refreshId);
+    }
+
+    async refresh () {
+        const { source, startDate, endDate } = this.props;
+
+        if (!source) return;
+        this.mapState({ data: [] });
+        const query: Query = new Query();
+        query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(startDate));
+        query.add(new EndTimeParameter(endDate));
+        const serviceData: any = await LogService.getIntentSummary(query);
+        const mergedData = mergeIntentSummary(serviceData);
+        this.mapState({data: mergedData});
     }
 
     shouldUpdate(oldProps: SourceIntentSummaryProps, newProps: SourceIntentSummaryProps) {
