@@ -162,7 +162,7 @@ describe("SourceTimeSummary", function () {
         it("Tests the bar graph has the loaded data.", function () {
             let loadingPromise = (wrapper.instance() as SourceTimeSummary).loadingPromise;
             return loadingPromise.then(function () {
-                expect(wrapper.find(TimeChart).prop("data")).to.have.length(summary.buckets.length);
+                expect(wrapper.find(TimeChart).prop("data")).to.have.length(240);
             });
         });
 

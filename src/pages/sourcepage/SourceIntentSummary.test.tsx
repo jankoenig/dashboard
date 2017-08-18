@@ -156,14 +156,23 @@ describe("SourceIntentSummary", function () {
             });
         });
 
+        it("Tests the default stats when source is set to undefined through props.", function () {
+            wrapper.setProps({ source: undefined });
+            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
+            return loadingPromise.then(function () {
+                // Should be no need to wait. default is 10 (the buckets number)
+                expect(wrapper.find(BarChart).prop("data")).to.have.length(10);
+            });
+        });
+
         it("Tests the bar graph has the loaded data after mount.", function () {
-            // Returning a promise ensures that the promise in the component is completed before everything else.
+            wrapper.setProps({ source: sources[1] }); // Component needs props to mount correctly
             return Promise.resolve(true).then(function () {
                 expect(wrapper.find(BarChart).prop("data")).to.have.length(summary.count.length);
             });
         });
 
-        it("Tests the bar graph has the loaded data after prop change.", function () {
+        it("Tests the bar graph has the loaded data after prop change.", async function () {
             wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
             let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
             return loadingPromise.then(function () {
@@ -180,15 +189,6 @@ describe("SourceIntentSummary", function () {
             let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
             return loadingPromise.then(function () {
                 expect(newWrapper.find(BarChart).prop("data")).to.have.length(0);
-            });
-        });
-
-        it("Tests the default stats when source is set to undefined through props.", function () {
-            wrapper.setProps({ source: undefined });
-            let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
-            return loadingPromise.then(function () {
-                // Should be no need to wait.
-                expect(wrapper.find(BarChart).prop("data")).to.have.length(0);
             });
         });
     });

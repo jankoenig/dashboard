@@ -63,9 +63,10 @@ describe("SourceStats", function () {
         });
 
         it("Checks the bar graph has a default of empty data.", function () {
-            expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "Loading..."); // events
-            expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "Loading..."); // users
-            expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "Loading..."); // errors
+            // Default value is N/A
+            expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "N/A"); // events
+            expect(wrapper.find(DataTile).at(1)).to.have.prop("value", "N/A"); // users
+            expect(wrapper.find(DataTile).at(2)).to.have.prop("value", "N/A"); // errors
         });
     });
 
@@ -134,6 +135,7 @@ describe("SourceStats", function () {
         });
 
         it("Tests the bar graph has the loaded data.", function () {
+            wrapper.setProps({}); // Forces a call to componentWillReceiveProps with the same props (i would say forces mount and data population).
             const loadingPromise = (wrapper.instance() as SourceStats).loadingPromise;
             return loadingPromise.then(function () {
                 expect(wrapper.find(DataTile).at(0)).to.have.prop("value", "300"); // events
