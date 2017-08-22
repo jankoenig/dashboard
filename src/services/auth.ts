@@ -11,6 +11,9 @@ import { remoteservice } from "./remote-service";
  */
 namespace auth {
 
+    const globalWindow: any = typeof(window) !== "undefined" ? window : {};
+    const {heap} = globalWindow;
+
     export function loginWithGithub(auth?: remoteservice.auth.Auth, storage?: LocalStorage, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<User> {
         let provider = new remoteservice.auth.GithubAuthProvider();
         return loginWithProvider(provider, auth, storage, db);
@@ -45,6 +48,7 @@ namespace auth {
                     action: isSignUp ? "Signup With Github" : "Login With Github"
                 });
                 user = new FirebaseUser(result.user);
+                identify(user, "github");
                 localStorage.setItem("user", JSON.stringify(user));
                 resolve(user);
             } else {
@@ -94,6 +98,7 @@ namespace auth {
                     action: "Signup With Email"
                 });
                 let modelUser: User = new FirebaseUser(user);
+                identify(modelUser, "email");
                 localStorage.setItem("user", JSON.stringify(modelUser));
                 return modelUser;
             });
@@ -107,6 +112,7 @@ namespace auth {
                     action: "Login With Email"
                 });
                 let modelUser: User = new FirebaseUser(user);
+                identify(modelUser, "email");
                 localStorage.setItem("user", JSON.stringify(modelUser));
                 return modelUser;
             });
@@ -124,6 +130,11 @@ namespace auth {
 
     export function sendResetPasswordEmail(email: string, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth()): Promise<any> {
         return auth.sendPasswordResetEmail(email);
+    }
+
+    function identify(user: User, loginType: string) {
+        if (typeof (heap) !== "undefined") heap.identify(user.userId);
+        if (typeof (heap) !== "undefined") heap.addUserProperties({"Email": user.email, "Name": user.displayName, "LoginType": loginType});
     }
 }
 
