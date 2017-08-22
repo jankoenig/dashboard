@@ -1,9 +1,9 @@
 import * as moment from "moment";
 import * as React from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router";
+import {connect} from "react-redux";
+import {Link} from "react-router";
 
-import { Button } from "react-toolbox/lib/button";
+import {Button} from "react-toolbox/lib/button";
 
 import List from "../components/List/List";
 import ListItem from "../components/List/ListItem";
@@ -11,7 +11,7 @@ import TwoPane from "../components/TwoPane";
 
 import Source from "../models/source";
 
-import { State } from "../reducers";
+import {State} from "../reducers";
 import ArrayUtils from "../utils/array";
 
 import WelcomePage from "./WelcomePage";
@@ -36,11 +36,11 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
 
     render() {
         let leftSide = (
-            <div className="source_list_page_left" style={{ position: "relative", height: "100%" }}>
+            <div className="source_list_page_left" style={{position: "relative", height: "100%"}}>
                 <SourceList
-                    sources={ArrayUtils.sortArrayByProperty(this.props.sources, "name")} />
-                <Link to="/skills/new" style={{ position: "absolute", bottom: "5%", right: "5%" }} >
-                    <Button theme={ButtonTheme} icon="add" accent mini floating />
+                    sources={ArrayUtils.sortArrayByProperty(this.props.sources, "name")}/>
+                <Link to="/skills/new" style={{position: "absolute", bottom: "5%", right: "5%"}}>
+                    <Button theme={ButtonTheme} icon="add" accent mini floating/>
                 </Link>
             </div>
         );
@@ -54,8 +54,8 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
         return (
             <TwoPane
                 spacing={true}
-                leftStyle={{ paddingLeft: "10px", paddingRight: "5px" }}
-                rightStyle={{ paddingRight: "10px", paddingLeft: "5px" }}>
+                leftStyle={{paddingLeft: "10px", paddingRight: "5px"}}
+                rightStyle={{paddingRight: "10px", paddingLeft: "5px"}}>
                 {leftSide}
                 {rightSide}
             </TwoPane>
@@ -91,18 +91,24 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
                 index={index}
                 primaryValue={source.name}
                 routeTo={"/skills/" + source.id}
-                secondaryValue={secondaryValue} />
+                secondaryValue={secondaryValue}/>
         );
     }
 
     render() {
         let element = (this.props.sources.length === 0) ?
-            (<p>You don't have any data sources yet, create one <Link to={"/skills/new"}>here.</Link></p>)
+            (
+                <ul style={{marginTop: "40px", fontSize: "1.1em"}}>
+                    <li style={{listStyle: "none", fontSize: "1.3em", marginLeft: "-20px", marginBottom: "5px"}}>You have not created any sources yet:</li>
+                    <li>Setup a new source to begin logging and monitoring your skills and actions</li>
+                    <li><Link to={"/skills/new"}>Just click here</Link> to get started (or on the "+" button below)</li>
+                </ul>
+            )
             :
             (
                 <List
                     itemRenderer={this.renderItem}
-                    length={this.props.sources.length} />
+                    length={this.props.sources.length}/>
             );
         return element;
     }

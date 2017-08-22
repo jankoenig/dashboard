@@ -36,7 +36,7 @@ function mapStateToProps(state: State.All) {
 function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     return {
         goHome: function (): RouterAction {
-            return dispatch(replace("/"));
+            return dispatch(replace("/skills"));
         },
         removeSource: function (source: Source): Promise<Source> {
             return dispatch(deleteSource(source));

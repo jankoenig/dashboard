@@ -28,10 +28,12 @@ describe("New Source Page", function () {
     it("should render correctly", function () {
         const newSource = sinon.spy();
         const goToLogs = sinon.spy();
+        const goToSettings = sinon.spy();
         const wrapper = shallow((
             <NewSourcePage
                 newSource={newSource}
                 goToLogs={goToLogs}
+                goToSettings={goToSettings}
                 sources = {[]}/>
         ));
         expect(wrapper.find("NewSkillForm")).to.have.length(1);
@@ -40,10 +42,12 @@ describe("New Source Page", function () {
     it("should render correctly with new state.", function () {
         const newSource = sinon.spy();
         const goToLogs = sinon.spy();
+        const goToSettings = sinon.spy();
         const wrapper = shallow((
             <NewSourcePage
                 newSource={newSource}
                 goToLogs={goToLogs}
+                goToSettings={goToSettings}
                 sources = {[]} />
         ));
 
@@ -57,10 +61,12 @@ describe("New Source Page", function () {
     it("Tests the \"goBack\" feature is handled appropriately.", function() {
         const newSource = sinon.spy();
         const goToLogs = sinon.spy();
+        const goToSettings = sinon.spy();
         const wrapper = shallow((
             <NewSourcePage
                 newSource={newSource}
                 goToLogs={goToLogs}
+                goToSettings={goToSettings}
                 sources={[]} />
         ));
 
@@ -76,13 +82,15 @@ describe("New Source Page", function () {
         expect(wrapper.find("NewSkillForm")).to.have.length(1);
     });
 
-    it("Tests the \"GoToLogs\" is approrpiatley called on event.", function() {
+    it("Tests the \"GoToLogs\" is appropriately called on event.", function() {
         const newSource = sinon.spy();
         const goToLogs = sinon.spy();
+        const goToSettings = sinon.spy();
         const wrapper = shallow((
             <NewSourcePage
                 newSource={newSource}
                 goToLogs={goToLogs}
+                goToSettings={goToSettings}
                 sources={[]} />
         ));
 
@@ -93,6 +101,27 @@ describe("New Source Page", function () {
         wrapper.find("CodeForm").simulate("goToLogs");
 
         expect(goToLogs).to.be.calledOnce;
+    });
+
+    it("Tests the \"GoToSettings\" is appropriately called on event.", function() {
+        const newSource = sinon.spy();
+        const goToLogs = sinon.spy();
+        const goToSettings = sinon.spy();
+        const wrapper = shallow((
+            <NewSourcePage
+                newSource={newSource}
+                goToLogs={goToLogs}
+                goToSettings={goToSettings}
+                sources={[]} />
+        ));
+
+        wrapper.setState({
+            source: completeSource
+        });
+
+        wrapper.find("CodeForm").simulate("goToSettings");
+
+        expect(goToSettings).to.be.calledOnce;
     });
 
     describe("Successful source creation handling.", function () {
@@ -114,10 +143,12 @@ describe("New Source Page", function () {
         it("checks a new source creation throws appropriate dispatch.", function () {
             const newSource = sinon.spy();
             const goToLogs = sinon.spy();
+            const goToSettings = sinon.spy();
             const wrapper = shallow((
                 <NewSourcePage
                     newSource={newSource}
                     goToLogs={goToLogs}
+                    goToSettings={goToSettings}
                     sources={[]} />
             ));
 
@@ -156,10 +187,12 @@ describe("New Source Page", function () {
         it("checks a the page handles a create error appropriately.", function () {
             const newSource = sinon.spy();
             const goToLogs = sinon.spy();
+            const goToSettings = sinon.spy();
             const wrapper = shallow((
                 <NewSourcePage
                     newSource={newSource}
                     goToLogs={goToLogs}
+                    goToSettings={goToSettings}
                     sources={[]} />
             ));
 

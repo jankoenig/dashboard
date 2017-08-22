@@ -24,6 +24,7 @@ export class SourceNameRule implements NameRule {
 interface NewSourceProps {
     newSource: (source: Source) => CreateSourceSuccess;
     goToLogs: (source: Source) => RouterAction;
+    goToSettings: (source: Source) => RouterAction;
     sources: Source[];
 }
 
@@ -46,6 +47,10 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
 
         goToLogs: function (source: Source): RouterAction {
             return dispatch(push("/skills/" + source.id));
+        },
+
+        goToSettings: function (source: Source): RouterAction {
+            return dispatch(push("/skills/" + source.id + "/settings"));
         }
     };
 }
@@ -56,6 +61,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
         super(props);
         this.createSource = this.createSource.bind(this);
         this.goToLogs = this.goToLogs.bind(this);
+        this.goToSettings = this.goToSettings.bind(this);
         this.goBack = this.goBack.bind(this);
 
         this.state = {
@@ -84,6 +90,10 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
         this.props.goToLogs(this.state.source);
     }
 
+    goToSettings() {
+        this.props.goToSettings(this.state.source);
+    }
+
     goBack() {
         this.setState({
             source: undefined,
@@ -105,7 +115,7 @@ export class NewSourcePage extends React.Component<NewSourceProps, NewSourceStat
 
         let bottomHalf = (createSource) ?
             (<NewSkillForm onCreateSource={this.createSource} error={this.state.error} />) :
-            (<CodeForm source={this.state.source} onGoToLogs={this.goToLogs} onGoBack={this.goBack} />);
+            (<CodeForm source={this.state.source} onGoToLogs={this.goToLogs} onGoToSettings={this.goToSettings} onGoBack={this.goBack} />);
 
         return (
             <div>
@@ -135,7 +145,15 @@ class NewSkillForm extends React.Component<NewSkillProps, any> {
                     <h4>New Source Setup</h4>
                 </Cell>
                 <Cell col={12}>
-                    <p>Currently all data sources must be at least three characters in length and not contain any special characters.</p>
+                    <ul style={{fontSize: "1.3em", margin: "0 0 20px", padding: "0 20px"}}>
+                        <li>A source can be an Alexa Skill or Action on Google.
+                            <ul>
+                                <li style={{fontSize: "1.3em", lineHeight: "1.8em", fontStyle: "italic"}}>Or any other app that you would like to send events from via our SDK</li>
+                            </ul>
+                        </li>
+                        <li>By setting up your source, you can begin using Bespoken's Logging and Monitoring features.</li>
+                    </ul>
+                    <p style={{fontSize: ".9em"}}>Currently all data sources must be at least three characters in length and not contain any special characters.</p>
                 </Cell>
                 <Cell col={12}>
                     <SourceForm
@@ -151,6 +169,7 @@ class NewSkillForm extends React.Component<NewSkillProps, any> {
 interface CodeFormProps {
     source: Source | undefined;
     onGoToLogs: (source: Source) => void;
+    onGoToSettings: (source: Source) => void;
     onGoBack: () => void;
 }
 
@@ -163,6 +182,7 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
         super(props);
 
         this.goToLogs = this.goToLogs.bind(this);
+        this.goToSettings = this.goToSettings.bind(this);
 
         this.state = {
         };
@@ -170,6 +190,10 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
 
     goToLogs() {
         this.props.onGoToLogs(this.props.source);
+    }
+
+    goToSettings() {
+        this.props.onGoToSettings(this.props.source);
     }
 
     render(): JSX.Element {
@@ -183,7 +207,8 @@ class CodeForm extends React.Component<CodeFormProps, CodeFormState> {
                         (
                             <Grid>
                                 <Cell col={12}>
-                                    <Button accent={true} raised={true} onClick={this.goToLogs}>Next: Check for Logs</Button>
+                                    <Button accent={true} raised={true} onClick={this.goToLogs}>Check for Logs</Button>
+                                    <Button style={{marginLeft: "30px"}} accent={true} raised={true} onClick={this.goToSettings}>Enable Monitoring</Button>
                                 </Cell>
                                 <Cell col={12}>
                                     <Button raised={true} onClick={onGoBack}>Create Another</Button>
