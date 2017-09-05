@@ -195,9 +195,9 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
                 message: "Saving..."
             }
         } as IntegrationSpokesState);
-        const {source: {name, secretKey, id, created, members}, user, onSpokesSaved} = this.props;
+        const {source: {secretKey, id, created, members}, user, onSpokesSaved} = this.props;
         const {proxy, showPage, credentialsChanged, url} = this.state;
-        const source: Source = {id, name, secretKey, created, members};
+        const source: Source = {id, name: this.state.sourceName, secretKey, created, members};
         source.debug_enabled = !!this.state.proxy && !!this.state.proxying;
         source.monitoring_enabled = !!this.state.monitor;
         source.proxy_enabled = !!this.state.proxying;
@@ -267,7 +267,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
         let saveDisabled: boolean;
         switch (showPage) {
             case "http":
-                saveDisabled = !validateUrl(others.url);
+                saveDisabled = (monitor && !others.url) || !validateUrl(others.url);
                 break;
             case "lambda":
                 saveDisabled = !(others.lambdaARN && others.awsAccessKeyInput && others.awsSecretKeyInput);
@@ -395,7 +395,7 @@ export default connect(
 function validateUrl(check?: string): boolean {
     // We're not going to go crazy here.
     const regex = /^(https?:\/\/).+/;
-    return regex.test(check);
+    return regex.test(check) || !check;
 }
 
 function obscureInput(value: string): string {

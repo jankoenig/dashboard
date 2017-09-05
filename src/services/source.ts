@@ -162,17 +162,10 @@ export namespace source {
                 debug_enabled: source.debug_enabled,
                 customJson: source.customJson,
             };
-            if (source.url) {
-                sourceToSend.url = source.url;
-                sourceToSend.lambda_arn = "";
-                sourceToSend.aws_access_key_id = "";
-                sourceToSend.aws_secret_access_key = "";
-            } else if (source.lambda_arn) {
-                sourceToSend.url = "";
-                sourceToSend.lambda_arn = source.lambda_arn;
-                sourceToSend.aws_access_key_id = source.aws_access_key_id;
-                sourceToSend.aws_secret_access_key = source.aws_secret_access_key;
-            }
+            sourceToSend.url = source.url || "";
+            sourceToSend.lambda_arn = source.lambda_arn || "";
+            sourceToSend.aws_access_key_id = source.aws_access_key_id || "";
+            sourceToSend.aws_secret_access_key = source.aws_secret_access_key || "";
             db.ref().child("/sources/" + source.id)
                 .update(sourceToSend,
                     (err: Error): firebase.Promise<any> => {
