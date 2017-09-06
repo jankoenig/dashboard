@@ -30,6 +30,10 @@ export class Login extends React.Component<LoginProps, any> {
         return classNames(this.props.classNames, CLASSES.COLOR.GREEN_BESPOKEN);
     }
 
+    componentDidMount () {
+        document.title = "Bespoken Dashboard";
+    }
+
     render() {
         return (
             <Layout>

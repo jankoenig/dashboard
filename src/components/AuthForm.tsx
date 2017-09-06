@@ -318,11 +318,11 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
     render() {
         return (
             <div>
-                <img style={{position: "absolute", width: "23%", top: "5%", left: "12%"}} src="https://bespoken.io/wp-content/uploads/Bespoken-Alpaca-Web-720x720-2-e1501010481243.png" alt="bespoken logo" />
+                <img style={{width: "65%", margin: "0 17.5%"}} src="https://bespoken.io/wp-content/uploads/Bespoken-Logo-RGB-e1500333659572.png" alt="bespoken logo" />
                 {
                     this.props.showConfirmPassword ?
-                    <h3 className={theme.h3}>Register</h3> :
-                    <h3 className={theme.h3}>Login</h3>
+                    <h3 className={theme.h3}>Create New Account</h3> :
+                    ""
                 }
                 <Input
                     theme={theme}

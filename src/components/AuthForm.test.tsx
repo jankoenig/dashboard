@@ -300,7 +300,7 @@ describe("AuthForm", function () {
             expect(wrapper.find("label")).to.have.length(1);
 
             let title = wrapper.find("h3").at(0);
-            expect(title.text()).to.equal("Register");
+            expect(title.text()).to.equal("Create New Account");
 
             let emailInput = wrapper.find("Themed").at(0);
             expect(emailInput.prop("label")).to.equal("Email");
@@ -324,11 +324,11 @@ describe("AuthForm", function () {
         it("Renders properly without confirm password field.", function () {
             wrapper.setProps({ showConfirmPassword: false });
 
-            expect(wrapper.find("h3")).to.have.length(1);
+            expect(wrapper.find("h3")).to.have.length(0);
             expect(wrapper.find("Themed")).to.have.length(3);
 
             let title = wrapper.find("h3").at(0);
-            expect(title.text()).to.equal("Login");
+            expect(title.text()).to.equal("");
 
             let emailInput = wrapper.find("Themed").at(0);
             expect(emailInput.prop("label")).to.equal("Email");
