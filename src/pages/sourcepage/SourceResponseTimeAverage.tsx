@@ -17,7 +17,6 @@ interface SourceResponseTimeAverageProps extends LoadingComponent.LoadingCompone
 }
 
 interface SourceResponseTimeAverageState extends LoadingComponent.LoadingComponentState<IntervalData[]> {
-  intervalArray: IntervalData[];
   refreshId?: any;
 }
 
@@ -87,10 +86,6 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
 
     map(data: LogService.ResponseTimeSummary[]): any {
       return data;
-    }
-
-    onLoadError(err: Error) {
-        return this.mapState({ intervalArray: [] });
     }
 
     render() {
