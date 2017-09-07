@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
 
-import IntervalChart, { IntervalData } from "../../components/Graphs/Line/IntervalChart";
+import IntervalChart from "../../components/Graphs/Line/IntervalChart";
 import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, { EndTimeParameter, IntervalParameter, SourceParameter, StartTimeParameter } from "../../models/query";
 import Source from "../../models/source";
@@ -16,11 +16,11 @@ interface SourceResponseTimeAverageProps extends LoadingComponent.LoadingCompone
     refreshInterval?: number;
 }
 
-interface SourceResponseTimeAverageState extends LoadingComponent.LoadingComponentState<IntervalData[]> {
+interface SourceResponseTimeAverageState extends LoadingComponent.LoadingComponentState<{data: any[], ticks: number[]}> {
   refreshId?: any;
 }
 
-export class SourceResponseTimeAverage extends LoadingComponent.Component<IntervalData[], SourceResponseTimeAverageProps, SourceResponseTimeAverageState> {
+export class SourceResponseTimeAverage extends LoadingComponent.Component<{data: any[], ticks: number[]}, SourceResponseTimeAverageProps, SourceResponseTimeAverageState> {
 
     static defaultProps: SourceResponseTimeAverageProps = {
         source: undefined,
@@ -31,7 +31,7 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
     };
 
     constructor(props: SourceResponseTimeAverageProps) {
-      super(props, { data: [] } as SourceResponseTimeAverageState);
+      super(props, {} as SourceResponseTimeAverageState);
     }
 
     componentDidMount () {
@@ -91,11 +91,14 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
     render() {
         const { data } = this.state;
         return (
-            <IntervalChart
+            data
+            ? <IntervalChart
                 startDate={this.props.startDate}
                 endDate={this.props.endDate}
                 data={data.data} ticks={data.ticks} />
+            : null
         );
+
     }
 }
 
