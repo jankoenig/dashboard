@@ -1,7 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-import ChartUtils from "../../../utils/chart";
 
 export interface LineProps {
     dataKey: string;
@@ -19,13 +18,13 @@ export class IntervalData {
 
 interface IntervalChartProps {
     data: IntervalData[];
+    ticks?: number[];
     tickFormat?: string;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
 }
 
 interface IntervalChartState {
-    ticks: number[];
 }
 
 class IntervalChart extends React.Component<IntervalChartProps, IntervalChartState> {
@@ -36,21 +35,9 @@ class IntervalChart extends React.Component<IntervalChartProps, IntervalChartSta
         type: "monotone"
     };
 
-    static createTicks(props: IntervalChartProps): number[] {
-      const data: IntervalData[] = props.data;
-      if (data.length === 0) {
-        return [];
-      }
-      return ChartUtils.createTicks(data, "intervalDate");
-    }
-
     constructor(props: IntervalChartProps) {
         super(props);
         this.tickFormat = this.tickFormat.bind(this);
-
-        this.state = {
-          ticks: IntervalChart.createTicks(props)
-        };
     }
 
     tickFormat(time: Date): string {
@@ -64,16 +51,11 @@ class IntervalChart extends React.Component<IntervalChartProps, IntervalChartSta
         endDate: moment(),
     };
 
-    componentWillReceiveProps(nextProps: IntervalChartProps, context: any) {
-        this.state.ticks = IntervalChart.createTicks(nextProps);
-        this.setState(this.state);
-    }
-
     render() {
         return (
             <ResponsiveContainer>
                 <LineChart margin={{ left: -20 }}  data={this.props.data} >
-                    <XAxis dataKey="interval" tickFormatter={this.tickFormat} ticks={this.state.ticks} />
+                    <XAxis dataKey="interval" tickFormatter={this.tickFormat} ticks={this.props.ticks} />
                     <YAxis />
                     <CartesianGrid fill="#fff" strokeDasharray="3 3" />
                     <Line dataKey="avgResponseTime" dot={false} />
