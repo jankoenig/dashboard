@@ -99,7 +99,7 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
             <IntervalChart
                 startDate={this.props.startDate}
                 endDate={this.props.endDate}
-                data={data} />
+                data={data.data} ticks={data.ticks} />
         );
     }
 }
