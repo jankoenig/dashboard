@@ -20,8 +20,6 @@ interface IntervalChartProps {
     data: IntervalData[];
     ticks?: number[];
     tickFormat?: string;
-    startDate?: moment.Moment;
-    endDate?: moment.Moment;
 }
 
 interface IntervalChartState {
@@ -46,9 +44,7 @@ class IntervalChart extends React.Component<IntervalChartProps, IntervalChartSta
 
     static defaultProps: IntervalChartProps = {
         data: [],
-        tickFormat: "MM/DD",
-        startDate: moment().subtract(7, "days"),
-        endDate: moment(),
+        tickFormat: "MM/DD"
     };
 
     render() {
