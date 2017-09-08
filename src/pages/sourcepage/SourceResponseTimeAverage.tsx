@@ -90,7 +90,7 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<{data:
 
     render() {
         const { data } = this.state;
-        return (data ? <IntervalChart data={data.data} ticks={data.ticks} /> : null);
+        return (data ? <IntervalChart data={data.data} ticks={data.ticks} /> : <div/>);
 
     }
 }
