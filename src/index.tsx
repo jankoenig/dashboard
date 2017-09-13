@@ -26,6 +26,7 @@ import SettingsPage from "./pages/settingspage/StateSettingsPage";
 import SourceListPage from "./pages/SourceListPage";
 import SourcePage from "./pages/sourcepage/SourcePage";
 import SourcesLinkPage from "./pages/SourcesLinkPage";
+import ValidationPage from "./pages/validation/ValidationPage";
 import rootReducer from "./reducers";
 
 import IndexUtils from "./index-utils";
@@ -159,6 +160,7 @@ let render = function () {
                         <IndexRoute component={SourcePage} />
                         <Route path="/skills/:sourceId/logs" component={LogsPage} />
                         <Route path="/skills/:sourceId/integration" component={IntegrationPage} />
+                        <Route path="/skills/:sourceId/validation" component={ValidationPage} />
                         <Route path="/skills/:sourceId/settings" component={SettingsPage} />
                     </Route>
                     <Route path="/sources/link" component={SourcesLinkPage} />

@@ -36,3 +36,7 @@ $menu-item-icon-font-size: 1.2em;
 $button-font-size: 0.9em;
 
 $bar-color-dark: rgb(36, 48, 54);
+
+.dialog {
+    overflow: auto;
+}

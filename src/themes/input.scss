@@ -24,7 +24,24 @@ $label-filled-padding-left: 0;
 
 .input {
     padding-top: 1em;
-    padding-bottom: 0
+    padding-bottom: 0;
+}
+
+.inputHelp {
+    margin-top: -15px;
+}
+
+.checkbox {
+    margin-top: 25px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .input:not(.disabled) > .inputElement {

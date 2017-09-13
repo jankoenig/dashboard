@@ -8,4 +8,5 @@ export interface Query {
 export interface Location {
     query: Query;
     pathname?: string;
+    basename?: string;
 }

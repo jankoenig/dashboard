@@ -18,6 +18,7 @@ export interface Dropdownable {
 
 export interface PageButton {
   name: string;
+  tooltip: string;
   icon: string | JSX.Element; // String or <svg/>
 }
 
@@ -277,7 +278,7 @@ export class HeaderButton extends React.Component<HeaderButtonProps, any> {
       <TooltipButton
         theme={IconButtonTheme}
         accent
-        tooltip={button.name}
+        tooltip={button.tooltip}
         icon={button.icon}
         onClick={this.handleClick} />
     );

@@ -1,3 +1,9 @@
+export class UserDetails {
+    readonly silentEchoToken: string;
+    constructor(silentEchoToken: string) {
+        this.silentEchoToken = silentEchoToken;
+    }
+}
 
 export interface UserProperties {
   readonly email: string;

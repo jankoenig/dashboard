@@ -157,20 +157,29 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       return [
         {
           icon: "dashboard",
-          name: "summary"
+          name: "summary",
+          tooltip: "summary"
         },
         {
           icon: "list",
-          name: "logs"
+          name: "logs",
+          tooltip: "logs"
         },
         {
           icon: "code",
-          name: "integration"
+          name: "integration",
+          tooltip: "integration"
+        },
+        {
+          icon: "assignment_turned_in",
+          name: "validation",
+          tooltip: "validation (beta)"
         },
         {
           icon: "settings",
-          name: "settings"
-        }
+          name: "settings",
+          tooltip: "settings"
+        },
       ];
     } else {
       return undefined;
@@ -184,9 +193,12 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/logs");
     } else if (button.name === "integration") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
+    } else if (button.name === "validation") {
+      this.props.goTo("/skills/" + this.props.currentSource.id + "/validation");
     } else if (button.name === "settings") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/settings");
     }
+
   }
 
   handleHomeClick() {

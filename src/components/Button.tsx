@@ -16,6 +16,7 @@ interface ButtonProps {
   style?: React.CSSProperties;
   href?: string;
   to?: string;
+  disabled?: boolean;
 };
 
 /**

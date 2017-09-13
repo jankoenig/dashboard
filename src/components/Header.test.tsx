@@ -40,7 +40,7 @@ describe("Header", function () {
         let onClick: sinon.SinonStub;
 
         before(function() {
-            button = { name: "TestButton", icon: "Test Icon" };
+            button = { name: "TestButton", icon: "Test Icon", tooltip: "Test Tooltip"};
             onClick = sinon.stub();
             headerButton = shallow(<HeaderButton
                 button={button}
@@ -55,7 +55,7 @@ describe("Header", function () {
         it("Tests that the props are passed to the underlying button.", function() {
             const themedButton = headerButton.find("Themed");
             expect(themedButton).to.have.length(1);
-            expect(themedButton).to.have.prop("tooltip", button.name);
+            expect(themedButton).to.have.prop("tooltip", button.tooltip);
             expect(themedButton).to.have.prop("icon", button.icon);
         });
 
@@ -220,7 +220,10 @@ describe("Header", function () {
     });
 
     describe("Page swapper", function () {
-        const pages: PageButton[] = [{ icon: "home", name: "heeyyooo" }, { icon: "away", name: "fancy" }];
+        const pages: PageButton[] = [
+            { icon: "home", name: "heeyyooo", tooltip: "home tooltip" },
+            { icon: "away", name: "fancy", tooltip: "away toolip" }
+        ];
 
         let onPageSelected: sinon.SinonStub;
 
@@ -258,7 +261,12 @@ describe("Header", function () {
             });
 
             it("Tests that it will build new buttons on props change.", function() {
-                const newPages: PageButton[] = [{ icon: "newHome", name: "newName" }, { icon: "newHome2", name: "newName2" }, { icon: "newHome3", name: "newName3" }];
+                const newPages: PageButton[] = [
+                    { icon: "newHome", name: "newName", tooltip: "newHome tooltip" },
+                    { icon: "newHome2", name: "newName2", tooltip: "newHome2 tooltip" },
+                    { icon: "newHome3", name: "newName3", tooltip: "newHome3 tooltip" },
+                    { icon: "newHome3", name: "newName3", tooltip: "newHome3 tooltip"}
+                ];
                 wrapper.setProps({ pageButtons: newPages });
                 expect(wrapper.find(HeaderButton)).to.have.length(newPages.length);
             });

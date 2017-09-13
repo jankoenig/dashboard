@@ -10,6 +10,7 @@ export namespace source {
     const SOURCE_URL: string = "https://source-api.bespoken.tools/v1/";
     const NAME_GENERATING_URL: string = SOURCE_URL + "sourceId";
     const LINK_URL: string = SOURCE_URL + "linkSource";
+    const VALIDATE_URL: string = SOURCE_URL + "validateSource";
 
     export interface SourceName {
         id: string;
@@ -176,6 +177,25 @@ export namespace source {
                         }
                         return;
                     });
+        });
+    }
+
+    export function validateSource(script: string, token: string): Promise<any> {
+        const query: Query = new Query();
+        query.add({parameter: "script", value: script});
+        query.add({parameter: "token", value: token});
+        return fetch(VALIDATE_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: query.json()
+        }).then(function (result: any) {
+            if (result.status === 200) {
+                return result.text();
+            } else {
+                return Promise.reject(new Error(result.statusText));
+            }
         });
     }
 }

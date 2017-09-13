@@ -1,7 +1,7 @@
 import * as ReactGA from "react-ga";
 
 import { FirebaseUser } from "../models/user";
-import User from "../models/user";
+import { User, UserDetails } from "../models/user";
 import { BrowserStorage, LocalStorage } from "../store/local-storage";
 import browser from "../utils/browser";
 import { remoteservice } from "./remote-service";
@@ -135,6 +135,21 @@ namespace auth {
     function identify(user: User, loginType: string) {
         if (typeof (heap) !== "undefined") heap.identify(user.userId);
         if (typeof (heap) !== "undefined") heap.addUserProperties({"Email": user.email, "Name": user.displayName, "LoginType": loginType});
+    }
+
+    export function updateCurrentUser(props: Object): Promise<any> {
+        const currentUser = remoteservice.defaultService().auth().currentUser;
+        return remoteservice.defaultService().database().ref()
+            .child("/users/" + currentUser.uid).update(props);
+    }
+
+    export function currentUserDetails(): Promise<UserDetails> {
+        const currentUser = remoteservice.defaultService().auth().currentUser;
+        return remoteservice.defaultService().database().ref().child("/users/" + currentUser.uid).once("value")
+            .then((retVal) => {
+                const data = retVal.val();
+                return new UserDetails(data.silentEchoToken);
+            });
     }
 }
 
