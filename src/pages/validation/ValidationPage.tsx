@@ -70,24 +70,32 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.lastScriptKey = this.lastScriptKey.bind(this);
     }
 
-    lastScriptKey() {
-        if (this.props.source && this.props.source.id) {
-            return `${ValidationPage.lastScriptKeyPrefix}-${this.props.source.id}`;
+    lastScriptKey(source: Source) {
+        if (source && source.id) {
+            return `${ValidationPage.lastScriptKeyPrefix}-${source.id}`;
+        }
+    }
+
+    checkLastScript(source: Source) {
+        if (window && window.localStorage) {
+            const lastScriptRaw = window.localStorage.getItem(this.lastScriptKey(source));
+            if (lastScriptRaw) {
+                this.setState({...this.state, script: decodeURIComponent(lastScriptRaw)});
+            }
         }
     }
 
     componentDidMount() {
         const self = this;
-        if (window && window.localStorage) {
-            const lastScriptRaw = window.localStorage.getItem(self.lastScriptKey());
-            if (lastScriptRaw) {
-                self.setState({...this.state, script: decodeURIComponent(lastScriptRaw)});
-            }
-        }
+        self.checkLastScript(this.props.source);
         auth.currentUserDetails()
             .then((userDetails: UserDetails) => {
                 self.setState({...this.state, token: userDetails.silentEchoToken});
             });
+    }
+
+    componentWillReceiveProps(nextProps: ValidationPageProps, context: any) {
+        this.checkLastScript(nextProps.source);
     }
 
     handleScriptChange(value: string) {
@@ -114,8 +122,9 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             this.setState({...this.state, loadingValidationResults: true});
             SourceService.validateSource(this.state.script, this.state.token)
                 .then((validationResults: any) => {
-                    if (window && window.localStorage) {
-                        window.localStorage.setItem(self.lastScriptKey(),
+                    if (window && window.localStorage
+                        && self.lastScriptKey(this.props.source)) {
+                        window.localStorage.setItem(self.lastScriptKey(this.props.source),
                             encodeURIComponent(this.state.script));
                     }
                     self.setState({
