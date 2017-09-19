@@ -24,7 +24,7 @@ describe("Source Reducer", function () {
     describe("SetSources", function () {
         it("sets the sources", function () {
             let newSource = new Source({ name: "name" });
-            let setSourcesAction = actions.setSources([newSource]);
+            let setSourcesAction = actions.setSources([newSource], true);
             let newState = source(undefined, setSourcesAction);
             expect(newState.sources).to.have.length(1);
             expect(newState.sources[0]).to.equal(newSource);

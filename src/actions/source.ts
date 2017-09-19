@@ -27,13 +27,15 @@ export function setCurrentSource(source: Source): SetCurrentSource {
 
 export type SetSources = {
     type: SET_SOURCES,
-    sources: Source[]
+    sources: Source[],
+    finishLoading: boolean,
 };
 
-export function setSources(sources: Source[]): SetSources {
+export function setSources(sources: Source[], finishLoading: boolean): SetSources {
     return {
         type: SET_SOURCES,
-        sources: sources
+        sources: sources,
+        finishLoading: finishLoading,
     };
 }
 
@@ -90,7 +92,7 @@ export function getSources(): (dispatch: Redux.Dispatch<any>) => Promise<Source[
                         }
                     })
                     .then(() => {
-                        dispatch(setSources(sources));
+                        dispatch(setSources(sources, true));
                         resolve(sources);
                     });
             }).catch(err => reject(err));

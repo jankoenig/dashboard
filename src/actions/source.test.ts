@@ -18,7 +18,7 @@ describe("Source Actions", function () {
     describe("setSources", function () {
         it("returns an action with the sources", function () {
             let source = new Source({ name: "name" });
-            let setSourcesAction = actions.setSources([source]);
+            let setSourcesAction = actions.setSources([source], true);
             expect(setSourcesAction.type).to.equal(SET_SOURCES);
             expect(setSourcesAction.sources[0]).to.equal(source);
         });

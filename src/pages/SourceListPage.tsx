@@ -20,6 +20,7 @@ const ButtonTheme = require("../themes/button_theme.scss");
 
 export interface SourceListPageProps {
     sources: Source[];
+    finishLoading: boolean;
 }
 
 interface SourceListPageState {
@@ -28,7 +29,8 @@ interface SourceListPageState {
 
 function mapStateToProps(state: State.All) {
     return {
-        sources: state.source.sources
+        sources: state.source.sources,
+        finishLoading: state.source.finishLoading
     };
 }
 
@@ -37,8 +39,10 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
     render() {
         let leftSide = (
             <div className="source_list_page_left" style={{position: "relative", height: "100%"}}>
-                <SourceList
-                    sources={ArrayUtils.sortArrayByProperty(this.props.sources, "name")}/>
+                {
+                    this.props.finishLoading &&
+                    <SourceList sources={ArrayUtils.sortArrayByProperty(this.props.sources, "name")}/>
+                }
                 <Link to="/skills/new" style={{position: "absolute", bottom: "5%", right: "5%"}}>
                     <Button theme={ButtonTheme} icon="add" accent mini floating/>
                 </Link>

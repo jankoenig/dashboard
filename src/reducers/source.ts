@@ -11,6 +11,7 @@ export type SourceState = {
     readonly currentSource?: Source;
     readonly sources: Source[];
     readonly error?: Error;
+    readonly finishLoading?: boolean;
 };
 
 const INITIAL_STATE: SourceState = {
@@ -27,7 +28,7 @@ export function source(state: SourceState = INITIAL_STATE, action: SourceAction)
         }
 
         case SET_SOURCES: {
-            return {...state, ...{ sources: action.sources }};
+            return {...state, ...{ sources: action.sources, finishLoading: action.finishLoading }};
         }
 
         case CREATE_SOURCE_SUCCESS: {
