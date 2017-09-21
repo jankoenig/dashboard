@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 export interface LineProps {
     dataKey: string;
@@ -55,7 +55,6 @@ class IntervalChart extends React.Component<IntervalChartProps, IntervalChartSta
                     <YAxis />
                     <CartesianGrid fill="#fff" strokeDasharray="3 3" />
                     <Line dataKey="avgResponseTime" dot={false} />
-                    <Legend verticalAlign="top" align="center" height={36} payload={[{ value: "Average Response Time (Milliseconds)", type: "line", id: "ID01" }]} />
                 </LineChart>
             </ResponsiveContainer>
         );

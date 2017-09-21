@@ -194,6 +194,9 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                               lines={lines}/>
                       </Cell>
                       <Cell className="line-chart" col={12} tablet={8} phone={6} style={{height: 300}}>
+                        <Grid>
+                            <h4 className="graph-header">Average Response Time (Milliseconds)</h4>
+                        </Grid>
                         <SourceResponseTimeAverage
                             {...others}
                             interval={5}/>
