@@ -1,7 +1,9 @@
 import * as moment from "moment";
 import * as React from "react";
+import ProgressBar from "react-toolbox/lib/progress_bar";
 
 import IntervalChart from "../../components/Graphs/Line/IntervalChart";
+import {Grid} from "../../components/Grid";
 import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, { EndTimeParameter, IntervalParameter, SourceParameter, StartTimeParameter } from "../../models/query";
 import Source from "../../models/source";
@@ -90,8 +92,14 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<{data:
 
     render() {
         const { data } = this.state;
-        return (data ? <IntervalChart data={data.data} ticks={data.ticks} /> : <div/>);
-
+        if (data && data.data && data.ticks) {
+            return <IntervalChart data={data.data} ticks={data.ticks} />;
+        }
+        return (
+           <Grid className="graph-loader">
+                <ProgressBar className="graph-loader" type="circular" mode="indeterminate" />
+            </Grid>
+        );
     }
 }
 
