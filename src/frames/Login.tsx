@@ -32,6 +32,7 @@ export class Login extends React.Component<LoginProps, any> {
 
     componentDidMount () {
         document.title = "Bespoken Dashboard";
+        window.localStorage.setItem("contest", "");
     }
 
     render() {

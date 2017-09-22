@@ -2,12 +2,12 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
-
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
 import { Dropdownable, Header, PageButton } from "../components/Header";
 import Layout from "../components/Layout";
+import Popup from "../components/Popup";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
@@ -49,6 +49,7 @@ interface DashboardProps {
 }
 
 interface DashboardState {
+  showModal: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -84,9 +85,15 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   constructor(props: DashboardProps) {
     super(props);
 
+    this.state = {
+      showModal: false,
+    };
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
     this.handlePageSwap = this.handlePageSwap.bind(this);
     this.handleHomeClick = this.handleHomeClick.bind(this);
+    this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleEnterContest = this.handleEnterContest.bind(this);
   }
 
   drawerClasses() {
@@ -98,7 +105,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   async componentDidMount() {
-    const { id, key} = this.props.location.query;
+    const { id, key } = this.props.location.query;
     const goToCurrentSkill = () => this.props.goTo("/skills/" + id);
     const goToSkills = () => this.props.goTo("/skills/");
     let redirectTo: () => void = goToSkills;
@@ -106,18 +113,20 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       const self = this;
       redirectTo = goToCurrentSkill;
       try {
-          await SourceService.linkSource({ id: id, secretKey: key }, this.props.user);
-          const source: Source = await SourceService.getSourceObj(id);
-          const pipe: any = await SpokeService.fetchPipe(self.props.user, source);
-          if (!pipe.diagnosticsKey) {
-              await SpokeService.savePipe(self.props.user, source, pipe.http, true);
-          }
-          redirectTo();
+        await SourceService.linkSource({ id: id, secretKey: key }, this.props.user);
+        const source: Source = await SourceService.getSourceObj(id);
+        const pipe: any = await SpokeService.fetchPipe(self.props.user, source);
+        if (!pipe.diagnosticsKey) {
+          await SpokeService.savePipe(self.props.user, source, pipe.http, true);
+        }
+        redirectTo();
       } catch (err) {
-          redirectTo();
+        redirectTo();
       }
     }
     await this.props.getSources();
+    const alreadyClicked = window.localStorage.getItem("contest") === "true";
+    if (!alreadyClicked) this.handleOpenModal();
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -204,9 +213,38 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.props.goTo("/skills");
   }
 
+  handleOpenModal() {
+    const contest = window.localStorage.getItem("contest") === "false";
+    if (!contest) {
+      window.localStorage.setItem("contest", "false");
+      this.setState({ showModal: true });
+    }
+  }
+
+  handleCloseModal() {
+    window.localStorage.setItem("contest", "true");
+    this.setState({ showModal: false });
+  }
+
+  handleEnterContest() {
+    window.open("https://www.surveymonkey.com/r/X5R3W8G", "_blank");
+    window.localStorage.setItem("contest", "true");
+    this.setState({ showModal: false });
+  }
+
   render() {
     return (
       <Layout header={true}>
+        <Popup
+          header={"Win an Echo Show"}
+          content={<span>Thanks for being a Bespoken user.<br />Take this 5-minute survey to enter to win 1 of 2 devices. Enter before Sept 30.</span>}
+          imgSrc="https://bespoken.io/wp-content/uploads/2017/08/Background.png"
+          showButton={true}
+          buttonLabel="Enter"
+          showModal={this.state.showModal}
+          handleCloseModal={this.handleCloseModal}
+          handleEnterContest={this.handleEnterContest}
+        />
         <Header
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
