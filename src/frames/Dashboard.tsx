@@ -2,12 +2,12 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
-import { Button } from "react-toolbox/lib/button";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
 import { Dropdownable, Header, PageButton } from "../components/Header";
 import Layout from "../components/Layout";
+import Popup from "../components/Popup";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
@@ -17,10 +17,6 @@ import SourceService from "../services/source";
 import SpokeService from "../services/spokes";
 import ArrayUtils from "../utils/array";
 import { Location } from "../utils/Location";
-
-
-const ReactModal: any = require("react-modal");
-const ButtonTheme = require("../themes/button_theme.scss");
 
 /**
  * Simple Adapter so a Source can conform to Dropdownable
@@ -129,7 +125,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
-    this.handleOpenModal();
+    const alreadyClicked = window.localStorage.getItem("contest") === "true";
+    if (!alreadyClicked) this.handleOpenModal();
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -226,42 +223,23 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   handleEnterContest () {
     window.open("https://www.surveymonkey.com/r/X5R3W8G", "_blank");
+    window.localStorage.setItem("contest", "true");
     this.setState({ showModal: false });
   }
 
   render() {
     return (
       <Layout header={true}>
-        <ReactModal
-          style={{
-                overlay: {
-                  zIndex: 5,
-                  backgroundColor: "rgba(0, 0, 0, 0.1)",
-                },
-                content: {
-                  top: "20%",
-                  left: "30%",
-                  bottom: "auto",
-                  right: "30%",
-                }
-              }}
-           isOpen={this.state.showModal}
-           contentLabel="onRequestClose Example"
-           onRequestClose={this.handleCloseModal}>
-          <h2 style={{textAlign: "center"}}>Win an Echo Show!</h2>
-          <div style={{width: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <img style={{marginBottom: "25px"}} src="https://bespoken.io/wp-content/uploads/2017/08/Background.png" alt="echo show" />
-            <p style={{padding: 10}}>Thanks for being a Bespoken user. Take this 5-minute survey to enter to win one of 2 devices.</p>
-          </div>
-          <div style={{width: "100%", textAlign: "center"}}>
-            <Button
-                theme={ButtonTheme}
-                raised
-                primary
-                onClick={this.handleEnterContest}
-                label="Enter Now" />
-          </div>
-        </ReactModal>
+        <Popup
+          header={"Win an Echo Show"}
+          content={<span>Thanks for being a Bespoken user.<br/>Take this 5-minute survey to enter to win 1 of 2 devices. Enter before Sept 30.</span>}
+          imgSrc="https://bespoken.io/wp-content/uploads/2017/08/Background.png"
+          showButton={true}
+          buttonLabel="Enter"
+          showModal={this.state.showModal}
+          handleCloseModal={this.handleCloseModal}
+          handleEnterContest={this.handleEnterContest}
+        />
         <Header
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
