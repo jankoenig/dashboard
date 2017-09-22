@@ -2,7 +2,7 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
-
+import { Button } from "react-toolbox/lib/button";
 import { logout } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
@@ -17,6 +17,10 @@ import SourceService from "../services/source";
 import SpokeService from "../services/spokes";
 import ArrayUtils from "../utils/array";
 import { Location } from "../utils/Location";
+
+
+const ReactModal: any = require("react-modal");
+const ButtonTheme = require("../themes/button_theme.scss");
 
 /**
  * Simple Adapter so a Source can conform to Dropdownable
@@ -49,6 +53,7 @@ interface DashboardProps {
 }
 
 interface DashboardState {
+  showModal: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -84,9 +89,15 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   constructor(props: DashboardProps) {
     super(props);
 
+    this.state = {
+      showModal: false,
+    };
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
     this.handlePageSwap = this.handlePageSwap.bind(this);
     this.handleHomeClick = this.handleHomeClick.bind(this);
+    this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleEnterContest = this.handleEnterContest.bind(this);
   }
 
   drawerClasses() {
@@ -118,6 +129,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
+    this.handleOpenModal();
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -204,9 +216,49 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.props.goTo("/skills");
   }
 
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+
+  handleCloseModal () {
+    this.setState({ showModal: false });
+  }
+
+  handleEnterContest () {
+    window.open("https://www.surveymonkey.com/r/X5R3W8G", "_blank");
+    this.setState({ showModal: false });
+  }
+
   render() {
     return (
       <Layout header={true}>
+        <ReactModal
+          style={{
+                overlay: {
+                  zIndex: 5,
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                },
+                content: {
+                  top: "20%",
+                  left: "20%",
+                  bottom: "auto",
+                  right: "20%",
+                }
+              }}
+           isOpen={this.state.showModal}
+           contentLabel="onRequestClose Example"
+           onRequestClose={this.handleCloseModal}>
+          <h2 style={{textAlign: "center"}}>Win an Echo Show!</h2>
+          <p>Thanks for being a Bespoken user. Take this 5-minute survey to enter to win one of 2 devices.</p>
+          <div style={{width: "100%", textAlign: "center"}}>
+            <Button
+                theme={ButtonTheme}
+                raised
+                primary
+                onClick={this.handleEnterContest}
+                label="Enter Now" />
+          </div>
+        </ReactModal>
         <Header
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}
