@@ -240,16 +240,19 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
                 },
                 content: {
                   top: "20%",
-                  left: "20%",
+                  left: "30%",
                   bottom: "auto",
-                  right: "20%",
+                  right: "30%",
                 }
               }}
            isOpen={this.state.showModal}
            contentLabel="onRequestClose Example"
            onRequestClose={this.handleCloseModal}>
           <h2 style={{textAlign: "center"}}>Win an Echo Show!</h2>
-          <p>Thanks for being a Bespoken user. Take this 5-minute survey to enter to win one of 2 devices.</p>
+          <div style={{width: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>
+            <img style={{marginBottom: "25px"}} src="https://bespoken.io/wp-content/uploads/2017/08/Background.png" alt="echo show" />
+            <p style={{padding: 10}}>Thanks for being a Bespoken user. Take this 5-minute survey to enter to win one of 2 devices.</p>
+          </div>
           <div style={{width: "100%", textAlign: "center"}}>
             <Button
                 theme={ButtonTheme}
