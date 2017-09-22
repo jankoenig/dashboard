@@ -218,6 +218,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   handleCloseModal () {
+    window.localStorage.setItem("contest", "true");
     this.setState({ showModal: false });
   }
 

@@ -56,12 +56,12 @@ export default class Popup extends React.Component<PopupProps, any> {
                 {
                     this.props.showButton &&
                     <div style={{ width: "100%", textAlign: "center" }}>
-                        <Button
+                        (<Button
                             theme={ButtonTheme}
                             raised={true}
                             primary={true}
                             onClick={this.props.handleEnterContest}
-                            label={this.props.buttonLabel} />
+                            label={this.props.buttonLabel} />)
                     </div>
                 }
             </ReactModal>
