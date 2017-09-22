@@ -1,7 +1,9 @@
 import * as moment from "moment";
 import * as React from "react";
+import ProgressBar from "react-toolbox/lib/progress_bar";
 
 import UpTimeChart, {UpTimeData} from "../../components/Graphs/Line/UpTimeChart";
+import {Grid} from "../../components/Grid";
 import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, {EndTimeValueParameter, StartTimeValueParameter} from "../../models/query";
 import Source from "../../models/source";
@@ -112,6 +114,13 @@ export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeDa
 
     render() {
         const {data} = this.state;
+        if (!data || !data.summary || !data.status) {
+            return (
+               <Grid className="graph-loader">
+                    <ProgressBar className="graph-loader" type="circular" mode="indeterminate" />
+                </Grid>
+            );
+        }
         return (
             <UpTimeChart
                 startDate={this.props.startDate}
