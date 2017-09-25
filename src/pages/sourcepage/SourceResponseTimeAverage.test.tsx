@@ -51,6 +51,10 @@ describe("SourceTimeSummary", function () {
                 startDate={start}
                 endDate={end}
                 interval={10} />);
+
+            wrapper.setState({
+                data: {data: [], ticks: []}
+            });
         });
 
         it("Checks the response time graph is there.", function () {
@@ -91,19 +95,6 @@ describe("SourceTimeSummary", function () {
             responseService.restore();
         });
 
-        it("Tests the data query contains the appropriate parameters when mounted.", function () {
-            const query: Query = responseService.args[0][0];
-            const sourceParameter: SourceParameter = findQueryParameter(query, "source") as SourceParameter;
-            const startParameter: StartTimeParameter = findQueryParameter(query, "start_time") as StartTimeParameter;
-            const endParameter: EndTimeParameter = findQueryParameter(query, "end_time") as EndTimeParameter;
-            const intervalParameter: IntervalParameter = findQueryParameter(query, "interval") as IntervalParameter;
-
-            expect(startParameter.value).to.equal(startTime.subtract(8, "days").toISOString());
-            expect(endParameter.value).to.equal(endTime.startOf("day").toISOString());
-            expect(sourceParameter.value).to.equal(source.secretKey);
-            expect(intervalParameter.value).to.equal(10);
-        });
-
         it("Tests the data query contains the appropriate parameters.", function () {
             wrapper.setProps({ source: sources[1] }); // Forces a call to componentWillReceiveProps
             const loadingPromise = (wrapper.instance() as SourceResponseTimeAverage).loadingPromise;
@@ -128,16 +119,6 @@ describe("SourceTimeSummary", function () {
             return loadingPromise.then(function () {
                 expect(responseService).to.be.calledOnce; // Only on mount.
             });
-        });
-
-        it("Tests the defaults were set when source is undefined.", function () {
-            const newWrapper = shallow(<SourceResponseTimeAverage
-                source={undefined}
-                startDate={startTime}
-                endDate={endTime}
-                interval={10} />);
-
-            expect(newWrapper.find(IntervalChart).prop("data")).to.have.length(endTime.diff(startTime, "hours"));
         });
     });
 });

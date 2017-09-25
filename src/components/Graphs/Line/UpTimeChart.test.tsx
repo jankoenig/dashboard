@@ -2,7 +2,7 @@ import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as moment from "moment";
 import * as React from "react";
-import { Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import UpTimeChart, { UpTimeData } from "./UpTimeChart";
 
@@ -34,7 +34,6 @@ describe("IntervalChart", function () {
         expect(responsiveContainer.find(LineChart)).to.have.length(1);
         expect(responsiveContainer.find(XAxis)).to.have.length(1);
         expect(responsiveContainer.find(YAxis)).to.have.length(1);
-        expect(responsiveContainer.find(Legend)).to.have.length(1);
     });
 
     describe("Props test", function () {

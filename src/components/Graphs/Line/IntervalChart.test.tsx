@@ -2,7 +2,7 @@ import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as moment from "moment";
 import * as React from "react";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 import IntervalChart, { IntervalData } from "./IntervalChart";
 
@@ -34,7 +34,6 @@ describe("IntervalChart", function () {
         expect(responsiveContainer.find(XAxis)).to.have.length(1);
         expect(responsiveContainer.find(YAxis)).to.have.length(1);
         expect(responsiveContainer.find(CartesianGrid)).to.have.length(1);
-        expect(responsiveContainer.find(Legend)).to.have.length(1);
     });
 
     describe("Props test", function () {
