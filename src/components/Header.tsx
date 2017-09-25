@@ -1,14 +1,13 @@
 import * as classNames from "classnames";
 import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
-import Dropdown from "react-toolbox/lib/dropdown";
 import Tooltip from "react-toolbox/lib/tooltip";
 
 import { Menu, MenuItem } from "../components/Menu";
 
 import Noop from "../utils/Noop";
 
-const DropdownDarkTheme = require("../themes/dropdown-dark-nolabel.scss");
+const Autosuggest: any = require("react-autosuggest");
 const IconButtonTheme = require("../themes/icon-button-primary-theme.scss");
 
 export interface Dropdownable {
@@ -24,9 +23,9 @@ export interface PageButton {
 
 export interface HeaderProps {
   currentSourceId?: string;
-  sources?: Dropdownable[];
+  sources?: any[];
   onHomeClicked?: () => void;
-  onSourceSelected?: (source: Dropdownable) => void;
+  onSourceSelected?: (source: any) => void;
   pageButtons?: PageButton[];
   onPageSelected?: (button: PageButton) => void;
   displayHomeButton?: boolean;
@@ -85,6 +84,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             selectedSourceId={this.state.selectedSourceId} />
 
           <PageSwap
+            style={{ marginLeft: 250 }}
             pageButtons={this.props.pageButtons}
             onPageSelected={this.props.onPageSelected} />
 
@@ -150,9 +150,82 @@ export class Home extends React.Component<HomeProps, any> {
 
 interface TitleProps {
   handleItemSelect: (value: string) => void;
-  sources: Dropdownable[];
+  sources: any[];
   selectedSourceId: string;
 }
+
+const getSuggestions = (value: string, sources: any[]) => {
+  const inputValue = value.trim().toLowerCase();
+  const inputLength = inputValue.length;
+  return inputLength === 0 ? sources : sources.filter((source: any) =>
+    source.label.toLowerCase().slice(0, inputLength) === inputValue
+  );
+};
+
+const renderSuggestion = (source: any) => {
+  return (
+    <div>
+      {source.label}
+    </div>
+  );
+};
+
+const theme: any = {
+  container: {
+    position: "absolute",
+    top: 13,
+    left: 50,
+  },
+  input: {
+    width: 230,
+    height: 30,
+    padding: "0 0 0 10px",
+    fontWeight: 300,
+    fontSize: 16,
+    border: "1px solid #aaa",
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+  },
+  inputFocused: {
+    outline: "none"
+  },
+  inputOpen: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0
+  },
+  suggestionsContainer: {
+    display: "none"
+  },
+  suggestionsContainerOpen: {
+    display: "block",
+    position: "absolute",
+    top: 31,
+    width: 240,
+    border: "1px solid #aaa",
+    backgroundColor: "#fff",
+    fontFamily: "Helvetica, sans-serif",
+    fontWeight: 300,
+    fontSize: 16,
+    borderBottomLeftRadius: 4,
+    borderBottomRightRadius: 4,
+    zIndex: 2
+  },
+  suggestionsList: {
+    margin: 0,
+    padding: 0,
+    listStyleType: "none",
+  },
+  suggestion: {
+    cursor: "pointer",
+    padding: "5px 10px",
+  },
+  suggestionHighlighted: {
+    backgroundColor: "#ddd",
+    padding: "5px 10px",
+  }
+};
 
 export class Title extends React.Component<TitleProps, any> {
 
@@ -166,23 +239,66 @@ export class Title extends React.Component<TitleProps, any> {
     super(props);
 
     this.state = {
-      selectedSourceId: undefined
+      selectedSourceId: undefined,
+      value: "",
+      suggestions: [],
     };
   }
 
+  getSuggestionValue = (source: any) => {
+    this.props.handleItemSelect(source.value);
+    return "";
+  }
+
+  onChange = (event: any, { newValue }: any) => {
+    this.setState({
+      value: newValue
+    });
+  }
+
+  onSuggestionsFetchRequested = ({ value }: any) => {
+    this.setState({
+      suggestions: getSuggestions(value, this.props.sources)
+    });
+  }
+
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: []
+    });
+  }
+
+  componentWillReceiveProps(nextProps: any) {
+    this.setState({
+      suggestions: nextProps.sources,
+    });
+  }
+
   render() {
+    const { value, suggestions } = this.state;
+    const selectedSource = this.props.sources.filter(dropDownableSource => dropDownableSource.source.id === this.props.selectedSourceId);
+    const selectedSourceName = selectedSource[0] ? selectedSource[0].label : "";
+    const shouldRender = () => true;
+    const inputProps = {
+      placeholder: selectedSourceName,
+      value,
+      onChange: this.onChange
+    };
     let title: JSX.Element = (<div />);
     if (this.props.sources.length > 0) {
       if (this.props.sources.length === 1) {
         title = (<span className="mdl-layout-title">{this.props.sources[0].label}</span>);
       } else {
         title = (
-          <Dropdown
-            theme={DropdownDarkTheme}
-            auto
-            onChange={this.props.handleItemSelect}
-            source={this.props.sources}
-            value={this.props.selectedSourceId}
+          <Autosuggest
+            suggestions={suggestions}
+            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+            getSuggestionValue={this.getSuggestionValue}
+            renderSuggestion={renderSuggestion}
+            shouldRenderSuggestions={shouldRender}
+            inputProps={inputProps}
+            theme={theme}
           />
         );
       }
@@ -195,6 +311,7 @@ export class Title extends React.Component<TitleProps, any> {
 interface PageSwapProps {
   pageButtons?: PageButton[];
   onPageSelected?: (button: PageButton) => void | undefined;
+  style?: any;
 }
 
 interface PageSwapState {
@@ -248,7 +365,7 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 
   render() {
     return (
-      <div>
+      <div style={this.props.style}>
         {this.state.buttons}
       </div>
     );
@@ -258,6 +375,7 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 interface HeaderButtonProps {
   button: PageButton;
   onClick: (button: PageButton) => void;
+  style?: any;
 }
 
 export class HeaderButton extends React.Component<HeaderButtonProps, any> {
@@ -276,6 +394,7 @@ export class HeaderButton extends React.Component<HeaderButtonProps, any> {
     const { button } = this.props;
     return (
       <TooltipButton
+        style={this.props.style}
         theme={IconButtonTheme}
         accent
         tooltip={button.tooltip}
