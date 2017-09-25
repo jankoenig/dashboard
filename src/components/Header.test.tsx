@@ -2,12 +2,12 @@ import * as chai from "chai";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
-import Dropdown from "react-toolbox/lib/dropdown";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
 import { Header, HeaderButton, HeaderProps, HeaderState, Home, PageButton, PageSwap, Title } from "./Header";
 
+const Autosuggest: any = require("react-autosuggest");
 // Setup chai with sinon-chai
 chai.use(sinonChai);
 let expect = chai.expect;
@@ -108,8 +108,8 @@ describe("Header", function () {
     });
 
     describe("with one source", function () {
-        const sources = [{ label: "name", value: "id" }];
-        const wrapper = shallow(<Header sources={[{ label: "name", value: "id" }]} />);
+        const sources = [{ label: "name", value: "id", source: {id: "id"} }];
+        const wrapper = shallow(<Header sources={[{ label: "name", value: "id", source: {id: "id"} }]} />);
 
         it("renders the title", function () {
             const titleWrapper = wrapper.find(Title);
@@ -142,7 +142,7 @@ describe("Header", function () {
         const componentWillReceivePropsSpy = sinon.spy(Header.prototype, "componentWillReceiveProps");
         const setStateSpy = sinon.spy(Header.prototype, "setState");
         const onSourceSelectedSpy = sinon.spy();
-        const sources = [{ label: "name", value: "id" }, { label: "name1", value: "id1" }, { label: "name2", value: "id2" }, { label: "name3", value: "id3" }];
+        const sources = [{ label: "name", value: "id", source: {id: "id"} }, { label: "name1", value: "id1", source: {id: "id1"} }, { label: "name2", value: "id2", source: {id: "id2"} }, { label: "name3", value: "id3", source: {id: "id3"} }];
 
         beforeEach(function () {
             wrapper = shallow((
@@ -181,7 +181,7 @@ describe("Header", function () {
             instance.handleItemSelect("id");
 
             expect(onSourceSelectedSpy).to.have.been.calledOnce;
-            expect(onSourceSelectedSpy).to.have.been.calledWith({ label: "name", value: "id" });
+            expect(onSourceSelectedSpy).to.have.been.calledWith({ label: "name", value: "id", source: {id: "id"} });
         });
 
         describe("Title", function () {
@@ -204,17 +204,11 @@ describe("Header", function () {
             });
 
             it("Tests the title renders the Dropdown.", function () {
-                const dropdownWrapper = wrapper.find(Dropdown);
+                wrapper.setProps({ sources: sources });
+                const dropdownWrapper = wrapper.find(Autosuggest);
                 expect(dropdownWrapper).to.have.length(1);
-                expect(dropdownWrapper.prop("source")).to.deep.equal(sources);
-                expect(dropdownWrapper.prop("value")).to.equal("id");
-            });
-
-            it("Tests the handle Item callback is returned on dropdown select.", function () {
-                const dropdownWrapper = wrapper.find(Dropdown);
-                dropdownWrapper.simulate("change", "id2");
-                expect(handleItemSelect).to.have.been.calledOnce;
-                expect(handleItemSelect).to.be.calledWith("id2");
+                expect(dropdownWrapper.prop("suggestions")).to.deep.equal(sources);
+                expect(dropdownWrapper.prop("inputProps").placeholder).to.equal("name");
             });
         });
     });
