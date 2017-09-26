@@ -51,14 +51,12 @@ namespace LogService {
         Unknown: TotalStat;
     }
 
-    // let BASE_URL = LOGLESS_BASE; // TODO: Get this to work with Mocha
     export const DEFAULT_TRANSACTIONS_BEFORE = 25;
     export const DEFAULT_TRANSACTIONS_AFTER = 25;
     let BASE_URL = "https://logless.bespoken.tools/v1";
-    if (process.env.LOGLESS_BASE_URL) {
-        BASE_URL = process.env.LOGLESS_BASE_URL;
+    if (process.env.LOGLESS_BASE) {
+        BASE_URL = process.env.LOGLESS_BASE;
     }
-    // const BASE_URL = "https://logless-dev.bespoken.tools/v1";
 
     export function getTransactionUrl(convoId: string, transactionsBefore: number, transactionsAfter: number): string {
         let transactionUrl = BASE_URL + "/transaction?id=" + convoId;

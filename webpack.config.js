@@ -5,6 +5,7 @@ var WebpackStrip = require('strip-loader');
 var package = require("./package.json");
 
 var node_env = process.env.NODE_ENV;
+var logless_base = process.env.LOGLESS_BASE;
 var projectName = "dashboard";
 var version = package.version;
 var buildNumber = process.env.TRAVIS_BUILD_NUMBER;
@@ -22,7 +23,7 @@ var buildVariables = {
   'VERSION': JSON.stringify(version),
   'BUILD_NUMBER': JSON.stringify(buildNumber),
   'BUILD_ID': JSON.stringify(buildId),
-  'LOGLESS_BASE': JSON.stringify("https://logless-dev.bespoken.tools/v1")
+  'LOGLESS_BASE': JSON.stringify(logless_base)
 }
 
 // A list of plugins
