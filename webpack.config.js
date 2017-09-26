@@ -34,7 +34,6 @@ if (node_env === "production") {
   // For production postfix min to the file names
   projectName += ".min";
   buildVariables.GOOGLE_ANALYTICS = JSON.stringify("UA-40630247-7");
-  buildVariables.LOGLESS_BASE = JSON.stringify("https://logless.bespoken.tools/v1")
   // Add the production plugins
   plugins.push(new webpack.optimize.UglifyJsPlugin());
 }
