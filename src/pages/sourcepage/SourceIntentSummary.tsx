@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
 
+import {Grid} from "../../components/Grid";
 import BarChart, { BarProps, CountData } from "../../components/Graphs/Bar/CountChart";
 import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../../models/query";
@@ -113,12 +114,20 @@ export class SourceIntentSummary extends LoadingComponent.Component<CountData[],
     render() {
         const { data } = this.state;
         const { bars } = this.props;
+        if (!data || data.length === 0) {
+            return <div/>;
+        }
         return (
-            <div style={{ height: (data.length * 40) + 100 }} >
-                <BarChart
-                    data={data}
-                    bars={bars}
-                />
+            <div>
+                <Grid>
+                    <h4 className="graph-header">Number Of Events Per Intent</h4>
+                </Grid>
+                <div style={{ height: (data.length * 40) + 100 }} >
+                    <BarChart
+                        data={data}
+                        bars={bars}
+                    />
+                </div>
             </div>
         );
     }

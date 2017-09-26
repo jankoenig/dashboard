@@ -216,9 +216,6 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                           </Cell>
                       )}
                       <Cell className="bar-chart" col={12}>
-                        <Grid>
-                            <h4 className="graph-header">Number Of Events Per Intent</h4>
-                        </Grid>
                         <SourceIntentSummary
                             {...others}
                             bars={bars}/>
