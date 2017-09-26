@@ -191,7 +191,7 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                               {...others}
                               lines={lines}/>
                       </Cell>
-                      <Cell className="line-chart" col={12} tablet={8} phone={6} style={{height: 300}}>
+                      <Cell className="line-chart avg-response-time-chart" col={12} tablet={8} phone={6} style={{height: 300}}>
                         <Grid>
                             <h4 className="graph-header">Average Response Time (Milliseconds)</h4>
                         </Grid>
@@ -216,6 +216,9 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                           </Cell>
                       )}
                       <Cell className="bar-chart" col={12}>
+                        <Grid>
+                            <h4 className="graph-header">Number Of Events Per Intent</h4>
+                        </Grid>
                         <SourceIntentSummary
                             {...others}
                             bars={bars}/>
