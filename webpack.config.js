@@ -16,7 +16,8 @@ var buildId = process.env.TRAVIS_BUILD_ID
 // to let TypeScript know about them.
 var buildVariables = {
   'process.env': {
-    NODE_ENV: JSON.stringify(node_env)
+    NODE_ENV: JSON.stringify(node_env),
+    LOGLESS_BASE: JSON.stringify(logless_base)
   },
   'BASENAME': JSON.stringify("/dashboard"),
   'GOOGLE_ANALYTICS': JSON.stringify(""),
