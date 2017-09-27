@@ -1,8 +1,8 @@
 import * as moment from "moment";
 import * as React from "react";
 
-import {Grid} from "../../components/Grid";
 import BarChart, { BarProps, CountData } from "../../components/Graphs/Bar/CountChart";
+import {Grid} from "../../components/Grid";
 import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, { EndTimeParameter, SortParameter, SourceParameter, StartTimeParameter } from "../../models/query";
 import Source from "../../models/source";
