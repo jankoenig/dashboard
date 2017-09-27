@@ -37,7 +37,6 @@ interface SourceFullSummaryState {
     lines: LineProps[];
     bars: BarProps[];
     showUpTime?: boolean;
-    showEmptyGraph?: boolean;
 }
 
 function values<T>(obj: LabelMap<T>): T[] {
@@ -117,7 +116,6 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
             bars: values(SourceFullSummary.bars),
             selectedStatEntry: [SourceFullSummary.statEntries["Total"]],
             showUpTime: true,
-            showEmptyGraph: true,
         };
     }
 
@@ -155,13 +153,12 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
     }
 
     handleShowEmptyGraph(showGraph: boolean) {
-        this.state.showEmptyGraph = showGraph;
         this.setState(this.state);
     }
 
     render() {
         const {header, ...others} = this.props;
-        const {bars, lines, selectedStatEntry, showUpTime, showEmptyGraph} = this.state;
+        const {bars, lines, selectedStatEntry, showUpTime} = this.state;
         const options = SourceFullSummary.options;
         const handleOriginChange = this.handleOriginChange;
         const handleShowUpTime = this.handleShowUpTime;
@@ -189,11 +186,15 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
               <Cell style={{marginTop: 0}} col={6} tablet={8} phone={6}>
                   <Grid>
                       <Cell className="line-chart" col={12} tablet={8} phone={6} style={{height: 300}}>
+
                           <SourceTimeSummary
                               {...others}
                               lines={lines}/>
                       </Cell>
-                      <Cell className="line-chart" col={12} tablet={8} phone={6} style={{height: 300}}>
+                      <Cell className="line-chart avg-response-time-chart" col={12} tablet={8} phone={6} style={{height: 300}}>
+                        <Grid>
+                            <h4 className="graph-header">Average Response Time (Milliseconds)</h4>
+                        </Grid>
                         <SourceResponseTimeAverage
                             {...others}
                             interval={5}/>
@@ -206,10 +207,9 @@ export class SourceFullSummary extends React.Component<SourceFullSummaryProps, S
                       (
                           <Cell className="line-chart thin-stroke" col={12} tablet={8} phone={6}
                                 style={{height: showUpTime ? 300 : 0}}>
-                              {showEmptyGraph ?
-                                  <div className="empty-graph">
-                                      <div className="empty-graph-content">Monitoring data coming soon</div>
-                                  </div> : "" }
+                              <Grid>
+                                  <h4 className="graph-header">Source Up Time</h4>
+                              </Grid>
                               <SourceUpTimeSummary handleShowEmptyGraph={handleShowEmptyGraph}
                                                    handleShowUpTime={handleShowUpTime}
                                                    {...others}/>

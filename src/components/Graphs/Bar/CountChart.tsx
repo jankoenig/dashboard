@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export interface BarProps {
     dataKey: string;
@@ -87,7 +87,6 @@ class IntentCountChart extends React.Component<IntentCountChartProps, IntentCoun
                     <Tooltip />
                     {IntentCountChart.createBars(this.props)}
                     <YAxis margin={{ left: 150 }} width={150} tick={<CustomizedAxisTick newX={25} newY={5} />} type="category" dataKey="title" />
-                    <Legend verticalAlign="top" align="center" height={12} payload={[{ value: "Number Of Events Per Intent", type: "line", id: "ID01" }]} />
                 </BarChart>
             </ResponsiveContainer>
         );

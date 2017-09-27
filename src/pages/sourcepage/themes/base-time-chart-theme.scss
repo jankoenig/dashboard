@@ -72,7 +72,11 @@
             }
         }
     }
+    .avg-response-time-chart {
+        padding-top: 30px;
+    }
     .bar-chart {
+        padding-top: 30px;
         .recharts-y-axis {
             .recharts-text.recharts-cartesian-axis-tick-value {
                 // fill: transparent;
@@ -89,6 +93,18 @@
                 margin-left: 130px !important;
             }
         }
+    }
+    .graph-header {
+        font-family: Helvetica;
+        font-size: 16.8px;
+        font-weight: bold;
+        line-height: 24px;
+        margin: -6px 0 5px;
+        text-align: center;
+        width: 100%;
+    }
+    .graph-loader {
+        margin: 50px auto 0;
     }
 }
 

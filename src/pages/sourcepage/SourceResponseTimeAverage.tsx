@@ -1,7 +1,9 @@
 import * as moment from "moment";
 import * as React from "react";
+import ProgressBar from "react-toolbox/lib/progress_bar";
 
-import IntervalChart, { IntervalData } from "../../components/Graphs/Line/IntervalChart";
+import IntervalChart from "../../components/Graphs/Line/IntervalChart";
+import {Grid} from "../../components/Grid";
 import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, { EndTimeParameter, IntervalParameter, SourceParameter, StartTimeParameter } from "../../models/query";
 import Source from "../../models/source";
@@ -16,12 +18,11 @@ interface SourceResponseTimeAverageProps extends LoadingComponent.LoadingCompone
     refreshInterval?: number;
 }
 
-interface SourceResponseTimeAverageState extends LoadingComponent.LoadingComponentState<IntervalData[]> {
-  intervalArray: IntervalData[];
+interface SourceResponseTimeAverageState extends LoadingComponent.LoadingComponentState<{data: any[], ticks: number[]}> {
   refreshId?: any;
 }
 
-export class SourceResponseTimeAverage extends LoadingComponent.Component<IntervalData[], SourceResponseTimeAverageProps, SourceResponseTimeAverageState> {
+export class SourceResponseTimeAverage extends LoadingComponent.Component<{data: any[], ticks: number[]}, SourceResponseTimeAverageProps, SourceResponseTimeAverageState> {
 
     static defaultProps: SourceResponseTimeAverageProps = {
         source: undefined,
@@ -32,7 +33,7 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
     };
 
     constructor(props: SourceResponseTimeAverageProps) {
-      super(props, { data: [] } as SourceResponseTimeAverageState);
+      super(props, {} as SourceResponseTimeAverageState);
     }
 
     componentDidMount () {
@@ -53,8 +54,7 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
         query.add(new StartTimeParameter(startDate));
         query.add(new EndTimeParameter(endDate));
         const serviceData: any = await LogService.getResponseTimeSummary(query);
-        const formattedData = formatResponseTimeSummary(serviceData, this.props.startDate, this.props.endDate, this.props.interval);
-        this.mapState({data: formattedData});
+        this.mapState({data: serviceData});
     }
 
     shouldUpdate(oldProps: SourceResponseTimeAverageProps, newProps: SourceResponseTimeAverageProps) {
@@ -87,61 +87,20 @@ export class SourceResponseTimeAverage extends LoadingComponent.Component<Interv
     }
 
     map(data: LogService.ResponseTimeSummary[]): any {
-      return formatResponseTimeSummary(data, this.props.startDate, this.props.endDate, this.props.interval);
-    }
-
-    onLoadError(err: Error) {
-        return this.mapState({ intervalArray: [] });
+      return data;
     }
 
     render() {
         const { data } = this.state;
+        if (data && data.data && data.ticks) {
+            return <IntervalChart data={data.data} ticks={data.ticks} />;
+        }
         return (
-            <IntervalChart
-                startDate={this.props.startDate}
-                endDate={this.props.endDate}
-                data={data} />
+           <Grid className="graph-loader">
+                <ProgressBar className="graph-loader" type="circular" mode="indeterminate" />
+            </Grid>
         );
     }
 }
 
 export default SourceResponseTimeAverage;
-
-function formatResponseTimeSummary(summary: LogService.ResponseTimeSummary[], startDate: moment.Moment, endDate: moment.Moment, interval: number): IntervalData[] {
-  const mapData = summary.map((item, i) => {
-    const convertInterval = formatIntervalDate(item.interval, interval);
-    return { interval: moment(convertInterval).startOf("day").valueOf(), avgResponseTime: item.avgResponseTime, intervalDate: moment(convertInterval) };
-  });
-  const defaultData = defaultTimeArray(startDate, endDate, interval);
-  return mergeResponseTimeSummary(mapData, defaultData);
-}
-
-function mergeResponseTimeSummary(summary: {interval: number, avgResponseTime: number, intervalDate: moment.Moment}[], defaultData: IntervalData[]): IntervalData[] {
-  let result = defaultData;
-  for (let intervalItem of summary) {
-    let index: number;
-    const intervalToReplace = result.filter((item, i) => {
-      if (item.intervalDate.diff(intervalItem.intervalDate) === 0) index = i;
-      return item.intervalDate.diff(intervalItem.intervalDate) === 0;
-    });
-    intervalToReplace.length && (result[index] = {...intervalToReplace[0], avgResponseTime: intervalItem.avgResponseTime});
-  }
-  return result;
-}
-
-function defaultTimeArray(start: moment.Moment, end: moment.Moment, interval: number): any {
-  const intervalArray: IntervalData[] = [];
-  const currentDate: moment.Moment = start.startOf("day");
-  while (currentDate.isBefore(end.endOf("day"))) {
-    intervalArray.push({interval: moment(currentDate).startOf("day").valueOf(), avgResponseTime: 0, intervalDate: moment(currentDate)});
-    currentDate.add(interval, "minutes");
-  }
-  return intervalArray;
-}
-
-function formatIntervalDate(stringToReplace: string, intervalValue: number) {
-  const dateInterval = moment(stringToReplace, "YYYY-MM-DD-hh-mm");
-  const minutes = dateInterval.minute() * intervalValue;
-  const formattedDate = dateInterval.minute(minutes);
-  return moment(formattedDate).toString();
-}

@@ -39,10 +39,6 @@ describe("SourceFullSummary", function () {
                 header={"Test Header"} />);
         });
 
-        it("Tests the header exists", function () {
-            expect(wrapper.find("h4")).to.have.text("Test Header");
-        });
-
         it("Tests the intent summary exists.", function () {
             expect(wrapper.find(SourceIntentSummary)).to.have.length(1);
         });

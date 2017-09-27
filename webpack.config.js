@@ -5,6 +5,7 @@ var WebpackStrip = require('strip-loader');
 var package = require("./package.json");
 
 var node_env = process.env.NODE_ENV;
+var logless_base = process.env.LOGLESS_BASE;
 var projectName = "dashboard";
 var version = package.version;
 var buildNumber = process.env.TRAVIS_BUILD_NUMBER;
@@ -15,14 +16,15 @@ var buildId = process.env.TRAVIS_BUILD_ID
 // to let TypeScript know about them.
 var buildVariables = {
   'process.env': {
-    NODE_ENV: JSON.stringify(node_env)
+    NODE_ENV: JSON.stringify(node_env),
+    LOGLESS_BASE: JSON.stringify(logless_base)
   },
   'BASENAME': JSON.stringify("/dashboard"),
   'GOOGLE_ANALYTICS': JSON.stringify(""),
   'VERSION': JSON.stringify(version),
   'BUILD_NUMBER': JSON.stringify(buildNumber),
   'BUILD_ID': JSON.stringify(buildId),
-  'LOGLESS_BASE': JSON.stringify("https://logless-dev.bespoken.tools/v1")
+  'LOGLESS_BASE': JSON.stringify(logless_base)
 }
 
 // A list of plugins
@@ -33,7 +35,6 @@ if (node_env === "production") {
   // For production postfix min to the file names
   projectName += ".min";
   buildVariables.GOOGLE_ANALYTICS = JSON.stringify("UA-40630247-7");
-  buildVariables.LOGLESS_BASE = JSON.stringify("https://logless.bespoken.tools/v1")
   // Add the production plugins
   plugins.push(new webpack.optimize.UglifyJsPlugin());
 }

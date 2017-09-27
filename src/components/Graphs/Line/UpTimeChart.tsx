@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import ChartUtils from "../../../utils/chart";
 
 export interface LineProps {
@@ -90,7 +90,6 @@ class UpTimeChart extends React.Component<UpTimeChartProps, UpTimeChartState> {
                     <CartesianGrid fill={this.props.status ? "#33a532" : "#c44b4b"} stroke={this.props.status ? "#33a532" : "#c44b4b"} width={0} />
                     <Tooltip labelFormatter={this.labelFormat} />
                     <Line dataKey="statusValue" dot={false} stroke="#fff" />
-                    <Legend verticalAlign="top" align="center" height={36} payload={[{ value: "Source Up Time", type: "line", id: "ID01" }]} />
                 </LineChart>
             </ResponsiveContainer>
         );

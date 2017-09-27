@@ -42,6 +42,7 @@ describe("SourceIntentSummary", function () {
                 source={source}
                 startDate={start}
                 endDate={end} />);
+            wrapper.setState({data: [{}]});
         });
 
         it("Checks the bar graph is there.", function () {
@@ -49,7 +50,7 @@ describe("SourceIntentSummary", function () {
         });
 
         it("Checks the bar graph has a default of empty data.", function () {
-            expect(wrapper.find(BarChart).prop("data")).to.deep.equal([]);
+            expect(wrapper.find(BarChart).prop("data")).to.deep.equal([{}]);
         });
 
         describe("Bars", function () {
@@ -76,6 +77,8 @@ describe("SourceIntentSummary", function () {
                     startDate={start}
                     endDate={end}
                     bars={bars} />);
+
+                wrapper.setState({data: [{}]});
             });
 
             it("Tests the bars were applied to the inner bar chart.", function () {
@@ -185,10 +188,11 @@ describe("SourceIntentSummary", function () {
                 source={undefined}
                 startDate={start}
                 endDate={end} />);
+            newWrapper.setState({data: [{}]});
 
             let loadingPromise = (wrapper.instance() as SourceIntentSummary).loadingPromise;
             return loadingPromise.then(function () {
-                expect(newWrapper.find(BarChart).prop("data")).to.have.length(0);
+                expect(newWrapper.find(BarChart).prop("data")).to.have.length(1);
             });
         });
     });
