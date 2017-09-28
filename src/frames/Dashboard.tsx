@@ -125,8 +125,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
-    const alreadyClicked = window.localStorage.getItem("contest") === "true";
-    if (!alreadyClicked) this.handleOpenModal();
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
