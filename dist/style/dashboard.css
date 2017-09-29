@@ -4973,12 +4973,28 @@
     border-left: 1px solid gray;
     border-bottom: 1px solid gray; }
 
-.bar-chart .recharts-layer.recharts-bar-rectangle path {
-  fill-opacity: .4;
-  fill: #e68a00; }
+.avg-response-time-chart {
+  padding-top: 30px; }
 
-.bar-chart .recharts-legend-wrapper .recharts-default-legend {
-  margin-left: 130px !important; }
+.bar-chart {
+  padding-top: 30px; }
+  .bar-chart .recharts-layer.recharts-bar-rectangle path {
+    fill-opacity: .4;
+    fill: #e68a00; }
+  .bar-chart .recharts-legend-wrapper .recharts-default-legend {
+    margin-left: 130px !important; }
+
+.graph-header {
+  font-family: Helvetica;
+  font-size: 16.8px;
+  font-weight: bold;
+  line-height: 24px;
+  margin: -6px 0 5px;
+  text-align: center;
+  width: 100%; }
+
+.graph-loader {
+  margin: 50px auto 0; }
 
 @media (max-width: 839px) {
   .custom-spacing {
