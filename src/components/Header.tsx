@@ -113,7 +113,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
               caption="Talk to Us" />
 
             <MenuItem
-              to="mailto:contact@bespoken.tools"
+              to="mailto:contact@bespoken.io"
               icon="email"
               caption="Email" />
 
