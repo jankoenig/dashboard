@@ -38,5 +38,20 @@
         .responsive-page-swap {
             margin-left: 220px;
         }
+
+        .custom-form {
+            display: flex;
+            justify-content: flex-start;
+            margin: 1% 10%;
+        }
+
+        .custom-form > div:nth-child(2) > div {
+            padding: .5rem 0;
+            margin: 0 20px;
+        }
+
+        .custom-form > div:nth-child(2) > ul {
+            padding: 0;
+        }
     }
 }
