@@ -185,43 +185,45 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   pageButtons(): PageButton[] | undefined {
-      console.log(this.props);
-    if (this.props.currentSource) {
-      return [
-        {
-          icon: "dashboard",
-          name: "summary",
-          tooltip: "summary"
-        },
-        {
-          icon: "list",
-          name: "logs",
-          tooltip: "logs"
-        },
-        {
-          icon: "code",
-          name: "integration",
-          tooltip: "integration"
-        },
-        {
-          icon: "assignment_turned_in",
-          name: "validation",
-          tooltip: "validation (beta)"
-        },
-        {
-            icon: "volume_up",
-            name: "volume",
-            tooltip: "audio player session metrics"
-        },
-        {
-          icon: "settings",
-          name: "settings",
-          tooltip: "settings"
-        },
+      const currentUserId = this.props && this.props.user && this.props.user.userId;
+      const isOwner = currentUserId && this.props && ["admin", "owner"].indexOf(this.props.currentSource && this.props.currentSource.members[currentUserId]) > -1;
+      let roleButtons = [
+          {
+              icon: "dashboard",
+              name: "summary",
+              tooltip: "summary"
+          },
+          {
+              icon: "list",
+              name: "logs",
+              tooltip: "logs"
+          },
+          {
+              icon: "volume_up",
+              name: "volume",
+              tooltip: "audio player session metrics"
+          },
       ];
-    } else {
-      return undefined;
-    }
+      if (isOwner) {
+          roleButtons = roleButtons.concat([
+              {
+                  icon: "code",
+                  name: "integration",
+                  tooltip: "integration"
+              },
+              {
+                  icon: "assignment_turned_in",
+                  name: "validation",
+                  tooltip: "validation (beta)"
+              },
+              {
+                  icon: "settings",
+                  name: "settings",
+                  tooltip: "settings"
+              }
+          ]);
+      }
+      return this.props.currentSource ? roleButtons : undefined;
   }
 
   handlePageSwap(button: PageButton) {
