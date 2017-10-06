@@ -173,7 +173,7 @@ const renderSuggestion = (source: any) => {
 const theme: any = {
   container: {
     position: "absolute",
-    top: 13,
+    marginTop: 3,
     left: 50,
   },
   input: {

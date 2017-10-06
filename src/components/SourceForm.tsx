@@ -43,6 +43,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
 
         this.onNameChange = this.onNameChange.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     textFieldStyleOverrides() {
@@ -67,6 +68,14 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
         this.props.onChange(target.value);
     }
 
+    onSubmit (event: any) {
+        if (this.state.source) {
+            this.props.createSource(this.state.source);
+        }
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
     onClick() {
         if (this.state.source) {
             this.props.createSource(this.state.source);
@@ -76,7 +85,7 @@ export class SourceForm extends React.Component<SourceFormProps, SourceFormState
     render() {
         return (
             <div>
-                <form id="newSource">
+                <form onSubmit={this.onSubmit} id="newSource">
                     <FormInput
                         style={this.textFieldStyleOverrides()}
                         type={"text"}

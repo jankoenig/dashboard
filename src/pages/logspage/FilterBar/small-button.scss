@@ -1,0 +1,15 @@
+:global {
+    .small-button {
+        position: relative;
+        top: -2px;
+        left: 12px;
+        width: 1.8rem!important;
+        height: 1.8rem!important;
+        span {
+            line-height: 1.8rem!important;
+            position: absolute;
+            top: 1px;
+            left: 1px;
+        }
+    }
+}

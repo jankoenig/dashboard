@@ -121,7 +121,7 @@ export class Interaction extends React.Component<InteractionProps, InteractionSt
     handleCopyRequestPayload: (e: any) => void;
     handleCopyResponsePayload: (e: any) => void;
     handleCopyPayload(e: any) {
-        const payload = e.target.getAttribute("data-type") === "request" ? this.props.request : this.props.response;
+        const payload = e.target.getAttribute("data-type") === "request" ? this.props.request.payload : this.props.response.payload;
         const textArea = document.createElement("textarea");
         textArea.style.position = "fixed";
         textArea.style.top = "0";

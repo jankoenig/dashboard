@@ -1,20 +1,22 @@
 import * as classNames from "classnames";
 import { Moment } from "moment";
 import * as React from "react";
+import { Button } from "react-toolbox/lib/button";
 import Checkbox from "react-toolbox/lib/checkbox";
 import DatePicker from "react-toolbox/lib/date_picker";
 import Dropdown from "react-toolbox/lib/dropdown";
 import Input from "react-toolbox/lib/input";
-
 import { Cell, Grid } from "../../../components/Grid";
 import { Origin } from "../../../models/conversation";
 import { DateFilter, ExceptionFilter, IntentFilter, LogLevelFilter, OriginFilter, RequestFilter } from "../filters/ConvoFilters";
+import "./small-button";
 
 const FilterBarStyle = require("./style.scss");
 const DatePickerFilterbarTheme = require("../../../themes/datepicker-filterbar.scss");
 const DropdownFilterbarTheme = require("../../../themes/dropdown-filterbar.scss");
 const InputTheme = require("../../../themes/input-light.scss");
 const CheckboxTheme = require("../../../themes/checkbox-theme-light.scss");
+const ButtonTheme = require("../../../themes/button_theme.scss");
 
 export interface DateRange {
     startTime?: Date | Moment;
@@ -104,6 +106,7 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.handleIntentChange = this.handleIntentChange.bind(this);
         this.handleRequestChange = this.handleRequestChange.bind(this);
         this.handleOriginChange = this.handleOriginChange.bind(this);
+        this.handleRefresh = this.handleRefresh.bind(this);
     }
 
     gridClasses() {
@@ -184,6 +187,11 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
         this.props.onFilterOrigin(filter);
     }
 
+    async handleRefresh() {
+        await this.props.onLiveUpdate(false);
+        this.props.onLiveUpdate(true);
+    }
+
     render(): JSX.Element {
         let fullEndDate = new Date();
         let queryEndDate = this.state.endDate ? this.state.endDate : fullEndDate;
@@ -260,15 +268,14 @@ class FilterBar extends React.Component<FilterProps, FilterState> {
                         onChange={this.handleEndDateChange}
                         readonly={this.props.dateRange ? false : true} />
                 </Cell>
-                <Cell col={1} tablet={1} phone={1}>
-                    <div style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} >
-                        <Checkbox
-                            theme={CheckboxTheme}
-                            label="Live Update"
-                            checked={this.props.liveUpdateEnabled}
-                            disabled={this.props.disableLiveUpdateCheckbox}
-                            onChange={this.props.onLiveUpdate} />
-                    </div>
+                <Cell col={3} tablet={5} phone={4}>
+                    <Checkbox
+                        theme={CheckboxTheme}
+                        label="Live Update"
+                        checked={this.props.liveUpdateEnabled}
+                        disabled={this.props.disableLiveUpdateCheckbox}
+                        onChange={this.props.onLiveUpdate} />
+                    <Button className="small-button" theme={ButtonTheme} onClick={this.handleRefresh} icon="refresh" accent={true} mini={true} floating={true}/>
                 </Cell>
             </Grid>
         );

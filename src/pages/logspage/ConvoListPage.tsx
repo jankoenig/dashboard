@@ -166,7 +166,7 @@ export class ConvoListPage extends React.Component<ConvoListPageProps, ConvoList
         if (nextProps.source) {
             const range = getDateRange(nextProps.filter);
             if (!SourceUtil.equals(nextProps.source, this.props.source) ||
-                differentRanges(range, this.state.query)) {
+                differentRanges(range, this.state.query) || !(this.props.refreshOn === nextProps.refreshOn)) {
                 this.getFreshLogs(nextProps);
             } else {
                 // Same source, just filter what we have.
