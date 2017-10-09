@@ -1,3 +1,4 @@
+import * as pusher from "pusher-js";
 import * as React from "react";
 import { connect } from "react-redux";
 import {Card, CardText, CardTitle} from "react-toolbox/lib/card";
@@ -31,6 +32,8 @@ interface ValidationPageState {
     token: string;
     tokenChanged: boolean;
     showHelp: boolean;
+    channels: any[];
+    pusher: pusher.Pusher | undefined;
 }
 
 interface ValidationPageProps {
@@ -60,6 +63,10 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             token: "",
             tokenChanged: false,
             showHelp: false,
+            channels: [],
+            pusher: (process.env.PUSHER_APP_KEY ? new pusher(
+                process.env.PUSHER_APP_KEY, {cluster: "us2", encrypted: true})
+                : undefined),
         };
         this.handleScriptChange = this.handleScriptChange.bind(this);
         this.handleTokenChange = this.handleTokenChange.bind(this);
@@ -68,6 +75,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.handleDialogToggle = this.handleDialogToggle.bind(this);
         this.handleHelpChange = this.handleHelpChange.bind(this);
         this.lastScriptKey = this.lastScriptKey.bind(this);
+        this.setupChannel = this.setupChannel.bind(this);
     }
 
     lastScriptKey(source: Source) {
@@ -92,6 +100,25 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             .then((userDetails: UserDetails) => {
                 self.setState({...this.state, token: userDetails.silentEchoToken});
             });
+    }
+
+    setupChannel(token: string, timestamp: number) {
+        if (!process.env.PUSHER_APP_KEY) return;
+        const self = this;
+        const channel = token + timestamp;
+        self.setState({...self.state,
+            channels: [...self.state.channels, channel]});
+        self.state.pusher.subscribe(channel).bind("results", function(data: any) {
+            const validationResults = (data && data.message &&
+                data.message.validationResults);
+            if (!validationResults) return;
+            self.setState({
+                ...self.state,
+                dialogActive: true,
+                loadingValidationResults: false,
+                validationResults,
+            });
+        });
     }
 
     componentWillReceiveProps(nextProps: ValidationPageProps, context: any) {
@@ -120,7 +147,9 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         const self = this;
         const validateSource = () => {
             this.setState({...this.state, loadingValidationResults: true});
-            SourceService.validateSource(this.state.script, this.state.token)
+            const timestamp = Date.now();
+            self.setupChannel(this.state.token, timestamp);
+            SourceService.validateSource(this.state.script, this.state.token, timestamp)
                 .then((validationResults: any) => {
                     if (window && window.localStorage
                         && self.lastScriptKey(this.props.source)) {
@@ -156,15 +185,22 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
     }
 
     handleDialogToggle = () => {
-      this.setState({...this.state, dialogActive: !this.state.dialogActive});
+        if (process.env.PUSHER_APP_KEY && this.state.dialogActive) {
+            this.state.channels.forEach(channel => {
+                this.state.pusher.unsubscribe(channel);
+            });
+        }
+        this.setState({...this.state, dialogActive: !this.state.dialogActive});
     }
 
     virtualDeviceLinkAccountURL(): string {
         const baseURL = window.location.protocol + "//" +
             window.location.hostname + (window.location.port ? ":" + window.location.port : "");
-        return "https://virtual-device.bespoken.io/" +
+        return this.props.user
+            ? "https://virtual-device.bespoken.io/" +
             `link_account?dashboard_user_id=${this.props.user.userId}` +
-            `&redirect_url=${baseURL}${this.props.location.basename}${this.props.location.pathname}`;
+            `&redirect_url=${baseURL}${this.props.location.basename}${this.props.location.pathname}`
+            : "";
     }
 
     render() {
@@ -200,8 +236,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                             className={`${dashboardTheme.dialog}`}
                             active={this.state.dialogActive}
                             onEscKeyDown={this.handleDialogToggle}
-                            onOverlayClick={this.handleDialogToggle}
-                            title="Validation Script Results">
+                            onOverlayClick={this.handleDialogToggle}>
                             <div dangerouslySetInnerHTML={{__html: this.state.validationResults}}/>
                         </Dialog>
                     </Cell>
