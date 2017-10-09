@@ -26,8 +26,6 @@ import SettingsPage from "./pages/settingspage/StateSettingsPage";
 import SourceListPage from "./pages/SourceListPage";
 import SourcePage from "./pages/sourcepage/SourcePage";
 import SourcesLinkPage from "./pages/SourcesLinkPage";
-import AddMemberPage from "./pages/teampage/AddMemberPage";
-import TeamPage from "./pages/teampage/TeamPage";
 import ValidationPage from "./pages/validation/ValidationPage";
 import rootReducer from "./reducers";
 
@@ -157,8 +155,6 @@ let render = function () {
                 </Route>
                 <Route path="/" component={Dashboard} onEnter={onEnterDashboard}>
                     <Route path="/skills" component={SourceListPage} />
-                    <Route path="/team" component={TeamPage} />
-                    <Route path="/team/new" component={AddMemberPage} />
                     <Route path="/skills/new" component={NewSourcePage} />
                     <Route path="/skills/:sourceId" onEnter={setSource} onLeave={removeSource} >
                         <IndexRoute component={SourcePage} />

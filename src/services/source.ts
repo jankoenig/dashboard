@@ -99,31 +99,15 @@ export namespace source {
             });
     }
 
-    export async function deleteSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
+    export function deleteSource(source: Source, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<Source> {
         const user = auth.currentUser;
         const ref = db.ref();
         const key = source.id;
 
         // tslint:disable:no-null-keyword
-        await ref.child("users").child(user.uid).child("sources").child(key).set(null);
-        try {
-            const team = await ref.child("users").child(user.uid).child("team").once("value");
-            await Object.keys(team.val()).forEach(async (teamKey) => {
-                await ref
-                    .child("users")
-                    .child(teamKey)
-                    .child("sources")
-                    .child(key)
-                    .set(null)
-                    .catch(err => {
-                        console.log(err);
-                    });
-            });
-        }
-        catch (err) {
-            console.log(err);
-        }
-        return removeMembers(user.uid, source);
+        return ref.child("users").child(user.uid).child("sources").child(key).set(null).then(function () {
+            return removeMembers(user.uid, source);
+        });
         // tslint:enable:no-null-keyword
     }
 

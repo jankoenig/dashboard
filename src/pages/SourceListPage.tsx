@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import {connect} from "react-redux";
 import {Link} from "react-router";
@@ -9,7 +10,6 @@ import ListItem from "../components/List/ListItem";
 import TwoPane from "../components/TwoPane";
 
 import Source from "../models/source";
-import User from "../models/user";
 
 import {State} from "../reducers";
 import ArrayUtils from "../utils/array";
@@ -21,7 +21,6 @@ const ButtonTheme = require("../themes/button_theme.scss");
 export interface SourceListPageProps {
     sources: Source[];
     finishLoading: boolean;
-    user: User;
 }
 
 interface SourceListPageState {
@@ -30,7 +29,6 @@ interface SourceListPageState {
 
 function mapStateToProps(state: State.All) {
     return {
-        user: state.session.user,
         sources: state.source.sources,
         finishLoading: state.source.finishLoading
     };
@@ -43,7 +41,7 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
             <div className="source_list_page_left" style={{position: "relative", height: "100%"}}>
                 {
                     this.props.finishLoading &&
-                    <SourceList user={this.props.user} sources={ArrayUtils.sortArrayByProperty(this.props.sources, "name")}/>
+                    <SourceList sources={ArrayUtils.sortArrayByProperty(this.props.sources, "name")}/>
                 }
                 <Link to="/skills/new" style={{position: "absolute", bottom: "5%", right: "5%"}}>
                     <Button theme={ButtonTheme} icon="add" accent mini floating/>
@@ -75,7 +73,6 @@ export default connect(
 
 interface SourceListProps {
     sources: Source[];
-    user?: User;
 }
 
 interface SourceListState {
@@ -91,15 +88,14 @@ class SourceList extends React.Component<SourceListProps, SourceListState> {
 
     renderItem(index: number, key: string): JSX.Element {
         let source = this.props.sources[index];
-        const userType = source.members[this.props.user && this.props.user.userId];
-        // const secondaryValue = (source.created) ? moment(source.created).format("MMM Do, YYYY") : " ";
+        const secondaryValue = (source.created) ? moment(source.created).format("MMM Do, YYYY") : " ";
         return (
             <ListItem
                 key={source.id}
                 index={index}
                 primaryValue={source.name}
                 routeTo={"/skills/" + source.id}
-                secondaryValue={userType}/>
+                secondaryValue={secondaryValue}/>
         );
     }
 
