@@ -6,6 +6,7 @@ var package = require("./package.json");
 
 var node_env = process.env.NODE_ENV;
 var logless_base = process.env.LOGLESS_BASE;
+var source_api__base = process.env.SOURCE_API_BASE;
 var projectName = "dashboard";
 var version = package.version;
 var buildNumber = process.env.TRAVIS_BUILD_NUMBER;
@@ -17,7 +18,8 @@ var buildId = process.env.TRAVIS_BUILD_ID
 var buildVariables = {
   'process.env': {
     NODE_ENV: JSON.stringify(node_env),
-    LOGLESS_BASE: JSON.stringify(logless_base)
+    LOGLESS_BASE: JSON.stringify(logless_base),
+    SOURCE_API_ACCESS_TOKEN: JSON.stringify(source_api__base)
   },
   'BASENAME': JSON.stringify("/dashboard"),
   'GOOGLE_ANALYTICS': JSON.stringify(""),

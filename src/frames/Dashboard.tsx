@@ -43,6 +43,7 @@ interface DashboardProps {
   location: Location;
   login: () => (dispatch: Redux.Dispatch<any>) => void;
   logout: () => (dispatch: Redux.Dispatch<any>) => void;
+  team: () => (dispatch: Redux.Dispatch<any>) => void;
   getSources: () => Promise<Source[]>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
@@ -61,23 +62,26 @@ function mapStateToProps(state: State.All) {
 }
 
 function mapDispatchToProps(dispatch: any) {
-  return {
-    login: function () {
-      return dispatch(push("/login"));
-    },
-    logout: function () {
-      return dispatch(logout());
-    },
-    getSources: function (): Promise<Source[]> {
-      return dispatch(getSources());
-    },
-    setSource: function (source: Source) {
-      return dispatch(setCurrentSource(source));
-    },
-    goTo: function (path: string) {
-      return dispatch(replace(path));
-    }
-  };
+    return {
+        login: function () {
+            return dispatch(push("/login"));
+        },
+        logout: function () {
+            return dispatch(logout());
+        },
+        team: function () {
+            return dispatch(push("/team"));
+        },
+        getSources: function (): Promise<Source[]> {
+            return dispatch(getSources());
+        },
+        setSource: function (source: Source) {
+            return dispatch(setCurrentSource(source));
+        },
+        goTo: function (path: string) {
+            return dispatch(replace(path));
+        }
+    };
 }
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
@@ -159,37 +163,40 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   pageButtons(): PageButton[] | undefined {
-    if (this.props.currentSource) {
-      return [
-        {
-          icon: "dashboard",
-          name: "summary",
-          tooltip: "summary"
-        },
-        {
-          icon: "list",
-          name: "logs",
-          tooltip: "logs"
-        },
-        {
-          icon: "code",
-          name: "integration",
-          tooltip: "integration"
-        },
-        {
-          icon: "assignment_turned_in",
-          name: "validation",
-          tooltip: "validation (beta)"
-        },
-        {
-          icon: "settings",
-          name: "settings",
-          tooltip: "settings"
-        },
+      const currentUserId = this.props && this.props.user && this.props.user.userId;
+      const isOwner = currentUserId && this.props && ["admin", "owner"].indexOf(this.props.currentSource && this.props.currentSource.members[currentUserId]) > -1;
+      let roleButtons = [
+          {
+              icon: "dashboard",
+              name: "summary",
+              tooltip: "summary"
+          },
+          {
+              icon: "list",
+              name: "logs",
+              tooltip: "logs"
+          }
       ];
-    } else {
-      return undefined;
-    }
+      if (isOwner) {
+          roleButtons = roleButtons.concat([
+              {
+                  icon: "code",
+                  name: "integration",
+                  tooltip: "integration"
+              },
+              {
+                  icon: "assignment_turned_in",
+                  name: "validation",
+                  tooltip: "validation (beta)"
+              },
+              {
+                  icon: "settings",
+                  name: "settings",
+                  tooltip: "settings"
+              }
+          ]);
+      }
+      return this.props.currentSource ? roleButtons : undefined;
   }
 
   handlePageSwap(button: PageButton) {
@@ -255,6 +262,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           <UserControl
             login={this.props.login}
             logout={this.props.logout}
+            team={this.props.team}
             user={this.props.user} />
         </Header>
         <Content>
