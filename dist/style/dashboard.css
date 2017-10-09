@@ -3880,6 +3880,17 @@
 .StackTraceListItemStyle__display___DfiFU {
   opacity: 1;
   height: auto; }
+.small-button {
+  position: relative;
+  top: -2px;
+  left: 12px;
+  width: 1.8rem !important;
+  height: 1.8rem !important; }
+  .small-button span {
+    line-height: 1.8rem !important;
+    position: absolute;
+    top: 1px;
+    left: 1px; }
 .style__filterBarGrid___19UPe {
   background-color: #243036; }
 .datepicker-filterbar__dialog___3DRDX {
@@ -4315,6 +4326,13 @@
     left: 0.3rem;
     width: 0.3rem;
     height: 0.9rem; } }
+
+.checkbox-theme-light__field___waNTY {
+  display: inline-block; }
+  .checkbox-theme-light__field___waNTY .checkbox-theme-light__text___1l_Ro {
+    font-size: 1.2em;
+    padding-left: .5rem;
+    vertical-align: baseline; }
 .custom-input__dialog___1eAKL {
   overflow: auto; }
 
