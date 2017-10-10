@@ -180,11 +180,13 @@ export namespace source {
         });
     }
 
-    export function validateSource(script: string, token: string, timestamp: number): Promise<any> {
+    export function validateSource(script: string, token: string,
+        timestamp: number, vendorID: string): Promise<any> {
         const query: Query = new Query();
         query.add({parameter: "script", value: script});
         query.add({parameter: "token", value: token});
         query.add({parameter: "timestamp", value: timestamp});
+        query.add({parameter: "vendor_id", value: vendorID});
         return fetch(VALIDATE_URL, {
             method: "POST",
             headers: {

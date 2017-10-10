@@ -34,6 +34,7 @@ interface ValidationPageState {
     showHelp: boolean;
     channels: any[];
     pusher: pusher.Pusher | undefined;
+    vendorID: string;
 }
 
 interface ValidationPageProps {
@@ -67,6 +68,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             pusher: (process.env.PUSHER_APP_KEY ? new pusher(
                 process.env.PUSHER_APP_KEY, {cluster: "us2", encrypted: true})
                 : undefined),
+            vendorID: "",
         };
         this.handleScriptChange = this.handleScriptChange.bind(this);
         this.handleTokenChange = this.handleTokenChange.bind(this);
@@ -76,6 +78,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.handleHelpChange = this.handleHelpChange.bind(this);
         this.lastScriptKey = this.lastScriptKey.bind(this);
         this.setupChannel = this.setupChannel.bind(this);
+        this.handleVendorIDChange = this.handleVendorIDChange.bind(this);
     }
 
     lastScriptKey(source: Source) {
@@ -121,6 +124,10 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         });
     }
 
+    handleVendorIDChange(value: string) {
+        this.setState({...this.state, vendorID: value});
+    }
+
     componentWillReceiveProps(nextProps: ValidationPageProps, context: any) {
         this.checkLastScript(nextProps.source);
     }
@@ -149,7 +156,8 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             this.setState({...this.state, loadingValidationResults: true});
             const timestamp = Date.now();
             self.setupChannel(this.state.token, timestamp);
-            SourceService.validateSource(this.state.script, this.state.token, timestamp)
+            SourceService.validateSource(this.state.script, this.state.token,
+                timestamp, this.state.vendorID)
                 .then((validationResults: any) => {
                     if (window && window.localStorage
                         && self.lastScriptKey(this.props.source)) {
@@ -212,6 +220,12 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                     </Cell>
                     <Cell col={12} className={`${inputTheme.inputHelp}`}>
                         Don't have a token yet? <a href={`${this.virtualDeviceLinkAccountURL()}`}>Get it here</a>
+                    </Cell>
+                    <Cell col={12}>
+                        <Input label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
+                    </Cell>
+                    <Cell col={12} className={`${inputTheme.inputHelp}`}>
+                        To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
                     </Cell>
                     <Cell col={12}>
                         <Input multiline={true}
