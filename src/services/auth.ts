@@ -47,6 +47,13 @@ namespace auth {
                     category: "Authorization",
                     action: isSignUp ? "Signup With Github" : "Login With Github"
                 });
+                if (isSignUp) {
+                    globalWindow.google_trackConversion && globalWindow.google_trackConversion({
+                        google_conversion_id: 860338926,
+                        google_conversion_label: "W121CKKEh3YQ7vWemgM",
+                        google_remarketing_only: false,
+                    });
+                }
                 user = new FirebaseUser(result.user);
                 identify(user, "github");
                 localStorage.setItem("user", JSON.stringify(user));
@@ -96,6 +103,11 @@ namespace auth {
                 ReactGA.event({
                     category: "Authorization",
                     action: "Signup With Email"
+                });
+                globalWindow.google_trackConversion && globalWindow.google_trackConversion({
+                    google_conversion_id: 860338926,
+                    google_conversion_label: "M7SmCOmKgXYQ7vWemgM",
+                    google_remarketing_only: false,
                 });
                 let modelUser: User = new FirebaseUser(user);
                 identify(modelUser, "email");
