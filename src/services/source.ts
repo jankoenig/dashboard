@@ -181,12 +181,13 @@ export namespace source {
     }
 
     export function validateSource(script: string, token: string,
-        timestamp: number, vendorID: string): Promise<any> {
+        timestamp: number, vendorID: string, smAPIAccessToken: string): Promise<any> {
         const query: Query = new Query();
         query.add({parameter: "script", value: script});
         query.add({parameter: "token", value: token});
         query.add({parameter: "timestamp", value: timestamp});
         query.add({parameter: "vendor_id", value: vendorID});
+        query.add({parameter: "sm_api_access_token", value: smAPIAccessToken});
         return fetch(VALIDATE_URL, {
             method: "POST",
             headers: {

@@ -1,7 +1,9 @@
 export class UserDetails {
     readonly silentEchoToken: string;
-    constructor(silentEchoToken: string) {
+    readonly smAPIAccessToken: string;
+    constructor(silentEchoToken: string, smAPIAccessToken: string) {
         this.silentEchoToken = silentEchoToken;
+        this.smAPIAccessToken = smAPIAccessToken;
     }
 }
 

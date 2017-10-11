@@ -32,6 +32,7 @@ interface ValidationPageState {
     token: string;
     tokenChanged: boolean;
     showHelp: boolean;
+    smAPIAccessToken: string;
     channels: any[];
     pusher: pusher.Pusher | undefined;
     vendorID: string;
@@ -64,6 +65,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             token: "",
             tokenChanged: false,
             showHelp: false,
+            smAPIAccessToken: "",
             channels: [],
             pusher: (process.env.PUSHER_APP_KEY ? new pusher(
                 process.env.PUSHER_APP_KEY, {cluster: "us2", encrypted: true})
@@ -101,7 +103,9 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         self.checkLastScript(this.props.source);
         auth.currentUserDetails()
             .then((userDetails: UserDetails) => {
-                self.setState({...this.state, token: userDetails.silentEchoToken});
+                self.setState({...this.state,
+                    token: userDetails.silentEchoToken,
+                    smAPIAccessToken: userDetails.smAPIAccessToken});
             });
     }
 
@@ -157,7 +161,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             const timestamp = Date.now();
             self.setupChannel(this.state.token, timestamp);
             SourceService.validateSource(this.state.script, this.state.token,
-                timestamp, this.state.vendorID)
+                timestamp, this.state.vendorID, this.state.smAPIAccessToken)
                 .then((validationResults: any) => {
                     if (window && window.localStorage
                         && self.lastScriptKey(this.props.source)) {
