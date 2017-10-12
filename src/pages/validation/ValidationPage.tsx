@@ -36,6 +36,7 @@ interface ValidationPageState {
     channels: any[];
     pusher: pusher.Pusher | undefined;
     vendorID: string;
+    vendorIDChanged: boolean;
 }
 
 interface ValidationPageProps {
@@ -71,6 +72,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                 process.env.PUSHER_APP_KEY, {cluster: "us2", encrypted: true})
                 : undefined),
             vendorID: "",
+            vendorIDChanged: false,
         };
         this.handleScriptChange = this.handleScriptChange.bind(this);
         this.handleTokenChange = this.handleTokenChange.bind(this);
@@ -129,7 +131,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
     }
 
     handleVendorIDChange(value: string) {
-        this.setState({...this.state, vendorID: value});
+        this.setState({...this.state, vendorID: value, vendorIDChanged: true});
     }
 
     componentWillReceiveProps(nextProps: ValidationPageProps, context: any) {
@@ -182,8 +184,15 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                     });
                 });
         };
-        if (this.state.tokenChanged) {
-            auth.updateCurrentUser({silentEchoToken: this.state.token})
+        if (this.state.tokenChanged || this.state.vendorIDChanged) {
+            const props: any = {};
+            if (this.state.tokenChanged) {
+                props.silentEchoToken = this.state.token;
+            }
+            if (this.state.vendorIDChanged) {
+                props.vendorID = this.state.vendorID;
+            }
+            auth.updateCurrentUser(props)
                 .then(() => {
                     self.setState({
                         ...self.state,
