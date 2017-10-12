@@ -107,6 +107,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             .then((userDetails: UserDetails) => {
                 self.setState({...this.state,
                     token: userDetails.silentEchoToken,
+                    vendorID: userDetails.vendorID,
                     smAPIAccessToken: userDetails.smAPIAccessToken});
             });
     }
