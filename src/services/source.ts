@@ -194,13 +194,7 @@ export namespace source {
                 "Content-Type": "application/json"
             },
             body: query.json()
-        }).then(function (result: any) {
-            if (result.status === 200) {
-                return result.text();
-            } else {
-                return Promise.reject(new Error(result.statusText));
-            }
-        });
+        }).then((result: any) => result.text());
     }
 }
 
