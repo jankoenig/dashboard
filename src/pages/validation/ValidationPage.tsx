@@ -228,17 +228,13 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
     render() {
         return (
             <Grid>
-                <form onSubmit={this.handleRun}>
-                    <Cell col={12}>
+                <form className="mdl-grid" onSubmit={this.handleRun}>
+                    <Cell col={6}>
                         <Input label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
-                    </Cell>
-                    <Cell col={12} className={`${inputTheme.inputHelp}`}>
                         Don't have a token yet? <a href={`${this.virtualDeviceLinkAccountURL()}`}>Get it here</a>
                     </Cell>
-                    <Cell col={12}>
+                    <Cell col={6}>
                         <Input label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
-                    </Cell>
-                    <Cell col={12} className={`${inputTheme.inputHelp}`}>
                         To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
                     </Cell>
                     <Cell col={12}>
