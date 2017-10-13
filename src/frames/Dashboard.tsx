@@ -64,27 +64,30 @@ function mapStateToProps(state: State.All) {
 }
 
 function mapDispatchToProps(dispatch: any) {
-  return {
-    login: function () {
-      return dispatch(push("/login"));
-    },
-    logout: function () {
-      return dispatch(logout());
-    },
-    getSources: function (): Promise<Source[]> {
-      return dispatch(getSources());
-    },
-    setSource: function (source: Source) {
-      return dispatch(setCurrentSource(source));
-    },
-    goTo: function (path: string) {
-      return dispatch(replace(path));
-    }
-    ,
-    setUser: function (user: User) {
-      return dispatch(setUser(user));
-    }
-  };
+    return {
+        login: function () {
+            return dispatch(push("/login"));
+        },
+        logout: function () {
+            return dispatch(logout());
+        },
+        team: function () {
+            document.getElementsByClassName("userMenu")[0].getElementsByTagName("button")[0].click();
+            return dispatch(push("/team"));
+        },
+        getSources: function (): Promise<Source[]> {
+            return dispatch(getSources());
+        },
+        setSource: function (source: Source) {
+            return dispatch(setCurrentSource(source));
+        },
+        goTo: function (path: string) {
+            return dispatch(replace(path));
+        },
+        setUser: function (user: User) {
+            return dispatch(setUser(user));
+        }
+    };
 }
 
 let showAskingSnackbar: boolean = false;
