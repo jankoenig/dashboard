@@ -163,7 +163,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             this.setState({...this.state, loadingValidationResults: true});
             const timestamp = Date.now();
             self.setupChannel(this.state.token, timestamp);
-            SourceService.validateSource(this.state.script, this.state.token,
+            SourceService.validateSource(this.props.user.userId, this.state.script, this.state.token,
                 timestamp, this.state.vendorID, this.state.smAPIAccessToken)
                 .then((validationResults: any) => {
                     if (window && window.localStorage

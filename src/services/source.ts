@@ -180,9 +180,10 @@ export namespace source {
         });
     }
 
-    export function validateSource(script: string, token: string,
+    export function validateSource(userId: string, script: string, token: string,
         timestamp: number, vendorID: string, smAPIAccessToken: string): Promise<any> {
         const query: Query = new Query();
+        query.add({parameter: "user_id", value: userId});
         query.add({parameter: "script", value: script});
         query.add({parameter: "token", value: token});
         query.add({parameter: "timestamp", value: timestamp});
