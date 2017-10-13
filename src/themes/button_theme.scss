@@ -2,7 +2,9 @@
 
 @import "~react-toolbox/lib/button/theme";
 
-.circularProgressBar {
-    width: 22px;
-    height: 36px;
+:global {
+    .circularProgressBar {
+        width: 22px !important;
+        height: 36px !important;
+    }
 }

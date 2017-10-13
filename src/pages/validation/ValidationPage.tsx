@@ -20,7 +20,6 @@ import { Location } from "../../utils/Location";
 
 const dashboardTheme = require("../../themes/dashboard.scss");
 const inputTheme = require("../../themes/input.scss");
-const buttonTheme = require("../../themes/button_theme.scss");
 const checkboxTheme = require("../../themes/checkbox-theme.scss");
 
 interface ValidationPageState {
@@ -159,51 +158,54 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
     handleRun(e: any) {
         e.preventDefault();
         const self = this;
-        const validateSource = () => {
-            this.setState({...this.state, loadingValidationResults: true});
-            const timestamp = Date.now();
-            self.setupChannel(this.state.token, timestamp);
-            SourceService.validateSource(this.props.user.userId, this.state.script, this.state.token,
-                timestamp, this.state.vendorID, this.state.smAPIAccessToken)
-                .then((validationResults: any) => {
-                    if (window && window.localStorage
-                        && self.lastScriptKey(this.props.source)) {
-                        window.localStorage.setItem(self.lastScriptKey(this.props.source),
-                            encodeURIComponent(this.state.script));
-                    }
-                    self.setState({
-                        ...self.state,
-                        dialogActive: true,
-                        loadingValidationResults: false,
-                        validationResults,
+        this.setState((prevState: any) => {
+            return {...self.state, loadingValidationResults: true};
+        }, () => {
+            const validateSource = () => {
+                const timestamp = Date.now();
+                self.setupChannel(this.state.token, timestamp);
+                SourceService.validateSource(this.props.user.userId, this.state.script, this.state.token,
+                    timestamp, this.state.vendorID, this.state.smAPIAccessToken)
+                    .then((validationResults: any) => {
+                        if (window && window.localStorage
+                            && self.lastScriptKey(this.props.source)) {
+                            window.localStorage.setItem(self.lastScriptKey(this.props.source),
+                                encodeURIComponent(this.state.script));
+                        }
+                        self.setState({
+                            ...self.state,
+                            dialogActive: true,
+                            loadingValidationResults: false,
+                            validationResults,
+                        });
+                    })
+                    .catch(() => {
+                        self.setState({
+                            ...self.state,
+                            loadingValidationResults: false,
+                        });
                     });
-                })
-                .catch(() => {
-                    self.setState({
-                        ...self.state,
-                        loadingValidationResults: false,
+            };
+            if (this.state.tokenChanged || this.state.vendorIDChanged) {
+                const props: any = {};
+                if (this.state.tokenChanged) {
+                    props.silentEchoToken = this.state.token;
+                }
+                if (this.state.vendorIDChanged) {
+                    props.vendorID = this.state.vendorID;
+                }
+                auth.updateCurrentUser(props)
+                    .then(() => {
+                        self.setState({
+                            ...self.state,
+                            tokenChanged: false,
+                        });
+                        validateSource();
                     });
-                });
-        };
-        if (this.state.tokenChanged || this.state.vendorIDChanged) {
-            const props: any = {};
-            if (this.state.tokenChanged) {
-                props.silentEchoToken = this.state.token;
+            } else {
+                validateSource();
             }
-            if (this.state.vendorIDChanged) {
-                props.vendorID = this.state.vendorID;
-            }
-            auth.updateCurrentUser(props)
-                .then(() => {
-                    self.setState({
-                        ...self.state,
-                        tokenChanged: false,
-                    });
-                    validateSource();
-                });
-        } else {
-            validateSource();
-        }
+        });
     }
 
     handleDialogToggle = () => {
@@ -253,7 +255,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                     <Cell col={12}>
                         <Button raised={true} disabled={this.state.loadingValidationResults}>
                             {this.state.loadingValidationResults
-                            ? <ProgressBar className={`${buttonTheme.circularProgressBar}`} type="circular" mode="indeterminate" />
+                            ? <ProgressBar className="circularProgressBar" type="circular" mode="indeterminate" />
                             : <span>Run</span>}
                         </Button>
                         <Dialog
