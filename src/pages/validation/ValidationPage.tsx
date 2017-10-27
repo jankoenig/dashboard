@@ -164,8 +164,9 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             const validateSource = () => {
                 const timestamp = Date.now();
                 self.setupChannel(this.state.token, timestamp);
-                SourceService.validateSource(this.props.user.userId, this.state.script, this.state.token,
-                    timestamp, this.state.vendorID, this.state.smAPIAccessToken)
+                SourceService.validateSource(this.props.user.userId, this.state.script,
+                    this.state.token, timestamp, this.state.vendorID,
+                    this.state.smAPIAccessToken, this.url())
                     .then((validationResults: any) => {
                         if (window && window.localStorage
                             && self.lastScriptKey(this.props.source)) {
@@ -217,13 +218,18 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.setState({...this.state, dialogActive: !this.state.dialogActive});
     }
 
-    virtualDeviceLinkAccountURL(): string {
+    url(): string  {
         const baseURL = window.location.protocol + "//" +
-            window.location.hostname + (window.location.port ? ":" + window.location.port : "");
+            window.location.hostname +
+            (window.location.port ? ":" + window.location.port : "");
+        return `${baseURL}${this.props.location.basename}${this.props.location.pathname}`;
+    }
+
+    virtualDeviceLinkAccountURL(): string {
         return this.props.user
             ? "https://virtual-device.bespoken.io/" +
             `link_account?dashboard_user_id=${this.props.user.userId}` +
-            `&redirect_url=${baseURL}${this.props.location.basename}${this.props.location.pathname}`
+            `&redirect_url=${this.url()}`
             : "";
     }
 
