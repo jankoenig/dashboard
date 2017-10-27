@@ -7,6 +7,7 @@ var package = require("./package.json");
 var node_env = process.env.NODE_ENV;
 var logless_base = process.env.LOGLESS_BASE;
 var source_url = process.env.SOURCE_URL;
+var virtual_device_url = process.env.VIRTUAL_DEVICE_URL;
 var pusher_app_key = process.env.PUSHER_APP_KEY;
 var projectName = "dashboard";
 var version = package.version;
@@ -21,6 +22,7 @@ var buildVariables = {
     NODE_ENV: JSON.stringify(node_env),
     LOGLESS_BASE: JSON.stringify(logless_base),
     SOURCE_URL: JSON.stringify(source_url),
+    VIRTUAL_DEVICE_URL: JSON.stringify(virtual_device_url),
     PUSHER_APP_KEY: JSON.stringify(pusher_app_key)
   },
   'BASENAME': JSON.stringify("/dashboard"),
