@@ -246,7 +246,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                     </Cell>
                     <Cell col={6}>
                         <Input label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
-                        To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
+                        To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
                     </Cell>
                     <Cell col={12}>
                         <Input multiline={true}
