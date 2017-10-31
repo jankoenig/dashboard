@@ -260,10 +260,10 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                         Don't have a token yet? <a href="#" onClick={this.handleGetTokenClick}>Get it here</a>
                     </Cell>
                     {this.state.showVendorID
-                    ? (<Cell col={3} tablet={12}>
+                    ? <Cell col={3} tablet={12}>
                             <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
                             To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
-                        </Cell>)
+                        </Cell>
                     : undefined}
                     <Cell col={12}>
                         <Cell col={6}>
