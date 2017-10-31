@@ -31,6 +31,7 @@ interface ValidationPageState {
     token: string;
     tokenChanged: boolean;
     showHelp: boolean;
+    showVendorID: boolean;
     smAPIAccessToken: string;
     channels: any[];
     pusher: pusher.Pusher | undefined;
@@ -65,6 +66,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             token: "",
             tokenChanged: false,
             showHelp: false,
+            showVendorID: false,
             smAPIAccessToken: "",
             channels: [],
             pusher: (process.env.PUSHER_APP_KEY ? new pusher(
@@ -82,6 +84,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.lastScriptKey = this.lastScriptKey.bind(this);
         this.setupChannel = this.setupChannel.bind(this);
         this.handleVendorIDChange = this.handleVendorIDChange.bind(this);
+        this.handleGetTokenClick = this.handleGetTokenClick.bind(this);
     }
 
     lastScriptKey(source: Source) {
@@ -107,6 +110,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                 self.setState({...this.state,
                     token: userDetails.silentEchoToken,
                     vendorID: userDetails.vendorID,
+                    showVendorID: (!userDetails.vendorID || userDetails.vendorID === ""),
                     smAPIAccessToken: userDetails.smAPIAccessToken});
             });
     }
@@ -236,20 +240,34 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             : "";
     }
 
+    handleGetTokenClick(e: any) {
+        e.preventDefault();
+        const redirect = () => {
+            window.location.href = this.virtualDeviceLinkAccountURL();
+        };
+        if (this.state.vendorIDChanged) {
+            const props: any = {vendorID: this.state.vendorID};
+            auth.updateCurrentUser(props).then(() => redirect());
+        }
+        redirect();
+    }
+
     render() {
         return (
                 <form className="mdl-grid" onSubmit={this.handleRun}>
                     <Cell col={3} tablet={12}>
                         <Input className="sm-input" label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
-                        Don't have a token yet? <a href={`${this.virtualDeviceLinkAccountURL()}`}>Get it here</a>
+                        Don't have a token yet? <a href="#" onClick={this.handleGetTokenClick}>Get it here</a>
                     </Cell>
-                    <Cell col={3} tablet={12}>
-                        <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
-                        To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
-                    </Cell>
+                    {this.state.showVendorID
+                    ? (<Cell col={3} tablet={12}>
+                            <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
+                            To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
+                        </Cell>)
+                    : undefined}
                     <Cell col={12}>
                         <Cell col={6}>
-                            <Input className='script-input' multiline={true}
+                            <Input className="script-input" multiline={true}
                                 value={this.state.script}
                                 onChange={this.handleScriptChange}
                                 hint={ValidationPage.scriptHint} required={true}/>
