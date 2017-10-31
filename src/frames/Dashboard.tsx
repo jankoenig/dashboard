@@ -182,6 +182,11 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           tooltip: "validation (beta)"
         },
         {
+            icon: "volume_up",
+            name: "volume",
+            tooltip: "audio player session metrics"
+        },
+        {
           icon: "settings",
           name: "settings",
           tooltip: "settings"
@@ -201,6 +206,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
     } else if (button.name === "validation") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/validation");
+    } else if (button.name === "volume") {
+        this.props.goTo("/skills/" + this.props.currentSource.id + "/audio");
     } else if (button.name === "settings") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/settings");
     }

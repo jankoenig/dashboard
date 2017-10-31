@@ -79,6 +79,7 @@ declare module "recharts" {
       payload?: any[];
       margin?: object;
       height?: number;
+      content?: JSX.Element | Function;
     }
 
     export class Legend extends React.Component<LegendProps, any> { }

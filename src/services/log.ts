@@ -106,6 +106,16 @@ namespace LogService {
         return fetchJson(url);
     }
 
+    export function getAudioSessions(query: Query): Promise<any> {
+        let url = BASE_URL + "/audioplayer/sessions?" + query.query();
+        return fetchJson(url);
+    }
+
+    export function getAudioDuration(query: Query): Promise<any> {
+        let url = BASE_URL + "/audioplayer/duration?" + query.query();
+        return fetchJson(url);
+    }
+
     function fetchJson(url: string): Promise<any> {
         return fetch(url).then(function (response) {
             return response.json();
