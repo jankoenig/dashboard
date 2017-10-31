@@ -92,7 +92,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
                     <b>Number of Sessions:</b> {this.props.sessionsAmount}
                 </div>
             );
-        }
+        };
         return (
             <ResponsiveContainer>
                 <LineChart data={this.props.data.audioSessions} >
