@@ -10,7 +10,7 @@ import ProgressBar from "react-toolbox/lib/progress_bar";
 
 import Button from "../../components/Button";
 import {CodeSheet} from "../../components/CodeSheet";
-import {Cell, Grid} from "../../components/Grid";
+import {Cell} from "../../components/Grid";
 import Source from "../../models/source";
 import {User, UserDetails} from "../../models/user";
 import { State } from "../../reducers";
@@ -238,28 +238,28 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
 
     render() {
         return (
-            <Grid>
                 <form className="mdl-grid" onSubmit={this.handleRun}>
-                    <Cell col={6}>
-                        <Input label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
+                    <Cell col={3} tablet={12}>
+                        <Input className="sm-input" label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
                         Don't have a token yet? <a href={`${this.virtualDeviceLinkAccountURL()}`}>Get it here</a>
                     </Cell>
-                    <Cell col={6}>
-                        <Input label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
+                    <Cell col={3} tablet={12}>
+                        <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
                         To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
                     </Cell>
                     <Cell col={12}>
-                        <Input multiline={true}
-                            value={this.state.script}
-                            onChange={this.handleScriptChange}
-                            hint={ValidationPage.scriptHint} required={true}/>
+                        <Cell col={6}>
+                            <Input className='script-input' multiline={true}
+                                value={this.state.script}
+                                onChange={this.handleScriptChange}
+                                hint={ValidationPage.scriptHint} required={true}/>
+                            <p>Scripts will “speak” the sequence of commands listed above,
+                                testing for the proper result - <a href="#" onClick={this.handleHelpChange}>click here for help</a>.
+                            </p>
+                        </Cell>
                     </Cell>
                     <Cell col={12}>
-                        <p>Scripts will “speak” the sequence of commands listed above,
-                            testing for the proper result - <a href="#" onClick={this.handleHelpChange}>click here for help</a>.
-                        </p>
                         {this.state.showHelp ? <ValidationHelp/> : undefined}
-
                     </Cell>
                     <Cell col={12}>
                         <Button raised={true} disabled={this.state.loadingValidationResults}>
@@ -283,7 +283,6 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                             onChange={this.handleMonitorEnabledCheckChange}/>
                     </Cell>
                 </form>
-            </Grid>
         );
     }
 }
