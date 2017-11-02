@@ -26,10 +26,12 @@ describe("AudioPlayerSummary", function () {
         let wrapper: ShallowWrapper<any, any>;
 
         beforeEach(function () {
-            wrapper = shallow(<AudioPlayerSummary
-                source={source.name}
-                startDate={start}
-                endDate={end} />);
+            wrapper = shallow((
+                <AudioPlayerSummary
+                    source={source.name}
+                    startDate={start}
+                    endDate={end} />
+            ));
         });
 
         it("Tests the audio summary exists when no data is provided.", function () {
