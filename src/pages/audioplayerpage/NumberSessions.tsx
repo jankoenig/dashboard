@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as React from "react";
 import ProgressBar from "react-toolbox/lib/progress_bar";
 
-import AudioSessionChart, {AudioSessionData} from "../../components/Graphs/Line/AudioSessionChart";
+import AudioSessionAmountChart, {AudioSessionData} from "../../components/Graphs/Line/AudioSessionAmountChart";
 import {Grid} from "../../components/Grid";
 import * as LoadingComponent from "../../components/LoadingComponent";
 import Query, {EndTimeParameter, SourceParameter, StartTimeParameter} from "../../models/query";
@@ -29,7 +29,7 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
     };
 
     constructor(props: AudioSessionsProps) {
-        super(props, {data: {audioSessions: [], averageSessionDuration: 0, sessionsAmount: 0}} as AudioSessionState);
+        super(props, {data: {audioSessions: [], averageSessionsPerDay: 0}} as AudioSessionState);
     }
 
     componentDidMount () {
@@ -51,10 +51,21 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
 
         let formatedData;
         try {
-            const [sessions, duration] = await Promise.all([AudioPlayerService.getAudioSessions(query), AudioPlayerService.getAudioDuration(query)]);
-            formatedData = { audioSessions: sessions.audioSessions, averageSessionDuration : duration.averageAudioSessionDuration, sessionsAmount: sessions.audioSessionsAmount };
+            const data = await AudioPlayerService.getAudioSessions(query);
+            const audioSessions = data.map((audioSession: any) => {
+                const sessionStartTime = moment(audioSession._id.year + "-" + audioSession._id.month + "-" + audioSession._id.day).toISOString();
+                return {
+                    sessionStartTime,
+                    amount: audioSession.count,
+                };
+            });
+            const sessionsAmount = audioSessions.reduce((accum: any, item: any) => {
+                return accum + item.amount;
+            }, 0);
+            const avgSessions = sessionsAmount / audioSessions.length;
+            formatedData = { audioSessions: audioSessions, averageSessionsPerDay : avgSessions };
         } catch (err) {
-            formatedData = { audioSessions: [], averageSessionDuration: 0, sessionsAmount: 0 };
+            formatedData = { audioSessions: [], averageSessionsPerDay: 0 };
         }
         this.mapState({data: formatedData});
     }
@@ -85,14 +96,21 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
         query.add(new StartTimeParameter(startDate));
         query.add(new EndTimeParameter(endDate));
         try {
-            const [sessions, duration] = await Promise.all([AudioPlayerService.getAudioSessions(query), AudioPlayerService.getAudioDuration(query)]);
-            return {
-                audioSessions: sessions.audioSessions,
-                averageSessionDuration: duration.averageAudioSessionDuration,
-                sessionsAmount: sessions.audioSessionsAmount
-            };
+            const data = await AudioPlayerService.getAudioSessions(query);
+            const audioSessions = data.map((audioSession: any) => {
+                const sessionStartTime = moment(audioSession._id.year + "-" + audioSession._id.month + "-" + audioSession._id.day).toISOString();
+                return {
+                    sessionStartTime,
+                    amount: audioSession.count,
+                };
+            });
+            const sessionsAmount = audioSessions.reduce((accum: any, item: any) => {
+                return accum + item.amount;
+            }, 0);
+            const avgSessions = sessionsAmount / audioSessions.length;
+            return { audioSessions: audioSessions, averageSessionsPerDay : avgSessions };
         } catch (err) {
-            return {audioSessions: [], averageSessionDuration: 0, sessionsAmount: 0};
+            return {audioSessions: [], averageSessionsPerDay: 0};
         }
     }
 
@@ -106,21 +124,19 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
 
     render() {
         const {data} = this.state;
-        if (!data || !data.audioSessions || !data.averageSessionDuration || !data.sessionsAmount) {
+        if (!data || !data.audioSessions || !data.averageSessionsPerDay) {
             return (
                <Grid className="graph-loader">
                     <ProgressBar className="graph-loader" type="circular" mode="indeterminate" />
                 </Grid>
             );
         }
-        console.log(data);
         return (
-            <AudioSessionChart
+            <AudioSessionAmountChart
                 startDate={this.props.startDate}
                 endDate={this.props.endDate}
                 data={data}
-                averageSessionDuration={data.averageSessionDuration}
-                sessionsAmount={data.sessionsAmount} />
+                averageSessionsPerDay={data.averageSessionsPerDay} />
         );
     }
 }

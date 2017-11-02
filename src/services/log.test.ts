@@ -2,6 +2,7 @@ import { expect } from "chai";
 import * as fetchMock from "fetch-mock";
 
 import LogQuery from "../models/log-query";
+import AudioQuery, {EndTimeParameter, SourceParameter, StartTimeParameter} from "../models/query";
 import Source from "../models/source";
 import { dummyLogs } from "../utils/test";
 import log from "./log";
@@ -116,6 +117,79 @@ describe("log service", function () {
             return log.getSourceSummary(query).then(function (summary) {
                 expect(summary).to.deep.equal(mockSummary);
                 // If we made it this far, then we know it went to the proper endpoint.
+            });
+        });
+    });
+
+    describe("getAudioStats", function () {
+
+        describe("Duration", function() {
+            // Mock fetch
+            beforeEach(function () {
+                fetchMock.get(/https:\/\/(logless|logless-hyper).bespoken.tools\/v1\/audioplayer\/duration\?*/, {
+                    "data": dummyLogs(2)
+                });
+            });
+
+            afterEach(function () {
+                fetchMock.restore();
+            });
+
+            it("retreives the duration data", function (done) {
+                let startTime = new Date("2016-10-30T19:20:22.512Z");
+                let endTime = new Date("2016-11-01T19:20:22.512Z");
+                let source = new Source({
+                    name: "streamer",
+                    secretKey: "streamer"
+                });
+
+                const query: AudioQuery = new AudioQuery();
+                query.add(new SourceParameter(source));
+                query.add(new StartTimeParameter(startTime));
+                query.add(new EndTimeParameter(endTime));
+
+                log.getAudioDuration(query).then(function (logs) {
+                    expect(logs).to.have.length(2);
+                    done();
+                }).catch(err => {
+                    console.log(err);
+                    done();
+                });
+            });
+        });
+
+        describe("SessionsAmount", function() {
+            // Mock fetch
+            beforeEach(function () {
+                fetchMock.get(/https:\/\/(logless|logless-hyper).bespoken.tools\/v1\/audioplayer\/sessions\?*/, {
+                    "data": dummyLogs(2)
+                });
+            });
+
+            afterEach(function () {
+                fetchMock.restore();
+            });
+
+            it("retreives sessions amount", function (done) {
+                let startTime = new Date("2016-10-30T19:20:22.512Z");
+                let endTime = new Date("2016-11-01T19:20:22.512Z");
+                let source = new Source({
+                    name: "streamer",
+                    secretKey: "streamer"
+                });
+
+                const query: AudioQuery = new AudioQuery();
+                query.add(new SourceParameter(source));
+                query.add(new StartTimeParameter(startTime));
+                query.add(new EndTimeParameter(endTime));
+
+                log.getAudioSessions(query).then(function (logs) {
+                    expect(logs).to.have.length(2);
+                    done();
+                }).catch(err => {
+                    console.log(err);
+                    done();
+                });
             });
         });
     });

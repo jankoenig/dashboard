@@ -13,14 +13,12 @@ export interface LineProps {
 
 export class AudioSessionData {
     audioSessions: any[];
-    averageSessionDuration?: number;
-    sessionsAmount?: number;
+    averageSessionsPerDay?: number;
 }
 
 interface AudioSessionChartProps {
     data: AudioSessionData;
-    averageSessionDuration?: number;
-    sessionsAmount?: number;
+    averageSessionsPerDay?: number;
     tickFormat?: string;
     startDate?: moment.Moment;
     endDate?: moment.Moment;
@@ -61,14 +59,14 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
       return moment(time).format(this.props.tickFormat);
     }
 
-    YTickFormat(statusValue: number): string {
-      return statusValue === 1 ? "Up" : " ";
+    YTickFormat(amount: number): string {
+        return amount.toString();
     }
 
     static defaultProps: AudioSessionChartProps = {
         data: { audioSessions: [] },
         tickFormat: "MM/DD",
-        labelFormat: "MM/DD hh:mm a",
+        labelFormat: "MM/DD",
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
     };
@@ -86,10 +84,8 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
         const renderLegend = (props: any) => {
             return (
                 <div style={{textAlign: "center", marginBottom: 15}}>
-                    <div style={{fontSize: "1.2em", fontWeight: "bold", marginBottom: 5}}>{this.props.data.audioSessions[0].sourceId}</div>
-                    <b>Avg. Duration:</b> {this.props.averageSessionDuration.toFixed(2)} ms
-                    <br/>
-                    <b>Number of Sessions:</b> {this.props.sessionsAmount}
+                    <div style={{fontSize: "1.2em", fontWeight: "bold", marginBottom: 5}}>Sessions Per Day</div>
+                    <div>Avg. sessions per day: {this.props.averageSessionsPerDay}</div>
                 </div>
             );
         };
@@ -97,10 +93,10 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
             <ResponsiveContainer>
                 <LineChart data={this.props.data.audioSessions} >
                     <XAxis dataKey="sessionStartTime" tickFormatter={this.tickFormat} ticks={this.state.ticks} />
-                    <YAxis />
+                    <YAxis width={80} tickFormatter={this.YTickFormat} />
                     <Legend verticalAlign={"top"} content={renderLegend} />
                     <Tooltip labelFormatter={this.labelFormat} />
-                    <Line type="monotone" dataKey="duration" dot={false} />
+                    <Line type="monotone" dataKey="amount" dot={false} />
                 </LineChart>
             </ResponsiveContainer>
         );

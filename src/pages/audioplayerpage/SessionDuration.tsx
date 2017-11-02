@@ -2,38 +2,34 @@ import * as moment from "moment";
 import * as React from "react";
 import ProgressBar from "react-toolbox/lib/progress_bar";
 
-import UpTimeChart, {UpTimeData} from "../../components/Graphs/Line/UpTimeChart";
+import AudioSessionDurationChart, {AudioSessionData} from "../../components/Graphs/Line/AudioSessionDurationChart";
 import {Grid} from "../../components/Grid";
 import * as LoadingComponent from "../../components/LoadingComponent";
-import Query, {EndTimeValueParameter, StartTimeValueParameter} from "../../models/query";
-import Source from "../../models/source";
-import MonitoringService from "../../services/monitoring";
-import SourceUtils from "../../utils/Source";
+import Query, {EndTimeParameter, SourceParameter, StartTimeParameter} from "../../models/query";
+import AudioPlayerService from "../../services/log";
 
-interface SourceUpTimeProps extends LoadingComponent.LoadingComponentProps {
-    source: Source;
+interface AudioSessionsProps extends LoadingComponent.LoadingComponentProps {
+    source: string;
     startDate: moment.Moment;
     endDate: moment.Moment;
-    handleShowUpTime?: any;
-    handleShowEmptyGraph?: any;
     refreshInterval?: number;
 }
 
-interface SourceUpTimeState extends LoadingComponent.LoadingComponentState<{ summary: UpTimeData[], status: number }> {
+interface AudioSessionState extends LoadingComponent.LoadingComponentState<AudioSessionData> {
     refreshId?: any;
 }
 
-export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeData[], status: number }, SourceUpTimeProps, SourceUpTimeState> {
+export class AudioSession extends LoadingComponent.Component<AudioSessionData, AudioSessionsProps, AudioSessionState> {
 
-    static defaultProps: SourceUpTimeProps = {
+    static defaultProps: AudioSessionsProps = {
         source: undefined,
         startDate: moment().subtract(7, "days"),
         endDate: moment(),
         refreshInterval: 60000,
     };
 
-    constructor(props: SourceUpTimeProps) {
-        super(props, {data: {summary: [], status: 1}} as SourceUpTimeState);
+    constructor(props: AudioSessionsProps) {
+        super(props, {data: {audioSessions: [], averageSessionDuration: 0}} as AudioSessionState);
     }
 
     componentDidMount () {
@@ -49,36 +45,42 @@ export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeDa
         if (!source) return;
         this.mapState({ data: [], sourceState: 1});
         const query: Query = new Query();
-        query.add(new StartTimeValueParameter(moment().subtract(7, "days").valueOf()));
-        query.add(new EndTimeValueParameter(moment().valueOf()));
+        query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(moment().subtract(7, "days")));
+        query.add(new EndTimeParameter(moment()));
 
         let formatedData;
         try {
-            const [sourceStatus, sourcePings] = await Promise.all([MonitoringService.getSourceStatus(source.id), MonitoringService.getUpTimeSummary(query, source.id)]);
-            this.props.handleShowUpTime && this.props.handleShowUpTime(sourceStatus && sourcePings.length > 0);
-            formatedData = await formatUpTimeSummary({ summary: sourcePings, status: sourceStatus.status === "up" ? 1 : 0});
+            const duration = await AudioPlayerService.getAudioDuration(query);
+            const audioSessions = duration.audioSessions.map((audioSession: any) => {
+                const sessionStartTime = moment(audioSession._id.year + "-" + audioSession._id.month + "-" + audioSession._id.day).toISOString();
+                return {
+                    sessionStartTime,
+                    duration: audioSession.duration,
+                };
+            });
+            formatedData = { audioSessions: audioSessions, averageSessionDuration : duration.averageAudioSessionDuration };
         } catch (err) {
-            this.props.handleShowUpTime && this.props.handleShowUpTime(false);
-            formatedData = await formatUpTimeSummary({ summary: [], status: 0});
+            formatedData = { audioSessions: [], averageSessionDuration: 0 };
         }
         this.mapState({data: formatedData});
     }
 
-    shouldUpdate(oldProps: SourceUpTimeProps, newProps: SourceUpTimeProps) {
+    shouldUpdate(oldProps: AudioSessionsProps, newProps: AudioSessionsProps) {
         if (!newProps) {
             return true;
         } else {
-            return !SourceUtils.equals(newProps.source, oldProps.source)
+            return !(newProps.source === oldProps.source)
                 || !newProps.startDate.isSame(oldProps.startDate)
                 || !newProps.endDate.isSame(oldProps.endDate);
         }
     }
 
-    preLoad(props: SourceUpTimeProps) {
+    preLoad(props: AudioSessionsProps) {
         return this.mapState({data: [], sourceState: 1});
     }
 
-    async startLoading(props: SourceUpTimeProps): Promise<any> {
+    async startLoading(props: AudioSessionsProps): Promise<any> {
         const {source, startDate, endDate} = props;
 
         if (!source) {
@@ -86,25 +88,28 @@ export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeDa
         }
 
         const query: Query = new Query();
-        query.add(new StartTimeValueParameter(startDate.valueOf()));
-        query.add(new EndTimeValueParameter(endDate.valueOf()));
+        query.add(new SourceParameter(source));
+        query.add(new StartTimeParameter(startDate));
+        query.add(new EndTimeParameter(endDate));
         try {
-            const [sourceStatus, sourcePings] = await Promise.all([MonitoringService.getSourceStatus(source.id), MonitoringService.getUpTimeSummary(query, source.id)]);
-            this.props.handleShowUpTime && this.props.handleShowUpTime(sourceStatus && sourcePings.length > 0);
-            console.log(sourceStatus && sourcePings.length > 0);
-            this.props.handleShowEmptyGraph && this.props.handleShowEmptyGraph(!(sourceStatus && sourcePings.length > 0));
-            return sortUpTimeSummary(formatUpTimeSummary({
-                summary: sourcePings,
-                status: sourceStatus.status === "up" ? 1 : 0
-            }));
+            const duration = await AudioPlayerService.getAudioDuration(query);
+            const audioSessions = duration.audioSessions.map((audioSession: any) => {
+                const sessionStartTime = moment(audioSession._id.year + "-" + audioSession._id.month + "-" + audioSession._id.day).toISOString();
+                return {
+                    sessionStartTime,
+                    duration: audioSession.duration,
+                };
+            });
+            return {
+                audioSessions,
+                averageSessionDuration: duration.averageAudioSessionDuration,
+            };
         } catch (err) {
-            this.props.handleShowUpTime && this.props.handleShowUpTime(false);
-            this.props.handleShowEmptyGraph && this.props.handleShowEmptyGraph(true);
-            return sortUpTimeSummary(formatUpTimeSummary({summary: [], status: 0}));
+            return {audioSessions: [], averageSessionDuration: 0};
         }
     }
 
-    map(data: MonitoringService.UpTimeSummary[]): MonitoringService.UpTimeSummary[] {
+    map(data: any): any {
         return data;
     }
 
@@ -114,7 +119,7 @@ export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeDa
 
     render() {
         const {data} = this.state;
-        if (!data || !data.summary || !data.status) {
+        if (!data || !data.audioSessions || !data.averageSessionDuration) {
             return (
                <Grid className="graph-loader">
                     <ProgressBar className="graph-loader" type="circular" mode="indeterminate" />
@@ -122,32 +127,13 @@ export class SourceUpTime extends LoadingComponent.Component<{ summary: UpTimeDa
             );
         }
         return (
-            <UpTimeChart
+            <AudioSessionDurationChart
                 startDate={this.props.startDate}
                 endDate={this.props.endDate}
-                data={data.summary}
-                status={data.status}/>
+                data={data}
+                averageSessionDuration={data.averageSessionDuration} />
         );
     }
 }
 
-export default SourceUpTime;
-
-function formatUpTimeSummary(result: { summary: MonitoringService.UpTimeSummary[], status: number }): { summary: any, status: number } {
-    const data = result.summary.map((item, i) => {
-        return {
-            source: item.source,
-            status: item.status,
-            timestamp: item.timestamp,
-            statusValue: item.status === "up" ? 1 : 0
-        };
-    });
-    return {summary: data, status: result.status};
-}
-
-function sortUpTimeSummary(result: { summary: MonitoringService.UpTimeSummary[], status: number }): { summary: any, status: number } {
-    const data = result.summary.sort((a, b) => {
-        return a.timestamp - b.timestamp;
-    });
-    return {summary: data, status: result.status};
-}
+export default AudioSession;

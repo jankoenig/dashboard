@@ -6,16 +6,15 @@ import { replace, RouterAction } from "react-router-redux";
 import { Cell, Grid } from "../../components/Grid";
 import Source from "../../models/source";
 import { State } from "../../reducers";
-import AudioSessionSummary from "./NumberSessions";
+import AudioSessionNumber  from "./NumberSessions";
+import AudioSessionDuration from "./SessionDuration";
 
-interface SourcePageProps {
+interface AudioPlayerPageProps {
     source: Source;
     goHome: () => RouterAction;
-    removeSource: (source: Source) => Promise<Source>;
 }
 
-interface SourcePageState {
-    deleteDialogActive: boolean;
+interface AudioPlayerPageState {
 }
 
 function mapStateToProps(state: State.All) {
@@ -32,9 +31,9 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
     };
 }
 
-export class SourcePage extends React.Component<SourcePageProps, SourcePageState> {
+export class AudioPlayerPage extends React.Component<AudioPlayerPageProps, AudioPlayerPageState> {
 
-    constructor(props: SourcePageProps) {
+    constructor(props: AudioPlayerPageProps) {
         super(props);
     }
 
@@ -50,8 +49,14 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
             <div style={{margin: 25}}>
                 <h3>Last seven days summary</h3>
                 <Grid>
-                    <Cell style={{height: 300}}>
-                        <AudioSessionSummary
+                    <Cell col={6} style={{height: 300}}>
+                        <AudioSessionDuration
+                            source={sourceName}
+                            startDate={start}
+                            endDate={end} />
+                    </Cell>
+                    <Cell col={6} style={{height: 300}}>
+                        <AudioSessionNumber
                             source={sourceName}
                             startDate={start}
                             endDate={end} />
@@ -65,4 +70,4 @@ export class SourcePage extends React.Component<SourcePageProps, SourcePageState
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(SourcePage);
+)(AudioPlayerPage);
