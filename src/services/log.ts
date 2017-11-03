@@ -51,6 +51,16 @@ namespace LogService {
         Unknown: TotalStat;
     }
 
+    export interface AudioPlayerTotalStats {
+        avgDuration: number;
+        avgSessionsNumber: number;
+    }
+
+    export interface AudioPlayerStats {
+        source: string;
+        stats: AudioPlayerTotalStats;
+    }
+
     export const DEFAULT_TRANSACTIONS_BEFORE = 25;
     export const DEFAULT_TRANSACTIONS_AFTER = 25;
     let BASE_URL = "https://logless.bespoken.tools/v1";

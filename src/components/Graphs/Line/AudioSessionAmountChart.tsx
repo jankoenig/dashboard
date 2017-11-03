@@ -85,7 +85,6 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
             return (
                 <div style={{textAlign: "center", marginBottom: 15}}>
                     <div style={{fontSize: "1.2em", fontWeight: "bold", marginBottom: 5}}>Sessions Per Day</div>
-                    <div>Avg. sessions per day: {this.props.averageSessionsPerDay}</div>
                 </div>
             );
         };

@@ -6,6 +6,7 @@ import { replace, RouterAction } from "react-router-redux";
 import { Cell, Grid } from "../../components/Grid";
 import Source from "../../models/source";
 import { State } from "../../reducers";
+import AudioPlayerStats from "./AudioPlayerStats";
 import AudioSessionNumber  from "./NumberSessions";
 import AudioSessionDuration from "./SessionDuration";
 
@@ -48,6 +49,14 @@ export class AudioPlayerPage extends React.Component<AudioPlayerPageProps, Audio
         return (
             <div style={{margin: 25}}>
                 <h3>Last seven days summary</h3>
+                <Grid className="custom-spacing" noSpacing={true}>
+                    <Cell className="stats" tablet={8} col={6}>
+                        <AudioPlayerStats
+                            source={sourceName}
+                            startDate={start}
+                            endDate={end} />
+                    </Cell>
+                </Grid>
                 <Grid>
                     <Cell col={6} style={{height: 300}}>
                         <AudioSessionDuration
