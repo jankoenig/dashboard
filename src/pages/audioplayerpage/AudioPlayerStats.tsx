@@ -28,36 +28,6 @@ function newStats(avgDuration: number = 0, avgSessions: number = 0): LogService.
     };
 }
 
-// function getLabel(audioPlayerStats: LogService.AudioPlayerStats, state: LoadingComponent.LoadingState, entries: ENTRY | ENTRY[]): Labels {
-//     if (state === LoadingComponent.LoadingState.LOADING) {
-//         return {
-//             avgDurationLabel: LOADING_VALUE,
-//             avgSessionsLabel: LOADING_VALUE,
-//         };
-//     } else if (state === LoadingComponent.LoadingState.LOAD_ERROR || audioPlayerStats.source === DEFAULT_VALUE) {
-//         return {
-//             avgDurationLabel: DEFAULT_VALUE,
-//             avgSessionsLabel: DEFAULT_VALUE,
-//         };
-//     }
-//
-//     const selectedEntries = (entries instanceof Array) ? entries : [entries];
-//     const selectedStats: LogService.AudioPlayerTotalStats[] = [];
-//     for (let entry of selectedEntries) {
-//         const stat = audioPlayerStats[entry];
-//         if (stat) {
-//             selectedStats.push(stat);
-//         }
-//     }
-//
-//     const stats = addStats(selectedStats);
-//
-//     return {
-//         avgDurationLabel: stats.avgDuration.toString(),
-//         avgSessionsLabel: stats.avgSessionsNumber.toString(),
-//     };
-// }
-
 
 export class AudioPlayerStats extends LoadingComponent.Component<LogService.AudioPlayerStats, AudioPlayerStatsProps, AudioPlayerStatsState> {
 
@@ -120,7 +90,7 @@ export class AudioPlayerStats extends LoadingComponent.Component<LogService.Audi
         }
 
         return (
-            <Grid noSpacing>
+            <Grid noSpacing={true}>
                 <Cell phone={2} offsetTablet={1} tablet={3} col={6}>
                     <DataTile
                         smallWidth={true}
