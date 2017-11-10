@@ -11,6 +11,7 @@ interface ToastProps {
     onShowToast?: (property: any) => void;
     duration?: number;
     onToastClick?: () => void;
+    actionType?: string;
 }
 
 interface ToastState {
@@ -35,7 +36,7 @@ export class Toast extends React.Component<ToastProps, ToastState> {
 
     render() {
         setTimeout(() => {
-            this.props && this.props.onShowToast;
+            this.props && this.props.onShowToast && this.props.onShowToast(this.props.actionType);
         }, this.props.duration);
         return (
             <div onClick={this.props.onToastClick} style={this.props.style} className={this.classes()}>
