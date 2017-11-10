@@ -18,6 +18,7 @@ import SpokeService from "../services/spokes";
 import ArrayUtils from "../utils/array";
 import { Location } from "../utils/Location";
 
+import { remoteservice } from "../services/remote-service";
 /**
  * Simple Adapter so a Source can conform to Dropdownable
  */
@@ -50,6 +51,8 @@ interface DashboardProps {
 
 interface DashboardState {
   showModal: boolean;
+  showSignupToast: boolean;
+  showVerifyToast: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -87,13 +90,17 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     this.state = {
       showModal: false,
+      showSignupToast: false,
+      showVerifyToast: false
     };
+
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
     this.handlePageSwap = this.handlePageSwap.bind(this);
     this.handleHomeClick = this.handleHomeClick.bind(this);
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleEnterContest = this.handleEnterContest.bind(this);
+    this.handleVerifyEmailClick = this.handleVerifyEmailClick.bind(this);
   }
 
   drawerClasses() {
@@ -126,6 +133,11 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
+    this.setState({
+      ...this.state,
+      showSignupToast: localStorage.getItem("showSignupToast") == "true",
+      showVerifyToast: localStorage.getItem("showVerifyToast") == "true"
+    });
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -216,24 +228,37 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const contest = window.localStorage.getItem("contest") === "false";
     if (!contest) {
       window.localStorage.setItem("contest", "false");
-      this.setState({ showModal: true });
+      this.setState({ ... this.state, showModal: true });
     }
   }
 
   handleCloseModal() {
     window.localStorage.setItem("contest", "true");
-    this.setState({ showModal: false });
+    this.setState({ ...this.state, showModal: false });
   }
 
   handleEnterContest() {
     window.open("https://www.surveymonkey.com/r/X5R3W8G", "_blank");
     window.localStorage.setItem("contest", "true");
-    this.setState({ showModal: false });
+    this.setState({ ...this.state, showModal: false });
+  }
+
+  handleVerifyEmailClick() {
+    remoteservice.defaultService().auth().currentUser.sendEmailVerification();
+    this.setState({ ...this.state, showSignupToast: true });
   }
 
   render() {
+    const showToast = (property: "showSignupToast" | "showVerifyToast") => {
+      const show = this.state[property];
+      show && localStorage.setItem(property, "");
+      return show;
+    }
+
     return (
       <Layout header={true}>
+        {showToast("showSignupToast") && <div>Verification email sent!</div>}
+        {showToast("showVerifyToast") && <div>Your email is not yet verified - please click on the link in the email we sent to you at signup. Or click <button onClick={this.handleVerifyEmailClick}> here </button> to receive another verification email.</div>}
         <Popup
           header={"Win an Echo Show"}
           content={<span>Thanks for being a Bespoken user.<br />Take this 5-minute survey to enter to win 1 of 2 devices. Enter before Sept 30.</span>}
