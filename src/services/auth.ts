@@ -109,7 +109,7 @@ namespace auth {
                     google_conversion_label: "M7SmCOmKgXYQ7vWemgM",
                     google_remarketing_only: false,
                 });
-                user.sendEmailVerification();
+                user.sendEmailVerification && user.sendEmailVerification();
                 let modelUser: User = new FirebaseUser(user);
                 identify(modelUser, "email");
                 localStorage.setItem("showSignupToast", JSON.stringify(true));

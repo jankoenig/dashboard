@@ -8,6 +8,7 @@ import Content from "../components/Content";
 import { Dropdownable, Header, PageButton } from "../components/Header";
 import Layout from "../components/Layout";
 import Popup from "../components/Popup";
+import Toast from "../components/Toast/Toast";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
@@ -101,6 +102,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleEnterContest = this.handleEnterContest.bind(this);
     this.handleVerifyEmailClick = this.handleVerifyEmailClick.bind(this);
+    this.onShowSignUp = this.onShowToast.bind(this, "showSignupToast");
+    this.onShowVerify = this.onShowToast.bind(this, "showVerifyToast");
   }
 
   drawerClasses() {
@@ -134,8 +137,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     await this.props.getSources();
     this.setState({
       ...this.state,
-      showSignupToast: localStorage.getItem("showSignupToast") == "true",
-      showVerifyToast: localStorage.getItem("showVerifyToast") == "true"
+      showSignupToast: !!localStorage.getItem("showSignupToast"),
+      showVerifyToast: !!localStorage.getItem("showVerifyToast")
     });
   }
 
@@ -247,17 +250,20 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.setState({ ...this.state, showSignupToast: true });
   }
 
-  render() {
-    const showToast = (property: "showSignupToast" | "showVerifyToast") => {
+  onShowSignUp: (property: "showSignupToast") => void;
+  onShowVerify: (property: "showVerifyToast") => void;
+  onShowToast(property: "showSignupToast" | "showVerifyToast") {
       const show = this.state[property];
       show && localStorage.setItem(property, "");
-      return show;
-    }
+  };
 
+  render() {
+      console.log(localStorage.getItem("showSignupToast"));
     return (
       <Layout header={true}>
-        {showToast("showSignupToast") && <div>Verification email sent!</div>}
-        {showToast("showVerifyToast") && <div>Your email is not yet verified - please click on the link in the email we sent to you at signup. Or click <button onClick={this.handleVerifyEmailClick}> here </button> to receive another verification email.</div>}
+          {!!localStorage.getItem("showSignupToast") && <Toast style={{marginTop: 72}} onShowToast={this.onShowSignUp} message="Verification email sent!" type="info" />}
+          {!!localStorage.getItem("showVerifyToast") && <Toast style={{marginTop: 72}} onShowToast={this.onShowVerify} message="Your email is not yet verified - please click on the link in the email we sent to you at signup. Or click this toast to receive another verification email." type="warning"
+               onToastClick={this.handleVerifyEmailClick} />}
         <Popup
           header={"Win an Echo Show"}
           content={<span>Thanks for being a Bespoken user.<br />Take this 5-minute survey to enter to win 1 of 2 devices. Enter before Sept 30.</span>}
