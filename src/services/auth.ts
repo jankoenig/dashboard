@@ -112,7 +112,9 @@ namespace auth {
                 user.sendEmailVerification && user.sendEmailVerification();
                 let modelUser: User = new FirebaseUser(user);
                 identify(modelUser, "email");
+                //console.time('signUp');
                 localStorage.setItem("showSignupToast", JSON.stringify(true));
+                //console.timeEnd('signUp');
                 localStorage.setItem("user", JSON.stringify(modelUser));
                 return modelUser;
             });
@@ -127,7 +129,9 @@ namespace auth {
                 });
                 let modelUser: User = new FirebaseUser(user);
                 identify(modelUser, "email");
-                localStorage.setItem("showVerifyToast", JSON.stringify(!user.emailVerified));
+                //console.time('login');
+                !user.emailVerified && localStorage.setItem("showVerifyToast", JSON.stringify(!user.emailVerified));
+                //console.timeEnd('login');
                 localStorage.setItem("user", JSON.stringify(modelUser));
                 return modelUser;
             });
