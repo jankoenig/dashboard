@@ -10,18 +10,42 @@
         width: 24%;
         height: 10%;
         text-align: center;
-        top: 0;
-        left: 38%;
-        -webkit-animation: seconds 1.0s forwards;
-        -webkit-animation-iteration-count: 1;
-        -webkit-animation-delay: 5s;
-        animation: seconds 2.0s forwards;
-        animation-iteration-count: 1;
-        animation-delay: 5s;
         border-radius: 10px;
         color: #fff;
         cursor: pointer;
         z-index: 9999;
+
+        &.top {
+            top: 0;
+            left: 38%;
+            animation: animation-top 2.0s forwards;
+            animation-iteration-count: 1;
+            animation-delay: 5s;
+        }
+
+        &.bottom {
+            bottom: 0;
+            left: 38%;
+            animation: animation-bot 2.0s forwards;
+            animation-iteration-count: 1;
+            animation-delay: 5s;
+        }
+
+        &.left {
+            top:45%;
+            left: 0;
+            animation: animation-left 2.0s forwards;
+            animation-iteration-count: 1;
+            animation-delay: 5s;
+        }
+
+        &.right {
+            top: 45%;
+            right: 0;
+            animation: animation-right 2.0s forwards;
+            animation-iteration-count: 1;
+            animation-delay: 5s;
+        }
 
         &.error {
             background-color: #e74c3c;
@@ -38,10 +62,14 @@
         &.success {
             background-color: #07bc0c;
         }
+
+        &.end {
+            display: none;
+        }
     }
 }
 
-@-webkit-keyframes:global(seconds) {
+@keyframes:global(animation-top) {
     0% {
         opacity: 1;
     }
@@ -50,13 +78,30 @@
         top: -5%;
     }
 }
-
-@keyframes:global(seconds) {
+@keyframes:global(animation-bop) {
     0% {
         opacity: 1;
     }
     100% {
         opacity: 0;
-        top: -5%;
+        bot: -5%;
+    }
+}
+@keyframes:global(animation-left) {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        left: -24%;
+    }
+}
+@keyframes:global(animation-right) {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        right: -24%;
     }
 }
