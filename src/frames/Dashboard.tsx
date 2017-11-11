@@ -260,17 +260,17 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       <Layout header={true}>
           {
               !!localStorage.getItem("showSignupToast") &&
-              <Toast style={{marginTop: 72}} onShowToast={this.onShowToast}
+              (<Toast style={{marginTop: 72}} onShowToast={this.onShowToast}
                      actionType="showSignupToast"
                      message="Verification email sent!"
-                     type="info" />
+                     type="info" />)
           }
           {
               !!localStorage.getItem("showVerifyToast") &&
-              <Toast style={{marginTop: 72}} onShowToast={this.onShowToast}
+              (<Toast style={{marginTop: 72}} onShowToast={this.onShowToast}
                      actionType="showVerifyToast"
                      message="Your email is not yet verified - please click on the link in the email we sent to you at signup. Or click this toast to receive another verification email." type="warning"
-                     onToastClick={this.handleVerifyEmailClick} />
+                     onToastClick={this.handleVerifyEmailClick} />)
           }
         <Popup
           header={"Win an Echo Show"}
