@@ -32,7 +32,7 @@ export class Toast extends React.Component<ToastProps, ToastState> {
     constructor(props: any) {
         super(props);
 
-        this.setState({hide: false})
+        this.setState({hide: false});
 
         this.handleClick = this.handleClick.bind(this);
     }
