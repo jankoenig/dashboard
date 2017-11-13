@@ -213,7 +213,7 @@ export class IntegrationSpokes extends CancelableComponent<IntegrationSpokesProp
             source.aws_access_key_id = credentialsChanged ? this.state.awsAccessKeyInput : this.state.awsAccessKey;
             source.lambda_arn = this.state.lambdaARN;
         }
-        const resource = getResource(this.state);
+        const resource = getResource({...this.state, awsSecretKey: source.aws_secret_access_key, awsAccessKey: source.aws_access_key_id} as IntegrationSpokesState);
         const spokeSaved = await SpokesService.savePipe(user, source, resource, proxy);
         if (spokeSaved && onSpokesSaved) onSpokesSaved();
         this.resolve(SourceService.updateSourceObj(source)
