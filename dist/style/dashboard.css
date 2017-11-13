@@ -700,9 +700,9 @@
 .button_theme__accent___1JG5A:not([disabled]).button_theme__flat___1fdZB:hover {
   background: rgba(255, 69, 69, 0.2); }
 
-.button_theme__circularProgressBar___1g8lw {
-  width: 22px;
-  height: 36px; }
+.circularProgressBar {
+  width: 22px !important;
+  height: 36px !important; }
 .mdl-color-green-bespoken {
   background-color: #023333; }
 
@@ -3950,6 +3950,14 @@
     width: 50% !important;
     top: 1rem !important; }
 
+.sm-input {
+  padding-bottom: 10px; }
+  .sm-input label, .sm-input input {
+    font-size: 1.2em; }
+
+.script-input {
+  padding-bottom: 10px; }
+
 .datepicker-filterbar__bar___1grbN::before, .datepicker-filterbar__bar___1grbN::after {
   background-color: white; }
 
@@ -4024,6 +4032,14 @@
   .custom-json span {
     width: 50% !important;
     top: 1rem !important; }
+
+.sm-input {
+  padding-bottom: 10px; }
+  .sm-input label, .sm-input input {
+    font-size: 1.2em; }
+
+.script-input {
+  padding-bottom: 10px; }
 
 .dropdown-filterbar__dropdown___1KqRp {
   outline: none; }
@@ -4110,6 +4126,14 @@
   .custom-json span {
     width: 50% !important;
     top: 1rem !important; }
+
+.sm-input {
+  padding-bottom: 10px; }
+  .sm-input label, .sm-input input {
+    font-size: 1.2em; }
+
+.script-input {
+  padding-bottom: 10px; }
 
 .dropdown-filterbar__bar___QUTFN::before, .dropdown-filterbar__bar___QUTFN::after {
   background-color: white; }
@@ -4198,6 +4222,14 @@
   .custom-json span {
     width: 50% !important;
     top: 1rem !important; }
+
+.sm-input {
+  padding-bottom: 10px; }
+  .sm-input label, .sm-input input {
+    font-size: 1.2em; }
+
+.script-input {
+  padding-bottom: 10px; }
 
 .input-light__bar___nZpL7::before, .input-light__bar___nZpL7::after {
   background-color: white; }
@@ -4394,6 +4426,14 @@
   .custom-json span {
     width: 50% !important;
     top: 1rem !important; }
+
+.sm-input {
+  padding-bottom: 10px; }
+  .sm-input label, .sm-input input {
+    font-size: 1.2em; }
+
+.script-input {
+  padding-bottom: 10px; }
 .listitem__dialog___1Iwmw {
   overflow: auto; }
 
@@ -4492,6 +4532,14 @@
   .custom-json span {
     width: 50% !important;
     top: 1rem !important; }
+
+.sm-input {
+  padding-bottom: 10px; }
+  .sm-input label, .sm-input input {
+    font-size: 1.2em; }
+
+.script-input {
+  padding-bottom: 10px; }
 
 .dropdown__dropdown___2zIFS {
   outline: none; }
@@ -4937,9 +4985,9 @@
 .button__accent___26qen:not([disabled]).button__flat___o27aT:hover {
   background: rgba(255, 69, 69, 0.2); }
 
-.button__circularProgressBar___2utmQ {
-  width: 22px;
-  height: 36px; }
+.circularProgressBar {
+  width: 22px !important;
+  height: 36px !important; }
 .recharts-legend-item-text {
   font-size: 1.2em;
   font-weight: bold; }
