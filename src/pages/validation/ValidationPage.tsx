@@ -10,7 +10,7 @@ import ProgressBar from "react-toolbox/lib/progress_bar";
 
 import Button from "../../components/Button";
 import {CodeSheet} from "../../components/CodeSheet";
-import {Cell, Grid} from "../../components/Grid";
+import {Cell} from "../../components/Grid";
 import Source from "../../models/source";
 import {User, UserDetails} from "../../models/user";
 import { State } from "../../reducers";
@@ -20,7 +20,6 @@ import { Location } from "../../utils/Location";
 
 const dashboardTheme = require("../../themes/dashboard.scss");
 const inputTheme = require("../../themes/input.scss");
-const buttonTheme = require("../../themes/button_theme.scss");
 const checkboxTheme = require("../../themes/checkbox-theme.scss");
 
 interface ValidationPageState {
@@ -32,8 +31,12 @@ interface ValidationPageState {
     token: string;
     tokenChanged: boolean;
     showHelp: boolean;
+    showVendorID: boolean;
+    smAPIAccessToken: string;
     channels: any[];
     pusher: pusher.Pusher | undefined;
+    vendorID: string;
+    vendorIDChanged: boolean;
 }
 
 interface ValidationPageProps {
@@ -63,10 +66,14 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             token: "",
             tokenChanged: false,
             showHelp: false,
+            showVendorID: false,
+            smAPIAccessToken: "",
             channels: [],
             pusher: (process.env.PUSHER_APP_KEY ? new pusher(
                 process.env.PUSHER_APP_KEY, {cluster: "us2", encrypted: true})
                 : undefined),
+            vendorID: "",
+            vendorIDChanged: false,
         };
         this.handleScriptChange = this.handleScriptChange.bind(this);
         this.handleTokenChange = this.handleTokenChange.bind(this);
@@ -76,6 +83,8 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.handleHelpChange = this.handleHelpChange.bind(this);
         this.lastScriptKey = this.lastScriptKey.bind(this);
         this.setupChannel = this.setupChannel.bind(this);
+        this.handleVendorIDChange = this.handleVendorIDChange.bind(this);
+        this.handleGetTokenClick = this.handleGetTokenClick.bind(this);
     }
 
     lastScriptKey(source: Source) {
@@ -98,7 +107,11 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         self.checkLastScript(this.props.source);
         auth.currentUserDetails()
             .then((userDetails: UserDetails) => {
-                self.setState({...this.state, token: userDetails.silentEchoToken});
+                self.setState({...this.state,
+                    token: userDetails.silentEchoToken,
+                    vendorID: userDetails.vendorID,
+                    showVendorID: (!userDetails.vendorID || userDetails.vendorID === ""),
+                    smAPIAccessToken: userDetails.smAPIAccessToken});
             });
     }
 
@@ -119,6 +132,10 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                 validationResults,
             });
         });
+    }
+
+    handleVendorIDChange(value: string) {
+        this.setState({...this.state, vendorID: value, vendorIDChanged: true});
     }
 
     componentWillReceiveProps(nextProps: ValidationPageProps, context: any) {
@@ -145,43 +162,55 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
     handleRun(e: any) {
         e.preventDefault();
         const self = this;
-        const validateSource = () => {
-            this.setState({...this.state, loadingValidationResults: true});
-            const timestamp = Date.now();
-            self.setupChannel(this.state.token, timestamp);
-            SourceService.validateSource(this.state.script, this.state.token, timestamp)
-                .then((validationResults: any) => {
-                    if (window && window.localStorage
-                        && self.lastScriptKey(this.props.source)) {
-                        window.localStorage.setItem(self.lastScriptKey(this.props.source),
-                            encodeURIComponent(this.state.script));
-                    }
-                    self.setState({
-                        ...self.state,
-                        dialogActive: true,
-                        loadingValidationResults: false,
-                        validationResults,
+        this.setState((prevState: any) => {
+            return {...self.state, loadingValidationResults: true};
+        }, () => {
+            const validateSource = () => {
+                const timestamp = Date.now();
+                self.setupChannel(this.state.token, timestamp);
+                SourceService.validateSource(this.props.user.userId, this.state.script,
+                    this.state.token, timestamp, this.state.vendorID,
+                    this.state.smAPIAccessToken, this.url())
+                    .then((validationResults: any) => {
+                        if (window && window.localStorage
+                            && self.lastScriptKey(this.props.source)) {
+                            window.localStorage.setItem(self.lastScriptKey(this.props.source),
+                                encodeURIComponent(this.state.script));
+                        }
+                        self.setState({
+                            ...self.state,
+                            dialogActive: true,
+                            loadingValidationResults: false,
+                            validationResults,
+                        });
+                    })
+                    .catch(() => {
+                        self.setState({
+                            ...self.state,
+                            loadingValidationResults: false,
+                        });
                     });
-                })
-                .catch(() => {
-                    self.setState({
-                        ...self.state,
-                        loadingValidationResults: false,
+            };
+            if (this.state.tokenChanged || this.state.vendorIDChanged) {
+                const props: any = {};
+                if (this.state.tokenChanged) {
+                    props.silentEchoToken = this.state.token;
+                }
+                if (this.state.vendorIDChanged) {
+                    props.vendorID = this.state.vendorID;
+                }
+                auth.updateCurrentUser(props)
+                    .then(() => {
+                        self.setState({
+                            ...self.state,
+                            tokenChanged: false,
+                        });
+                        validateSource();
                     });
-                });
-        };
-        if (this.state.tokenChanged) {
-            auth.updateCurrentUser({silentEchoToken: this.state.token})
-                .then(() => {
-                    self.setState({
-                        ...self.state,
-                        tokenChanged: false,
-                    });
-                    validateSource();
-                });
-        } else {
-            validateSource();
-        }
+            } else {
+                validateSource();
+            }
+        });
     }
 
     handleDialogToggle = () => {
@@ -193,43 +222,69 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.setState({...this.state, dialogActive: !this.state.dialogActive});
     }
 
-    virtualDeviceLinkAccountURL(): string {
+    url(): string  {
         const baseURL = window.location.protocol + "//" +
-            window.location.hostname + (window.location.port ? ":" + window.location.port : "");
+            window.location.hostname +
+            (window.location.port ? ":" + window.location.port : "");
+        return `${baseURL}${this.props.location.basename}${this.props.location.pathname}`;
+    }
+
+    virtualDeviceLinkAccountURL(): string {
+        const virtualDeviceURL = process.env.VIRTUAL_DEVICE_URL
+            ? process.env.VIRTUAL_DEVICE_URL
+            : "https://virtual-device.bespoken.io/";
         return this.props.user
-            ? "https://virtual-device.bespoken.io/" +
+            ? `${virtualDeviceURL}` +
             `link_account?dashboard_user_id=${this.props.user.userId}` +
-            `&redirect_url=${baseURL}${this.props.location.basename}${this.props.location.pathname}`
+            `&redirect_url=${this.url()}`
             : "";
+    }
+
+    handleGetTokenClick(e: any) {
+        e.preventDefault();
+        const redirect = () => {
+            window.location.href = this.virtualDeviceLinkAccountURL();
+        };
+        if (this.state.vendorIDChanged) {
+            const props: any = {vendorID: this.state.vendorID};
+            auth.updateCurrentUser(props).then(() => redirect());
+        }
+        redirect();
     }
 
     render() {
         return (
-            <Grid>
-                <form onSubmit={this.handleRun}>
-                    <Cell col={12}>
-                        <Input label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
+                <form className="mdl-grid" onSubmit={this.handleRun}>
+                    <Cell col={3} tablet={12}>
+                        <Input className="sm-input" label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
+                        Don't have a token yet? <a href="#" onClick={this.handleGetTokenClick}>Get it here</a>
                     </Cell>
-                    <Cell col={12} className={`${inputTheme.inputHelp}`}>
-                        Don't have a token yet? <a href={`${this.virtualDeviceLinkAccountURL()}`}>Get it here</a>
+                    {this.state.showVendorID
+                    ? (
+                        <Cell col={3} tablet={12}>
+                            <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
+                            To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
+                        </Cell>
+                        )
+                    : undefined}
+                    <Cell col={12}>
+                        <Cell col={6}>
+                            <Input className="script-input" multiline={true}
+                                value={this.state.script}
+                                onChange={this.handleScriptChange}
+                                hint={ValidationPage.scriptHint} required={true}/>
+                            <p>Scripts will “speak” the sequence of commands listed above,
+                                testing for the proper result - <a href="#" onClick={this.handleHelpChange}>click here for help</a>.
+                            </p>
+                        </Cell>
                     </Cell>
                     <Cell col={12}>
-                        <Input multiline={true}
-                            value={this.state.script}
-                            onChange={this.handleScriptChange}
-                            hint={ValidationPage.scriptHint} required={true}/>
-                    </Cell>
-                    <Cell col={12}>
-                        <p>Scripts will “speak” the sequence of commands listed above,
-                            testing for the proper result - <a href="#" onClick={this.handleHelpChange}>click here for help</a>.
-                        </p>
                         {this.state.showHelp ? <ValidationHelp/> : undefined}
-
                     </Cell>
                     <Cell col={12}>
                         <Button raised={true} disabled={this.state.loadingValidationResults}>
                             {this.state.loadingValidationResults
-                            ? <ProgressBar className={`${buttonTheme.circularProgressBar}`} type="circular" mode="indeterminate" />
+                            ? <ProgressBar className="circularProgressBar" type="circular" mode="indeterminate" />
                             : <span>Run</span>}
                         </Button>
                         <Dialog
@@ -248,7 +303,6 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                             onChange={this.handleMonitorEnabledCheckChange}/>
                     </Cell>
                 </form>
-            </Grid>
         );
     }
 }

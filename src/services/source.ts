@@ -7,7 +7,9 @@ import {remoteservice} from "./remote-service";
 
 export namespace source {
 
-    const SOURCE_URL: string = "https://source-api.bespoken.tools/v1/";
+    const SOURCE_URL: string = process.env.SOURCE_URL
+        ? process.env.SOURCE_URL
+        : "https://source-api.bespoken.tools/v1/";
     const NAME_GENERATING_URL: string = SOURCE_URL + "sourceId";
     const LINK_URL: string = SOURCE_URL + "linkSource";
     const VALIDATE_URL: string = SOURCE_URL + "validateSource";
@@ -180,24 +182,24 @@ export namespace source {
         });
     }
 
-    export function validateSource(script: string, token: string, timestamp: number): Promise<any> {
+    export function validateSource(userId: string, script: string, token: string,
+        timestamp: number, vendorID: string, smAPIAccessToken: string,
+        redirectURL: string): Promise<any> {
         const query: Query = new Query();
+        query.add({parameter: "user_id", value: userId});
         query.add({parameter: "script", value: script});
         query.add({parameter: "token", value: token});
         query.add({parameter: "timestamp", value: timestamp});
+        query.add({parameter: "vendor_id", value: vendorID});
+        query.add({parameter: "sm_api_access_token", value: smAPIAccessToken});
+        query.add({parameter: "redirect_url", value: redirectURL});
         return fetch(VALIDATE_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: query.json()
-        }).then(function (result: any) {
-            if (result.status === 200) {
-                return result.text();
-            } else {
-                return Promise.reject(new Error(result.statusText));
-            }
-        });
+        }).then((result: any) => result.text());
     }
 }
 
