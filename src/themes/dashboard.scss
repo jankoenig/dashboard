@@ -40,3 +40,14 @@ $bar-color-dark: rgb(36, 48, 54);
 .dialog {
     overflow: auto;
 }
+
+:global {
+    .git-hash {
+        position: absolute;
+        bottom: 0;
+        z-index: 10;
+        right: 0;
+        font-size: 16px;
+        padding: 0 6px 2px 0;
+    }
+}
