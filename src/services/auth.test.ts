@@ -17,8 +17,7 @@ let user: remoteservice.user.User = {
     email: "test@testdomain.test",
     photoURL: undefined,
     providerId: "ABC123",
-    uid: "ABCD1234567890",
-    sendEmailVerification: undefined
+    uid: "ABCD1234567890"
 };
 
 let successRedirect = new Promise<any>((resolve, reject) => {

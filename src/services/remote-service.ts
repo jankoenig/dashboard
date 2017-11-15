@@ -20,7 +20,6 @@ export namespace remoteservice {
 export namespace remoteservice.user {
     export interface User extends UserInfo {
         emailVerified: boolean;
-        sendEmailVerification(): Promise<any>;
     }
 
     export interface UserInfo {

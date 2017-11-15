@@ -8,7 +8,6 @@ import Content from "../components/Content";
 import { Dropdownable, Header, PageButton } from "../components/Header";
 import Layout from "../components/Layout";
 import Popup from "../components/Popup";
-import Toast from "../components/Toast/Toast";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
@@ -19,7 +18,6 @@ import SpokeService from "../services/spokes";
 import ArrayUtils from "../utils/array";
 import { Location } from "../utils/Location";
 
-import { remoteservice } from "../services/remote-service";
 /**
  * Simple Adapter so a Source can conform to Dropdownable
  */
@@ -52,8 +50,6 @@ interface DashboardProps {
 
 interface DashboardState {
   showModal: boolean;
-  showSignupToast: boolean;
-  showVerifyToast: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -91,18 +87,13 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     this.state = {
       showModal: false,
-      showSignupToast: false,
-      showVerifyToast: false
     };
-
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
     this.handlePageSwap = this.handlePageSwap.bind(this);
     this.handleHomeClick = this.handleHomeClick.bind(this);
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleEnterContest = this.handleEnterContest.bind(this);
-    this.handleVerifyEmailClick = this.handleVerifyEmailClick.bind(this);
-    this.onShowToast = this.onShowToast.bind(this);
   }
 
   drawerClasses() {
@@ -134,11 +125,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
-    this.setState({
-      ...this.state,
-      showSignupToast: !!localStorage.getItem("showSignupToast"),
-      showVerifyToast: !!localStorage.getItem("showVerifyToast")
-    });
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -229,53 +215,24 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const contest = window.localStorage.getItem("contest") === "false";
     if (!contest) {
       window.localStorage.setItem("contest", "false");
-      this.setState({ ... this.state, showModal: true });
+      this.setState({ showModal: true });
     }
   }
 
   handleCloseModal() {
     window.localStorage.setItem("contest", "true");
-    this.setState({ ...this.state, showModal: false });
+    this.setState({ showModal: false });
   }
 
   handleEnterContest() {
     window.open("https://www.surveymonkey.com/r/X5R3W8G", "_blank");
     window.localStorage.setItem("contest", "true");
-    this.setState({ ...this.state, showModal: false });
+    this.setState({ showModal: false });
   }
-
-  handleVerifyEmailClick() {
-    remoteservice.defaultService().auth().currentUser.sendEmailVerification();
-    localStorage.setItem("showSignupToast", "true");
-    this.setState({ ...this.state, showSignupToast: true });
-  }
-
-  onShowToast(property: "showSignupToast" | "showVerifyToast") {
-    const show = this.state[property];
-    show && localStorage.setItem(property, "");
-  };
 
   render() {
     return (
       <Layout header={true}>
-        {
-          !!localStorage.getItem("showSignupToast") &&
-          (
-            <Toast style={{ marginTop: 72 }} onShowToast={this.onShowToast}
-              actionType="showSignupToast"
-              message="Verification email sent!"
-              type="info" />
-          )
-        }
-        {
-          !!localStorage.getItem("showVerifyToast") &&
-          (
-            <Toast style={{ marginTop: 72 }} onShowToast={this.onShowToast}
-              actionType="showVerifyToast"
-              message="Your email is not yet verified - please click on the link in the email we sent to you at signup. If you didn’t receive it, click in this message to get another one." type="warning"
-              onToastClick={this.handleVerifyEmailClick} />
-          )
-        }
         <Popup
           header={"Win an Echo Show"}
           content={<span>Thanks for being a Bespoken user.<br />Take this 5-minute survey to enter to win 1 of 2 devices. Enter before Sept 30.</span>}
