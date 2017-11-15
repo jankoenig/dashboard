@@ -272,7 +272,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           (
             <Toast style={{ marginTop: 72 }} onShowToast={this.onShowToast}
               actionType="showVerifyToast"
-              message="Your email is not yet verified - please click on the link in the email we sent to you at signup. Or click this toast to receive another verification email." type="warning"
+              message="Your email is not yet verified - please click on the link in the email we sent to you at signup. If you didn’t receive it, click in this message to get another one." type="warning"
               onToastClick={this.handleVerifyEmailClick} />
           )
         }
