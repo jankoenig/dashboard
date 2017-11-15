@@ -25,7 +25,7 @@ var buildVariables = {
     LOGLESS_BASE: JSON.stringify(logless_base),
     SOURCE_URL: JSON.stringify(source_url),
     VIRTUAL_DEVICE_URL: JSON.stringify(virtual_device_url),
-    PUSHER_APP_KEY: JSON.stringify(pusher_app_key),
+    PUSHER_APP_KEY: pusher_app_key ? JSON.stringify(pusher_app_key) : JSON.stringify("f633d48c65e61876b8df"),
     GIT_HASH: JSON.stringify(git_hash),
   },
   'BASENAME': JSON.stringify("/dashboard"),
