@@ -81,4 +81,20 @@ $label-filled-padding-left: 0;
             top: 1rem !important;
         }
     }
+    .sm-input {
+        label, input {
+            font-size: 1.2em;
+        }
+        padding-bottom: 10px;
+    }
+    .script-input {
+        padding-bottom: 10px;
+        textarea {
+            height: 170px !important;
+        }
+        .hint p {
+            margin: 0 0 8px 0 !important;
+            font-size: 1.6rem;
+        }
+    }
 }

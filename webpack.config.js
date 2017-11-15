@@ -3,14 +3,18 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var webpack = require("webpack");
 var WebpackStrip = require('strip-loader');
 var package = require("./package.json");
+var childProcess = require("child_process");
 
 var node_env = process.env.NODE_ENV;
 var logless_base = process.env.LOGLESS_BASE;
+var source_url = process.env.SOURCE_URL;
+var virtual_device_url = process.env.VIRTUAL_DEVICE_URL;
 var pusher_app_key = process.env.PUSHER_APP_KEY;
 var projectName = "dashboard";
 var version = package.version;
 var buildNumber = process.env.TRAVIS_BUILD_NUMBER;
 var buildId = process.env.TRAVIS_BUILD_ID
+var git_hash = childProcess.execSync("git rev-parse HEAD").toString();
 
 // A couple of default buildVariables, these are then made available
 // within the project.  Make sure they are also declared in typings/config.d.ts
@@ -19,14 +23,17 @@ var buildVariables = {
   'process.env': {
     NODE_ENV: JSON.stringify(node_env),
     LOGLESS_BASE: JSON.stringify(logless_base),
-    PUSHER_APP_KEY: JSON.stringify(pusher_app_key)
+    SOURCE_URL: JSON.stringify(source_url),
+    VIRTUAL_DEVICE_URL: JSON.stringify(virtual_device_url),
+    PUSHER_APP_KEY: pusher_app_key ? JSON.stringify(pusher_app_key) : JSON.stringify("f633d48c65e61876b8df"),
+    GIT_HASH: JSON.stringify(git_hash),
   },
   'BASENAME': JSON.stringify("/dashboard"),
   'GOOGLE_ANALYTICS': JSON.stringify(""),
   'VERSION': JSON.stringify(version),
   'BUILD_NUMBER': JSON.stringify(buildNumber),
   'BUILD_ID': JSON.stringify(buildId),
-  'LOGLESS_BASE': JSON.stringify(logless_base)
+  'LOGLESS_BASE': JSON.stringify(logless_base),
 }
 
 // A list of plugins

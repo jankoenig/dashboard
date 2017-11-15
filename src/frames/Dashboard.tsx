@@ -303,6 +303,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         <Content>
           {this.props.children}
         </Content>
+        <a className="git-hash" href={`https://github.com/bespoken/dashboard/commit/${process.env.GIT_HASH}`} target="_blank">{process.env.GIT_HASH.slice(0, 7)}</a>
       </Layout>
     );
   }
