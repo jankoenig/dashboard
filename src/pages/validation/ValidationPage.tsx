@@ -53,7 +53,14 @@ function mapStateToProps(state: State.All) {
 
 export class ValidationPage extends React.Component<ValidationPageProps, ValidationPageState> {
     static readonly lastScriptKeyPrefix = "lastValidationScript";
-    static readonly scriptHint = `"open we study billionaires": "welcome"`;
+    static readonly scriptHint = (
+        <div className="hint">
+            <p>"open guess the price": "how many persons are playing today"</p>
+            <p>"two": "tell us what is your name"</p>
+            <p>"john": "tell us what is your name"</p>
+            <p>"pier": "guess the price"</p>
+            <p>"100 dollars": "*"</p>
+        </div>);
     constructor(props: any) {
         super(props);
         this.state = {
