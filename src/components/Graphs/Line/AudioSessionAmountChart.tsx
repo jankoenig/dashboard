@@ -60,7 +60,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
     }
 
     YTickFormat(amount: number): string {
-        return amount.toString();
+        return amount ? amount.toString() : "";
     }
 
     static defaultProps: AudioSessionChartProps = {

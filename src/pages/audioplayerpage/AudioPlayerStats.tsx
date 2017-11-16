@@ -8,6 +8,7 @@ import Query, { EndTimeParameter, SourceParameter, StartTimeParameter } from "..
 import LogService from "../../services/log";
 
 const DEFAULT_VALUE: string = "N/A";
+const LOADING_VALUE: string = "Loading...";
 
 type ENTRY = "stats";
 
@@ -21,12 +22,45 @@ interface AudioPlayerStatsProps extends LoadingComponent.LoadingComponentProps {
 interface AudioPlayerStatsState extends LoadingComponent.LoadingComponentState<LogService.AudioPlayerStats> {
 }
 
+interface Labels {
+    avgDuration: string;
+    avgSessionsNumber: string;
+}
+
 function newStats(avgDuration: number = 0, avgSessions: number = 0): LogService.AudioPlayerTotalStats {
     return {
         avgDuration: avgDuration,
         avgSessionsNumber: avgSessions,
     };
 }
+
+function getLabel(audioStats: LogService.AudioPlayerTotalStats, state: LoadingComponent.LoadingState): Labels {
+    if (state === LoadingComponent.LoadingState.LOADING) {
+        return {
+            avgDuration: LOADING_VALUE,
+            avgSessionsNumber: LOADING_VALUE,
+        };
+    } else if (state === LoadingComponent.LoadingState.LOAD_ERROR || audioStats.avgDuration.toString() === DEFAULT_VALUE) {
+        return {
+            avgDuration: DEFAULT_VALUE,
+            avgSessionsNumber: DEFAULT_VALUE,
+        };
+    }
+
+    let durationString = audioStats.avgDuration ? audioStats.avgDuration.toString() : DEFAULT_VALUE;
+    let sessionsString = audioStats.avgSessionsNumber ? audioStats.avgSessionsNumber.toString() : DEFAULT_VALUE;
+    if (audioStats.avgDuration) {
+        const minutes = Math.floor(audioStats.avgDuration / 6000);
+        const seconds = (audioStats.avgDuration % 6000) / 1000;
+        durationString = ("0" + minutes).slice(-2) + "m:" + ("0" + seconds).slice(-2) + "s";
+    }
+
+    return {
+        avgDuration: durationString,
+        avgSessionsNumber: sessionsString,
+    };
+}
+
 
 
 export class AudioPlayerStats extends LoadingComponent.Component<LogService.AudioPlayerStats, AudioPlayerStatsProps, AudioPlayerStatsState> {
@@ -80,27 +114,24 @@ export class AudioPlayerStats extends LoadingComponent.Component<LogService.Audi
     }
 
     render() {
-        const { data } = this.state;
-        let durationString = data && data.stats && data.stats.avgDuration.toString();
-        let sessionsString = data && data.stats && data.stats.avgSessionsNumber.toString();
-        if (data && data.stats && data.stats.avgDuration) {
-            const minutes = Math.floor(data.stats.avgDuration / 6000);
-            const seconds = (data.stats.avgDuration % 6000) / 1000;
-            durationString = ("0" + minutes).slice(-2) + "m:" + ("0" + seconds).slice(-2) + "s";
-        }
+        const { data, state } = this.state;
+        const { avgDuration, avgSessionsNumber } = getLabel(data.stats, state);
+        console.log(avgSessionsNumber, avgDuration);
 
         return (
             <Grid noSpacing={true}>
                 <Cell phone={2} offsetTablet={1} tablet={3} col={6}>
                     <DataTile
                         smallWidth={true}
-                        value={durationString}
+                        value={avgDuration}
+                        focused={true}
                         label={"Average Duration"} />
                 </Cell>
                 <Cell phone={2} tablet={3} col={6}>
                     <DataTile
                         smallWidth={true}
-                        value={sessionsString}
+                        value={avgSessionsNumber}
+                        focused={true}
                         label={"Number of Sessions"} />
                 </Cell>
             </Grid>
