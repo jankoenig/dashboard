@@ -4053,6 +4053,11 @@
 
 .script-input {
   padding-bottom: 10px; }
+  .script-input textarea {
+    height: 170px !important; }
+  .script-input .hint p {
+    margin: 0 0 8px 0 !important;
+    font-size: 1.6rem; }
 
 .datepicker-filterbar__bar___1grbN::before, .datepicker-filterbar__bar___1grbN::after {
   background-color: white; }
@@ -4160,6 +4165,11 @@
 
 .script-input {
   padding-bottom: 10px; }
+  .script-input textarea {
+    height: 170px !important; }
+  .script-input .hint p {
+    margin: 0 0 8px 0 !important;
+    font-size: 1.6rem; }
 
 .dropdown-filterbar__dropdown___1KqRp {
   outline: none; }
@@ -4262,6 +4272,11 @@
 
 .script-input {
   padding-bottom: 10px; }
+  .script-input textarea {
+    height: 170px !important; }
+  .script-input .hint p {
+    margin: 0 0 8px 0 !important;
+    font-size: 1.6rem; }
 
 .dropdown-filterbar__bar___QUTFN::before, .dropdown-filterbar__bar___QUTFN::after {
   background-color: white; }
@@ -4366,6 +4381,11 @@
 
 .script-input {
   padding-bottom: 10px; }
+  .script-input textarea {
+    height: 170px !important; }
+  .script-input .hint p {
+    margin: 0 0 8px 0 !important;
+    font-size: 1.6rem; }
 
 .input-light__bar___nZpL7::before, .input-light__bar___nZpL7::after {
   background-color: white; }
@@ -4594,6 +4614,11 @@
 
 .script-input {
   padding-bottom: 10px; }
+  .script-input textarea {
+    height: 170px !important; }
+  .script-input .hint p {
+    margin: 0 0 8px 0 !important;
+    font-size: 1.6rem; }
 .listitem__dialog___1Iwmw {
   overflow: auto; }
 
@@ -4732,6 +4757,11 @@
 
 .script-input {
   padding-bottom: 10px; }
+  .script-input textarea {
+    height: 170px !important; }
+  .script-input .hint p {
+    margin: 0 0 8px 0 !important;
+    font-size: 1.6rem; }
 
 .dropdown__dropdown___2zIFS {
   outline: none; }
