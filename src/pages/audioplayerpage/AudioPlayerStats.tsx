@@ -124,14 +124,12 @@ export class AudioPlayerStats extends LoadingComponent.Component<LogService.Audi
                     <DataTile
                         smallWidth={true}
                         value={avgDuration}
-                        focused={true}
                         label={"Average Duration"} />
                 </Cell>
                 <Cell phone={2} tablet={3} col={6}>
                     <DataTile
                         smallWidth={true}
                         value={avgSessionsNumber}
-                        focused={true}
                         label={"Number of Sessions"} />
                 </Cell>
             </Grid>
