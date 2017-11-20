@@ -31,7 +31,6 @@ interface ValidationPageState {
     token: string;
     tokenChanged: boolean;
     showHelp: boolean;
-    showVendorID: boolean;
     smAPIAccessToken: string;
     channels: any[];
     pusher: pusher.Pusher | undefined;
@@ -54,7 +53,14 @@ function mapStateToProps(state: State.All) {
 
 export class ValidationPage extends React.Component<ValidationPageProps, ValidationPageState> {
     static readonly lastScriptKeyPrefix = "lastValidationScript";
-    static readonly scriptHint = `"open we study billionaires": "welcome"`;
+    static readonly scriptHint = (
+        <div className="hint">
+            <p>"open guess the price": "how many persons are playing today"</p>
+            <p>"two": "tell us what is your name"</p>
+            <p>"john": "tell us what is your name"</p>
+            <p>"pier": "guess the price"</p>
+            <p>"100 dollars": "*"</p>
+        </div>);
     constructor(props: any) {
         super(props);
         this.state = {
@@ -66,7 +72,6 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             token: "",
             tokenChanged: false,
             showHelp: false,
-            showVendorID: false,
             smAPIAccessToken: "",
             channels: [],
             pusher: (process.env.PUSHER_APP_KEY ? new pusher(
@@ -110,7 +115,6 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                 self.setState({...this.state,
                     token: userDetails.silentEchoToken,
                     vendorID: userDetails.vendorID,
-                    showVendorID: (!userDetails.vendorID || userDetails.vendorID === ""),
                     smAPIAccessToken: userDetails.smAPIAccessToken});
             });
     }
@@ -259,14 +263,10 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                         <Input className="sm-input" label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
                         Don't have a token yet? <a href="#" onClick={this.handleGetTokenClick}>Get it here</a>
                     </Cell>
-                    {this.state.showVendorID
-                    ? (
                         <Cell col={3} tablet={12}>
                             <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
                             To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
                         </Cell>
-                        )
-                    : undefined}
                     <Cell col={12}>
                         <Cell col={6}>
                             <Input className="script-input" multiline={true}
