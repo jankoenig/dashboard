@@ -8,7 +8,7 @@ import Content from "../components/Content";
 import { Dropdownable, Header, PageButton } from "../components/Header";
 import Layout from "../components/Layout";
 import Popup from "../components/Popup";
-import Toast from "../components/Toast/Toast";
+import ToastContainer from "../components/Toast/ToastContainer";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
@@ -48,6 +48,7 @@ interface DashboardProps {
   getSources: () => Promise<Source[]>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
+  toasts: any[];
 }
 
 interface DashboardState {
@@ -60,7 +61,8 @@ function mapStateToProps(state: State.All) {
   return {
     user: state.session.user,
     currentSource: state.source.currentSource,
-    sources: state.source.sources
+    sources: state.source.sources,
+    toasts: state.toasts,
   };
 }
 
@@ -259,24 +261,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   render() {
     return (
       <Layout header={true}>
-        {
-          !!localStorage.getItem("showSignupToast") &&
-          (
-            <Toast style={{ marginTop: 72 }} onShowToast={this.onShowToast}
-              actionType="showSignupToast"
-              message="Verification email sent!"
-              type="info" />
-          )
-        }
-        {
-          !!localStorage.getItem("showVerifyToast") &&
-          (
-            <Toast style={{ marginTop: 72 }} onShowToast={this.onShowToast}
-              actionType="showVerifyToast"
-              message="Your email is not yet verified - please click on the link in the email we sent to you at signup. If you didn’t receive it, click in this message to get another one." type="warning"
-              onToastClick={this.handleVerifyEmailClick} />
-          )
-        }
+        <ToastContainer />
         <Popup
           header={"Win an Echo Show"}
           content={<span>Thanks for being a Bespoken user.<br />Take this 5-minute survey to enter to win 1 of 2 devices. Enter before Sept 30.</span>}

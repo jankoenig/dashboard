@@ -7,6 +7,7 @@ import { log, LogState } from "./log";
 import { notification, NotificationState } from "./notification";
 import { session, SessionState } from "./session";
 import { source, SourceState } from "./source";
+import {toasts, ToastState} from "./toast";
 
 export namespace State {
   export type All = {
@@ -16,6 +17,7 @@ export namespace State {
     routing: any,
     session: SessionState,
     source: SourceState;
+    toasts: ToastState;
   };
 }
 
@@ -25,7 +27,8 @@ const appReducer = combineReducers<State.All>({
   notification,
   routing: routerReducer,
   session,
-  source
+  source,
+  toasts,
 });
 
 // Intercept global actions, such as logout to reset the state.
