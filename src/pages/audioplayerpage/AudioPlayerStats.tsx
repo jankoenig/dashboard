@@ -40,7 +40,7 @@ function getLabel(audioStats: LogService.AudioPlayerTotalStats, state: LoadingCo
             avgDuration: LOADING_VALUE,
             avgSessionsNumber: LOADING_VALUE,
         };
-    } else if (state === LoadingComponent.LoadingState.LOAD_ERROR || audioStats.avgDuration.toString() === DEFAULT_VALUE) {
+    } else if (state === LoadingComponent.LoadingState.LOAD_ERROR || audioStats.avgDuration && audioStats.avgDuration.toString() === DEFAULT_VALUE) {
         return {
             avgDuration: DEFAULT_VALUE,
             avgSessionsNumber: DEFAULT_VALUE,
@@ -116,7 +116,6 @@ export class AudioPlayerStats extends LoadingComponent.Component<LogService.Audi
     render() {
         const { data, state } = this.state;
         const { avgDuration, avgSessionsNumber } = getLabel(data.stats, state);
-        console.log(avgSessionsNumber, avgDuration);
 
         return (
             <Grid noSpacing={true}>

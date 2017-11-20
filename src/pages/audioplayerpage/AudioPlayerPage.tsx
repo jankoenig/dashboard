@@ -40,7 +40,7 @@ export class AudioPlayerPage extends React.Component<AudioPlayerPageProps, Audio
 
     render() {
         const { source } = this.props;
-        const sourceName = (source) ? source.name : "this skill";
+        const sourceName = (source) ? source.id : "undefined";
         const start = moment().subtract(7, "days");
         const end = moment();
         if (!source) {
@@ -48,7 +48,7 @@ export class AudioPlayerPage extends React.Component<AudioPlayerPageProps, Audio
         }
         return (
             <div style={{margin: 25}}>
-                <h3>Last seven days summary</h3>
+                <h3>AudioPlayer Metrics - Last Seven Days</h3>
                 <Grid className="custom-spacing" noSpacing={true}>
                     <Cell className="stats" tablet={8} col={6}>
                         <AudioPlayerStats

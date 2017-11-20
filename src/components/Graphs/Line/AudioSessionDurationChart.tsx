@@ -48,7 +48,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
     constructor(props: AudioSessionChartProps) {
         super(props);
         this.tickFormat = this.tickFormat.bind(this);
-        this.labelFormat = this.labelFormat.bind(this);
+        this.customTooltip = this.customTooltip.bind(this);
 
         this.state = {
           ticks: AudioSessionChart.createTicks(props)
@@ -79,9 +79,31 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
         this.setState(this.state);
     }
 
-    labelFormat(time: any) {
-        return moment(time).format(this.props.labelFormat);
+    customTooltip(props: any) {
+    if (props.active) {
+        const { payload } = props;
+        const {duration} = payload[0].payload;
+        let durationString = duration;
+        const startTime = moment(payload[0].payload.sessionStartTime).format(this.props.labelFormat);
+        if (duration) {
+            const minutes = Math.floor(duration / 6000);
+            const seconds = (duration % 6000) / 1000;
+            durationString = ("0" + minutes).slice(-2) + "m:" + ("0" + seconds).slice(-2) + "s";
+        }
+
+        return (
+            <div className="recharts-default-tooltip">
+                <ul style={{listStyle: "none", border: "1px solid #ccc", padding: 10}}>
+                    <li className="recharts-tooltip-item">{startTime}</li>
+                    <li style={{color: payload[0].color}} className="recharts-tooltip-item">duration: {durationString}</li>
+                </ul>
+            </div>
+        );
     }
+
+    return <div />;
+}
+
 
     render() {
         const renderLegend = (props: any) => {
@@ -97,7 +119,8 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
                     <XAxis dataKey="sessionStartTime" tickFormatter={this.tickFormat} ticks={this.state.ticks} />
                     <YAxis width={80} tickFormatter={this.YTickFormat} />
                     <Legend verticalAlign={"top"} content={renderLegend} />
-                    <Tooltip labelFormatter={this.labelFormat} />
+                    <Tooltip content={this.customTooltip} />
+                    <Tooltip />
                     <Line type="monotone" name="Avg. Duration" dataKey="duration" dot={false} />
                 </LineChart>
             </ResponsiveContainer>

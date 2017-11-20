@@ -149,6 +149,7 @@ declare module "recharts" {
 
     export interface TooltipProps {
         labelFormatter?: (tick: number | string) => string;
+        content?: any;
     }
     export class Tooltip extends React.Component<TooltipProps, any> { }
 
