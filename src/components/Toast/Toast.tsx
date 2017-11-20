@@ -3,7 +3,8 @@ import * as React from "react";
 
 import "./Toast-theme.scss";
 
-interface ToastProps {
+export interface ToastProps {
+    id?: number;
     message?: string;
     type?: "error" | "info" | "warning" | "success";
     style?: React.CSSProperties;

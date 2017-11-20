@@ -12,6 +12,7 @@ import { autoRehydrate, persistStore } from "redux-persist";
 import { LOGOUT_USER } from "./constants";
 
 import { setUser } from "./actions/session";
+import { addToast } from "./actions/toast";
 import Dashboard from "./frames/Dashboard";
 
 import Login from "./frames/Login";
@@ -83,6 +84,8 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
                 store.dispatch(replace(newLocation));
             }
         }
+        // example of how to call a redux action
+        store.dispatch(addToast({style: { marginTop: 72 }, onShowToast: this.onShowToast, actionType: "showVerifyToast", message: "Your email is not yet verified - please click on the link in the email we sent to you at signup. If you didn’t receive it, click in this message to get another one.", type: "warning", onToastClick: this.handleVerifyEmailClick}));
     } else {
         if (lastUser) {
             store.dispatch({ type: LOGOUT_USER });
