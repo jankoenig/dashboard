@@ -20,7 +20,7 @@ chai.use(sinonChai);
 const expect = chai.expect;
 
 const source: Source = dummySources(1)[0];
-const user = new User({ email: "test@testMctest.com" });
+const user = new User({ email: "test@testMctest.com", displayName: "", photoURL: "" });
 
 describe("IntegrationSpokes", function () {
     describe("Renders", function () {

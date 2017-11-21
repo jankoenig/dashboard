@@ -155,7 +155,7 @@ describe("Source Service", function () {
               proxy_enabled: true,
               debug_enabled: true,
             });
-            user = new User({ userId: "TestUserID", email: "test@test.com" });
+            user = new User({ userId: "TestUserID", email: "test@test.com", displayName: "", photoURL: "" });
             mockResponse = { user: { userId: user.userId }, source: fullSource };
             fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, mockResponse);
         });

@@ -13,7 +13,7 @@ const expect = chai.expect;
 
 const BASE_URL = "https://api.bespoken.link";
 
-const user: User = new User({ userId: "ABCD1234", photoUrl: "https://www.photoasdfasdvawef.commmm/", email: "test@test.test", displayName: "Testy MyTestface" });
+const user: User = new User({ userId: "ABCD1234", photoURL: "https://www.photoasdfasdvawef.commmm/", email: "test@test.test", displayName: "Testy MyTestface" });
 const source: Source = dummySources(1)[0];
 
 const fetchResponse = {

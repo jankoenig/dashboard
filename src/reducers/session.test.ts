@@ -13,7 +13,7 @@ describe("Session Reducer", function () {
     });
     describe("SetUser Action", function() {
         it("sets the user", function() {
-            let newUser = new User({email: "email"});
+            let newUser = new User({email: "email", displayName: "", photoURL: ""});
             let setUserAction = setUser(newUser);
             let newState = session(undefined, setUserAction);
             expect(newState.user).to.equal(newUser);

@@ -17,12 +17,12 @@ export default class UserControl extends React.Component<UserProps, any> {
     let callback = this.props.user ? this.props.logout : this.props.login;
     let buttonText = this.props.user ? "Logout" : "Login";
 
-    let icon = this.props.user && this.props.user.photoUrl ? (
+    let icon = this.props.user && this.props.user.photoURL ? (
       <img
-        style={{ borderRadius: "50%" }} /** Border Radius provides the circle */
+        style={{ borderRadius: "50%" }}
         width="32"
         height="32"
-        src={this.props.user.photoUrl}
+        src={this.props.user.photoURL}
         />
     ) : (
         <Icon

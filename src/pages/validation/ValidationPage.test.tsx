@@ -19,7 +19,7 @@ let expect = chai.expect;
 
 describe("Validation Page", function () {
     jsdom();
-    let user = new User({ email: "my@email.com" });
+    let user = new User({ email: "my@email.com", displayName: "", photoURL: "" });
     let source = new Source({ id: "001-abc", name: "awesome source" });
     let location: Location = {basename: "", pathname: "", query: {}};
 

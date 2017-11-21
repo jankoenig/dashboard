@@ -112,7 +112,7 @@ namespace auth {
                 user.sendEmailVerification && user.sendEmailVerification();
                 let modelUser: User = new FirebaseUser(user);
                 identify(modelUser, "email");
-                localStorage.setItem("showSignupToast", "true");
+                modelUser = new User({...modelUser, showToast: true});
                 localStorage.setItem("user", JSON.stringify(modelUser));
                 return modelUser;
             });
@@ -127,7 +127,7 @@ namespace auth {
                 });
                 let modelUser: User = new FirebaseUser(user);
                 identify(modelUser, "email");
-                !user.emailVerified && localStorage.setItem("showVerifyToast", "true");
+                !user.emailVerified && (modelUser = new User({...modelUser, showToast: true}));
                 localStorage.setItem("user", JSON.stringify(modelUser));
                 return modelUser;
             });
