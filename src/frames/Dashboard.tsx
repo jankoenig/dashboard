@@ -19,7 +19,7 @@ import SpokeService from "../services/spokes";
 import ArrayUtils from "../utils/array";
 import { Location } from "../utils/Location";
 
-import { remoteservice } from "../services/remote-service";
+
 /**
  * Simple Adapter so a Source can conform to Dropdownable
  */
@@ -53,8 +53,6 @@ interface DashboardProps {
 
 interface DashboardState {
   showModal: boolean;
-  showSignupToast: boolean;
-  showVerifyToast: boolean;
 }
 
 function mapStateToProps(state: State.All) {
@@ -93,8 +91,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     this.state = {
       showModal: false,
-      showSignupToast: false,
-      showVerifyToast: false
     };
 
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
@@ -103,8 +99,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleEnterContest = this.handleEnterContest.bind(this);
-    this.handleVerifyEmailClick = this.handleVerifyEmailClick.bind(this);
-    this.onShowToast = this.onShowToast.bind(this);
   }
 
   drawerClasses() {
@@ -136,11 +130,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
-    this.setState({
-      ...this.state,
-      showSignupToast: !!localStorage.getItem("showSignupToast"),
-      showVerifyToast: !!localStorage.getItem("showVerifyToast")
-    });
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -245,17 +234,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     window.localStorage.setItem("contest", "true");
     this.setState({ ...this.state, showModal: false });
   }
-
-  handleVerifyEmailClick() {
-    remoteservice.defaultService().auth().currentUser.sendEmailVerification();
-    localStorage.setItem("showSignupToast", "true");
-    this.setState({ ...this.state, showSignupToast: true });
-  }
-
-  onShowToast(property: "showSignupToast" | "showVerifyToast") {
-    const show = this.state[property];
-    show && localStorage.setItem(property, "");
-  };
 
   render() {
     return (

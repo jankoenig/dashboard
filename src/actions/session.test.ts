@@ -17,7 +17,7 @@ let expect = chai.expect;
 let user = new User({
     email: "test@test.com",
     displayName: "TestyMcTestFace",
-    photoUrl: undefined
+    photoURL: undefined
 });
 
 /**
@@ -42,7 +42,7 @@ class ToPathCallback implements session.SuccessCallback {
 describe("Session.ts", function () {
     describe("Session Actions", function () {
         it("sets the user", function () {
-            let user = new User({ email: "email" });
+            let user = new User({ email: "email", displayName: "", photoURL: "" });
             let initialState = {};
 
             let store = mockStore(initialState);
@@ -65,7 +65,7 @@ describe("Session.ts", function () {
             }));
 
             setUserStub = sinon.stub(auth, "user", () => {
-                return new User({ email: "testEmail" });
+                return new User({ email: "testEmail", displayName: "", photoURL: "" });
             });
         });
 
@@ -94,7 +94,7 @@ describe("Session.ts", function () {
             }));
 
             setUserStub = sinon.stub(auth, "user", () => {
-                return new User({ email: "testEmail" });
+                return new User({ email: "testEmail", displayName: "", photoURL: "" });
             });
         });
 
@@ -123,7 +123,7 @@ describe("Session.ts", function () {
             }));
 
             setUserStub = sinon.stub(auth, "user", () => {
-                return new User({ email: "testEmail" });
+                return new User({ email: "testEmail", displayName: "", photoURL: "" });
             });
         });
 

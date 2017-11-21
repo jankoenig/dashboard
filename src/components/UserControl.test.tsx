@@ -35,7 +35,7 @@ describe("UserControl", function () {
             it("renders correctly", function () {
                 const login = sinon.spy();
                 const logout = sinon.spy();
-                const user = new User({ email: "email", photoUrl: "http://data.whicdn.com/images/60302035/original.jpg" });
+                const user = new User({ email: "email", photoURL: "http://data.whicdn.com/images/60302035/original.jpg", displayName: "" });
                 const wrapper = shallow(<UserControl login={login} logout={logout} user={user} />);
 
                 let styledMenu = wrapper.find("StyledMenu");
@@ -52,7 +52,7 @@ describe("UserControl", function () {
             it("renders correctly", function () {
                 const login = sinon.spy();
                 const logout = sinon.spy();
-                const user = new User({ email: "email" });
+                const user = new User({ email: "email", displayName: "", photoURL: "" });
                 const wrapper = shallow(<UserControl login={login} logout={logout} user={user} />);
 
                 let styledMenu = wrapper.find("StyledMenu");
