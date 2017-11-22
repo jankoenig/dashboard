@@ -19,7 +19,6 @@ export interface ToastProps {
 }
 
 interface ToastState {
-    hide: boolean;
 }
 
 export class Toast extends React.Component<ToastProps, ToastState> {
@@ -34,8 +33,6 @@ export class Toast extends React.Component<ToastProps, ToastState> {
     constructor(props: any) {
         super(props);
 
-        this.setState({hide: false});
-
         this.handleClick = this.handleClick.bind(this);
         this.onCloseModal = this.onCloseModal.bind(this);
     }
@@ -45,16 +42,11 @@ export class Toast extends React.Component<ToastProps, ToastState> {
             [toastTheme[this.props.type]]: !!this.props.type,
             [this.props.direction]: !!this.props.direction,
             [toastTheme[this.props.direction]]: !!this.props.direction,
-            [toastTheme.end]: this.state && this.state.hide,
         });
     }
 
     handleClick() {
         this.props && this.props.onToastClick && this.props.onToastClick();
-        if (this.props && this.props.closeOnClick) {
-            this.setState({...this.state, hide: true});
-            this.props && this.props.onShowToast && this.props.onShowToast(this.props.actionType);
-        }
     }
 
     onCloseModal(event: any) {
@@ -67,7 +59,7 @@ export class Toast extends React.Component<ToastProps, ToastState> {
         setTimeout(() => {
             this.props && this.props.onShowToast && this.props.onShowToast(this.props.actionType);
             this.props && this.props.onCloseToast && this.props.onCloseToast();
-        }, this.props.duration);
+        }, (this.props.duration + 2000));
         const duration = (this.props.duration / 1000) + "s";
         return (
             <div onClick={this.handleClick} style={this.props.style} className={this.classes()}>
