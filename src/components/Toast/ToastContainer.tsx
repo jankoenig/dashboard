@@ -19,7 +19,7 @@ const Toasts = (props: any) => {
                 };
                 const closeToastFunction = () => {
                     removeToast(id);
-                }
+                };
                 return (
                     <Toast {...others} key={id} onToastClick={removeToastFunction} onCloseToast={closeToastFunction} />
                 );
