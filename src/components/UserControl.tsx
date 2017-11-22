@@ -26,7 +26,7 @@ export default class UserControl extends React.Component<UserProps, any> {
         />
     ) : (
         <Icon
-          style={{width: "32", height: "32"}}
+          style={{width: 32, height: 32}}
           icon={ICON.DEFAULT_AVATAR}
           />
       );
