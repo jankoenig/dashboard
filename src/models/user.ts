@@ -15,6 +15,8 @@ export interface UserProperties {
   readonly displayName: string;
   readonly photoURL: string;
   readonly showToast?: boolean;
+  readonly providerId?: string;
+  readonly uid?: string;
 }
 
 export class User implements UserProperties {

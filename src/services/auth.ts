@@ -112,7 +112,6 @@ namespace auth {
                 user.sendEmailVerification && user.sendEmailVerification();
                 let modelUser: User = new FirebaseUser(user);
                 identify(modelUser, "email");
-                modelUser = new User({...modelUser, showToast: true});
                 localStorage.setItem("user", JSON.stringify(modelUser));
                 return modelUser;
             });
