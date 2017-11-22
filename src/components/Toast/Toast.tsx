@@ -66,6 +66,7 @@ export class Toast extends React.Component<ToastProps, ToastState> {
     render() {
         setTimeout(() => {
             this.props && this.props.onShowToast && this.props.onShowToast(this.props.actionType);
+            this.props.onCloseToast();
         }, this.props.duration);
         const duration = (this.props.duration / 1000) + "s";
         return (
