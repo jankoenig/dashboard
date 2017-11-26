@@ -1,6 +1,7 @@
 import * as classNames from "classnames";
 import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
+import { MenuItem as ReactMenuItem } from "react-toolbox/lib/menu";
 import Tooltip from "react-toolbox/lib/tooltip";
 
 import { Menu, MenuItem } from "../components/Menu";
@@ -354,12 +355,26 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
     for (let button of buttons) {
       this.state.buttons.push(
         (
-          <HeaderButton
+          <HeaderButton className="hide-source-menu"
             key={++i}
             button={button}
             onClick={this.handleSelected} />
         )
       );
+    };
+    if (buttons.length) {
+        this.state.buttons.push(
+            (
+                <Menu className="responsive-source-menu" icon="more_vert" position="topRight" menuRipple={true}>
+                    {buttons.map((button, i) => {
+                        const handleSelectButton = () => {
+                            this.handleSelected(button);
+                        };
+                        return <ReactMenuItem style={{color: "#ff4545"}} caption={button.name} key={i} icon={button.icon} onClick={handleSelectButton} />;
+                    })}
+                </Menu>
+            )
+        );
     };
   }
 
@@ -376,6 +391,7 @@ interface HeaderButtonProps {
   button: PageButton;
   onClick: (button: PageButton) => void;
   style?: any;
+  className?: string;
 }
 
 export class HeaderButton extends React.Component<HeaderButtonProps, any> {
@@ -395,6 +411,7 @@ export class HeaderButton extends React.Component<HeaderButtonProps, any> {
     return (
       <TooltipButton
         style={this.props.style}
+        className={this.props.className}
         theme={IconButtonTheme}
         accent
         tooltip={button.tooltip}
