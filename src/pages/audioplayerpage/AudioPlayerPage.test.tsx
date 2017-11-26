@@ -55,7 +55,7 @@ describe("Audio Player Page", function () {
             ));
 
             const summary = wrapper.find(AudioSessionSummary);
-            expect(summary).to.have.prop("source", source.name);
+            expect(summary).to.have.prop("source", source.id);
 
             // Can't use the convience of chai to check dates.
             const startProp = summary.prop("startDate") as moment.Moment;

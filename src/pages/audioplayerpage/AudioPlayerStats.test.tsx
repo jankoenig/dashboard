@@ -54,7 +54,7 @@ describe("Audio Player Stats", function () {
                 <AudioPlayerPage source={source} goHome={goHome} />
             ));
             const audioStats = wrapper.find(AudioPlayerStats);
-            expect(audioStats).to.have.prop("source", source.name);
+            expect(audioStats).to.have.prop("source", source.id);
 
             // Can't use the convience of chai to check dates.
             const startProp = audioStats.prop("startDate") as moment.Moment;

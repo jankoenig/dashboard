@@ -120,7 +120,6 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
                     <YAxis width={80} tickFormatter={this.YTickFormat} />
                     <Legend verticalAlign={"top"} content={renderLegend} />
                     <Tooltip content={this.customTooltip} />
-                    <Tooltip />
                     <Line type="monotone" name="Avg. Duration" dataKey="duration" dot={false} />
                 </LineChart>
             </ResponsiveContainer>
