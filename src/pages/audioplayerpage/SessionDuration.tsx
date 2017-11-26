@@ -46,8 +46,8 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
         this.mapState({ data: [], sourceState: 1});
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(moment().subtract(7, "days")));
-        query.add(new EndTimeParameter(moment()));
+        query.add(new StartTimeParameter(this.props.startDate));
+        query.add(new EndTimeParameter(this.props.endDate));
 
         let formatedData;
         try {
@@ -59,7 +59,10 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
                     duration: audioSession.duration,
                 };
             });
-            formatedData = { audioSessions: audioSessions, averageSessionDuration : duration.averageAudioSessionDuration };
+            const sorted = audioSessions.sort(function(a: any, b: any){
+                return moment(a.sessionStartTime).diff(b.sessionStartTime);
+            });
+            formatedData = { audioSessions: sorted, averageSessionDuration : duration.averageAudioSessionDuration };
         } catch (err) {
             formatedData = { audioSessions: [], averageSessionDuration: 0 };
         }
@@ -100,8 +103,11 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
                     duration: audioSession.duration,
                 };
             });
+            const sorted = audioSessions.sort(function(a: any, b: any){
+                return moment(a.sessionStartTime).diff(b.sessionStartTime);
+            });
             return {
-                audioSessions,
+                audioSessions: sorted,
                 averageSessionDuration: duration.averageAudioSessionDuration,
             };
         } catch (err) {

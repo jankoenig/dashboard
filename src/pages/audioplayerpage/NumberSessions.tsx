@@ -46,8 +46,8 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
         this.mapState({ data: [], sourceState: 1});
         const query: Query = new Query();
         query.add(new SourceParameter(source));
-        query.add(new StartTimeParameter(moment().subtract(7, "days")));
-        query.add(new EndTimeParameter(moment()));
+        query.add(new StartTimeParameter(this.props.startDate));
+        query.add(new EndTimeParameter(this.props.endDate));
 
         let formatedData;
         try {
@@ -59,11 +59,14 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
                     amount: audioSession.count,
                 };
             });
+            const sorted = audioSessions.sort(function(a: any, b: any){
+                return moment(a.sessionStartTime).diff(b.sessionStartTime);
+            });
             const sessionsAmount = audioSessions.reduce((accum: any, item: any) => {
                 return accum + item.amount;
             }, 0);
             const avgSessions = sessionsAmount / audioSessions.length;
-            formatedData = { audioSessions: audioSessions, averageSessionsPerDay : avgSessions };
+            formatedData = { audioSessions: sorted, averageSessionsPerDay : avgSessions };
         } catch (err) {
             formatedData = { audioSessions: [], averageSessionsPerDay: 0 };
         }
@@ -104,11 +107,14 @@ export class AudioSession extends LoadingComponent.Component<AudioSessionData, A
                     amount: audioSession.count,
                 };
             });
+            const sorted = audioSessions.sort(function(a: any, b: any){
+                return moment(a.sessionStartTime).diff(b.sessionStartTime);
+            });
             const sessionsAmount = audioSessions.reduce((accum: any, item: any) => {
                 return accum + item.amount;
             }, 0);
             const avgSessions = sessionsAmount / audioSessions.length;
-            return { audioSessions: audioSessions, averageSessionsPerDay : avgSessions };
+            return { audioSessions: sorted, averageSessionsPerDay : avgSessions };
         } catch (err) {
             return {audioSessions: [], averageSessionsPerDay: 0};
         }

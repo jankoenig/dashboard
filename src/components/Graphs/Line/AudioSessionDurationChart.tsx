@@ -60,10 +60,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
     }
 
     YTickFormat(duration: number): string {
-        const minutes = Math.floor(duration / 6000);
-        const seconds = (duration % 6000) / 1000;
-        const tick = ("0" + minutes).slice(-2) + "m:" + ("0" + seconds).slice(-2) + "s";
-        return tick;
+        return getTimeString(duration);
     }
 
     static defaultProps: AudioSessionChartProps = {
@@ -86,9 +83,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
         let durationString = duration;
         const startTime = moment(payload[0].payload.sessionStartTime).format(this.props.labelFormat);
         if (duration) {
-            const minutes = Math.floor(duration / 6000);
-            const seconds = (duration % 6000) / 1000;
-            durationString = ("0" + minutes).slice(-2) + "m:" + ("0" + seconds).slice(-2) + "s";
+            durationString = getTimeString(duration);
         }
 
         return (
@@ -128,3 +123,14 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
 }
 
 export default AudioSessionChart;
+
+function getTimeString(duration: number) {
+    const milliseconds = Math.floor(duration % 1000);
+    const seconds = Math.floor(duration / 1000) % 60;
+    const minutes = Math.floor(duration / (1000 * 60)) % 60;
+    const hours = Math.floor(duration / (1000 * 60 * 60)) % 24;
+    const hoursText = (hours < 10) ? "0" + hours : hours;
+    const minutesText = (minutes < 10) ? "0" + minutes : minutes;
+    const secondsText = (seconds < 10) ? "0" + seconds : seconds;
+    return hoursText + ":" + minutesText + ":" + secondsText + "." + milliseconds;
+}
