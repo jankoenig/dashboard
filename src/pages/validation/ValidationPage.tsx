@@ -7,6 +7,7 @@ import Input from "react-toolbox/lib/input";
 
 import Dialog from "react-toolbox/lib/dialog";
 import ProgressBar from "react-toolbox/lib/progress_bar";
+import Snackbar from "react-toolbox/lib/snackbar";
 
 import Button from "../../components/Button";
 import {CodeSheet} from "../../components/CodeSheet";
@@ -31,6 +32,8 @@ interface ValidationPageState {
     token: string;
     tokenChanged: boolean;
     showHelp: boolean;
+    showSnackbar: boolean;
+    snackbarLabel: any;
     smAPIAccessToken: string;
     channels: any[];
     pusher: pusher.Pusher | undefined;
@@ -61,6 +64,10 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             <p>"pier": "guess the price"</p>
             <p>"100 dollars": "*"</p>
         </div>);
+    static readonly snackbarLabel = (
+        <div>
+            You must first enter your vendor ID - <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a> to get it
+        </div>);
     constructor(props: any) {
         super(props);
         this.state = {
@@ -72,6 +79,8 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
             token: "",
             tokenChanged: false,
             showHelp: false,
+            snackbarLabel: undefined,
+            showSnackbar: false,
             smAPIAccessToken: "",
             channels: [],
             pusher: (process.env.PUSHER_APP_KEY ? new pusher(
@@ -90,6 +99,7 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         this.setupChannel = this.setupChannel.bind(this);
         this.handleVendorIDChange = this.handleVendorIDChange.bind(this);
         this.handleGetTokenClick = this.handleGetTokenClick.bind(this);
+        this.handleSnackbarClick = this.handleSnackbarClick.bind(this);
     }
 
     lastScriptKey(source: Source) {
@@ -249,11 +259,21 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
         const redirect = () => {
             window.location.href = this.virtualDeviceLinkAccountURL();
         };
+        if (!this.state.vendorID || this.state.vendorID === "") {
+            this.setState({...this.state,
+                showSnackbar: true,
+                snackbarLabel: ValidationPage.snackbarLabel});
+            return;
+        }
         if (this.state.vendorIDChanged) {
             const props: any = {vendorID: this.state.vendorID};
             auth.updateCurrentUser(props).then(() => redirect());
         }
         redirect();
+    }
+
+    handleSnackbarClick() {
+        this.setState({...this.state, showSnackbar: false});
     }
 
     render() {
@@ -262,6 +282,10 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                     <Cell col={3} tablet={12}>
                         <Input className="sm-input" label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
                         Don't have a token yet? <a href="#" onClick={this.handleGetTokenClick}>Get it here</a>
+                        <Snackbar className="sm-snackbar" action="Dismiss" type="cancel"
+                            active={this.state.showSnackbar}
+                            label={this.state.snackbarLabel}
+                            onClick={this.handleSnackbarClick}/>
                     </Cell>
                         <Cell col={3} tablet={12}>
                             <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>

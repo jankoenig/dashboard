@@ -50,4 +50,14 @@ $bar-color-dark: rgb(36, 48, 54);
         font-size: 16px;
         padding: 0 6px 2px 0;
     }
+    .sm-snackbar {
+        height: 10px;
+        width: 60%;
+        span, button {
+            font-size: 14px;
+        }
+        button {
+            font-size: 12px;
+        }
+    }
 }
