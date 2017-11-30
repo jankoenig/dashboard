@@ -60,7 +60,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
     }
 
     YTickFormat(duration: number): string {
-        return getTimeString(duration);
+        return getTimeString(duration, false);
     }
 
     static defaultProps: AudioSessionChartProps = {
@@ -112,7 +112,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
             <ResponsiveContainer>
                 <LineChart data={this.props.data.audioSessions} >
                     <XAxis dataKey="sessionStartTime" tickFormatter={this.tickFormat} ticks={this.state.ticks} />
-                    <YAxis width={80} tickFormatter={this.YTickFormat} />
+                    <YAxis width={80} tickFormatter={this.YTickFormat} domain={[0, "dataMax"]} />
                     <Legend verticalAlign={"top"} content={renderLegend} />
                     <Tooltip content={this.customTooltip} />
                     <Line type="monotone" name="Avg. Duration" dataKey="duration" dot={false} />
@@ -124,7 +124,8 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
 
 export default AudioSessionChart;
 
-function getTimeString(duration: number) {
+function getTimeString(duration: number, withMilliseconds: boolean = true) {
+    if (duration <= 0) return "0";
     const milliseconds = Math.floor(duration % 1000);
     const seconds = Math.floor(duration / 1000) % 60;
     const minutes = Math.floor(duration / (1000 * 60)) % 60;
@@ -132,5 +133,5 @@ function getTimeString(duration: number) {
     const hoursText = (hours < 10) ? "0" + hours : hours;
     const minutesText = (minutes < 10) ? "0" + minutes : minutes;
     const secondsText = (seconds < 10) ? "0" + seconds : seconds;
-    return hoursText + ":" + minutesText + ":" + secondsText + "." + milliseconds;
+    return `${hours === 0 ?  "" : hoursText + ":"}${minutes === 0 ? "" : minutesText + ":"}${seconds === 0 ? "" : secondsText}${(withMilliseconds ? "." + milliseconds : "")}`;
 }
