@@ -10,6 +10,7 @@ import Noop from "../utils/Noop";
 
 const Autosuggest: any = require("react-autosuggest");
 const IconButtonTheme = require("../themes/icon-button-primary-theme.scss");
+const theme = require("../themes/autosuggest.scss");
 
 export interface Dropdownable {
   value: string;
@@ -85,7 +86,6 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             selectedSourceId={this.state.selectedSourceId} />
 
           <PageSwap
-            style={{ marginLeft: 250 }}
             pageButtons={this.props.pageButtons}
             onPageSelected={this.props.onPageSelected} />
 
@@ -99,21 +99,25 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             menuRipple>
 
             <MenuItem
+              key="1"
               to="https://github.com/bespoken/dashboard/issues/new?labels=bug"
               icon="bug_report"
               caption="File Bug" />
 
             <MenuItem
+              key="2"
               to="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body="
               icon="build"
               caption="Request Feature" />
 
             <MenuItem
+              key="3"
               to="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"
               icon="question_answer"
               caption="Talk to Us" />
 
             <MenuItem
+              key="4"
               to="mailto:contact@bespoken.io"
               icon="email"
               caption="Email" />
@@ -169,63 +173,6 @@ const renderSuggestion = (source: any) => {
       {source.label}
     </div>
   );
-};
-
-const theme: any = {
-  container: {
-    position: "absolute",
-    marginTop: 3,
-    left: 50,
-  },
-  input: {
-    width: 230,
-    height: 30,
-    padding: "0 0 0 10px",
-    fontWeight: 300,
-    fontSize: 16,
-    border: "1px solid #aaa",
-    borderTopLeftRadius: 4,
-    borderTopRightRadius: 4,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-  },
-  inputFocused: {
-    outline: "none"
-  },
-  inputOpen: {
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0
-  },
-  suggestionsContainer: {
-    display: "none"
-  },
-  suggestionsContainerOpen: {
-    display: "block",
-    position: "absolute",
-    top: 31,
-    width: 240,
-    border: "1px solid #aaa",
-    backgroundColor: "#fff",
-    fontFamily: "Helvetica, sans-serif",
-    fontWeight: 300,
-    fontSize: 16,
-    borderBottomLeftRadius: 4,
-    borderBottomRightRadius: 4,
-    zIndex: 2
-  },
-  suggestionsList: {
-    margin: 0,
-    padding: 0,
-    listStyleType: "none",
-  },
-  suggestion: {
-    cursor: "pointer",
-    padding: "5px 10px",
-  },
-  suggestionHighlighted: {
-    backgroundColor: "#ddd",
-    padding: "5px 10px",
-  }
 };
 
 export class Title extends React.Component<TitleProps, any> {
@@ -317,6 +264,7 @@ interface PageSwapProps {
 
 interface PageSwapState {
   buttons: JSX.Element[];
+  responsiveButtons: JSX.Element[];
 }
 
 const TooltipButton = Tooltip(IconButton);
@@ -331,7 +279,7 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
   constructor(props: PageSwapProps) {
     super(props);
 
-    this.state = { buttons: [] };
+    this.state = { buttons: [], responsiveButtons: [] };
 
     this.handleSelected = this.handleSelected.bind(this);
   }
@@ -363,26 +311,27 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
       );
     };
     if (buttons.length) {
-        this.state.buttons.push(
-            (
-                <Menu className="responsive-source-menu" icon="more_vert" position="topRight" menuRipple={true}>
-                    {buttons.map((button, i) => {
-                        const handleSelectButton = () => {
-                            this.handleSelected(button);
-                        };
-                        return <ReactMenuItem style={{color: "#ff4545"}} caption={button.name} key={i} icon={button.icon} onClick={handleSelectButton} />;
-                    })}
-                </Menu>
-            )
-        );
+        this.setState({...this.state, responsiveButtons: buttons.map(button => {
+            const handleSelectButton = () => {
+                this.handleSelected(button);
+            };
+            return <ReactMenuItem style={{color: "#ff4545"}} caption={button.name} key={++i} icon={button.icon} onClick={handleSelectButton} />;
+        })});
     };
   }
 
   render() {
     return (
-      <div style={this.props.style}>
-        {this.state.buttons}
-      </div>
+        <div className="responsive-page-swap" style={this.props.style}>
+            {this.state.buttons}
+            {this.state.buttons.length ?
+            (
+                <Menu className="responsive-source-menu" icon="more_vert" position="topRight" menuRipple={true}>
+                    {this.state.responsiveButtons}
+                </Menu>
+            ) : undefined
+            }
+        </div>
     );
   }
 }
