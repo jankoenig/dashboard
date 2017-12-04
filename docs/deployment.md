@@ -1,9 +1,13 @@
 #### Deployment Steps
 
-1. Create a new branch on `bespoken/dashboard`, with a name equals the new version release.
-2. `cd dashboard && npm version patch`
-3. Update `bower.json`: change version number, matching the latest release from `package.json`
-4. Create & merge a PR for the branch created on Step 1.
-5. Create a new release on `bespoken/dashboard` matching the latest release version.
-6. On `bespoken/poken-tools-website` update `bower.json` to match the release version from Step 3.
-7. Create & merge a PR on `bespoken/poken-tools-website`.
+1. Go to [https://github.com/bespoken/dashboard/releases](https://github.com/bespoken/dashboard/releases) and create
+a new tag, use the following syntax: `prod-2.0.2`, the last part after the dash character (-) is the number
+to be used as the production build version.
+2. Step 1 triggers a production build on Travis, after it successfully finishes, a GitHub pull request
+is automatically created containing all the production build files.
+3. Merge the PR created on Step 3.
+4. In [https://github.com/bespoken/bespoken-tools-website](https://github.com/bespoken/bespoken-tools-website) edit the version of `bespoken-dashboard` within [`bower.json`](https://github.com/bespoken/bespoken-tools-website/blob/master/bower.json)
+use the production build version of Step 1.
+5. Create a new PR for the Step 4.
+6. Merge the PR created in Step 5.
+7. Done!, after build successfully finishes in Step 6, dashboard auto-deploy to production!
