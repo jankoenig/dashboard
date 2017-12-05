@@ -22,7 +22,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    condition: "$TRAVIS_TAG =~ ^prod.*$"
+    condition: "$TRAVIS_TAG =~ ^(prod|dev)-.*$"
 env:
   global:
     secure: gQC7274jK402OVG9gq7WgTRQLRpjNKvXx8ElqKTf2hb+RkGoiBYs0hXWvJKHNyKk4wcNAe1hPP9cvj1GC055I2/AQffI1pQHTHREVGtdDRb0f3rPRHYzsbHdPm92zeW3Z9m1GVKNa0eVjvEb12pF7bNXER6CxV68sKx9CmBxI2CI7jrM5SaS428h1IJyjSoqdTd4TJqDTLJv8rBO33nj0OO+HhAPr30Gz0+jaYeOU8UIQMKDsSVfKXktBcUCDGui0JacwWmHD3ArDxNrSf24wNppGkjwfaghwVovtPVTww/gdq2ett6fVrzKwQ0fqd8GwftGggPjKckelMEUdy5JRoA0XAVqK1Plnbm6pm1POjWp3ZXteyzSmoRIpfFMdcJ6+ziSlpdoo5WPXDLI1HAR1HRPk8ZFeva2rdHYcgJMR+V3cMkMAJYdBibdoOSbTU8PE1sySpV8HfNlsIufo6NVZScM5uR1jYUFPrFfTkAAZ9bAoZykNSsu7ckJYwMHuxbOuOlzX42pvZOsqGv6ltSyVrfvD18QttLpyurHUx++r7i/zgae2HddBHoRdu+WZ45t1RILIlJe43KXVf27UwWJ+l0qYeTCQd3izN/dNjVzvua4OmDJfIUGNEcQOibFOawsRMyQzT4lMyX+ZenxIQ/nthXc1nFVAN56il7YbqQxc3o=

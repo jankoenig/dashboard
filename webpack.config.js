@@ -6,7 +6,6 @@ var package = require("./package.json");
 var childProcess = require("child_process");
 
 var node_env = process.env.NODE_ENV;
-var logless_base = process.env.LOGLESS_BASE;
 var source_url = process.env.SOURCE_URL;
 var virtual_device_url = process.env.VIRTUAL_DEVICE_URL;
 var pusher_app_key = process.env.PUSHER_APP_KEY;
@@ -15,6 +14,15 @@ var version = package.version;
 var buildNumber = process.env.TRAVIS_BUILD_NUMBER;
 var buildId = process.env.TRAVIS_BUILD_ID
 var git_hash = childProcess.execSync("git rev-parse HEAD").toString();
+
+var logless_base = "";
+var travis_tag = process.env.TRAVIS_TAG;
+if (travis_tag) {
+    const env = travis_tag.match(/^(prod|dev).*$/);
+    if (env && env.length === 2 && env[1] === "dev") {
+        logless_base = "https://logless-dev.bespoken.io/v1";
+    }
+}
 
 // A couple of default buildVariables, these are then made available
 // within the project.  Make sure they are also declared in typings/config.d.ts
