@@ -17,7 +17,8 @@ let user: remoteservice.user.User = {
     email: "test@testdomain.test",
     photoURL: undefined,
     providerId: "ABC123",
-    uid: "ABCD1234567890"
+    uid: "ABCD1234567890",
+    sendEmailVerification: () => { return Promise.resolve(""); }
 };
 
 let successRedirect = new Promise<any>((resolve, reject) => {
@@ -59,7 +60,7 @@ describe("Auth ts not mocked", function () {
 
             db.ref = sinon.stub().returns(ref);
             ref.child = sinon.stub().returns(ref);
-            ref.once = sinon.stub().returns({val: () => {}});
+            ref.once = sinon.stub().returns({ val: () => { } });
             authService = <remoteservice.auth.Auth>{}; // reseting all stubs.
         });
 
@@ -225,10 +226,10 @@ describe("Auth ts not mocked", function () {
 
             let username = "test@testdomain.com";
             return auth.sendResetPasswordEmail(username, authService).catch(function (err: Error) {
-                    expect(err).to.not.be.undefined;
-                    expect(authService.sendPasswordResetEmail).to.be.calledOnce;
-                    expect(authService.sendPasswordResetEmail).to.be.calledWith(username);
-                });
+                expect(err).to.not.be.undefined;
+                expect(authService.sendPasswordResetEmail).to.be.calledOnce;
+                expect(authService.sendPasswordResetEmail).to.be.calledWith(username);
+            });
         });
     });
 
@@ -242,19 +243,19 @@ describe("Auth ts not mocked", function () {
         });
 
         it("Tests passwords do not match.", function () {
-            return auth.signUpWithEmail("firstemail@domain.com", "password", "secondPassword", authService, localStorage).catch(function(err: Error) {
+            return auth.signUpWithEmail("firstemail@domain.com", "password", "secondPassword", authService, localStorage).catch(function (err: Error) {
                 expect(err).to.not.be.undefined;
             });
         });
 
         it("Tests password is too short.", function () {
-            return auth.signUpWithEmail("firstemail@domain.com", "2", "2", authService, localStorage).catch(function(err: Error) {
+            return auth.signUpWithEmail("firstemail@domain.com", "2", "2", authService, localStorage).catch(function (err: Error) {
                 expect(err).to.not.be.undefined;
             });
         });
 
         it("Tests email invalid.", function () {
-            return auth.signUpWithEmail("firstemail", "1234567", "1234567", authService, localStorage).catch(function(err: Error) {
+            return auth.signUpWithEmail("firstemail", "1234567", "1234567", authService, localStorage).catch(function (err: Error) {
                 expect(err).to.not.be.undefined;
             });
         });
@@ -264,7 +265,7 @@ describe("Auth ts not mocked", function () {
 
             let userName = "testEmail@domain.com";
             let password = "password";
-            return auth.signUpWithEmail(userName, password, password, authService, localStorage).then(function(user: User) {
+            return auth.signUpWithEmail(userName, password, password, authService, localStorage).then(function (user: User) {
                 expect(user).to.not.be.undefined;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledOnce;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledWith(userName, password);
@@ -276,7 +277,7 @@ describe("Auth ts not mocked", function () {
 
             let userName = "testEmail@domain.com";
             let password = "password";
-            return auth.signUpWithEmail(userName, password, password, authService, localStorage).catch(function(err: Error) {
+            return auth.signUpWithEmail(userName, password, password, authService, localStorage).catch(function (err: Error) {
                 expect(err).to.not.be.undefined;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledOnce;
                 expect(authService.createUserWithEmailAndPassword).to.be.calledWith(userName, password);

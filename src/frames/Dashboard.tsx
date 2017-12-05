@@ -2,7 +2,8 @@ import * as classNames from "classnames";
 import * as React from "react";
 import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
-import { logout } from "../actions/session";
+import Snackbar from "react-toolbox/lib/snackbar";
+import { logout, setUser } from "../actions/session";
 import { getSources, setCurrentSource } from "../actions/source";
 import Content from "../components/Content";
 import { Dropdownable, Header, PageButton } from "../components/Header";
@@ -13,11 +14,11 @@ import { CLASSES } from "../constants";
 import Source from "../models/source";
 import User from "../models/user";
 import { State } from "../reducers";
+import { remoteservice } from "../services/remote-service";
 import SourceService from "../services/source";
 import SpokeService from "../services/spokes";
 import ArrayUtils from "../utils/array";
 import { Location } from "../utils/Location";
-
 /**
  * Simple Adapter so a Source can conform to Dropdownable
  */
@@ -33,7 +34,6 @@ class SourceDropdownableAdapter implements Dropdownable {
   get label() {
     return this.source.name;
   }
-
 }
 
 interface DashboardProps {
@@ -46,10 +46,12 @@ interface DashboardProps {
   getSources: () => Promise<Source[]>;
   setSource: (source: Source) => (dispatch: Redux.Dispatch<any>) => void;
   goTo: (path: string) => (dispatch: Redux.Dispatch<any>) => void;
+  setUser: (user: User) => (dispatch: Redux.Dispatch<any>) => void;
 }
 
 interface DashboardState {
   showModal: boolean;
+  emailVerificationStatus: "loading" | "asking" | "sent" | "done";
 }
 
 function mapStateToProps(state: State.All) {
@@ -77,23 +79,36 @@ function mapDispatchToProps(dispatch: any) {
     goTo: function (path: string) {
       return dispatch(replace(path));
     }
+    ,
+    setUser: function (user: User) {
+      return dispatch(setUser(user));
+    }
   };
 }
+
+let showAskingSnackbar: boolean = false;
 
 class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   constructor(props: DashboardProps) {
     super(props);
 
-    this.state = {
-      showModal: false,
-    };
     this.handleSelectedSource = this.handleSelectedSource.bind(this);
     this.handlePageSwap = this.handlePageSwap.bind(this);
     this.handleHomeClick = this.handleHomeClick.bind(this);
     this.handleOpenModal = this.handleOpenModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleEnterContest = this.handleEnterContest.bind(this);
+    this.handleVerifyEmailClick = this.handleVerifyEmailClick.bind(this);
+    this.handleSnackbarHiding = this.handleSnackbarHiding.bind(this);
+    this.emailVerificationSnackbarLabel = this.emailVerificationSnackbarLabel.bind(this);
+
+    this.state = {
+      showModal: false,
+      emailVerificationStatus: "loading"
+    };
+
+    showAskingSnackbar = !this.props.user.emailVerified;
   }
 
   drawerClasses() {
@@ -126,6 +141,15 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
+  }
+
+  componentDidUpdate(previousProps: DashboardProps, previousState: DashboardState) {
+    if (showAskingSnackbar && this.state.emailVerificationStatus === "loading" && previousState.emailVerificationStatus === "loading") {
+      showAskingSnackbar = false;
+      this.setState((prevState, prevProps) => ({
+        ...this.state, emailVerificationStatus: "asking"
+      }));
+    }
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {
@@ -205,7 +229,6 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     } else if (button.name === "settings") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/settings");
     }
-
   }
 
   handleHomeClick() {
@@ -216,19 +239,39 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
     const contest = window.localStorage.getItem("contest") === "false";
     if (!contest) {
       window.localStorage.setItem("contest", "false");
-      this.setState({ showModal: true });
+      this.setState({ ...this.state, showModal: true });
     }
   }
 
   handleCloseModal() {
     window.localStorage.setItem("contest", "true");
-    this.setState({ showModal: false });
+    this.setState({ ...this.state, showModal: false });
   }
 
   handleEnterContest() {
     window.open("https://www.surveymonkey.com/r/X5R3W8G", "_blank");
     window.localStorage.setItem("contest", "true");
-    this.setState({ showModal: false });
+    this.setState({ ...this.state, showModal: false });
+  }
+
+  emailVerificationSnackbarLabel(): any {
+    return (
+      <div>
+        Your email is not yet verified - please click on the link in the email we sent to you at signup. Or click
+      <a onClick={this.handleVerifyEmailClick} className="cursor-pointer"> here </a>
+        to receive another verification email
+      </div>
+    );
+  }
+
+  async handleVerifyEmailClick() {
+    await remoteservice.defaultService().auth().currentUser.sendEmailVerification();
+    this.setState({ ...this.state, emailVerificationStatus: "sent" });
+  }
+
+  handleSnackbarHiding() {
+    this.setState({ ...this.state, emailVerificationStatus: "done" });
+    this.props.setUser({ ...this.props.user, emailVerified: true });
   }
 
   render() {
@@ -260,6 +303,19 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         </Header>
         <Content>
           {this.props.children}
+          <Snackbar className="sm-snackbar" action="Dismiss" type="cancel"
+            active={this.state.emailVerificationStatus === "asking"}
+            onClick={this.handleSnackbarHiding}
+            label={this.emailVerificationSnackbarLabel()}
+            timeout={10000}
+            onTimeout={this.handleSnackbarHiding}
+          />
+          <Snackbar className="sm-snackbar" action="Dismiss" type="cancel"
+            active={this.state.emailVerificationStatus === "sent"}
+            onClick={this.handleSnackbarHiding}
+            label="Verification email sent!"
+            timeout={10000}
+            onTimeout={this.handleSnackbarHiding} />
         </Content>
         <a className="git-hash" href={`https://github.com/bespoken/dashboard/commit/${process.env.GIT_HASH}`} target="_blank">{process.env.GIT_HASH.slice(0, 7)}</a>
       </Layout>
