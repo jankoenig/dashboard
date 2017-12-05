@@ -4,10 +4,6 @@ language: node_js
 node_js:
   - "6"
 script: npm run coveralls
-branches:
- only:
-   - "master"
-   - /^(prod|dev)-.*$/
 cache:
   directories:
   - node_modules
