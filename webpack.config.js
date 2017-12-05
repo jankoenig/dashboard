@@ -16,11 +16,23 @@ var buildId = process.env.TRAVIS_BUILD_ID
 var git_hash = childProcess.execSync("git rev-parse HEAD").toString();
 
 var logless_base = "";
+var firebase_api_key = "AIzaSyAs4iTZjSqvcAwFB08Cca3kABoypk3SAaA";
+var firebase_auth_domain = "dev-dashboard-bbcee.firebaseapp.com";
+var firebase_database_url = "https://dev-dashboard-bbcee.firebaseio.com";
+var firebase_storage_bucket = "dev-dashboard-bbcee.appspot.com";
+var firebase_messaging_sender_id = "439343509371";
 var travis_tag = process.env.TRAVIS_TAG;
 if (travis_tag) {
     const env = travis_tag.match(/^(prod|dev).*$/);
     if (env && env.length === 2 && env[1] === "dev") {
-        logless_base = "https://logless-dev.bespoken.io/v1";
+        logless_base = "https://logless-dev.bespoken.tools/v1";
+    }
+    if (env && env.length === 2 && env[1] === "prod") {
+        firebase_api_key = "AIzaSyB1b8t0rbf_x2ZEhJel0pm6mQ4POZLgz-k";
+        firebase_auth_domain = "bespoken-tools.firebaseapp.com";
+        firebase_database_url = "https://bespoken-tools.firebaseio.com";
+        firebase_storage_bucket = "bespoken-tools.appspot.com";
+        firebase_messaging_sender_id = "629657216103";
     }
 }
 
@@ -35,6 +47,11 @@ var buildVariables = {
     VIRTUAL_DEVICE_URL: JSON.stringify(virtual_device_url),
     PUSHER_APP_KEY: pusher_app_key ? JSON.stringify(pusher_app_key) : JSON.stringify("f633d48c65e61876b8df"),
     GIT_HASH: JSON.stringify(git_hash),
+    FIREBASE_API_KEY: JSON.stringify(firebase_api_key),
+    FIREBASE_AUTH_DOMAIN: JSON.stringify(firebase_auth_domain),
+    FIREBASE_DATABASE_URL: JSON.stringify(firebase_database_url),
+    FIREBASE_STORAGE_BUCKET: JSON.stringify(firebase_storage_bucket),
+    FIREBASE_MESSAGING_SENDER_ID: JSON.stringify(firebase_messaging_sender_id),
   },
   'BASENAME': JSON.stringify("/dashboard"),
   'GOOGLE_ANALYTICS': JSON.stringify(""),

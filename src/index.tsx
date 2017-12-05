@@ -58,11 +58,11 @@ const history = syncHistoryWithStore(browserHistory, store);
 
 // Bootstrap Firebase
 let firebaseConfig = {
-    apiKey: "AIzaSyB1b8t0rbf_x2ZEhJel0pm6mQ4POZLgz-k", // It is ok for this to be public - MMM
-    authDomain: "bespoken-tools.firebaseapp.com",
-    databaseURL: "https://bespoken-tools.firebaseio.com",
-    storageBucket: "bespoken-tools.appspot.com",
-    messagingSenderId: "629657216103"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
 };
 
 // Timing the firebase initialize
