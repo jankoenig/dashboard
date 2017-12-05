@@ -7,6 +7,7 @@ script: npm run coveralls
 branches:
  only:
    - "master"
+   - /^(prod|dev)-.*$/
 cache:
   directories:
   - node_modules
