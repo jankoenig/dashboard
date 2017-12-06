@@ -22,7 +22,7 @@ describe("User", function () {
   });
   describe("Firebase User", function () {
     it("can be created from a Firebase.User", function () {
-      let user = new FirebaseUser({ email: "my@email.com", displayName: "displayName", photoURL: "photoUrl", providerId: "providerId", uid: "uid" });
+      let user = new FirebaseUser({ email: "my@email.com", displayName: "displayName", photoURL: "photoUrl", providerId: "providerId", uid: "uid" , emailVerified : true, sendEmailVerification: undefined});
 
       expect(user.email).to.equal("my@email.com");
       expect(user.displayName).to.equal("displayName");

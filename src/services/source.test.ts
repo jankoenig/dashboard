@@ -43,7 +43,8 @@ let mockUser: remoteservice.user.User = {
     email: "test@testdomain.test",
     photoURL: undefined,
     providerId: "ABC123",
-    uid: "ABCD1234567890"
+    uid: "ABCD1234567890",
+    sendEmailVerification: undefined
 };
 
 /**
@@ -154,7 +155,7 @@ describe("Source Service", function () {
               proxy_enabled: true,
               debug_enabled: true,
             });
-            user = new User({ userId: "TestUserID", email: "test@test.com" });
+            user = new User({ userId: "TestUserID", email: "test@test.com", emailVerified: false });
             mockResponse = { user: { userId: user.userId }, source: fullSource };
             fetchMock.post(/https:\/\/source-api\.bespoken\.tools\/v1\/linkSource/, mockResponse);
         });

@@ -59,11 +59,11 @@ const history = syncHistoryWithStore(browserHistory, store);
 
 // Bootstrap Firebase
 let firebaseConfig = {
-    apiKey: "AIzaSyB1b8t0rbf_x2ZEhJel0pm6mQ4POZLgz-k", // It is ok for this to be public - MMM
-    authDomain: "bespoken-tools.firebaseapp.com",
-    databaseURL: "https://bespoken-tools.firebaseio.com",
-    storageBucket: "bespoken-tools.appspot.com",
-    messagingSenderId: "629657216103"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID
 };
 
 // Timing the firebase initialize
@@ -75,11 +75,16 @@ Firebase.auth().onAuthStateChanged(function (user: Firebase.User) {
     const state = store.getState();
     const lastUser = state.session.user;
     const location = state.routing.locationBeforeTransitions;
-    const newLocation = {...location, ...{pathname: "/" }}; // Doing this will pass along any query parameters that may exist.
+    const newLocation = { ...location, ...{ pathname: "/" } }; // Doing this will pass along any query parameters that may exist.
     // If there is a user, set it
     if (user) {
         if (!lastUser || lastUser.userId !== user.uid) {
-            store.dispatch(setUser(new FirebaseUser(user)));
+            const dashboardUser = new FirebaseUser(user);
+            // Email is verified for authenticated user via providers different than `email/password`. Eg. GitHub
+            if (user.providerData && user.providerData.length && user.providerData[0].providerId !== "password") {
+                dashboardUser.emailVerified = true;
+            }
+            store.dispatch(setUser(dashboardUser));
             if (!lastUser) {
                 store.dispatch(replace(newLocation));
             }
@@ -115,7 +120,7 @@ let checkAuth = function (nextState: RouterState, replace: RedirectFunction): bo
 
 let onEnterDashboard: EnterHook = function (nextState: RouterState, replace: RedirectFunction) {
     if (!checkAuth(nextState, replace)) return;
-    if (nextState.location.pathname === "/") return replace({...location, pathname: "/skills" }); // in order to redirect from dashboard base location to skills page without adding a redirect on the componentDidMount
+    if (nextState.location.pathname === "/") return replace({ ...location, pathname: "/skills" }); // in order to redirect from dashboard base location to skills page without adding a redirect on the componentDidMount
     if (nextState.location.query.id &&
       nextState.location.query.key &&
       !nextState.location.pathname.match("sources/link")) {
