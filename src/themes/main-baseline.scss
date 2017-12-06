@@ -17,13 +17,26 @@
         display: none;
     }
 
+    .responsive-page-swap {
+        margin-left: 250px;
+    }
+
     @media (max-width: 667px) {
         .responsive-source-menu {
             display: block;
+            position: relative;
+            right: 15px;
+            top: 1px;
         }
 
         .hide-source-menu {
             display: none;
+        }
+    }
+
+    @media (max-width: 320px) {
+        .responsive-page-swap {
+            margin-left: 220px;
         }
     }
 }

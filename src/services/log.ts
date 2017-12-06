@@ -51,6 +51,16 @@ namespace LogService {
         Unknown: TotalStat;
     }
 
+    export interface AudioPlayerTotalStats {
+        avgDuration: number;
+        avgSessionsNumber: number;
+    }
+
+    export interface AudioPlayerStats {
+        source: string;
+        stats: AudioPlayerTotalStats;
+    }
+
     export const DEFAULT_TRANSACTIONS_BEFORE = 25;
     export const DEFAULT_TRANSACTIONS_AFTER = 25;
     let BASE_URL = "https://logless.bespoken.tools/v1";
@@ -103,6 +113,16 @@ namespace LogService {
 
     export function getSourceSummary(query: Query): Promise<SourceStats> {
         let url = BASE_URL + "/sourceStats?" + query.query();
+        return fetchJson(url);
+    }
+
+    export function getAudioSessions(query: Query): Promise<any> {
+        let url = BASE_URL + "/audioplayer/sessions?" + query.query();
+        return fetchJson(url);
+    }
+
+    export function getAudioDuration(query: Query): Promise<any> {
+        let url = BASE_URL + "/audioplayer/duration?" + query.query();
         return fetchJson(url);
     }
 

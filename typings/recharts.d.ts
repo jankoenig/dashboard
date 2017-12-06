@@ -79,6 +79,7 @@ declare module "recharts" {
       payload?: any[];
       margin?: object;
       height?: number;
+      content?: JSX.Element | Function;
     }
 
     export class Legend extends React.Component<LegendProps, any> { }
@@ -148,6 +149,7 @@ declare module "recharts" {
 
     export interface TooltipProps {
         labelFormatter?: (tick: number | string) => string;
+        content?: any;
     }
     export class Tooltip extends React.Component<TooltipProps, any> { }
 
