@@ -1,13 +1,14 @@
-#### Deployment Steps
+## Deployment
 
-1. Go to [https://github.com/bespoken/dashboard/releases](https://github.com/bespoken/dashboard/releases) and create
-a new tag, use the following syntax: `prod-2.0.2`, the last part after the dash character (-) is the number
-to be used as the production build version.
-2. Step 1 triggers a production build on Travis, after it successfully finishes, a GitHub pull request
-is automatically created containing all the production build files.
-3. Merge the PR created on Step 3.
-4. In [https://github.com/bespoken/bespoken-tools-website](https://github.com/bespoken/bespoken-tools-website) edit the version of `bespoken-dashboard` within [`bower.json`](https://github.com/bespoken/bespoken-tools-website/blob/master/bower.json)
-use the production build version of Step 1.
-5. Create a new PR for the Step 4.
-6. Merge the PR created in Step 5.
-7. Done!, after build successfully finishes in Step 6, dashboard auto-deploy to production!
+In order to deploy `bespoken/dashboard` to firebase:
+
+### Development Environment
+1. Create a [new git tag](https://github.com/bespoken/dashboard/releases/new) with the suffix `dev-`, Eg. `dev-new-feature`.
+2. Once travis build successfully finishes, visit: https://dev-dashboard-bbcee.firebaseapp.com
+
+### Production Environment
+- At the moment deployment goes via: [https://github.com/bespoken/bespoken-tools-website](https://github.com/bespoken/bespoken-tools-website)
+1. Create a [new git tag](https://github.com/bespoken/dashboard/releases/new) with the suffix `prod-`, Eg. `prod-2.0.0`
+2. Once travis build successfully finishes for the newly created tag, it creates a pull request with the following title, Eg. `[CD]: v2.0.0`, then merge it.
+4. In [https://github.com/bespoken/bespoken-tools-website](https://github.com/bespoken/bespoken-tools-website) edit the version of `bespoken-dashboard` within [`bower.json`](https://github.com/bespoken/bespoken-tools-website/blob/master/bower.json), Eg. `2.0.0`, then merge it.
+5. Once travis build successfully finishes, visit: https://apps.bespoken.io/dashboard/
