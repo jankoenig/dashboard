@@ -1,0 +1,108 @@
+.toasts {
+    margin: 0;
+}
+
+.custom_toast {
+    position: absolute;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 35px;
+    width: 24%;
+    height: 10%;
+    text-align: center;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 9999;
+
+    &.top {
+        left: 38%;
+    }
+    &.bottom {
+        left: 38%;
+    }
+
+    &.left {
+        top: 45%;
+    }
+
+    &.right {
+        top: 45%;
+    }
+
+    &.error {
+        background-color: #e74c3c;
+    }
+
+    &.info {
+        background-color: #3498db;
+    }
+
+    &.warning {
+        background-color: #f1c40f;
+    }
+
+    &.success {
+        background-color: #07bc0c;
+    }
+
+    &.end {
+        display: none;
+    }
+
+    .close_button {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        height: 24px;
+        width: 24px;
+        min-width: 24px;
+        font-size: 18px;
+        i {
+            font-size: 18px;
+        }
+    }
+}
+
+@keyframes animation-top {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        top: -5%;
+    }
+}
+
+@keyframes animation-bot {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        bot: -5%;
+    }
+}
+
+@keyframes animation-left {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        left: -24%;
+    }
+}
+
+@keyframes animation-right {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        right: -24%;
+    }
+}

@@ -12,8 +12,9 @@ import Popup from "../components/Popup";
 import UserControl from "../components/UserControl";
 import { CLASSES } from "../constants";
 import Source from "../models/source";
-import User from "../models/user";
+import User, {UserDetails} from "../models/user";
 import { State } from "../reducers";
+import auth from "../services/auth";
 import { remoteservice } from "../services/remote-service";
 import SourceService from "../services/source";
 import SpokeService from "../services/spokes";
@@ -22,6 +23,7 @@ import { Location } from "../utils/Location";
 /**
  * Simple Adapter so a Source can conform to Dropdownable
  */
+const globalWindow: any = typeof(window) !== "undefined" ? window : {};
 class SourceDropdownableAdapter implements Dropdownable {
 
   constructor(readonly source: Source) {
@@ -141,6 +143,16 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       }
     }
     await this.props.getSources();
+    const userValidationInfo: UserDetails = await auth.currentUserDetails();
+       userValidationInfo && globalWindow && globalWindow.Intercom("boot", {
+        app_id: "ah6uagcl",
+        name: this.props.user.displayName,
+        email: this.props.user.email,
+        skillsAmmount: this.props.sources.length,
+        usingMonitoring: this.props.sources.some(source => source.monitoring_enabled),
+        usingValidation: !!userValidationInfo.smAPIAccessToken,
+        hide_default_launcher: false,
+    });
   }
 
   componentDidUpdate(previousProps: DashboardProps, previousState: DashboardState) {
@@ -150,6 +162,13 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         ...this.state, emailVerificationStatus: "asking"
       }));
     }
+  }
+
+  componentWillUnmount() {
+      globalWindow && globalWindow.Intercom("boot", {
+          app_id: "ah6uagcl",
+          hide_default_launcher: true,
+      });
   }
 
   handleSelectedSource(sourceDropdownableAdapter: SourceDropdownableAdapter) {

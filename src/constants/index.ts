@@ -48,6 +48,11 @@ export const FETCH_SOURCES_SUCCESS: FETCH_SOURCE_SUCCESS = "bst/FETCH_SOURCES_SU
 export type SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 export const SET_SNACKBAR_MESSAGE: SET_SNACKBAR_MESSAGE = "bst/SET_SNACKBAR_MESSAGE";
 
+export type ADD_TOAST = "bst/ADD_TOAST";
+export const ADD_TOAST: ADD_TOAST = "bst/ADD_TOAST";
+export type REMOVE_TOAST = "bst/REMOVE_TOAST";
+export const REMOVE_TOAST: REMOVE_TOAST = "bst/REMOVE_TOAST";
+
 export namespace COLORS {
     export const RED = "#F44336";
     export const GREEN = "#4CAF50";
