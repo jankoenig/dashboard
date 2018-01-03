@@ -1,4 +1,5 @@
 import * as chai from "chai";
+import * as chaiAsPromised from "chai-as-promised";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
@@ -223,6 +224,8 @@ describe("Header", function () {
 
         before(function () {
             onPageSelected = sinon.stub();
+            chai.should();
+            chai.use(chaiAsPromised);
         });
 
         beforeEach(function () {
@@ -239,12 +242,16 @@ describe("Header", function () {
         describe("PageSwap", function () {
             let wrapper: ShallowWrapper<any, any>;
 
-            beforeEach(function() {
+            beforeEach(function(done) {
                 wrapper = shallow(<PageSwap pageButtons={pages} onPageSelected={onPageSelected} />);
+                setTimeout(() => {
+                    done();
+                }, 1500);
             });
 
-            it("Tests the buttons are rendered properly.", function() {
-                expect(wrapper.find(HeaderButton)).to.have.length(pages.length);
+            it("Tests the buttons are rendered properly.", function(done) {
+                expect(Promise.resolve(wrapper.find(HeaderButton))).to.eventually.have.length(pages.length);
+                done();
             });
 
             it ("Tests the callback", function() {
@@ -254,7 +261,7 @@ describe("Header", function () {
                 expect(onPageSelected).to.have.been.calledWith(pages[0]);
             });
 
-            it("Tests that it will build new buttons on props change.", function() {
+            it("Tests that it will build new buttons on props change.", function(done) {
                 const newPages: PageButton[] = [
                     { icon: "newHome", name: "newName", tooltip: "newHome tooltip" },
                     { icon: "newHome2", name: "newName2", tooltip: "newHome2 tooltip" },
@@ -262,7 +269,10 @@ describe("Header", function () {
                     { icon: "newHome3", name: "newName3", tooltip: "newHome3 tooltip"}
                 ];
                 wrapper.setProps({ pageButtons: newPages });
-                expect(wrapper.find(HeaderButton)).to.have.length(newPages.length);
+                setTimeout(() => {
+                    expect(Promise.resolve(wrapper.find(HeaderButton))).to.eventually.have.length(newPages.length);
+                    done();
+                }, 1500);
             });
         });
     });

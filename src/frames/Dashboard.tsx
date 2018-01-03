@@ -80,8 +80,7 @@ function mapDispatchToProps(dispatch: any) {
     },
     goTo: function (path: string) {
       return dispatch(replace(path));
-    }
-    ,
+    },
     setUser: function (user: User) {
       return dispatch(setUser(user));
     }
@@ -227,7 +226,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
         },
         {
             icon: "volume_up",
-            name: "volume",
+            name: "audio",
             tooltip: "audio player session metrics"
         },
         {
@@ -250,7 +249,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
     } else if (button.name === "validation") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/validation");
-    } else if (button.name === "volume") {
+    } else if (button.name === "audio") {
         this.props.goTo("/skills/" + this.props.currentSource.id + "/audio");
     } else if (button.name === "settings") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/settings");

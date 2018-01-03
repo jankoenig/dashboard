@@ -1,10 +1,15 @@
 import * as classNames from "classnames";
+import * as moment from "moment";
 import * as React from "react";
 import { IconButton } from "react-toolbox/lib/button";
 import { MenuItem as ReactMenuItem } from "react-toolbox/lib/menu";
 import Tooltip from "react-toolbox/lib/tooltip";
-
 import { Menu, MenuItem } from "../components/Menu";
+import Log from "../models/log";
+import LogQuery from "../models/log-query";
+import Query, {EndTimeParameter, SourceParameter, StartTimeParameter} from "../models/query";
+import Source from "../models/source";
+import logService from "../services/log";
 
 import Noop from "../utils/Noop";
 
@@ -86,6 +91,7 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
             selectedSourceId={this.state.selectedSourceId} />
 
           <PageSwap
+            source={this.props.currentSourceId}
             pageButtons={this.props.pageButtons}
             onPageSelected={this.props.onPageSelected} />
 
@@ -257,9 +263,11 @@ export class Title extends React.Component<TitleProps, any> {
 }
 
 interface PageSwapProps {
+  source?: string;
   pageButtons?: PageButton[];
   onPageSelected?: (button: PageButton) => void | undefined;
   style?: any;
+  getLogs?: (query: LogQuery, location?: Location) => Promise<Log[]>;
 }
 
 interface PageSwapState {
@@ -273,7 +281,7 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
 
   static defaultProps: PageSwapProps = {
     pageButtons: [],
-    onPageSelected: Noop
+    onPageSelected: Noop,
   };
 
   constructor(props: PageSwapProps) {
@@ -296,19 +304,21 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
     this.props.onPageSelected(button);
   }
 
-  buildButtons(props: PageSwapProps) {
+  async buildButtons(props: PageSwapProps) {
     const buttons = props.pageButtons;
     this.state.buttons = [];
     let i = 0;
     for (let button of buttons) {
-      this.state.buttons.push(
-        (
-          <HeaderButton className="hide-source-menu"
-            key={++i}
-            button={button}
-            onClick={this.handleSelected} />
-        )
-      );
+        if (await allowTab(button.name, props)) {
+            this.state.buttons.push(
+                (
+                    <HeaderButton className="hide-source-menu"
+                                  key={++i}
+                                  button={button}
+                                  onClick={this.handleSelected} />
+                )
+            );
+        }
     };
     if (buttons.length) {
         this.setState({...this.state, responsiveButtons: buttons.map(button => {
@@ -368,4 +378,32 @@ export class HeaderButton extends React.Component<HeaderButtonProps, any> {
         onClick={this.handleClick} />
     );
   }
+}
+
+async function allowTab(tab: string, props: any) {
+    switch (tab) {
+        case "logs": {
+            const query: LogQuery = new LogQuery({
+                source: {id: props.source} as Source,
+                startTime: moment().subtract(7, "days"), // change 7 for the right time span once implemented
+                endTime: moment(),
+                limit: 50
+            });
+            let endpoint;
+            return !!(await logService.getLogs(query, endpoint)).length;
+        }
+        case "audio": {// should we have this conditional tab as well?
+            const query: Query = new Query();
+            query.add(new SourceParameter(props.source));
+            query.add(new StartTimeParameter(moment().subtract(7, "days"))); // change 7 for the right time span once implemented
+            query.add(new EndTimeParameter(moment()));
+            try {
+                return !!(await logService.getAudioSessions(query)).audioSessions.length;
+            } catch (err) {
+                return false;
+            }
+        }
+        default:
+            return true;
+    }
 }

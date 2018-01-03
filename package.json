@@ -40,6 +40,7 @@
   "devDependencies": {
     "@types/bluebird": "3.5.0",
     "@types/chai": "~3.5.0",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/chai-datetime": "0.0.30",
     "@types/classnames": "0.0.32",
     "@types/d3-scale": "~1.0.8",
@@ -97,6 +98,7 @@
   },
   "dependencies": {
     "bluebird": "3.5.0",
+    "chai-as-promised": "^7.1.1",
     "classnames": "~2.2.5",
     "d3-scale": "~1.0.5",
     "d3-time": "~1.0.6",
