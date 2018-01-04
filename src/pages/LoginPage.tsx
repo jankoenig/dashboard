@@ -1,9 +1,8 @@
-﻿
-import * as React from "react";
+﻿import * as React from "react";
 import { connect } from "react-redux";
 
 
-import { login, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback } from "../actions/session";
+import { login, loginWithAmazon, loginWithGithub, resetPassword, signUpWithEmail, SuccessCallback } from "../actions/session";
 import AuthForm from "../components/AuthForm";
 import Card from "../components/Card";
 import { Cell, Grid } from "../components/Grid";
@@ -23,6 +22,7 @@ export interface LoginConfig {
 interface LoginPageProps {
     login: (email: string, password: string, redirectStrat?: SuccessCallback) => Promise<User>;
     loginWithGithub: (redirectStrat?: SuccessCallback) => Promise<User>;
+    loginWithAmazon: (redirectStrat?: SuccessCallback) => Promise<User>;
     signUpWithEmail: (email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback) => Promise<User>;
     resetPassword: (email: string) => Promise<void>;
 };
@@ -47,6 +47,9 @@ function mapDispatchToProps(dispatch: Redux.Dispatch<any>) {
         loginWithGithub: function (redirectStrat?: SuccessCallback): Promise<User> {
             return dispatch(loginWithGithub(redirectStrat));
         },
+        loginWithAmazon: function (redirectStrat?: SuccessCallback): Promise<User> {
+            return dispatch(loginWithAmazon(redirectStrat));
+        },
         resetPassword: function (email: string): Promise<void> {
             return dispatch(resetPassword(email));
         }
@@ -59,6 +62,7 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
         super(props);
 
         this.handleFormLoginWithGithub = this.handleFormLoginWithGithub.bind(this);
+        this.handleFormLoginWithAmazon = this.handleFormLoginWithAmazon.bind(this);
         this.handleFormSignUpWithEmail = this.handleFormSignUpWithEmail.bind(this);
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleResetPassword = this.handleResetPassword.bind(this);
@@ -87,6 +91,14 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
             });
     }
 
+    handleFormLoginWithAmazon() {
+        this.props.loginWithAmazon()
+            .catch((err: Error) => {
+                this.state.error = err.message;
+                this.setState(this.state);
+            });
+    }
+
     handleFormSignUpWithEmail(email: string, pass: string, confirmPass: string) {
         this.props.signUpWithEmail(email, pass, confirmPass)
             .catch((err: Error) => {
@@ -105,6 +117,7 @@ export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
                             error={this.state.error}
                             onSubmit={this.handleFormSubmit}
                             onLoginWithGithub={this.handleFormLoginWithGithub}
+                            onLoginWithAmazon={this.handleFormLoginWithAmazon}
                             onSignUpWithEmail={this.handleFormSignUpWithEmail}
                             onResetPassword={this.handleResetPassword}
                             />

@@ -11,6 +11,7 @@ export interface AuthFormProps {
     error?: string;
     onSubmit: (email: string, pass: string) => void;
     onLoginWithGithub?: () => void;
+    onLoginWithAmazon?: () => void;
     onSignUpWithEmail?: (email: string, pass: string, confirmPass: string) => void;
     onResetPassword?: (email: string) => void;
 }
@@ -51,13 +52,18 @@ export class AuthForm extends React.Component<AuthFormProps, AuthFormState> {
     render() {
         return (
             <div className="mdl-card__supporting-text">
+                <img style={{ width: "65%", margin: "0 17.5%" }} src="https://bespoken.io/wp-content/uploads/Bespoken-Logo-RGB-e1500333659572.png" alt="bespoken logo" />
+
                 <NormalLoginForm
                     error={this.props.error}
                     onLogin={this.props.onSubmit}
                     onSignUpWithEmail={this.props.onSignUpWithEmail}
                     onEmailChange={this.onEmailChange}
                     onResetPassword={this.onResetPassword}
-                    />
+                />
+                <div className="mdl-card__actions clearfix">
+                    <LoginAmazon onLoginWithAmazon={this.props.onLoginWithAmazon} />
+                </div>
                 <div className="mdl-card__actions clearfix">
                     <LoginGithub onLoginWithGithub={this.props.onLoginWithGithub} />
                 </div>
@@ -96,13 +102,35 @@ export class LoginGithub extends React.Component<LoginGithubProps, any> {
             this.props.onLoginWithGithub ? (
                 <div style={{ width: "100%", textAlign: "Center" }}>
                     <Button
-                        style={{width: "92%"}}
+                        style={{ width: "92%" }}
                         theme={theme}
                         label="Login with Github"
                         icon={(<Icon style={{ marginRight: "13px" }} width={20} height={20} icon={ICON.GITHUB} />)}
                         onClick={this.props.onLoginWithGithub} />
                 </div>
-            ) : ( <div/> )
+            ) : (<div />)
+        );
+    }
+}
+
+interface LoginAmazonProps {
+    onLoginWithAmazon?: () => void;
+}
+
+export class LoginAmazon extends React.Component<LoginAmazonProps, any> {
+
+    render() {
+        return (
+            this.props.onLoginWithAmazon ? (
+                <div style={{ width: "100%", textAlign: "Center" }}>
+                    <Button
+                        style={{ width: "92%" }}
+                        theme={theme}
+                        label="Login with Amazon"
+                        icon={(<Icon style={{ marginRight: "7px" }} width={20} height={20} icon={ICON.AMAZON} />)}
+                        onClick={this.props.onLoginWithAmazon} />
+                </div>
+            ) : (<div />)
         );
     }
 }
@@ -225,7 +253,7 @@ export class NormalLoginForm extends React.Component<NormalLoginFormProps, Norma
                     theme={theme}
                     label="Submit"
                     onClick={this.onSubmitClicked}
-                    />
+                />
             ) :
             (
                 <Button
@@ -318,11 +346,10 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
     render() {
         return (
             <div>
-                <img style={{width: "65%", margin: "0 17.5%"}} src="https://bespoken.io/wp-content/uploads/Bespoken-Logo-RGB-e1500333659572.png" alt="bespoken logo" />
                 {
                     this.props.showConfirmPassword ?
-                    <h3 className={theme.h3}>Create New Account</h3> :
-                    ""
+                        <h3 className={theme.h3}>Create New Account</h3> :
+                        ""
                 }
                 <Input
                     theme={theme}
@@ -330,7 +357,7 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
                     type="text"
                     value={this.props.email}
                     onChange={this.props.onEmailChange}
-                    />
+                />
                 <Input
                     theme={theme}
                     label="Password"
@@ -338,7 +365,7 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
                     value={this.props.password}
                     onChange={this.props.onPasswordChange}
                     onKeyPress={this.onPasswordKeyPress}
-                    />
+                />
                 <Input
                     theme={theme}
                     className={this.props.showConfirmPassword ? `${theme.showConfirm} ${theme.active}` : theme.showConfirm}
@@ -347,7 +374,7 @@ export class LoginForms extends React.Component<LoginFormsProps, LoginFormsState
                     value={this.props.confirmPassword}
                     onChange={this.props.onConfirmPasswordChange}
                     onKeyPress={this.onPasswordKeyPress}
-                    />
+                />
                 <div style={{ color: "#d50000", marginTop: "5px", marginBottom: "10px" }}>
                     <label>{this.props.error}</label>
                 </div>

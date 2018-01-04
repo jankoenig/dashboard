@@ -11,12 +11,16 @@ import { remoteservice } from "./remote-service";
  */
 namespace auth {
 
-    const globalWindow: any = typeof(window) !== "undefined" ? window : {};
-    const {heap} = globalWindow;
+    const globalWindow: any = typeof (window) !== "undefined" ? window : {};
+    const { heap } = globalWindow;
 
     export function loginWithGithub(auth?: remoteservice.auth.Auth, storage?: LocalStorage, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<User> {
         let provider = new remoteservice.auth.GithubAuthProvider();
         return loginWithProvider(provider, auth, storage, db);
+    }
+
+    export function loginWithAmazon(auth?: remoteservice.auth.Auth, storage?: LocalStorage, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<User> {
+        return Promise.resolve(undefined);
     }
 
     async function loginWithProvider(provider: remoteservice.auth.AuthProvider, auth: remoteservice.auth.Auth = remoteservice.defaultService().auth(), storage?: LocalStorage, db: remoteservice.database.Database = remoteservice.defaultService().database()): Promise<User> {
@@ -31,7 +35,7 @@ namespace auth {
             const data = await ref.child("/users/" + result.user.uid).once("value");
             const validation = data.val() && !data.val().registered;
             if (validation) {
-                ref.child("/users/" + result.user.uid).update({registered: true});
+                ref.child("/users/" + result.user.uid).update({ registered: true });
             }
             return authProviderSuccessHandler(result, storage, !validation);
         } catch (err) {
@@ -67,7 +71,7 @@ namespace auth {
     function validateEmail(email: string): Promise<any> {
         let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-        return new Promise<any>(function(resolve, reject) {
+        return new Promise<any>(function (resolve, reject) {
             if (re.test(email)) {
                 resolve(email);
             } else {
@@ -147,7 +151,7 @@ namespace auth {
 
     function identify(user: User, loginType: string) {
         if (typeof (heap) !== "undefined") heap.identify(user.userId);
-        if (typeof (heap) !== "undefined") heap.addUserProperties({"Email": user.email, "Name": user.displayName, "LoginType": loginType});
+        if (typeof (heap) !== "undefined") heap.addUserProperties({ "Email": user.email, "Name": user.displayName, "LoginType": loginType });
     }
 
     export function updateCurrentUser(props: Object): Promise<any> {

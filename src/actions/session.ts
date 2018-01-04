@@ -61,6 +61,14 @@ export function loginWithGithub(redirectStrat?: SuccessCallback): (dispatch: Red
   };
 }
 
+export function loginWithAmazon(redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => Promise<User> {
+  return function (dispatch: Redux.Dispatch<any>) {
+    return loginMethod(dispatch, function () {
+      return auth.loginWithAmazon();
+    }, redirectStrat);
+  };
+}
+
 export function signUpWithEmail(email: string, password: string, confirmPassword: string, redirectStrat?: SuccessCallback): (dispatch: Redux.Dispatch<any>) => Promise<User> {
   return function (dispatch: Redux.Dispatch<any>) {
     return loginMethod(dispatch, function () {
