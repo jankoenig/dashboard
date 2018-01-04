@@ -1,0 +1,37 @@
+@import "dashboard";
+
+.monthsDisplay {
+    background-color: $color-primary;
+}
+
+.day:hover span {
+    background: $color-primary!important;
+    opacity: .6;
+}
+
+.active span {
+    background: $color-primary!important;
+}
+
+.button {
+    color: $color-primary!important;
+}
+
+.label::after {
+    content: '';
+    position: relative;
+    left: 100%;
+    top: 20px;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #e8e8e8;
+    clear: both;
+}
+
+@media (max-width: 479px) {
+    .label::after {
+        left: 156%;
+    }
+}

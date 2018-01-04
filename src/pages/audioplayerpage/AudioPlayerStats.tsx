@@ -2,9 +2,9 @@ import * as moment from "moment";
 import * as React from "react";
 
 import DataTile from "../../components/DataTile";
-import { Cell, Grid } from "../../components/Grid";
+import {Cell, Grid} from "../../components/Grid";
 import * as LoadingComponent from "../../components/LoadingComponent";
-import Query, { EndTimeParameter, SourceParameter, StartTimeParameter } from "../../models/query";
+import Query, {EndTimeParameter, SourceParameter, StartTimeParameter} from "../../models/query";
 import LogService from "../../services/log";
 
 const DEFAULT_VALUE: string = "N/A";
@@ -62,7 +62,6 @@ function getLabel(audioStats: LogService.AudioPlayerTotalStats, state: LoadingCo
 }
 
 
-
 export class AudioPlayerStats extends LoadingComponent.Component<LogService.AudioPlayerStats, AudioPlayerStatsProps, AudioPlayerStatsState> {
 
     static defaultProps: AudioPlayerStatsProps = {
@@ -74,9 +73,9 @@ export class AudioPlayerStats extends LoadingComponent.Component<LogService.Audi
 
     static defaultState: any = {
         data: {
-                source: DEFAULT_VALUE,
-                stats: newStats(),
-            }
+            source: DEFAULT_VALUE,
+            stats: newStats(),
+        }
     };
 
     constructor(props: AudioPlayerStatsProps) {
@@ -99,26 +98,37 @@ export class AudioPlayerStats extends LoadingComponent.Component<LogService.Audi
         query.add(new StartTimeParameter(props.startDate));
         query.add(new EndTimeParameter(props.endDate));
         const [sessions, duration] = await Promise.all([LogService.getAudioSessions(query), LogService.getAudioDuration(query)]);
-        return {source: props.source, stats: {avgDuration: duration.averageSessionDuration, avgSessionsNumber: sessions.averageSessionsPerDay}};
+        return {
+            source: props.source,
+            stats: {avgDuration: duration.averageSessionDuration, avgSessionsNumber: sessions.averageSessionsPerDay}
+        };
     }
 
     render() {
-        const { data, state } = this.state;
-        const { avgDuration, avgSessionsNumber } = getLabel(data.stats, state);
+        const {data, state} = this.state;
+        const {avgDuration, avgSessionsNumber} = getLabel(data.stats, state);
 
         return (
             <Grid noSpacing={true}>
-                <Cell phone={2} offsetTablet={1} tablet={3} col={6}>
-                    <DataTile
-                        smallWidth={true}
-                        value={avgDuration}
-                        label={"Average Duration"} />
+                <Cell col={12}>
+                    <Grid style={{marginBottom: 20}} noSpacing={true}>
+                        <Cell phone={4} tablet={4} col={8}>
+                            <DataTile
+                                smallWidth={true}
+                                value={avgDuration}
+                                label={"Average Duration"}/>
+                        </Cell>
+                    </Grid>
                 </Cell>
-                <Cell phone={2} tablet={3} col={6}>
-                    <DataTile
-                        smallWidth={true}
-                        value={avgSessionsNumber}
-                        label={"Number of Sessions"} />
+                <Cell col={12}>
+                    <Grid noSpacing={true}>
+                        <Cell style={{fontSize: "1.2rem"}} phone={4} tablet={4} col={8}>
+                            <DataTile
+                                smallWidth={true}
+                                value={avgSessionsNumber}
+                                label={"Number of Sessions"}/>
+                        </Cell>
+                    </Grid>
                 </Cell>
             </Grid>
         );

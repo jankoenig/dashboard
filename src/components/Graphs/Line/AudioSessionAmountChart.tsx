@@ -83,7 +83,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
     render() {
         const renderLegend = (props: any) => {
             return (
-                <div style={{textAlign: "center", marginBottom: 15}}>
+                <div style={{textAlign: "left", marginBottom: 15, paddingLeft: 35}}>
                     <div style={{fontSize: "1.2em", fontWeight: "bold", marginBottom: 5}}>Sessions Per Day</div>
                 </div>
             );

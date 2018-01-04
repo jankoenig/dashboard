@@ -2,6 +2,7 @@ import * as chai from "chai";
 import { shallow } from "enzyme";
 import * as moment from "moment";
 import * as React from "react";
+import DatePicker from "react-toolbox/lib/date_picker";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
 
@@ -37,6 +38,14 @@ describe("Audio Player Page", function () {
 
             expect(wrapper.find(AudioSessionSummary)).to.have.length(0);
             expect(wrapper.find(AudioPlayerPage)).to.have.length(0);
+        });
+
+        it("Tests that the date picker view is there.", function () {
+            const wrapper = shallow((
+                <AudioPlayerPage source={source} goHome={goHome} />
+            ));
+
+            expect(wrapper.find(DatePicker)).to.have.length(2);
         });
 
         it("Tests that the summary view is there.", function () {

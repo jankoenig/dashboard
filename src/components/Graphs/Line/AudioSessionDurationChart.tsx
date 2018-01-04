@@ -103,7 +103,7 @@ class AudioSessionChart extends React.Component<AudioSessionChartProps, UpTimeCh
     render() {
         const renderLegend = (props: any) => {
             return (
-                <div style={{textAlign: "center", marginBottom: 15}}>
+                <div style={{textAlign: "left", marginBottom: 15, paddingLeft: 35}}>
                     <div style={{fontSize: "1.2em", fontWeight: "bold", marginBottom: 5}}>Average Session Duration</div>
                 </div>
             );
@@ -133,5 +133,5 @@ function getTimeString(duration: number, withMilliseconds: boolean = true) {
     const hoursText = (hours < 10) ? "0" + hours : hours;
     const minutesText = (minutes < 10) ? "0" + minutes : minutes;
     const secondsText = (seconds < 10) ? "0" + seconds : seconds;
-    return `${hours === 0 ?  "" : hoursText + ":"}${minutes === 0 ? "" : minutesText + ":"}${seconds === 0 ? "" : secondsText}${(withMilliseconds ? "." + milliseconds : "")}`;
+    return `${hours === 0 ?  "" : hoursText + ":"}${(hours === 0 && minutes === 0) ? "" : minutesText + ":"}${(hours === 0 && minutes === 0 && seconds === 0) ? "" : secondsText}${(withMilliseconds ? "." + milliseconds : "")}`;
 }

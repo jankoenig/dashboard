@@ -13,6 +13,7 @@ $color-google-blue: #0057e7;
 $color-primary: rgb(56, 191, 196);
 
 $color-accent: $color-primary;
+$color-faded: lighten($color-primary, 30);
 
 $font-size-tiny: 0.8em;
 $font-size-small: 1.0em;

@@ -1,0 +1,27 @@
+@import "../../themes/dashboard";
+.primary_text_color {
+    color: $color-primary;
+}
+
+.padding_left {
+    padding-left: 53px;
+}
+
+.padding_top {
+    padding-top: 0;
+}
+
+.border_chart {
+    border: 2px solid $color-faded;
+    height: 300px;
+}
+
+.no_margin {
+    margin: 0;
+}
+
+@media (max-width: 479px) {
+    .padding_left {
+        padding-left: inherit;
+    }
+}
