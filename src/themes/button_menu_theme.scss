@@ -1,0 +1,55 @@
+@import "dashboard";
+
+.help_menu_button {
+    top: -8px;
+    font-size: 1.2em;
+    height: 24px;
+    line-height: 24px;
+    background-color: transparent!important;
+    color: #fff!important;;
+    border: 0 solid transparent!important;
+    box-shadow: none;
+    text-transform: none;
+    padding-left: 0;
+    text-align: left;
+}
+
+.menu_container {
+    display: inline-block;
+    position: absolute;
+    right: 50px;
+    + div {
+        position: absolute;
+        right: 1%;
+    }
+}
+
+@media (max-width: 667px) {
+    .menu_container {
+        position: absolute;
+        right: 50px;
+        + div {
+            right: 3%;
+        }
+    }
+}
+
+@media (max-width: 375px) {
+    .menu_container {
+        position: absolute;
+        right: 40px;
+        + div {
+            right: 10px;
+        }
+    }
+}
+
+@media (max-width: 360px) {
+    .menu_container {
+        position: absolute;
+        right: 40px;
+        + div {
+            right: 10px;
+        }
+    }
+}

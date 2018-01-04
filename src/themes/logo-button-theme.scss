@@ -1,0 +1,21 @@
+@import "icon-button-primary-config";
+@import "~react-toolbox/lib/button/theme";
+
+.button {
+    background-color: #fff;
+    background-image: url("https://bespoken.io/wp-content/uploads/2017/07/Bespoken-Alpaca-RGB-social.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center 5px;
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+
+    &:hover {
+        background-color: #fff!important;
+        background-image: url("https://bespoken.io/wp-content/uploads/2017/07/Bespoken-Alpaca-RGB-social.png")!important;
+        background-size: contain!important;
+        background-repeat: no-repeat!important;
+        background-position: center 5px!important;
+    }
+}

@@ -2,9 +2,11 @@ import * as chai from "chai";
 import * as chaiAsPromised from "chai-as-promised";
 import { shallow, ShallowWrapper } from "enzyme";
 import * as React from "react";
-import { IconButton } from "react-toolbox/lib/button";
+import { Button } from "react-toolbox/lib/button";
+import {Tab} from "react-toolbox/lib/tabs";
 import * as sinon from "sinon";
 import * as sinonChai from "sinon-chai";
+import ButtonMenu from "../components/ButtonMenu";
 
 import { Header, HeaderButton, HeaderProps, HeaderState, Home, PageButton, PageSwap, Title } from "./Header";
 
@@ -31,7 +33,7 @@ describe("Header", function () {
         });
 
         it("renders the menu", function () {
-            expect(wrapper.find("StyledMenu")).to.have.length(1);
+            expect(wrapper.find(ButtonMenu)).to.have.length(1);
         });
     });
 
@@ -91,17 +93,17 @@ describe("Header", function () {
 
             it("Displays the button when props say true.", function () {
                 const wrapper = shallow(<Home handleHomeClick={handleHomeClick} showHome={true} />);
-                expect(wrapper.find(IconButton)).to.have.length(1);
+                expect(wrapper.find(Button)).to.have.length(1);
             });
 
             it("Displays the button when props say true.", function () {
                 const wrapper = shallow(<Home handleHomeClick={handleHomeClick} showHome={false} />);
-                expect(wrapper.find(IconButton)).to.have.length(0);
+                expect(wrapper.find(Button)).to.have.length(0);
             });
 
             it("Calls the callback when clicked.", function () {
                 const wrapper = shallow(<Home handleHomeClick={handleHomeClick} showHome={true} />);
-                const iconButton = wrapper.find(IconButton).at(0);
+                const iconButton = wrapper.find(Button).at(0);
                 iconButton.simulate("click");
                 expect(handleHomeClick).to.have.been.calledOnce;
             });
@@ -240,39 +242,42 @@ describe("Header", function () {
         });
 
         describe("PageSwap", function () {
+            this.timeout(10000);
             let wrapper: ShallowWrapper<any, any>;
+            const newPages: PageButton[] = [
+                { icon: "newHome", name: "newName", tooltip: "newHome tooltip" },
+                { icon: "newHome2", name: "newName2", tooltip: "newHome2 tooltip" },
+                { icon: "newHome3", name: "newName3", tooltip: "newHome3 tooltip" },
+                { icon: "newHome3", name: "newName3", tooltip: "newHome3 tooltip"}
+            ];
 
             beforeEach(function(done) {
                 wrapper = shallow(<PageSwap pageButtons={pages} onPageSelected={onPageSelected} />);
                 setTimeout(() => {
                     done();
-                }, 1500);
+                }, 1000);
             });
 
-            it("Tests the buttons are rendered properly.", function(done) {
-                expect(Promise.resolve(wrapper.find(HeaderButton))).to.eventually.have.length(pages.length);
+            it("Tests the tabs are rendered properly.", function(done) {
+                wrapper.setProps({ pageButtons: pages });
+                expect(Promise.resolve(wrapper.find(Tab))).to.eventually.have.length(pages.length);
                 done();
             });
 
-            it ("Tests the callback", function() {
-                const buttons = wrapper.find(HeaderButton).at(0);
-                buttons.simulate("click", pages[0]);
+            it ("Tests the callback", async function() {
+                wrapper.setProps({ pageButtons: pages });
+                const buttons = await Promise.resolve(wrapper.find(Tab).at(0));
+                buttons.simulate("active", pages[0]);
                 expect(onPageSelected).to.have.been.calledOnce;
                 expect(onPageSelected).to.have.been.calledWith(pages[0]);
             });
 
-            it("Tests that it will build new buttons on props change.", function(done) {
-                const newPages: PageButton[] = [
-                    { icon: "newHome", name: "newName", tooltip: "newHome tooltip" },
-                    { icon: "newHome2", name: "newName2", tooltip: "newHome2 tooltip" },
-                    { icon: "newHome3", name: "newName3", tooltip: "newHome3 tooltip" },
-                    { icon: "newHome3", name: "newName3", tooltip: "newHome3 tooltip"}
-                ];
+            it("Tests that it will build new buttons on props change.", async function() {
                 wrapper.setProps({ pageButtons: newPages });
-                setTimeout(() => {
-                    expect(Promise.resolve(wrapper.find(HeaderButton))).to.eventually.have.length(newPages.length);
-                    done();
-                }, 1500);
+                await setTimeout(async () => {
+                    const tabs = await Promise.resolve(wrapper.find(Tab));
+                    expect(tabs).to.have.length(newPages.length);
+                }, 2000);
             });
         });
     });

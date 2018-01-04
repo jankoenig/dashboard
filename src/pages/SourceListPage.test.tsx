@@ -28,7 +28,7 @@ describe("Source List Page", function () {
         jsdom();
 
         it("should render correctly", function () {
-            const wrapper = mount(<SourceListPage sources={sources} finishLoading={true} />);
+            const wrapper = mount(<SourceListPage sources={sources} finishLoading={true} amazonFlow={false} />);
 
             let twoPaneWrapper = wrapper.find("TwoPane");
             let leftSide = twoPaneWrapper.find(".source_list_page_left");

@@ -20,13 +20,13 @@ export default class UserControl extends React.Component<UserProps, any> {
     let icon = this.props.user && this.props.user.photoUrl ? (
       <img
         style={{ borderRadius: "50%" }}
-        width="32"
-        height="32"
+        width="45"
+        height="45"
         src={this.props.user.photoUrl}
         />
     ) : (
         <Icon
-          style={{width: 32, height: 32}}
+          style={{width: 45, height: 45}}
           icon={ICON.DEFAULT_AVATAR}
           />
       );

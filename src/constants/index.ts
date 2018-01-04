@@ -68,6 +68,7 @@ export namespace CLASSES {
         export const GREY_100 = "mdl-color--grey-100";
         export const GREY_900 = "mdl-color--grey-900";
         export const GREEN_BESPOKEN = "mdl-color-green-bespoken";
+        export const CYAN_BESPOKEN = "mdl-color-cyan-bespoken";
     }
 
     export namespace TEXT {

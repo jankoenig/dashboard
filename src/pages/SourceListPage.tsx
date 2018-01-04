@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import {Link} from "react-router";
 
 import {Button} from "react-toolbox/lib/button";
-
+import AmazonPane from "../components/AmazonVendorPane";
 import List from "../components/List/List";
 import ListItem from "../components/List/ListItem";
 import TwoPane from "../components/TwoPane";
@@ -21,20 +21,27 @@ const ButtonTheme = require("../themes/button_theme.scss");
 export interface SourceListPageProps {
     sources: Source[];
     finishLoading: boolean;
+    amazonFlow?: boolean;
 }
 
 interface SourceListPageState {
     listItems: JSX.Element[];
+    amazonFlow: boolean;
 }
 
 function mapStateToProps(state: State.All) {
     return {
         sources: state.source.sources,
-        finishLoading: state.source.finishLoading
+        finishLoading: state.source.finishLoading,
     };
 }
 
 export class SourceListPage extends React.Component<SourceListPageProps, SourceListPageState> {
+    static defaultProps: SourceListPageProps = {
+        sources: [],
+        amazonFlow: true,
+        finishLoading: false,
+    };
 
     render() {
         let leftSide = (
@@ -55,15 +62,16 @@ export class SourceListPage extends React.Component<SourceListPageProps, SourceL
             </div>
         );
 
-        return (
-            <TwoPane
-                spacing={true}
-                leftStyle={{paddingLeft: "10px", paddingRight: "5px"}}
-                rightStyle={{paddingRight: "10px", paddingLeft: "5px"}}>
-                {leftSide}
-                {rightSide}
-            </TwoPane>
-        );
+        return this.props.amazonFlow ? (<AmazonPane noSpacing={true} style={{padding: 0}} />) :
+            (
+                <TwoPane
+                    spacing={true}
+                    leftStyle={{paddingLeft: "10px", paddingRight: "5px"}}
+                    rightStyle={{paddingRight: "10px", paddingLeft: "5px"}}>
+                    {leftSide}
+                    {rightSide}
+                </TwoPane>
+            );
     }
 }
 

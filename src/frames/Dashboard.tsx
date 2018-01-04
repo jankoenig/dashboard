@@ -53,6 +53,7 @@ interface DashboardProps {
 
 interface DashboardState {
   showModal: boolean;
+  amazonFlow: boolean;
   emailVerificationStatus: "loading" | "asking" | "sent" | "done";
 }
 
@@ -106,7 +107,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     this.state = {
       showModal: false,
-      emailVerificationStatus: "loading"
+      amazonFlow: true,
+      emailVerificationStatus: "loading",
     };
 
     showAskingSnackbar = !this.props.user.emailVerified;
@@ -117,7 +119,8 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
   }
 
   headerClasses() {
-    return classNames(CLASSES.COLOR.GREY_100, CLASSES.TEXT.GREY_600);
+    const noHeaderMargin = this.state.amazonFlow || this.props && this.props.currentSource ? "" : "no-header-margin";
+    return classNames(CLASSES.COLOR.CYAN_BESPOKEN, CLASSES.TEXT.GREY_600, noHeaderMargin);
   }
 
   async componentDidMount() {
@@ -203,53 +206,53 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
   pageButtons(): PageButton[] | undefined {
     if (this.props.currentSource) {
-      return [
-        {
-          icon: "dashboard",
-          name: "summary",
-          tooltip: "summary"
-        },
-        {
-          icon: "list",
-          name: "logs",
-          tooltip: "logs"
-        },
-        {
-          icon: "code",
-          name: "integration",
-          tooltip: "integration"
-        },
-        {
-          icon: "assignment_turned_in",
-          name: "validation",
-          tooltip: "validation (beta)"
-        },
-        {
-            icon: "volume_up",
-            name: "audio",
-            tooltip: "audio player session metrics"
-        },
-        {
-          icon: "settings",
-          name: "settings",
-          tooltip: "settings"
-        },
-      ];
+        return [
+            {
+                icon: "validation",
+                name: "Validate",
+                tooltip: "validation (beta)"
+            },
+            {
+                icon: "stats",
+                name: "Check Stats",
+                tooltip: "summary"
+            },
+            {
+                icon: "logs",
+                name: "Check Logs",
+                tooltip: "logs"
+            },
+            {
+                icon: "integration",
+                name: "Integrations",
+                tooltip: "integration"
+            },
+            {
+                icon: "audioMetrics",
+                name: "Audio Metrics",
+                tooltip: "audio player session metrics"
+            },
+            {
+                icon: "settings",
+                name: "settings",
+                tooltip: "settings"
+            },
+        ];
     } else {
       return undefined;
     }
   }
 
   handlePageSwap(button: PageButton) {
-    if (button.name === "summary") {
+    if (button.name === "Check Stats") {
       this.props.goTo("/skills/" + this.props.currentSource.id);
-    } else if (button.name === "logs") {
+    } else if (button.name === "Check Logs") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/logs");
-    } else if (button.name === "integration") {
+    } else if (button.name === "Integrations") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/integration");
-    } else if (button.name === "validation") {
+    } else if (button.name === "Validate") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/validation");
-    } else if (button.name === "audio") {
+    } else if (button.name === "Audio Metrics") {
         this.props.goTo("/skills/" + this.props.currentSource.id + "/audio");
     } else if (button.name === "settings") {
       this.props.goTo("/skills/" + this.props.currentSource.id + "/settings");
@@ -312,6 +315,10 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
           handleCloseModal={this.handleCloseModal}
           handleEnterContest={this.handleEnterContest}
         />
+        {
+            this.state && this.state.amazonFlow &&
+            <a onClick={this.handleHomeClick} className="back_to_site_link">{"<< Back to site"}</a>
+        }
         <Header
           className={this.headerClasses()}
           currentSourceId={this.props.currentSource ? this.props.currentSource.id : undefined}

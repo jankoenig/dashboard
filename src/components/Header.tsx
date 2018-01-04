@@ -1,10 +1,11 @@
 import * as classNames from "classnames";
 import * as moment from "moment";
 import * as React from "react";
-import { IconButton } from "react-toolbox/lib/button";
-import { MenuItem as ReactMenuItem } from "react-toolbox/lib/menu";
+import { Button, IconButton } from "react-toolbox/lib/button";
+import {Tab, Tabs} from "react-toolbox/lib/tabs";
 import Tooltip from "react-toolbox/lib/tooltip";
-import { Menu, MenuItem } from "../components/Menu";
+import ButtonMenu from "../components/ButtonMenu";
+import { MenuItem } from "../components/Menu";
 import Log from "../models/log";
 import LogQuery from "../models/log-query";
 import Query, {EndTimeParameter, SourceParameter, StartTimeParameter} from "../models/query";
@@ -15,6 +16,9 @@ import Noop from "../utils/Noop";
 
 const Autosuggest: any = require("react-autosuggest");
 const IconButtonTheme = require("../themes/icon-button-primary-theme.scss");
+const LogoButtonTheme = require("../themes/logo-button-theme.scss");
+const MenuButtonTheme = require("../themes/button_menu_theme.scss");
+const TabMenuTheme = require("../themes/tab_menu_theme.scss");
 const theme = require("../themes/autosuggest.scss");
 
 export interface Dropdownable {
@@ -92,43 +96,37 @@ export class Header extends React.Component<HeaderProps, HeaderState> {
 
           <PageSwap
             source={this.props.currentSourceId}
+            sources={this.props.sources}
             pageButtons={this.props.pageButtons}
             onPageSelected={this.props.onPageSelected} />
 
           <div className="mdl-layout-spacer" />
 
+          <ButtonMenu className={MenuButtonTheme.help_menu_button} raised={true} position="topRight" label="Need Help?">
+              <MenuItem
+                  key="1"
+                  to="https://github.com/bespoken/dashboard/issues/new?labels=bug"
+                  icon="bug_report"
+                  caption="File Bug" />
+              <MenuItem
+                  key="2"
+                  to="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body="
+                  icon="build"
+                  caption="Request Feature" />
+              <MenuItem
+                  key="3"
+                  to="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"
+                  icon="question_answer"
+                  caption="Talk to Us" />
+              <MenuItem
+                  key="4"
+                  to="mailto:contact@bespoken.io"
+                  icon="email"
+                  caption="Email" />
+          </ButtonMenu>
+
           {this.props.children}
 
-          <Menu
-            icon="help_outline"
-            position="topRight"
-            menuRipple>
-
-            <MenuItem
-              key="1"
-              to="https://github.com/bespoken/dashboard/issues/new?labels=bug"
-              icon="bug_report"
-              caption="File Bug" />
-
-            <MenuItem
-              key="2"
-              to="https://github.com/bespoken/dashboard/issues/new?labels=feature%20request&body="
-              icon="build"
-              caption="Request Feature" />
-
-            <MenuItem
-              key="3"
-              to="https://gitter.im/bespoken/bst?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"
-              icon="question_answer"
-              caption="Talk to Us" />
-
-            <MenuItem
-              key="4"
-              to="mailto:contact@bespoken.io"
-              icon="email"
-              caption="Email" />
-
-          </Menu>
         </div>
       </header>
     );
@@ -147,11 +145,10 @@ export class Home extends React.Component<HomeProps, any> {
     let home: JSX.Element = (<div />);
     if (this.props.showHome) {
       home = (
-        <IconButton
-          theme={IconButtonTheme}
+        <Button
+          theme={LogoButtonTheme}
           accent
-          onClick={this.props.handleHomeClick}
-          icon="home" />
+          onClick={this.props.handleHomeClick} />
       );
     }
 
@@ -264,6 +261,7 @@ export class Title extends React.Component<TitleProps, any> {
 
 interface PageSwapProps {
   source?: string;
+  sources?: any[];
   pageButtons?: PageButton[];
   onPageSelected?: (button: PageButton) => void | undefined;
   style?: any;
@@ -271,8 +269,8 @@ interface PageSwapProps {
 }
 
 interface PageSwapState {
-  buttons: JSX.Element[];
-  responsiveButtons: JSX.Element[];
+  tabs: JSX.Element[];
+  index?: any;
 }
 
 const TooltipButton = Tooltip(IconButton);
@@ -287,7 +285,7 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
   constructor(props: PageSwapProps) {
     super(props);
 
-    this.state = { buttons: [], responsiveButtons: [] };
+    this.state = { tabs: [], index: 0 };
 
     this.handleSelected = this.handleSelected.bind(this);
   }
@@ -305,41 +303,34 @@ export class PageSwap extends React.Component<PageSwapProps, PageSwapState> {
   }
 
   async buildButtons(props: PageSwapProps) {
-    const buttons = props.pageButtons;
-    this.state.buttons = [];
     let i = 0;
-    for (let button of buttons) {
-        if (await allowTab(button.name, props)) {
-            this.state.buttons.push(
-                (
-                    <HeaderButton className="hide-source-menu"
-                                  key={++i}
-                                  button={button}
-                                  onClick={this.handleSelected} />
-                )
-            );
+    if (props.pageButtons) {
+        const tabs = [];
+        for (const button of props.pageButtons) {
+            if (await allowTab(button.name, props)) { tabs.push(button); }
         }
-    };
-    if (buttons.length) {
-        this.setState({...this.state, responsiveButtons: buttons.map(button => {
-            const handleSelectButton = () => {
+        this.setState({...this.state, tabs: tabs.map(button => {
+            const handleSelectTab = () => {
                 this.handleSelected(button);
             };
-            return <ReactMenuItem style={{color: "#ff4545"}} caption={button.name} key={++i} icon={button.icon} onClick={handleSelectButton} />;
+            return <Tab className={button.icon.toString()} key={++i} label={button.name} onActive={handleSelectTab} />;
         })});
     };
   }
 
   render() {
+    const handleTabChange = (index: any) => {
+        this.setState({...this.state, index});
+    };
     return (
         <div className="responsive-page-swap" style={this.props.style}>
-            {this.state.buttons}
-            {this.state.buttons.length ?
-            (
-                <Menu className="responsive-source-menu" icon="more_vert" position="topRight" menuRipple={true}>
-                    {this.state.responsiveButtons}
-                </Menu>
-            ) : undefined
+            {
+                this.state && this.state.tabs.length ?
+                (
+                    <Tabs style={{overflowX: "scroll"}} theme={TabMenuTheme} index={this.state.index} onChange={handleTabChange}>
+                        {this.state && this.state.tabs}
+                    </Tabs>
+                ) : undefined
             }
         </div>
     );
@@ -382,9 +373,13 @@ export class HeaderButton extends React.Component<HeaderButtonProps, any> {
 
 async function allowTab(tab: string, props: any) {
     switch (tab) {
-        case "logs": {
+        case "Check Stats":
+        case "Check Logs": {
+            const currentSource = props.sources.find((source: any) => {
+                return source.value === props.source;
+            });
             const query: LogQuery = new LogQuery({
-                source: {id: props.source} as Source,
+                source: (currentSource && currentSource.source) || {} as Source,
                 startTime: moment().subtract(7, "days"), // change 7 for the right time span once implemented
                 endTime: moment(),
                 limit: 50
@@ -392,7 +387,7 @@ async function allowTab(tab: string, props: any) {
             let endpoint;
             return !!(await logService.getLogs(query, endpoint)).length;
         }
-        case "audio": {// should we have this conditional tab as well?
+        case "Audio Metrics": {// should we have this conditional tab as well?
             const query: Query = new Query();
             query.add(new SourceParameter(props.source));
             query.add(new StartTimeParameter(moment().subtract(7, "days"))); // change 7 for the right time span once implemented
