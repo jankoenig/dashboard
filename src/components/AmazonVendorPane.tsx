@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Button } from "react-toolbox/lib/button";
 import Input from "react-toolbox/lib/input";
+import auth from "../services/auth";
 import { Cell, Grid } from "./Grid";
 import { Dimensions, Measure } from "./Measure";
 
@@ -12,11 +13,13 @@ export default class AmazonVendorPane extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
-            myHeight: 0
+            myHeight: 0,
+            vendorID: "",
         };
 
         this.onMeasure = this.onMeasure.bind(this);
         this.handleVendorIDChange = this.handleVendorIDChange.bind(this);
+        this.handleUpdateVendorId = this.handleUpdateVendorId.bind(this);
     }
 
     onMeasure(dimensions: Dimensions) {
@@ -28,8 +31,13 @@ export default class AmazonVendorPane extends React.Component<any, any> {
         this.setState({...this.state, vendorID: value});
     }
 
-    handleUpdateVendorId(vendorId: string) {
-        // stub for vendorId Update
+    async handleUpdateVendorId() {
+        const updatedUser = await auth.updateCurrentUser({vendorID: this.state.vendorID});
+        if (updatedUser) {
+            // finish importing sources and redirect to validation page
+        } else {
+            // redirect to landing no amazon flow
+        }
     }
 
     render() {
