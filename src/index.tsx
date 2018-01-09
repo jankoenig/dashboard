@@ -1,6 +1,7 @@
 import * as Firebase from "firebase";
 import { createHistory } from "history";
 import "isomorphic-fetch";
+import * as moment from "moment";
 import * as Raven from "raven-js";
 import * as ReactDOM from "react-dom";
 import * as ReactGA from "react-ga";
@@ -15,6 +16,7 @@ import { setUser } from "./actions/session";
 import Dashboard from "./frames/Dashboard";
 
 import Login from "./frames/Login";
+import LogQuery from "./models/log-query";
 import Source from "./models/source";
 import { FirebaseUser } from "./models/user";
 import AudioPage from "./pages/audioplayerpage/AudioPlayerPage";
@@ -29,6 +31,7 @@ import SourcePage from "./pages/sourcepage/SourcePage";
 import SourcesLinkPage from "./pages/SourcesLinkPage";
 import ValidationPage from "./pages/validation/ValidationPage";
 import rootReducer from "./reducers";
+import logService from "./services/log";
 
 import IndexUtils from "./index-utils";
 import configureStore from "./store";
@@ -140,12 +143,22 @@ let setSource: EnterHook = function (nextState: RouterState, redirect: RedirectF
     let sources: Source[] = store.getState().source.sources;
     let sourceId: string = nextState.params["sourceId"];
     let loc: Location = nextState.location as Location;
-    IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources, loc)
-        .catch(function (a?: Error) {
-            console.error(a);
-            // Can't use the redirect because this is asynchronous.
-            store.dispatch(replace("/skills"));
+    IndexUtils.dispatchSelectedSourceSource(store.dispatch, sourceId, sources, loc).then(async function (source) {
+        const query: LogQuery = new LogQuery({
+            source,
+            startTime: moment().subtract(7, "days"), // change 7 for the right time span once implemented
+            endTime: moment(),
+            limit: 50
         });
+        let endpoint;
+        if (!(await logService.getLogs(query, endpoint)).length) {
+            store.dispatch(replace(`/skills/${sourceId}/validation`));
+        }
+    }).catch(function (a?: Error) {
+        console.error(a);
+        // Can't use the redirect because this is asynchronous.
+        store.dispatch(replace("/skills"));
+    });
 };
 
 let removeSource: LeaveHook = function () {

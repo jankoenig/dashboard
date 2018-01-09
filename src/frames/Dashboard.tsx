@@ -107,7 +107,7 @@ class Dashboard extends React.Component<DashboardProps, DashboardState> {
 
     this.state = {
       showModal: false,
-      amazonFlow: true,
+      amazonFlow: false,
       emailVerificationStatus: "loading",
     };
 
