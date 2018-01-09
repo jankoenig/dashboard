@@ -11,8 +11,9 @@ import Snackbar from "react-toolbox/lib/snackbar";
 
 import Button from "../../components/Button";
 import {CodeSheet} from "../../components/CodeSheet";
-import {Cell, Grid} from "../../components/Grid";
+import {Cell} from "../../components/Grid";
 import { Dimensions } from "../../components/Measure";
+import SourcePageTwoPane from "../../components/SourcePageTwoPane";
 import Source from "../../models/source";
 import {User, UserDetails} from "../../models/user";
 import { State } from "../../reducers";
@@ -23,7 +24,6 @@ import { Location } from "../../utils/Location";
 const dashboardTheme = require("../../themes/dashboard.scss");
 const inputTheme = require("../../themes/input.scss");
 const checkboxTheme = require("../../themes/checkbox-theme.scss");
-const VendorPaneStyle = require("../../themes/amazon_pane.scss");
 
 interface ValidationPageState {
     dialogActive: boolean;
@@ -288,14 +288,12 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
 
     render() {
         return (
-        <Grid
-            className={VendorPaneStyle.main_grid}
-            noSpacing={true}>
-            <Cell className={VendorPaneStyle.left_cell} col={9} phone={4} tablet={6}>
-                <div className={VendorPaneStyle.left_container}>
+            <SourcePageTwoPane>
+                {(
                     <form className="mdl-grid" onSubmit={this.handleRun}>
                         <Cell col={3} tablet={12}>
-                            <Input className="sm-input" label="Validation Token" value={this.state.token} onChange={this.handleTokenChange} required={true}/>
+                            <Input className="sm-input" label="Validation Token" value={this.state.token}
+                                   onChange={this.handleTokenChange} required={true}/>
                             Don't have a token yet? <a href="#" onClick={this.handleGetTokenClick}>Get it here</a>
                             <Snackbar className="sm-snackbar" action="Dismiss" type="cancel"
                                       active={this.state.showSnackbar}
@@ -303,8 +301,11 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                                       onClick={this.handleSnackbarClick}/>
                         </Cell>
                         <Cell col={3} tablet={12}>
-                            <Input className="sm-input" label="Vendor ID" value={this.state.vendorID} onChange={this.handleVendorIDChange} required={true}/>
-                            To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html" target="_blank">click here</a>. Please make sure it is for the correct organization if you belong to multiple.
+                            <Input className="sm-input" label="Vendor ID" value={this.state.vendorID}
+                                   onChange={this.handleVendorIDChange} required={true}/>
+                            To retrieve your vendor ID, <a href="https://developer.amazon.com/mycid.html"
+                                                           target="_blank">click
+                            here</a>. Please make sure it is for the correct organization if you belong to multiple.
                         </Cell>
                         <Cell col={12}>
                             <Cell col={6}>
@@ -313,7 +314,9 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                                        onChange={this.handleScriptChange}
                                        hint={ValidationPage.scriptHint} required={true}/>
                                 <p>Scripts will “speak” the sequence of commands listed above,
-                                    testing for the proper result - <a href="#" onClick={this.handleHelpChange}>click here for help</a>.
+                                    testing for the proper result - <a href="#" onClick={this.handleHelpChange}>click
+                                        here
+                                        for help</a>.
                                 </p>
                             </Cell>
                         </Cell>
@@ -323,7 +326,8 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                         <Cell col={12}>
                             <Button raised={true} disabled={this.state.loadingValidationResults}>
                                 {this.state.loadingValidationResults
-                                    ? <ProgressBar className="circularProgressBar" type="circular" mode="indeterminate" />
+                                    ?
+                                    <ProgressBar className="circularProgressBar" type="circular" mode="indeterminate"/>
                                     : <span>Run</span>}
                             </Button>
                             <Dialog
@@ -342,14 +346,9 @@ export class ValidationPage extends React.Component<ValidationPageProps, Validat
                                 onChange={this.handleMonitorEnabledCheckChange}/>
                         </Cell>
                     </form>
-                </div>
-            </Cell>
-            <Cell col={3} hidePhone={true} tablet={2}>
-                <div style={{margin: 20, backgroundColor: "#fff"}}>
-                    call to action placeholder
-                </div>
-            </Cell>
-        </Grid >
+                )}
+                {"call to action placeholder (sidebar)"}
+            </SourcePageTwoPane>
         );
     }
 }
